@@ -2,29 +2,19 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Java开发工具推荐 | 杨镇涛的一亩三分地</title>
+<title>Git 原理详解及实用指南 - HEAD，Branch | 杨镇涛的一亩三分地</title>
 <link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1581899210528">
 <link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Java开发工具推荐 | 杨镇涛的一亩三分地 - Atom Feed" href="https://imyzt.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Git 原理详解及实用指南 - HEAD，Branch | 杨镇涛的一亩三分地 - Atom Feed" href="https://imyzt.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="工具包
-
-Google Guava
-HuTool
-Apache Commons(这玩意估计没人不知道了。)
-
-工具类
-AntPathMatcher
-作用：URL路径匹配
-？匹配一个字符
-*匹配0个或多个字符
-**匹配0个或多个目录
-Stop..." />
-    <meta name="keywords" content="Java developer" />
+    <meta name="description" content="git branch、HEAD都是围绕着commit走的；
+HEAD：永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。远程分支HEAD永远指向默认分支master。
+Branch：一类引用，..." />
+    <meta name="keywords" content="git" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
   </head>
@@ -94,63 +84,42 @@ Stop..." />
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Java开发工具推荐
+              Git 原理详解及实用指南 - HEAD，Branch
             </h2>
             <div class="post-info">
               <span>
-                2020-01-20
+                2020-02-17
               </span>
               <span>
                 1 min read
               </span>
               
-                <a href="https://imyzt.github.io/tag/Lix1FDBfB" class="post-tag">
-                  # Java developer
+                <a href="https://imyzt.github.io/tag/MDxnawt6i" class="post-tag">
+                  # git
                 </a>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <h1 id="工具包">工具包</h1>
-<ul>
-<li><a href="http://ifeve.com/google-guava/">Google Guava</a></li>
-<li><a href="https://www.hutool.cn/docs/">HuTool</a></li>
-<li><a href="http://ifeve.com/apache-common/">Apache Commons(这玩意估计没人不知道了。)</a></li>
-</ul>
-<h1 id="工具类">工具类</h1>
-<h2 id="antpathmatcher">AntPathMatcher</h2>
-<p>作用：URL路径匹配</p>
-<p>？匹配一个字符<br>
-*匹配0个或多个字符<br>
-**匹配0个或多个目录</p>
-<h2 id="stopwatch">StopWatch</h2>
-<p>作用：方法耗时计算</p>
-<p>该类Spring和Guava都有提供，用法大同小异</p>
-<h2 id="beancopier">BeanCopier</h2>
-<p>作用：拷贝bean</p>
-<p>比Apache和Spring提供的BeanUtils效率好点</p>
-<p>注意点：<br>
-该方法与lombok提供的<code>@Accessors(chain = true)</code>注解冲突，在cglib最底层target调用set方法进行参数设置的时候，判断了set方法返回值是否为void，不为void不会进行赋值操作。<br>
-解决方法有2：</p>
+                <p>git branch、HEAD都是围绕着commit走的；</p>
+<p>HEAD：永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。远程分支HEAD永远指向默认分支master。</p>
+<p>Branch：一类引用，HEAD除了直接指向commit之外，也可以通过指向branch间接指向commit。当HEAD指向branch时，commit发生时，HEAD会带着branch一起移动。如下图（HEAD携带feature1一起移动。）</p>
+<p>master：master是Git中默认的branch，它与其他branch的区别在于：</p>
 <ol>
-<li>去掉<code>@Accessors(chain = true)</code></li>
-<li>使用org.springframework.beans.BeanUtils</li>
+<li>新建仓库中第一个commit会被master自动指向。</li>
+<li>在git clone时，会自动checkout到master。</li>
+</ol>
+<p>branch的基本操作。</p>
+<ol>
+<li>创建： git branch 名称，或 git checkout -b 名称</li>
+<li>切换：git checkout 名称</li>
+<li>删除：git branch -d/-D 名称，-D强制删除</li>
 </ol>
 
               </div>
               <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li><a href="#%E5%B7%A5%E5%85%B7%E5%8C%85">工具包</a></li>
-<li><a href="#%E5%B7%A5%E5%85%B7%E7%B1%BB">工具类</a>
-<ul>
-<li><a href="#antpathmatcher">AntPathMatcher</a></li>
-<li><a href="#stopwatch">StopWatch</a></li>
-<li><a href="#beancopier">BeanCopier</a></li>
-</ul>
-</li>
-</ul>
-
+                
               </div>
             </div>
           </article>
@@ -159,9 +128,9 @@ Stop..." />
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://imyzt.github.io/post/about">
+            <a href="https://imyzt.github.io/post/java-kai-fa-gong-ju-tui-jian">
               <h3 class="post-title">
-                关于
+                Java开发工具推荐
               </h3>
             </a>
           </div>

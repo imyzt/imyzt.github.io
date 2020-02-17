@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://imyzt.github.io</id>
     <title>杨镇涛的一亩三分地</title>
-    <updated>2020-01-28T03:34:07.645Z</updated>
+    <updated>2020-02-17T00:26:52.936Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://imyzt.github.io"/>
     <link rel="self" href="https://imyzt.github.io/atom.xml"/>
@@ -10,6 +10,28 @@
     <logo>https://imyzt.github.io/images/avatar.png</logo>
     <icon>https://imyzt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[Git 原理详解及实用指南 - HEAD，Branch]]></title>
+        <id>https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch</id>
+        <link href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch">
+        </link>
+        <updated>2020-02-17T00:25:11.000Z</updated>
+        <content type="html"><![CDATA[<p>git branch、HEAD都是围绕着commit走的；</p>
+<p>HEAD：永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。远程分支HEAD永远指向默认分支master。</p>
+<p>Branch：一类引用，HEAD除了直接指向commit之外，也可以通过指向branch间接指向commit。当HEAD指向branch时，commit发生时，HEAD会带着branch一起移动。如下图（HEAD携带feature1一起移动。）</p>
+<p>master：master是Git中默认的branch，它与其他branch的区别在于：</p>
+<ol>
+<li>新建仓库中第一个commit会被master自动指向。</li>
+<li>在git clone时，会自动checkout到master。</li>
+</ol>
+<p>branch的基本操作。</p>
+<ol>
+<li>创建： git branch 名称，或 git checkout -b 名称</li>
+<li>切换：git checkout 名称</li>
+<li>删除：git branch -d/-D 名称，-D强制删除</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Java开发工具推荐]]></title>
         <id>https://imyzt.github.io/post/java-kai-fa-gong-ju-tui-jian</id>
