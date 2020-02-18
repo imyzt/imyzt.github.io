@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>Hello Gridea | 杨镇涛的一亩三分地</title>
+<title>Git 原理详解及实用指南 - merge，add，log | 杨镇涛的一亩三分地</title>
 <meta name="description" content="分享我的技术和生活">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,18 +80,18 @@
       <div class="content-container">
         <div class="post-detail">
           
-            <div class="feature-container" style="background-image: url('https://imyzt.github.io/post-images/hello-gridea.png')">
+            <div class="feature-container" style="background-image: url('https://imyzt.github.io/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif')">
             </div>
           
-          <h2 class="post-title">Hello Gridea</h2>
+          <h2 class="post-title">Git 原理详解及实用指南 - merge，add，log</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2018-12-12</span>
+            <span><i class="icon-calendar-outline"></i> 2020-02-18</span>
             
               <span>
                 <i class="icon-pricetags-outline"></i>
                 
-                  <a href="https://imyzt.github.io/tag/SX_IG-Y0t">
-                    Gridea
+                  <a href="https://imyzt.github.io/tag/Z2IdH6vis">
+                    Git 原理详解及实用指南
                     
                   </a>
                 
@@ -99,32 +99,45 @@
             
           </div>
           <div class="post-content">
-            <p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<!-- more -->
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="https://gridea.dev/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
+            <h2 id="merge">merge</h2>
+<ol>
+<li>git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。</li>
+<li>从 <code>目标commit</code> 和 <code>当前commit</code> 的<strong>分叉点起</strong>，将 <code>目标commit</code> 上的 <code>所有commit</code> 一并合并到 <code>当前commit</code>，并<code>自动生成一个新的commit</code>。</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1581992793896.gif" alt="git merge 示意图" loading="lazy"></figure>
+<center>图 - git merge 示意图</center>
+<h3 id="特殊情况如何处理">特殊情况，如何处理</h3>
+<h5 id="放弃合并">放弃合并</h5>
+<p>当前处于解决冲突的中间状态， 通过 <code>git merge --abort</code> 取消合并，回到merge之前的状态。</p>
+<h5 id="head领先于当前commit">HEAD领先于当前commit</h5>
+<p>即<strong>合并之前的commit</strong>，这是一个无意义操作，Git什么也不会做。空merge。</p>
+<h5 id="head落后于当前commit快速前移">HEAD落后于当前commit（快速前移）</h5>
+<ol>
+<li>在没有其它分支的情况下，Git会把HEAD指向的branch移动到目标commit。</li>
+<li>当前在HEAD指向master分支，执行 <code>git merge feature1</code> 后的操作如下图所示：<br>
+<img src="https://imyzt.github.io/post-images/1581993447297.gif" alt="合并领先于HEAD的commit" loading="lazy"></li>
+</ol>
+<center>图 - 合并领先于HEAD的commit</center>
+<ol start="3">
+<li>专有名词 - （快速前移）<br>
+在 <code>git pull</code> 经常出现，比如当前master分支本地没有更新，同事推送了新的commit到远程仓库，那么在执行 <code>git pull</code> 时，<strong>目标commit（远程仓库最新commit）</strong> 领先于 <strong>当前commit（本地commit）</strong>，<strong>HEAD会携带本地master分支快速前移</strong>。<br>
+<img src="https://imyzt.github.io/post-images/1581994083140.gif" alt="git pull 实现原理" loading="lazy"></li>
+</ol>
+<center>图 - git pull 实现原理</center>
+<h2 id="add">add</h2>
 
           </div>
         </div>
 
         
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch">
+              <h3 class="post-title">
+                下一篇：Git 原理详解及实用指南 - HEAD，branch，push
+              </h3>
+            </a>
+          </div>
+          
       </div>
 
       
