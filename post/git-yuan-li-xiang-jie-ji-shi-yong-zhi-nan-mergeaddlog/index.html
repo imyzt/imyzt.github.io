@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1581994364804">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1582160941868">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://imyzt.github.io">
-        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1581994364804" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1582160941868" alt="" width="32px" height="32px">
       </a>
       <a href="https://imyzt.github.io">
         <h1 class="site-title">杨镇涛的一亩三分地</h1>
@@ -125,6 +125,30 @@
 </ol>
 <center>图 - git pull 实现原理</center>
 <h2 id="add">add</h2>
+<p><code>git add</code> <strong>添加的是文件改动，而不是文件</strong>。</p>
+<h2 id="log">log</h2>
+<ol>
+<li><code>git log -p[--patch]</code> 查看具体到每个commit的改动细节。</li>
+<li><code>git log --stat</code> 查看每个commit改动的文件。</li>
+<li><code>git show [commitId] [filePath]</code> 查看当前commit的改动细节（精确到文件）。</li>
+<li>对比
+<ol>
+<li><code>git diff</code> 查看当前工作区与暂存区的区别。</li>
+<li><code>git diff --staged[--cached]</code> 查看当前暂存区与上一条commit的区别。</li>
+<li><code>git diff HEAD</code> 查看当前工作区与上一条commit的区别。</li>
+</ol>
+</li>
+</ol>
+<h2 id="本章命令总结">本章命令总结</h2>
+<ol>
+<li><code>git merge commit/branch</code> 合并某个提交或分支</li>
+<li><code>git merge --abort</code> 放弃当前合并</li>
+<li><code>git add .</code> 添加某个文件改动到git暂存区</li>
+<li>git log 的详细操作 <a href="#log">git log</a></li>
+</ol>
+<h2 id="引用声明">引用声明</h2>
+<p>本文内容来自<a href="https://juejin.im/book/5a124b29f265da431d3c472e">掘金小册-Git 原理详解及实用指南</a>的学习笔记内容，图片等均来自原作者。此处只作为笔记记录。<br>
+请支持原作者<img src="https://imyzt.github.io/post-images/1581900705687.png" alt="购买信息" loading="lazy"></p>
 
           </div>
         </div>
