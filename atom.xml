@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://imyzt.github.io</id>
     <title>杨镇涛的一亩三分地</title>
-    <updated>2020-02-20T01:09:05.830Z</updated>
+    <updated>2020-05-05T05:46:16.991Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://imyzt.github.io"/>
     <link rel="self" href="https://imyzt.github.io/atom.xml"/>
@@ -10,6 +10,99 @@
     <logo>https://imyzt.github.io/images/avatar.png</logo>
     <icon>https://imyzt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[FastJSON继承类反序列化参数]]></title>
+        <id>https://imyzt.github.io/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu</id>
+        <link href="https://imyzt.github.io/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu">
+        </link>
+        <updated>2020-05-05T05:45:01.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="场景及问题">场景及问题</h2>
+<p>做工具封装时，通常会定义一个顶级父类data struct，子类继承之后补充自己独有的属性。该模式在常规使用情况下都是可用的，但是在涉及到序列化后反序列化对象时，就不是那么管用了。</p>
+<p>我们假设有两个对象，<code>class BaseClass</code> 和 <code>class ChildClass</code></p>
+<pre><code>import lombok.Data;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 超类
+ */
+@Data
+public class BaseClass {
+    private Integer bashInfo;
+}
+
+import lombok.*;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 子类
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@ToString(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChildClass extends BaseClass {
+
+    private String childInfo;
+
+}
+</code></pre>
+<p>我们假设生产端生产消息，通过FastJSON序列化为字符串，然后通过kafka或者其他途径传递到消费端，消费端通过超类<code>BaseClass</code>转换消息，根据不同的子类通过不同的策略去处理。但是在这种情况下，通过<strong>超类解析字符串对象回JavaBean对象时</strong>，一般只能将<strong>超类</strong>中拥有的参数转换回来，不能获得子类的属性。示例代码如下：</p>
+<pre><code>
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description test
+ */
+
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) {
+
+        ChildClass one = new ChildClass();
+        one.setBashInfo(122);
+        one.setChildInfo(&quot;childInfo&quot;);
+
+        // 转换为字符串, 便于传输
+        String str = parseStr(one);
+
+        log.info(&quot;str={}&quot;, str);
+
+        // 转换回java bean
+        BaseClass childClass = JSON.parseObject(str, BaseClass.class);
+        log.info(&quot;childClass={}&quot;, childClass);
+    }
+
+    private static String parseStr(BaseClass obj) {
+        return JSON.toJSONString(obj);
+    }
+}
+
+日志打印：
+14:18:09.208 [main] INFO xxx.json.Test - str={&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
+14:18:09.227 [main] INFO xxx.json.Test - childClass=BaseClass(bashInfo=122)
+</code></pre>
+<h2 id="实现方式">实现方式</h2>
+<p>遇到这种情况，我们可以通过JSON的<strong>自省</strong>功能，实现在反序列化为JavaBean时，得到完整的子类属性，并且将JavaBean通过多态得到对应的子类对象。具体思路就是在序列化为JSON时，在json字符串中写入对应的类型，在反序列化时，通过JSON字符串中特殊标记的类型属性，按照该类型进行反序列化即可。</p>
+<p>FastJSON具体的实现是在调用 <code>JSON.toJSONString()</code>时，第二个数组参数传入Feature功能<code>SerializerFeature.WriteClassName</code>，完整调用如<code>JSON.toJSONString(obj, SerializerFeature.WriteClassName);</code> 在写入为JSON字符串时，会带有一个特殊的标记<code>@type</code>存储序列化时对应的类型，如下图。<br>
+<img src="http://blog.imyzt.top/upload/2020/04/upm13a7uk2hooofjkrdbe8kdhf.png" alt="请输入图片描述" loading="lazy"><br>
+在反序列化时，只需要按照对应的类型进行解析即可。上述代码重新运行后日志如下：</p>
+<pre><code>14:22:24.528 [main] INFO xxx.json.Test - str={&quot;@type&quot;:&quot;xxx.json.ChildClass&quot;,&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
+14:25:03.631 [main] INFO xxx.json.Test - childClass=ChildClass(super=BaseClass(bashInfo=122), childInfo=childInfo)
+</code></pre>
+<h2 id="注意点">注意点</h2>
+<ul>
+<li>子类必须实现全参构造，或者有用lombok的<code>@ToString(callSuper = true)</code>也行，不然会出现映射父类属性的情况。</li>
+</ul>
+<p>OK, 整篇文章就讲了一个Feature，水了一整页。。可以多关注下JSON的其他Feature功能，说不定就是需要的。/狗头</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Git 原理详解及实用指南 - merge，add，log]]></title>
         <id>https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog</id>
