@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>Java developer | 杨镇涛的一亩三分地</title>
+<title>Redis LUA debug | 杨镇涛的一亩三分地</title>
 <meta name="description" content="分享我的技术和生活">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -78,48 +78,57 @@
 
 
       <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Redis LUA debug</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-06-14</span>
+            
+          </div>
+          <div class="post-content">
+            <figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/06/umhrmcs17eho2qdnnfs44e7vjp.png" alt="执行图" loading="lazy"></figure>
+<h2 id="调试命令">调试命令</h2>
+<p><code>redis-cli --ldb --eval loop.lua keysargs1 keysargs2, argv1,argv2</code></p>
+<ol>
+<li>命令解析</li>
+</ol>
+<p>--ldb 即开启调试模式<br>
+--eval 指定调试脚本<br>
+keysargs1 keysargs2, argv1,argv2 逗号前是KEYS的参数， 之后是ARGV的参数。<br>
+s 如果，通过 <code>s</code> 执行下一步</p>
+<ol start="2">
+<li>loop.lua</li>
+</ol>
+<pre><code>local i=0
+while true
+do
+	i=i+1
+	redis.debug(i)
+end
+return &quot;OK&quot;
+</code></pre>
+<h2 id="redis-lua-调试工具">redis lua 调试工具</h2>
+<h4 id="ide-地址及安装">IDE 地址及安装</h4>
+<p><a href="https://redislabs.com/blog/zerobrane-studio-plugin-for-redis-lua-scripts/"><br>
+ZeroBrane Studio Plugin for Redis Lua Scripts</a></p>
+<h4 id="lua调试插件地址">LUA调试插件地址</h4>
+<p><a href="https://github.com/pkulchenko/ZeroBranePackage/blob/master/redis.lua">https://github.com/pkulchenko/ZeroBranePackage/blob/master/redis.lua</a></p>
 
-        <div class="current-tag-container">
-          <h2 class="title">
-            <i class="icon icon-pricetags-outline"></i> Java developer
-          </h2> 
+          </div>
         </div>
 
         
-<section class="post-item">
-    <div class="content">
-      <a href="https://imyzt.github.io/post/java-kai-fa-gong-ju-tui-jian">
-        <h2 class="post-title">Java开发工具推荐</h2>
-      </a>
-      <div class="post-abstract">
-        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/redis-lua-ji-ben-shi-yong">
+              <h3 class="post-title">
+                下一篇：Redis LUA基本使用
+              </h3>
+            </a>
+          </div>
+          
       </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2020-01-20</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://imyzt.github.io/tag/Lix1FDBfB">
-                Java developer
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
 
-
-<div class="pagination-container">
-  
-  
-</div>
-
-
-      </div>
+      
 
       <div class="site-footer">
   <div class="slogan">分享我的技术和生活</div>
