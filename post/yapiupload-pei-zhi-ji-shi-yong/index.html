@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>YapiUpload配置及使用	 | 杨镇涛的一亩三分地</title>
+<meta name="description" content="分享我的技术和生活">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1594545998116">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://imyzt.github.io">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1594545998116" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://imyzt.github.io">
+        <h1 class="site-title">杨镇涛的一亩三分地</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">YapiUpload配置及使用	</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-06-14</span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="什么是yapiupload">什么是YapiUpload</h1>
+<p>yapiUpload是为IDEA提供的快速编写 <a href="https://github.com/YMFE/yapi">yapi</a> 接口文档的工具，在编写好Spring Controller后，通过一系列配置，可以直接生成接口文档到YAPI上。</p>
+<p>yapiUpload是开源的<br>
+代码仓库在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin">https://github.com/diwand/YapiIdeaUploadPlugin</a><br>
+文档在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin/wiki/%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8">https://github.com/diwand/YapiIdeaUploadPlugin/wiki</a></p>
+<h1 id="如何安装及配置">如何安装及配置</h1>
+<h2 id="idea安装插件">IDEA安装插件</h2>
+<p>插件地址：<br>
+<a href="https://plugins.jetbrains.com/plugin/12276-yapiupload">https://plugins.jetbrains.com/plugin/12276-yapiupload</a></p>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/05/q2nkc4848kg8gqgirhvv5pp2bc.png" alt="安装图" loading="lazy"></figure>
+<h2 id="配置yapiupload">配置yapiUpload</h2>
+<p>找到项目文件 <code>.idea/misc.xml</code>，在<code>&lt;project&gt;</code>节点粘贴以下内容。</p>
+<pre><code>  &lt;!--yapi配置--&gt;
+  &lt;component name=&quot;yapi&quot;&gt;
+    &lt;option name=&quot;projectToken&quot;&gt;你的token&lt;/option&gt;
+    &lt;option name=&quot;projectId&quot;&gt;14&lt;/option&gt;
+    &lt;option name=&quot;yapiUrl&quot;&gt;你的yapi地址&lt;/option&gt;
+    &lt;option name=&quot;projectType&quot;&gt;api&lt;/option&gt;
+  &lt;/component&gt;
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/05/qgo4ug4vd8jguqpci92n9lhj3v.png" alt="请输入图片描述" loading="lazy"></figure>
+<h1 id="如何使用">如何使用</h1>
+<h2 id="编写一个标准的接口">编写一个标准的接口</h2>
+<p>yapiUpload支持很多Javadoc注解，可以在官方文档查看。</p>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/05/shtq7dpcbkgmrom8ttjaprbgr5.png" alt="标准接口" loading="lazy"></figure>
+<h2 id="上传到文档地址">上传到文档地址</h2>
+<h3 id="上传成功">上传成功</h3>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/05/rn8ue7flgejktrmv2tt8qk168e.png" alt="上传成功" loading="lazy"></figure>
+<h3 id="接口列表">接口列表</h3>
+<p>登录yapi上查看即可</p>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/05/r8bpv8cg54iu1rjsk3vnik94t9.png" alt="接口列表" loading="lazy"></figure>
+<h3 id="接口详情">接口详情</h3>
+<p>修改时，一般是直接覆盖，高版本yapi的api支持修改。不过好像这个工具还不支持。<br>
+<img src="http://blog.imyzt.top/upload/2020/05/tll83ishceintqja43s3utkfk9.png" alt="接口详情" loading="lazy"></p>
+<h1 id="二次开发">二次开发</h1>
+<p>yapiUpload本身是一个IDEA的插件，可以按照IDEA编码进行二次开发。<br>
+yapi也提供了二次开发api，可以对该插件做升级。<a href="https://hellosean1025.github.io/yapi/openapi.html">https://hellosean1025.github.io/yapi/openapi.html</a></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/redis-lua-debug">
+              <h3 class="post-title">
+                下一篇：Redis LUA debug
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">分享我的技术和生活</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

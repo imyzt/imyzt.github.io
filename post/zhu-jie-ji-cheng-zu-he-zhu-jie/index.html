@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>注解继承、组合注解 | 杨镇涛的一亩三分地</title>
+<meta name="description" content="分享我的技术和生活">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1594545998116">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://imyzt.github.io">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1594545998116" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://imyzt.github.io">
+        <h1 class="site-title">杨镇涛的一亩三分地</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">注解继承、组合注解</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-07-12</span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="组合注解">组合注解</h1>
+<h2 id="使用">使用</h2>
+<p>组合注解就是将多个注解组合到一个注解上。<br>
+比如我们在编写控制器（Controller）时，一般需要写<code>@Controller</code>和<code>@ResponseBody</code>，通过组合注解，我们可以写一个<code>@RestController</code>就可以实现两个注解的功能了。</p>
+<p>在使用SpringBoot时，经常能够看到这些注解的使用。<br>
+比如我们在使用<code>@RestController</code>, <code>@GetMapping</code>, <code>@Service</code>时，通过查看它们的源码，都能够发现元注解中有一些常见的注解。</p>
+<pre><code>@Controller // 组合@Controller元注解
+@ResponseBody // 组合@ResponseBody元注解
+public @interface RestController {}
+</code></pre>
+<pre><code>@RequestMapping(method = RequestMethod.GET) // 组合@RequestMapping元注解
+public @interface GetMapping {}
+</code></pre>
+<h2 id="值的获取">值的获取</h2>
+<p>通过组合注解，我们可以很方便的自定义组合功能注解，但是我们没有办法在获取父注解时，像Java继承多态那样方便的获取到子注解的值。</p>
+<p>比如我们的<code>@Controller</code>注解是有很多参数的，通过定义了<code>@RestController</code>后，是没有办法传递值到<code>@Controller</code>的。</p>
+<p>所以Spring给我们提供了一个工具类，具体操作如下：</p>
+<ol>
+<li>在子注解定义参数，通过<code>@AliasFor(annotation = Controller.class)</code> 指定参数绑定的父注解参数（参数名相同无需指定）。主要用于约束（类似于重写）</li>
+</ol>
+<pre><code>@Controller
+@ResponseBody
+public @interface RestController {
+
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an autodetected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 * @since 4.0.1
+	 */
+	@AliasFor(annotation = Controller.class)
+	String value() default &quot;&quot;;
+
+}
+</code></pre>
+<ol start="2">
+<li>通过<code>AnnotatedElementUtils</code>工具类，即可获取父注解（携带子注解值）。</li>
+</ol>
+<pre><code>父注解 变量名称 = AnnotatedElementUtils.findMergedAnnotation(子注解.class, 父注解.class);
+</code></pre>
+<p>其实原理非常简单，就是将两个注解的值合并，具体可以查看spring官方文档 <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/annotation/AnnotatedElementUtils.html#findMergedAnnotation-java.lang.reflect.AnnotatedElement-java.lang.Class-">findMergedAnnotation</a></p>
+<h1 id="注解继承">注解继承</h1>
+<p>注解继承的意思就是标记该注解的类，子类也同等能够继承到父类的注解。</p>
+<p>可以通过 <code>@Inherited</code> 元注解实现，底层是用jdk帮我们实现的。基本会使用就行</p>
+<p>可以看一下这篇博客： <a href="https://www.jianshu.com/p/a848655d478e">简书-JAVA注解的继承性</a></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/yapiupload-pei-zhi-ji-shi-yong">
+              <h3 class="post-title">
+                下一篇：YapiUpload配置及使用	
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">分享我的技术和生活</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

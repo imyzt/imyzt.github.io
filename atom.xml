@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://imyzt.github.io</id>
     <title>杨镇涛的一亩三分地</title>
-    <updated>2020-06-14T04:15:58.204Z</updated>
+    <updated>2020-07-12T09:26:41.699Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://imyzt.github.io"/>
     <link rel="self" href="https://imyzt.github.io/atom.xml"/>
@@ -10,6 +10,104 @@
     <logo>https://imyzt.github.io/images/avatar.png</logo>
     <icon>https://imyzt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[注解继承、组合注解]]></title>
+        <id>https://imyzt.github.io/post/zhu-jie-ji-cheng-zu-he-zhu-jie</id>
+        <link href="https://imyzt.github.io/post/zhu-jie-ji-cheng-zu-he-zhu-jie">
+        </link>
+        <updated>2020-07-12T09:26:31.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="组合注解">组合注解</h1>
+<h2 id="使用">使用</h2>
+<p>组合注解就是将多个注解组合到一个注解上。<br>
+比如我们在编写控制器（Controller）时，一般需要写<code>@Controller</code>和<code>@ResponseBody</code>，通过组合注解，我们可以写一个<code>@RestController</code>就可以实现两个注解的功能了。</p>
+<p>在使用SpringBoot时，经常能够看到这些注解的使用。<br>
+比如我们在使用<code>@RestController</code>, <code>@GetMapping</code>, <code>@Service</code>时，通过查看它们的源码，都能够发现元注解中有一些常见的注解。</p>
+<pre><code>@Controller // 组合@Controller元注解
+@ResponseBody // 组合@ResponseBody元注解
+public @interface RestController {}
+</code></pre>
+<pre><code>@RequestMapping(method = RequestMethod.GET) // 组合@RequestMapping元注解
+public @interface GetMapping {}
+</code></pre>
+<h2 id="值的获取">值的获取</h2>
+<p>通过组合注解，我们可以很方便的自定义组合功能注解，但是我们没有办法在获取父注解时，像Java继承多态那样方便的获取到子注解的值。</p>
+<p>比如我们的<code>@Controller</code>注解是有很多参数的，通过定义了<code>@RestController</code>后，是没有办法传递值到<code>@Controller</code>的。</p>
+<p>所以Spring给我们提供了一个工具类，具体操作如下：</p>
+<ol>
+<li>在子注解定义参数，通过<code>@AliasFor(annotation = Controller.class)</code> 指定参数绑定的父注解参数（参数名相同无需指定）。主要用于约束（类似于重写）</li>
+</ol>
+<pre><code>@Controller
+@ResponseBody
+public @interface RestController {
+
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an autodetected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 * @since 4.0.1
+	 */
+	@AliasFor(annotation = Controller.class)
+	String value() default &quot;&quot;;
+
+}
+</code></pre>
+<ol start="2">
+<li>通过<code>AnnotatedElementUtils</code>工具类，即可获取父注解（携带子注解值）。</li>
+</ol>
+<pre><code>父注解 变量名称 = AnnotatedElementUtils.findMergedAnnotation(子注解.class, 父注解.class);
+</code></pre>
+<p>其实原理非常简单，就是将两个注解的值合并，具体可以查看spring官方文档 <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/annotation/AnnotatedElementUtils.html#findMergedAnnotation-java.lang.reflect.AnnotatedElement-java.lang.Class-">findMergedAnnotation</a></p>
+<h1 id="注解继承">注解继承</h1>
+<p>注解继承的意思就是标记该注解的类，子类也同等能够继承到父类的注解。</p>
+<p>可以通过 <code>@Inherited</code> 元注解实现，底层是用jdk帮我们实现的。基本会使用就行</p>
+<p>可以看一下这篇博客： <a href="https://www.jianshu.com/p/a848655d478e">简书-JAVA注解的继承性</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[YapiUpload配置及使用	]]></title>
+        <id>https://imyzt.github.io/post/yapiupload-pei-zhi-ji-shi-yong</id>
+        <link href="https://imyzt.github.io/post/yapiupload-pei-zhi-ji-shi-yong">
+        </link>
+        <updated>2020-06-14T04:19:25.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="什么是yapiupload">什么是YapiUpload</h1>
+<p>yapiUpload是为IDEA提供的快速编写 <a href="https://github.com/YMFE/yapi">yapi</a> 接口文档的工具，在编写好Spring Controller后，通过一系列配置，可以直接生成接口文档到YAPI上。</p>
+<p>yapiUpload是开源的<br>
+代码仓库在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin">https://github.com/diwand/YapiIdeaUploadPlugin</a><br>
+文档在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin/wiki/%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8">https://github.com/diwand/YapiIdeaUploadPlugin/wiki</a></p>
+<h1 id="如何安装及配置">如何安装及配置</h1>
+<h2 id="idea安装插件">IDEA安装插件</h2>
+<p>插件地址：<br>
+<a href="https://plugins.jetbrains.com/plugin/12276-yapiupload">https://plugins.jetbrains.com/plugin/12276-yapiupload</a></p>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/05/q2nkc4848kg8gqgirhvv5pp2bc.png" alt="安装图" loading="lazy"></figure>
+<h2 id="配置yapiupload">配置yapiUpload</h2>
+<p>找到项目文件 <code>.idea/misc.xml</code>，在<code>&lt;project&gt;</code>节点粘贴以下内容。</p>
+<pre><code>  &lt;!--yapi配置--&gt;
+  &lt;component name=&quot;yapi&quot;&gt;
+    &lt;option name=&quot;projectToken&quot;&gt;你的token&lt;/option&gt;
+    &lt;option name=&quot;projectId&quot;&gt;14&lt;/option&gt;
+    &lt;option name=&quot;yapiUrl&quot;&gt;你的yapi地址&lt;/option&gt;
+    &lt;option name=&quot;projectType&quot;&gt;api&lt;/option&gt;
+  &lt;/component&gt;
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/05/qgo4ug4vd8jguqpci92n9lhj3v.png" alt="请输入图片描述" loading="lazy"></figure>
+<h1 id="如何使用">如何使用</h1>
+<h2 id="编写一个标准的接口">编写一个标准的接口</h2>
+<p>yapiUpload支持很多Javadoc注解，可以在官方文档查看。</p>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/05/shtq7dpcbkgmrom8ttjaprbgr5.png" alt="标准接口" loading="lazy"></figure>
+<h2 id="上传到文档地址">上传到文档地址</h2>
+<h3 id="上传成功">上传成功</h3>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/05/rn8ue7flgejktrmv2tt8qk168e.png" alt="上传成功" loading="lazy"></figure>
+<h3 id="接口列表">接口列表</h3>
+<p>登录yapi上查看即可</p>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/05/r8bpv8cg54iu1rjsk3vnik94t9.png" alt="接口列表" loading="lazy"></figure>
+<h3 id="接口详情">接口详情</h3>
+<p>修改时，一般是直接覆盖，高版本yapi的api支持修改。不过好像这个工具还不支持。<br>
+<img src="http://blog.imyzt.top/upload/2020/05/tll83ishceintqja43s3utkfk9.png" alt="接口详情" loading="lazy"></p>
+<h1 id="二次开发">二次开发</h1>
+<p>yapiUpload本身是一个IDEA的插件，可以按照IDEA编码进行二次开发。<br>
+yapi也提供了二次开发api，可以对该插件做升级。<a href="https://hellosean1025.github.io/yapi/openapi.html">https://hellosean1025.github.io/yapi/openapi.html</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Redis LUA debug]]></title>
         <id>https://imyzt.github.io/post/redis-lua-debug</id>
