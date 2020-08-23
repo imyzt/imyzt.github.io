@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>关于 | 杨镇涛的一亩三分地</title>
+<title>go语言的变量与常量 | 杨镇涛的一亩三分地</title>
 <meta name="description" content="分享我的技术和生活">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,33 +80,74 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">关于</h2>
+          <h2 class="post-title">go语言的变量与常量</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2019-01-25</span>
+            <span><i class="icon-calendar-outline"></i> 2020-08-23</span>
             
           </div>
           <div class="post-content">
-            <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<p>该站是我通过Gridea搭建的小站。感谢<a href="https://gridea.dev/">Gridea</a></p>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<p>我叫杨镇涛，是一名Java程序员。<br>
-现阶段本职工作是Java服务端开发, 平时会花一些时间做 Kubernetes 方面的学习研究。</p>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<p>爬山，徒步</p>
-<h2 id="联系我呀">📬 联系我呀</h2>
-<p><a href="https://github.com/imyzt">github.com/imyzt</a></p>
+            <p>go的变量定义了必须使用，不然无法通过编译<br>
+全局变量定义后可以不使用，如果全局与局部同名，采用就近原则<br>
+如果是简洁模式定义，左边至少应该包括一个新变量</p>
+<h1 id="变量的定义">变量的定义</h1>
+<p>变量从繁到简，总共三种方式<br>
+var globalVar = &quot;全局变量无法使用简洁模式定义, 但可以定义了不使用&quot;</p>
+<p>func main() {</p>
+<pre><code>// 先定义再赋值
+var i int;
+i = 1
+// 定义变量, 定义数据类型, 赋值
+var i2 int = 2
+// 定义变量, 赋值, 数据类型自动推断
+var i3= 3
+// 省略变量, 数据类型定义, 数据类型自动推断
+i4 := 4
+// 定义多个变量
+i5, i6, i7 := 5, 6, &quot;i7&quot;
+// 会报错, 因为没有定义新的变量
+//i5, i6 := 5, 6
+//i6, i7 := 6, &quot;i7&quot;
+// 表达式中定义了新的i8, 所以不会报错, 并且还给i7赋值了新值(i77)
+i7, i8 := &quot;i77&quot;, &quot;i8&quot;
+
+fmt.Println(i, i2, i3, i4, i5, i6, i7, i8)
+</code></pre>
+<p>}</p>
+<h1 id="变量的零值">变量的零值</h1>
+<p>int  -&gt; 0<br>
+string -&gt; &quot;&quot;<br>
+bool  -&gt; false<br>
+float  -&gt; 0.0</p>
+<h1 id="匿名变量">匿名变量</h1>
+<p>不想使用的变量可以丢给匿名变量<br>
+func main() {</p>
+<pre><code>// 赋值给匿名变量, 字符串在go中可以用双引号(&quot;&quot;)也可以用(``)
+i1, _ := 1, `赋值给匿名变量的值`
+
+fmt.Println(i1)
+</code></pre>
+<p>}</p>
+<h1 id="go变量交换">go变量交换</h1>
+<p>其他语言交换需要中间变量，golang不需要<br>
+func main() {</p>
+<pre><code>a, b := &quot;a&quot;, &quot;b&quot;
+// 变量直接交换
+a, b = b, a
+
+fmt.Println(fmt.Sprintf(&quot;a=%s, b=%s&quot;, a, b))
+</code></pre>
+<p>}</p>
+<p>console：<br>
+a=b, b=a</p>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi">
+            <a class="purple-link" href="https://imyzt.github.io/post/golang-fen-zhi-yu-xun-huan">
               <h3 class="post-title">
-                下一篇：MySQL SQL语句执行效率分析
+                下一篇：golang分支与循环
               </h3>
             </a>
           </div>
