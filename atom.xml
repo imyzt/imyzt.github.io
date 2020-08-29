@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://imyzt.github.io</id>
     <title>杨镇涛的一亩三分地</title>
-    <updated>2020-08-29T15:54:34.945Z</updated>
+    <updated>2020-08-29T16:01:16.493Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://imyzt.github.io"/>
     <link rel="self" href="https://imyzt.github.io/atom.xml"/>
@@ -416,6 +416,7 @@ public class DeadLetterQueueConsumer {
 <li>如果需要可靠性延迟队列，推荐使用插件。</li>
 <li>rabbitmq_delayed_message_exchange插件在RAM节点会有一些问题，这个博主描述了这部分<a href="https://blog.csdn.net/wangming520liwei/article/details/103352440">https://blog.csdn.net/wangming520liwei/article/details/103352440</a></li>
 <li>本文大量参考了“参考文章”中的内容，只是对自己学习延迟队列的内容记载。感谢原作者们。</li>
+<li>本文出现的源代码均在<a href="https://github.com/imyzt/learning-technology-code/tree/master/mq-series/RabbitMQ/delay-queue-simple">github</a>中</li>
 </ol>
 ]]></content>
     </entry>
