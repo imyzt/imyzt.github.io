@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1598716868892">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1598717336746">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://imyzt.github.io">
-        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1598716868892" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1598717336746" alt="" width="32px" height="32px">
       </a>
       <a href="https://imyzt.github.io">
         <h1 class="site-title">杨镇涛的一亩三分地</h1>
@@ -360,7 +360,7 @@ public class DeadLetterQueueConsumer {
 <h2 id="延迟效果">延迟效果</h2>
 <figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/08/0hr7c5k8ochhhrfq0t2lldo29b.jpg" alt="http://blog.imyzt.top/upload/2020/08/0hr7c5k8ochhhrfq0t2lldo29b.jpg" loading="lazy"></figure>
 <h2 id="缺陷">缺陷</h2>
-<p>从上面的效果来看，第一条消息在10秒后变成了死信消息，然后被消费掉。第二条消息在60米哦按后变成了死信队列，然后被消费掉。目前来看基本功能的延迟队列就算完成了。<br>
+<p>从上面的效果来看，第一条消息在10秒后变成了死信消息，然后被消费掉。第二条消息在60秒后变成了死信队列，然后被消费掉。目前来看基本功能的延迟队列就算完成了。<br>
 但是有一个问题就是，队列的消息都是有序的失效，如果增加一个新的时间需求，那么有需要增加一个队列处理上面的逻辑，实在是不够优雅。</p>
 <h1 id="延迟队列优化">延迟队列优化</h1>
 <p>通过上面实现的内容，使用RabbitMQ自带的DLX和TTL，实现的结果是无法对灵活过期时间的支持。<br>
