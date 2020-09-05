@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>分布式事务(一)本地事务回顾 | 杨镇涛的一亩三分地</title>
+<meta name="description" content="分享我的技术和生活">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1599313336791">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://imyzt.github.io">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1599313336791" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://imyzt.github.io">
+        <h1 class="site-title">杨镇涛的一亩三分地</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">分布式事务(一)本地事务回顾</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-08-30</span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="什么是分布式事务">什么是分布式事务</h1>
+<p>要了解分布式事务，首先需要了解什么是本地事务。</p>
+<h2 id="本地事务">本地事务</h2>
+<p>本地事务，是指传统的单机数据库事务，必须满足ACID原则。</p>
+<ul>
+<li>
+<p>原子性（atomicity）<br>
+整个事务中所有操作，要么一块完成，要么都不完成。<br>
+对于事务发生错误，所有操作必须完成回滚。</p>
+</li>
+<li>
+<p>一致性（consistency）<br>
+事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的<strong>完整性</strong>不能被破坏。<br>
+比如在一个事务中，A（余额100）给B（余额100）转账10元，那么不管发生什么，最终A和B的账户总额必须是200元。</p>
+</li>
+<li>
+<p>隔离性（isolation）<br>
+隔离性就是事务与事务之间不会互相影响，一个事务的中间状态不能被其他事务感知。数据库的隔离级别包括四种：</p>
+<ol>
+<li>Read UmCommitted 读取未提交内容</li>
+<li>Read Committed 读取提交内容</li>
+<li>Repeatable Read 可重复读</li>
+<li>Seriallzable 可串行化</li>
+</ol>
+</li>
+<li>
+<p>持久性（durability）<br>
+事物一旦执行完毕，那么事务对数据进行的变更就完全保存在数据库硬盘中，即使断电、宕机也不会改变。</p>
+</li>
+</ul>
+<p>传统项目中，项目部署基本都是单点式，这种情况下，数据库本身的事务机制就能保证ACID的原则，这样的事务叫做本地事务。<br>
+其中原子性和持久性需要依靠undo和redo日志来实现。</p>
+<h2 id="undo和redo日志">undo和redo日志</h2>
+<p><strong>数据库中数据从来不是最重要的，日志才是。</strong></p>
+<p>在数据库系统中，既有存放数据的文件，也有存放日志的文件。日志在缓存中也有log buffer，也有磁盘log file。<br>
+<strong>MySQL的日志文件，有两种与事务有关，undo log和redo log</strong></p>
+<h3 id="undo日志">undo日志</h3>
+<h4 id="介绍">介绍</h4>
+<p>数据库事务具备原子性（Atomicity），如果事务执行失败，需要把数据回滚。<br>
+事务同时还具备持久性（durability），事务对数据做的更改完全保存在数据库，不能因为故障而丢失。<br>
+原子性可以使用undo log来实现。</p>
+<h4 id="原理">原理</h4>
+<p>undo log的原理很简单，为了满足事务的原子性，<strong>在操作任何数据之前都会将数据备份到undo log中然后再对数据进行更改</strong>。如果执行出错或者手动回滚后，系统可以利用undo log中备份的数据恢复到事务开始之前的状态。<br>
+<strong>数据库写入数据到磁盘之前，会把数据先缓存在内存中。事务提交才写入到磁盘。</strong></p>
+<h4 id="实例">实例</h4>
+<p>用undo log实现原子性和持久性的简化过程：<br>
+假设有A=1, B=2两条数据。</p>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/09/u01mna67dej84qtokjc1o342ca.png" alt="58383ecfa57ead8a1aebacbe8154c1a1.png" loading="lazy"></figure>
+<ul>
+<li>如何保证持久性？</li>
+</ul>
+<p>事务提交前，会把修改数据记录到磁盘中，只要事务提交了，数据肯定持久化了。</p>
+<ul>
+<li>如何保证原子性？</li>
+</ul>
+<p>每次对数据库修改，都会把修改前记录保存在undo log中，需要回滚时可以直接读取undo log恢复数据。</p>
+<h4 id="缺陷">缺陷</h4>
+<p>每个事务提交前都需要将数据和undo log写入到磁盘，导致大量磁盘IO，性能差。</p>
+<h3 id="redo日志">redo日志</h3>
+<p>和undo log相反，redo log是对新数据的备份，在事务提交之前，只要将redo log持久化即可，不需要将数据持久化，减少IO操作。</p>
+<h4 id="实例-2">实例</h4>
+<p>用undo log + redo log 实现原子性和持久性的简化过程：<br>
+假设有A=1, B=2两条数据。</p>
+<ol>
+<li>事务开始</li>
+<li>记录A=1到undo log buffer</li>
+<li>修改A=3</li>
+<li>记录A=3到redo log buffer</li>
+<li>记录B=2到undo log buffer</li>
+<li>修改B=4</li>
+<li>记录B=4到redo log buffer</li>
+<li>将undo log写入<strong>redo log</strong></li>
+<li>将redo log写入磁盘</li>
+<li>事务提交</li>
+</ol>
+<ul>
+<li>如何保证持久性</li>
+</ul>
+<p>整个过程数据并未持久化，因为数据已经写入到redo log中，而redo log已经写入到磁盘中，因此只要进行到（9）后，事务是可以提交的。</p>
+<ul>
+<li>如何保证原子性</li>
+</ul>
+<p>如果在事务提交前故障，通过undo log恢复数据，如果undo log还未写入（8），那么数据尚未持久化，无需回滚。</p>
+<ul>
+<li>内存中数据何时持久化到硬盘</li>
+</ul>
+<p>因为redo log已经持久化，因此是否写入硬盘已经不重要了。但是一般为了避免内存数据与数据库数据不一致，在事务提交后或者会固定频率刷新到数据库中。</p>
+<h4 id="问题">问题</h4>
+<ul>
+<li>之前是将数据库数据和undo log写入磁盘，现在是将undo log和redo log写入磁盘，IO次数并没有减少吗？</li>
+</ul>
+<ol>
+<li>数据库数据写入是随机的，性能差</li>
+<li>redo log在初始化时会开辟一段连续空间，写入是顺序IO，性能高</li>
+<li>实际上undo log并不是直接写入磁盘，而是写入到redo log buffer中，当redo log持久化时，undo log也顺便持久化了。<br>
+因此事务在提交前只需要将redo log持久化即可。<br>
+另外redo log并不是写入一次就持久化一次，redo log在内存中有redo log buffer缓冲池，在最终数据库事务提交时一次性持久化，减少IO次数。</li>
+</ol>
+<ul>
+<li>redo log buffer已满（第8步）但事务未提交时会写入buffer数据到硬盘，而此时如果数据库宕机事务未提交已保存的部分redo log怎么处理。</li>
+</ul>
+<ol>
+<li>恢复时，只重做已经提交了的事务。</li>
+<li>恢复时，重做所有事务包括未提交的和回滚的事务，然后通过undo log回滚哪些未提交的事务。<br>
+innodb采用了方案2，因此undo log要在redo log前持久化。</li>
+</ol>
+<h3 id="总结">总结</h3>
+<p>undo log记录旧数据，redo log记录最新数据。</p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/rabbitmq-yan-chi-gong-neng">
+              <h3 class="post-title">
+                下一篇：RabbitMQ实现延迟队列
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">分享我的技术和生活</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
