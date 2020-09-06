@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://imyzt.github.io</id>
     <title>杨镇涛的一亩三分地</title>
-    <updated>2020-09-06T03:10:32.726Z</updated>
+    <updated>2020-09-06T03:49:09.332Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://imyzt.github.io"/>
     <link rel="self" href="https://imyzt.github.io/atom.xml"/>
@@ -11,7 +11,58 @@
     <icon>https://imyzt.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 杨镇涛的一亩三分地</rights>
     <entry>
-        <title type="html"><![CDATA[分布式事务(一)本地事务回顾]]></title>
+        <title type="html"><![CDATA[分布式事务(二) 解决分布式事务的思路]]></title>
+        <id>https://imyzt.github.io/post/fen-bu-shi-shi-wu-er-jie-jue-fen-bu-shi-shi-wu-de-si-lu</id>
+        <link href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-er-jie-jue-fen-bu-shi-shi-wu-de-si-lu">
+        </link>
+        <updated>2020-09-06T03:48:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="解决分布式事务的思路">解决分布式事务的思路</h1>
+<h2 id="cap理论">CAP理论</h2>
+<p>什么是CAP理论？<a href="http://www.ruanyifeng.com/blog/2018/07/cap.html">阮一峰-CAP 定理的含义</a></p>
+<figure data-type="image" tabindex="1"><img src="https://www.wangbase.com/blogimg/asset/201807/bg2018071607.jpg" alt="CAP" loading="lazy"></figure>
+<p>1998年，加州大学的计算机科学家Eric Brewer 提出，分布式系统有三个指标。</p>
+<ol>
+<li>Consistency（一致性） - C</li>
+<li>Availability（可用性）  - A</li>
+<li>Partition tolerance（分区容错性）  - P</li>
+</ol>
+<h3 id="partition-tolerance">Partition tolerance</h3>
+<p>大部分分布式系统都分布在多个子网络，每个子网络叫做一个<strong>区（Partition）</strong>，分区容错的意思是区间通信可能会失败。</p>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/09/3ar3v3qm3cjmeqe6080nbcl54o.png" alt="cap-p" loading="lazy"></figure>
+<p>上图中，G1和G2是两台跨区的服务器，G1向G2发送一条消息，G2可能无法收到，系统设计的时候，需要考虑到这种情况。<br>
+一般来说，<strong>分布式系统中分区容错性无法避免，因此可以认为CAP中的P总是成立，根据CAP定理，剩下的C和A无法同时满足</strong>。</p>
+<h3 id="consistency">Consistency</h3>
+<p>一致性的意思是，写操作之后的读操作，必须返回该值，举例来说，某条记录是V0，用户向G1发起一个写操作，将其改为V1。<br>
+<img src="http://blog.imyzt.top/upload/2020/09/0rbg59pergi1uos6ht6hqgderm.png" alt="cap-c-1" loading="lazy"><br>
+接下来，用户的读操作就会得到V1，这叫做<strong>数据的一致性</strong><br>
+<img src="http://blog.imyzt.top/upload/2020/09/pn2ki67jo6g27p0krmdk11n7qf.png" alt="cap-c-2" loading="lazy"><br>
+问题是，用户有可能向G2发起读操作，由于G2的值没有变化，因此返回的是V0，G1和G2读操作的结果不一致，这就不满足一致性了。<br>
+<img src="http://blog.imyzt.top/upload/2020/09/4b49j404vajttoqq733cm6st3b.png" alt="cap-c-3" loading="lazy"><br>
+为了让G2也能变成V1，就要在G1写操作的时候，让G1向G2发送一条消息，要求G2也改成V1.<br>
+<img src="http://blog.imyzt.top/upload/2020/09/0a81st7q7eho5rfdd6vr5gq0s7.png" alt="cap-c-4" loading="lazy"><br>
+这样的话，用户向G2发起读操作，也能得到V1.<br>
+<img src="http://blog.imyzt.top/upload/2020/09/prldhirihah0kq59fng5jj3q25.png" alt="cap-c-5" loading="lazy"></p>
+<h3 id="availability">Availability</h3>
+<p>只要收到了用户的请求，服务器就必须给出回应。（不论对错）<br>
+用户可以向G1或G2发起读操作，不管是那台服务器，只要收到请求就必须返回用户到底是V1还是V0，否则就不满足<strong>可用性</strong>。</p>
+<h3 id="consistency和availability的矛盾">Consistency和Availability的矛盾</h3>
+<p>Q：一致性和可用性为什么不能同时满足？<br>
+A：因为通信可能会失败（出现分区容错）</p>
+<p>如果<u>保证G2的一致性</u>，那么G1必须在写操作时，锁定G2的读写操作。只有数据库同步后，才能重新开放读写操作。锁定期间，G2没有<strong>可用性</strong><br>
+如果<u>保证G2的可用性</u>，那么不能锁定G2，G2没有<strong>一致性</strong></p>
+<h2 id="base理论">Base理论</h2>
+<h2 id="分阶段提交xa">分阶段提交（XA）</h2>
+<h3 id="2pc两阶段提交">2PC（两阶段提交）</h3>
+<h3 id="3pc三阶段提交">3PC（三阶段提交）</h3>
+<h2 id="tcc">TCC</h2>
+<h2 id="可靠消息服务">可靠消息服务</h2>
+<h2 id="seata">Seata</h2>
+<h3 id="at模式">AT模式</h3>
+<h3 id="saga模式">Saga模式</h3>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[分布式事务(一) 本地事务回顾]]></title>
         <id>https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu</id>
         <link href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu">
         </link>
@@ -143,30 +194,6 @@ innodb采用了方案2，因此undo log要在redo log前持久化。</li>
 这正是分布式事务要解决的问题。<br>
 <img src="http://blog.imyzt.top/upload/2020/09/oku3t2m7huglnrvm2mmd5fltdp.png" alt="microServiceSimple" loading="lazy"></li>
 </ol>
-<h1 id="解决分布式事务的思路">解决分布式事务的思路</h1>
-<h2 id="cap理论">CAP理论</h2>
-<p>什么是CAP理论？<a href="http://www.ruanyifeng.com/blog/2018/07/cap.html">阮一峰-CAP 定理的含义</a></p>
-<figure data-type="image" tabindex="3"><img src="https://www.wangbase.com/blogimg/asset/201807/bg2018071607.jpg" alt="CAP" loading="lazy"></figure>
-<p>1998年，加州大学的计算机科学家Eric Brewer 提出，分布式系统有三个指标。</p>
-<ol>
-<li>Consistency（一致性） - C</li>
-<li>Availability（可用性）  - A</li>
-<li>Partition tolerance（分区容错性）  - P</li>
-</ol>
-<h3 id="partition-tolerance">Partition tolerance</h3>
-<p>大部分分布式系统都分布在多个子网络，每个子网络叫做一个<strong>区（Partition）</strong>，分区容错的意思是区间通信可能会失败。</p>
-<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/09/3ar3v3qm3cjmeqe6080nbcl54o.png" alt="cap-p" loading="lazy"></figure>
-<p>上图中，G1和G2是两台跨区的服务器，G1向G2发送一条消息，G2可能无法收到，系统设计的时候，需要考虑到这种情况。<br>
-一般来说，<strong>分布式系统中分区容错性无法避免，因此可以认为CAP中的P总是成立，根据CAP定理，剩下的C和A无法同时满足</strong>。</p>
-<h2 id="base理论">Base理论</h2>
-<h2 id="分阶段提交xa">分阶段提交（XA）</h2>
-<h3 id="2pc两阶段提交">2PC（两阶段提交）</h3>
-<h3 id="3pc三阶段提交">3PC（三阶段提交）</h3>
-<h2 id="tcc">TCC</h2>
-<h2 id="可靠消息服务">可靠消息服务</h2>
-<h2 id="seata">Seata</h2>
-<h3 id="at模式">AT模式</h3>
-<h3 id="saga模式">Saga模式</h3>
 ]]></content>
     </entry>
     <entry>
@@ -1247,99 +1274,6 @@ return &quot;OK&quot;
 OK
 </code></pre>
 <figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/06/41h4b4jrrghg0pjagomun2fpbv.png" alt="释放" loading="lazy"></figure>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[FastJSON继承类反序列化参数]]></title>
-        <id>https://imyzt.github.io/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu</id>
-        <link href="https://imyzt.github.io/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu">
-        </link>
-        <updated>2020-05-05T05:45:01.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="场景及问题">场景及问题</h2>
-<p>做工具封装时，通常会定义一个顶级父类data struct，子类继承之后补充自己独有的属性。该模式在常规使用情况下都是可用的，但是在涉及到序列化后反序列化对象时，就不是那么管用了。</p>
-<p>我们假设有两个对象，<code>class BaseClass</code> 和 <code>class ChildClass</code></p>
-<pre><code>import lombok.Data;
-
-/**
- * @author imyzt
- * @date 2020/04/25
- * @description 超类
- */
-@Data
-public class BaseClass {
-    private Integer bashInfo;
-}
-
-import lombok.*;
-
-/**
- * @author imyzt
- * @date 2020/04/25
- * @description 子类
- */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@ToString(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-public class ChildClass extends BaseClass {
-
-    private String childInfo;
-
-}
-</code></pre>
-<p>我们假设生产端生产消息，通过FastJSON序列化为字符串，然后通过kafka或者其他途径传递到消费端，消费端通过超类<code>BaseClass</code>转换消息，根据不同的子类通过不同的策略去处理。但是在这种情况下，通过<strong>超类解析字符串对象回JavaBean对象时</strong>，一般只能将<strong>超类</strong>中拥有的参数转换回来，不能获得子类的属性。示例代码如下：</p>
-<pre><code>
-import com.alibaba.fastjson.JSON;
-import lombok.extern.slf4j.Slf4j;
-
-/**
- * @author imyzt
- * @date 2020/04/25
- * @description test
- */
-
-@Slf4j
-public class Test {
-
-    public static void main(String[] args) {
-
-        ChildClass one = new ChildClass();
-        one.setBashInfo(122);
-        one.setChildInfo(&quot;childInfo&quot;);
-
-        // 转换为字符串, 便于传输
-        String str = parseStr(one);
-
-        log.info(&quot;str={}&quot;, str);
-
-        // 转换回java bean
-        BaseClass childClass = JSON.parseObject(str, BaseClass.class);
-        log.info(&quot;childClass={}&quot;, childClass);
-    }
-
-    private static String parseStr(BaseClass obj) {
-        return JSON.toJSONString(obj);
-    }
-}
-
-日志打印：
-14:18:09.208 [main] INFO xxx.json.Test - str={&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
-14:18:09.227 [main] INFO xxx.json.Test - childClass=BaseClass(bashInfo=122)
-</code></pre>
-<h2 id="实现方式">实现方式</h2>
-<p>遇到这种情况，我们可以通过JSON的<strong>自省</strong>功能，实现在反序列化为JavaBean时，得到完整的子类属性，并且将JavaBean通过多态得到对应的子类对象。具体思路就是在序列化为JSON时，在json字符串中写入对应的类型，在反序列化时，通过JSON字符串中特殊标记的类型属性，按照该类型进行反序列化即可。</p>
-<p>FastJSON具体的实现是在调用 <code>JSON.toJSONString()</code>时，第二个数组参数传入Feature功能<code>SerializerFeature.WriteClassName</code>，完整调用如<code>JSON.toJSONString(obj, SerializerFeature.WriteClassName);</code> 在写入为JSON字符串时，会带有一个特殊的标记<code>@type</code>存储序列化时对应的类型，如下图。<br>
-<img src="http://blog.imyzt.top/upload/2020/04/upm13a7uk2hooofjkrdbe8kdhf.png" alt="请输入图片描述" loading="lazy"><br>
-在反序列化时，只需要按照对应的类型进行解析即可。上述代码重新运行后日志如下：</p>
-<pre><code>14:22:24.528 [main] INFO xxx.json.Test - str={&quot;@type&quot;:&quot;xxx.json.ChildClass&quot;,&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
-14:25:03.631 [main] INFO xxx.json.Test - childClass=ChildClass(super=BaseClass(bashInfo=122), childInfo=childInfo)
-</code></pre>
-<h2 id="注意点">注意点</h2>
-<ul>
-<li>子类必须实现全参构造，或者有用lombok的<code>@ToString(callSuper = true)</code>也行，不然会出现映射父类属性的情况。</li>
-</ul>
-<p>OK, 整篇文章就讲了一个Feature，水了一整页。。可以多关注下JSON的其他Feature功能，说不定就是需要的。/狗头</p>
 ]]></content>
     </entry>
 </feed>

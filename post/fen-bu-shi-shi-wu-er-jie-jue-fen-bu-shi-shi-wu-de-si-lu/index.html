@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>分布式事务(二) 解决分布式事务的思路 | 杨镇涛的一亩三分地</title>
+<meta name="description" content="分享我的技术和生活">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1599364142450">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://imyzt.github.io">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1599364142450" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://imyzt.github.io">
+        <h1 class="site-title">杨镇涛的一亩三分地</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">分布式事务(二) 解决分布式事务的思路</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-09-06</span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="解决分布式事务的思路">解决分布式事务的思路</h1>
+<h2 id="cap理论">CAP理论</h2>
+<p>什么是CAP理论？<a href="http://www.ruanyifeng.com/blog/2018/07/cap.html">阮一峰-CAP 定理的含义</a></p>
+<figure data-type="image" tabindex="1"><img src="https://www.wangbase.com/blogimg/asset/201807/bg2018071607.jpg" alt="CAP" loading="lazy"></figure>
+<p>1998年，加州大学的计算机科学家Eric Brewer 提出，分布式系统有三个指标。</p>
+<ol>
+<li>Consistency（一致性） - C</li>
+<li>Availability（可用性）  - A</li>
+<li>Partition tolerance（分区容错性）  - P</li>
+</ol>
+<h3 id="partition-tolerance">Partition tolerance</h3>
+<p>大部分分布式系统都分布在多个子网络，每个子网络叫做一个<strong>区（Partition）</strong>，分区容错的意思是区间通信可能会失败。</p>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/09/3ar3v3qm3cjmeqe6080nbcl54o.png" alt="cap-p" loading="lazy"></figure>
+<p>上图中，G1和G2是两台跨区的服务器，G1向G2发送一条消息，G2可能无法收到，系统设计的时候，需要考虑到这种情况。<br>
+一般来说，<strong>分布式系统中分区容错性无法避免，因此可以认为CAP中的P总是成立，根据CAP定理，剩下的C和A无法同时满足</strong>。</p>
+<h3 id="consistency">Consistency</h3>
+<p>一致性的意思是，写操作之后的读操作，必须返回该值，举例来说，某条记录是V0，用户向G1发起一个写操作，将其改为V1。<br>
+<img src="http://blog.imyzt.top/upload/2020/09/0rbg59pergi1uos6ht6hqgderm.png" alt="cap-c-1" loading="lazy"><br>
+接下来，用户的读操作就会得到V1，这叫做<strong>数据的一致性</strong><br>
+<img src="http://blog.imyzt.top/upload/2020/09/pn2ki67jo6g27p0krmdk11n7qf.png" alt="cap-c-2" loading="lazy"><br>
+问题是，用户有可能向G2发起读操作，由于G2的值没有变化，因此返回的是V0，G1和G2读操作的结果不一致，这就不满足一致性了。<br>
+<img src="http://blog.imyzt.top/upload/2020/09/4b49j404vajttoqq733cm6st3b.png" alt="cap-c-3" loading="lazy"><br>
+为了让G2也能变成V1，就要在G1写操作的时候，让G1向G2发送一条消息，要求G2也改成V1.<br>
+<img src="http://blog.imyzt.top/upload/2020/09/0a81st7q7eho5rfdd6vr5gq0s7.png" alt="cap-c-4" loading="lazy"><br>
+这样的话，用户向G2发起读操作，也能得到V1.<br>
+<img src="http://blog.imyzt.top/upload/2020/09/prldhirihah0kq59fng5jj3q25.png" alt="cap-c-5" loading="lazy"></p>
+<h3 id="availability">Availability</h3>
+<p>只要收到了用户的请求，服务器就必须给出回应。（不论对错）<br>
+用户可以向G1或G2发起读操作，不管是那台服务器，只要收到请求就必须返回用户到底是V1还是V0，否则就不满足<strong>可用性</strong>。</p>
+<h3 id="consistency和availability的矛盾">Consistency和Availability的矛盾</h3>
+<p>Q：一致性和可用性为什么不能同时满足？<br>
+A：因为通信可能会失败（出现分区容错）</p>
+<p>如果<u>保证G2的一致性</u>，那么G1必须在写操作时，锁定G2的读写操作。只有数据库同步后，才能重新开放读写操作。锁定期间，G2没有<strong>可用性</strong><br>
+如果<u>保证G2的可用性</u>，那么不能锁定G2，G2没有<strong>一致性</strong></p>
+<h2 id="base理论">Base理论</h2>
+<h2 id="分阶段提交xa">分阶段提交（XA）</h2>
+<h3 id="2pc两阶段提交">2PC（两阶段提交）</h3>
+<h3 id="3pc三阶段提交">3PC（三阶段提交）</h3>
+<h2 id="tcc">TCC</h2>
+<h2 id="可靠消息服务">可靠消息服务</h2>
+<h2 id="seata">Seata</h2>
+<h3 id="at模式">AT模式</h3>
+<h3 id="saga模式">Saga模式</h3>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu">
+              <h3 class="post-title">
+                下一篇：分布式事务(一) 本地事务回顾
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">分享我的技术和生活</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
