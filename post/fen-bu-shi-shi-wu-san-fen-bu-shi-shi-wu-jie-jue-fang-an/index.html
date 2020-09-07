@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>分布式事务(三) 分布式事务解决方案 | 杨镇涛的一亩三分地</title>
+<meta name="description" content="分享我的技术和生活">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1599489792376">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://imyzt.github.io">
+        <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1599489792376" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://imyzt.github.io">
+        <h1 class="site-title">杨镇涛的一亩三分地</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">分布式事务(三) 分布式事务解决方案</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-09-07</span>
+            
+          </div>
+          <div class="post-content">
+            <h2 id="分阶段提交xa">分阶段提交（XA）</h2>
+<h3 id="dtp和xa">DTP和XA</h3>
+<p>分布式事务的解决方案之一就是两阶段提交协议（2PC：Two-Phase Commit）</p>
+<p>1994年X/Open组织（现在的Open Group）定义了分布式事务处理的DTP模型，该模型包括这样几个角色：</p>
+<ul>
+<li>应用程序（AP）：业务微服务</li>
+<li>事务管理器（TM）：全局事务管理者</li>
+<li>资源管理者（RM）：一般是数据库</li>
+<li>通信资源管理器（CRM）：是TM和RM间的通信中间件</li>
+</ul>
+<p>在该模型中，一个分布式事务（全局事务）可以被拆分成多个本地事务，运行在不同的AP和RM上，每个本地事务的ACID很好实现，但是全局事务必须保证其中包含的每个本地事务都能成功，若有一个失败，则所有其他事务都必须回滚。<br>
+问题是本地事务处理过程中，并不知道其他事务的运行状态，因此就<strong>需要通过CRM来通知各个本地事务，同步事务执行状态</strong>。<br>
+因此各个本地事务的通信必须有一个统一的标准，否则不同数据库之间就无法通信，XA就是X/Open DTP中通信中间件和TM间联系的<strong>接口规范</strong>，定义了用于通知事务开始、提交、终止、回滚等接口，各个数据库厂商都必须实现这些接口。</p>
+<h3 id="2pc两阶段提交">2PC（两阶段提交）</h3>
+<p>参考：<a href="https://zhuanlan.zhihu.com/p/35298019">漫话分布式系统共识协议: 2PC/3PC篇</a></p>
+<p><strong>两阶提交协议</strong>就是根据这一思想衍生出来的，将全局事务拆分为两个阶段来执行。</p>
+<ul>
+<li>阶段一：准备阶段，各个本地事务完成本地事务的准备工作。</li>
+<li>阶段二：执行阶段，各个本地事务根据上一阶段执行结果，进行提交或回滚。<br>
+这个过程中需要一个协调者（coordinator），还有事务的参与者（voter）。</li>
+</ul>
+<h4 id="正常情况">正常情况</h4>
+<figure data-type="image" tabindex="1"><img src="https://pic4.zhimg.com/80/v2-e2f7149a81d9ad3aa46589e25503d688_1440w.jpg" alt="2pc" loading="lazy"></figure>
+<p><strong>投票阶段</strong>：协调组询问各个事务参与者，是否可以执行事务。每个事务参与者执行事务，写入undo和redo log，然后反馈事务执行成功。（agree）<br>
+<strong>提交阶段</strong>：协调组发现每个参与者都可以执行事务（agree），于是向各个事务参与者发出commit指令，各个事务参与者提交事务。</p>
+<h4 id="异常情况">异常情况</h4>
+<figure data-type="image" tabindex="2"><img src="https://pic2.zhimg.com/80/v2-d40abfa365ed84e84e264ba13900f64b_1440w.jpg" alt="2pc" loading="lazy"></figure>
+<p><strong>投票阶段</strong>：协调组询问各个事务参与者，是否可以执行事务。每个事务参与者执行事务，写入undo和redo log，然后反馈事务执行结果，但只要有一个参与者返回的是<code>Disagree</code>，就说明执行失败。<br>
+<strong>提交阶段</strong>：协调组发现每个有一个或多个参与者返回Disagree，认为执行失败，于是向各个事务参与者发出<code>abort</code>指令，各个事务参与者回滚事务。</p>
+<h4 id="缺陷">缺陷</h4>
+<ol>
+<li>
+<p>存在CRM单点故障问题<br>
+协调者挂了之后就不知道别人什么情况。<br>
+<img src="https://pic3.zhimg.com/80/v2-a9e4ef8b9082ffdf76bc426e61ba3ed2_1440w.jpg" alt="2pc" loading="lazy"></p>
+</li>
+<li>
+<p>阻塞问题<br>
+在准备阶段，提交阶段，每个事务参与者都会锁定本地资源，并等待其他事务的执行结果，阻塞时间较长。</p>
+</li>
+</ol>
+<h4 id="总结">总结</h4>
+<ol>
+<li>面对二阶段提交的缺点，后来又演变出来了三阶段提交，但是依旧没有解决阻塞和资源锁定的问题，而且引入了新的微，因此实际场景使用较少。</li>
+<li>2PC拥有稳定成熟的框架支持，可以保证强一致，并且对代码侵入度不高，</li>
+</ol>
+<h4 id="使用场景">使用场景</h4>
+<ul>
+<li>适用于对效率要求不高，一致性要求高的场景</li>
+<li>代码侵入度小，不影响原有代码</li>
+</ul>
+<h3 id="3pc三阶段提交">3PC（三阶段提交）</h3>
+<h2 id="tcc">TCC</h2>
+<p>TCC模式可以解决2PC中资源锁定和阻塞的问题，减少资源锁定时间。</p>
+<h3 id="基本原理">基本原理</h3>
+<p>本质是一种<strong>补偿</strong>的机制，事务运行包括三个方法，</p>
+<ul>
+<li>try：资源的检测和预留</li>
+<li>confirm：执行业务操作提交；要求try成功confirm一定能成功</li>
+<li>cancel：预留资源释放</li>
+</ul>
+<p>执行分两个阶段：</p>
+<ul>
+<li>准备阶段（try）：资源的检测和预留</li>
+<li>执行阶段（confirm/cancel）：根据上一步的结果，判断下面的执行方法。如果上一步所有事务参与者都成功，这里执行confirm，否则执行cancel</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/09/u3n1k3gdrmio1rn77kkmq75mk7.png" alt="tcc" loading="lazy"></figure>
+<p>看似与两阶段提交没有什么区别，其实差距很大。</p>
+<ul>
+<li><strong>try，confirm，cancel都是独立的事务</strong>，不受其他参与者的影响，不会阻塞等待他人。</li>
+<li>try，confirm，cancel由程序员在业务层编写，锁粒度由代码控制。</li>
+</ul>
+<h3 id="实例">实例</h3>
+<p>假如账户A原来有100元，需要从余额扣除30元。如图：<br>
+<img src="http://blog.imyzt.top/upload/2020/09/tmr3m1trf2gphpmjn63s4apc1j.png" alt="tcc" loading="lazy"></p>
+<ul>
+<li>一阶段（Try）：余额检查，并冻结用户部分金额，此阶段执行完毕，事务已提交。
+<ul>
+<li>检查用户余额是否足够，如果足够，冻结部分余额</li>
+<li>在账户表中添加冻结金额字段，值为30，余额不变</li>
+</ul>
+</li>
+<li>二阶段
+<ul>
+<li>提交（Confirm）：真正的扣款，把冻结金额从余额中扣除，冻结金额清空。
+<ul>
+<li>修改冻结金额=0，修改余额为100-30=79</li>
+</ul>
+</li>
+<li>补偿（Cancel）：释放之前冻结的金额，不是回滚
+<ul>
+<li>余额不变，修改账户冻结金额=0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="优势缺点">优势&amp;缺点</h3>
+<h4 id="优势">优势</h4>
+<ul>
+<li>避免资源长期锁定和阻塞等待操作。执行效率高。<br>
+TCC执行的每个阶段都是独立的事务，不需要等待其他事务的结果。如果执行失败，不是执行的回滚而是执行的<strong>补偿</strong>。</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li><strong>代码侵入</strong>：需要人为编写try，confirm，cancel操作，对开发人员要求高</li>
+<li>开发成本高：一个业务需要拆分三个阶段，开发成本高</li>
+<li>安全性考虑：cancel动作如果执行失败，资源就无法释放。需要引入重试，但是引入重试又有可能造成重复执行问题，还需要考虑重试时的幂等问题。</li>
+</ul>
+<h3 id="使用场景-2">使用场景</h3>
+<ul>
+<li>对事务有一定的一致性要求（最终一致性）</li>
+<li>对性能要求较高</li>
+<li>开发人员具备较高的编码能力和幂等处理经验</li>
+</ul>
+<h2 id="可靠消息服务">可靠消息服务</h2>
+<h2 id="seata">Seata</h2>
+<h3 id="at模式">AT模式</h3>
+<h3 id="saga模式">Saga模式</h3>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-er-jie-jue-fen-bu-shi-shi-wu-de-si-lu">
+              <h3 class="post-title">
+                下一篇：分布式事务(二) 解决分布式事务的思路
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">分享我的技术和生活</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
