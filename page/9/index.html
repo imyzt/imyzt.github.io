@@ -1,0 +1,1088 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/elasticsearch-an-zhuang-head-cha-jian/">
+                        ElasticSearch 安装head插件
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-25</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            es的安装较简单, 记录一下安装head插件就行了.
+首先下载es-head的代码. 地址在这里. https://github.com/mobz/elasticsearch-head
+由于head是一个前端程序, 是有跨域问题的, 需要修改es的配置文件, 增加跨域支持. 修改一下 config/elasticsearch.yml 文件, 在最底部增加两行:
+http.cors.enables: true
+http.cors.allow-origin: &amp;quot;*&amp;quot;
+
+然后进入es-head的目录, 运行 npm install 安装所需依赖, 最后 npm run start 就可以访问浏览器 9100 端口了.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/elasticsearch-an-zhuang-head-cha-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
+                        @Autowired, @Inject, @Resource 三个注解的作用和区别
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-25</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的.
+@Autowired
+先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解,
+
+它可以用在变量, 构造器和setter方法上.
+它是根据 类型 进行装配bean的, 提供一个 required 参数, 指定为false时, 当无法注入时, 不会报错.
+它可以配合 @Qualifier 注解进行使用, 通过它的 value 参数, 指定注入时需要的bean的 名称, 就可以根据名称进行注入了.
+
+@Resource
+这个注解大多数人不常使用, 它是javax包提供的, 基于 JSR250 的注解. 我平时更多的是使用它.
+
+它可以用在字段或setter方法上.
+它是根据 名称 进行装配bean的, 提供一个 name 参数, 但是默认情况下不指定的话, 作用在参数上时会根据参数名注入, 作用在setter方法时, 会根据属性名进行装配, 都无法查找时, 会根据类型进行匹配.
+
+@Inject
+这个注解应该大多数人都没见过, 在写文章之前, 我也没见过 😃
+这个注解是遵循 JSR330 规范的, 是由javax包提供的. 这里简单讲解一下(其实就是@Autowired的翻版).
+它可以作用在@Autowired能作用的地方, 并且默认也是根据类型装配, 通过 @Named 修改为根据 名称 装配.
+它与Autowired不同点在于它没有 required 参数
+总结
+
+@Autowired是Spring提供给我们的, @Inject(遵循JSR330规范)和@Resource(遵循JSR250规范)是javax包提供给我们的.
+@Autowired和@Inject是根据类型装配, @Resource是根据名称装配.
+@Autowired有required参数, @Inject没有.
+@Autowired配合@Qualifier可以使用名称装配, @Inject配合@Named可以使用名称装配, @Resource根据名称无法装配时, 会根据类型装配.
+
+平时使用记住一种就可以了. 一般推荐使用 @Autowired, 毕竟你是用它们的框架.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/lombok-chang-yong-fang-fa-shi-li/">
+                        Lombok 常用方法实例
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-25</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            文章以一个方法一个代码块的方式演示.
+简单几个注解
+
+
+set和get方法
+@Getter / @Setter
+
+
+toString方法
+@ToString
+
+
+equals和hashCode方法
+@EqualsAndHashCode
+
+
+Data
+@Data 通常这个方法就够了, 包含上面几个注解.
+
+
+全参, 无参
+@AllArgsConstructor, @NoArgsConstructor
+
+
+不能为空
+@NonNull, 作用到属性上是, 如果不赋值会抛空指针
+
+
+日志
+@Slf4j
+
+
+链式调用
+
+通过设置 @Accessors 的 chain=true
+
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = new Student();
+        
+        student.setName(&amp;quot;yzt&amp;quot;).setAge(22);
+    }
+}
+
+@Data
+@Accessors(chain = true)
+class Student {
+    private String name;
+    private Integer age;
+}
+
+静态方法构造器
+通过 @NonNull 和 @RequiredArgsConstructor(staticName = &amp;quot;ofName&amp;quot;) 实现.
+在 name 属性上添加 @NonNull 注解标识不能为空, 然后通过 RequiredArgsConstructor 的 staticName  属性设置静态构造器的名称.
+当然也是可以不使用 @NonNull 属性的, 标识静态构造器是 空参 的
+带参数的构造
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = Student.ofName(&amp;quot;yzt&amp;quot;).setAge(22);
+        System.out.println(student);
+    }
+}
+
+@Data
+@Accessors(chain = true)
+@RequiredArgsConstructor(staticName = &amp;quot;ofName&amp;quot;)
+class Student {
+    @NonNull
+    private String name;
+    private Integer age;
+}
+
+空参构造
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = Student.of().setName(&amp;quot;yzt&amp;quot;).setAge(22);
+        System.out.println(student);
+    }
+}
+
+@Data
+@Accessors(chain = true)
+@RequiredArgsConstructor(staticName = &amp;quot;of&amp;quot;)
+class Student {
+    private String name;
+    private Integer age;
+}
+
+builder 模式
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = Student.builder().name(&amp;quot;yzt&amp;quot;).age(22).build();
+        System.out.println(student);
+    }
+}
+
+@Data
+@Builder
+class Student {
+    private String name;
+    private Integer age;
+}
+
+工具类
+@UtilityClass 注解作用在工具方法上, 会私有构造, 然后为方法添加 static 关键字. 注意下方我演示的 getIp() 方法没有添加 static 关键字也能够调用.
+public class LombokTest {
+    public static void main(String[] args) {
+
+        String ip = HttpKit.getIp();
+        System.out.println(ip);
+    }
+}
+
+@UtilityClass
+class HttpKit {
+
+    public String getIp() {
+        return &amp;quot;127.0.0.1&amp;quot;;
+    }
+}
+
+去除统一前缀
+这个在使用的时候命名一定要使用 驼峰命名法, 不然会出现莫名其妙的问题.
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = new Student();
+        student.setName(&amp;quot;yzt&amp;quot;);
+        student.setAge(22);
+        System.out.println(student);
+    }
+}
+
+@Data
+@Accessors(prefix = &amp;quot;f&amp;quot;)
+class Student {
+    private String fName;
+    private Integer fAge;
+}
+
+set/get 方法不以 set/get 开头
+就相当于去掉了 set/get 前缀的 set/get 方法. 不推荐使用. 不符合Java规范.
+public class LombokTest {
+    public static void main(String[] args) {
+
+        Student student = new Student();
+        student.name(&amp;quot;yzt&amp;quot;);
+        student.age(22);
+        System.out.println(student.name());
+    }
+}
+
+@Data
+@Accessors(fluent = true)
+class Student {
+    private String name;
+    private Integer age;
+}
+
+代理方法
+这个说起来有点懵逼, 直接看代码可能更清晰.
+public class LombokTest {
+    public static void main(String[] args) {
+
+        User user = new User();
+        user.add(&amp;quot;yzt&amp;quot;);    // 这里其实调用的是 TemplateCollection 的方法
+        user.add(&amp;quot;xxx&amp;quot;);
+        user.add(&amp;quot;yyy&amp;quot;);
+        System.out.println(user);
+        user.remove(&amp;quot;yyy&amp;quot;);
+        System.out.println(user);
+    }
+}
+
+@ToString
+class User {
+    private interface TemplateCollection {
+        boolean add(String obj);
+        boolean remove(Object obj);
+    }
+
+    @Delegate(types = TemplateCollection.class)
+    private final Collection&amp;lt;String&amp;gt; users = new ArrayList&amp;lt;&amp;gt;();
+}
+
+输出: 
+User(users=[yzt, xxx, yyy])
+User(users=[yzt, xxx])
+
+后记
+编译注解到代码
+通过菜单栏的 Refactor -&amp;gt; delombok 就可以得到源代码了
+关于lombok
+在 lombok.experimental.* 包下的是创新型注解. 与Java规范不符合, 有待考证
+在 lombok.* 包下的放心使用.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/lombok-chang-yong-fang-fa-shi-li/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mybatis-plus-cha-xun-shi-pai-chu-mou-yi-lie/">
+                        Mybatis-Plus查询时排除某一列
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+public List&amp;lt;BrokerMessageLog&amp;gt; query4StatusAndTimeoutMessage() {
+    return lambdaQuery().eq(BrokerMessageLog::getStatus, Constant.ORDER_SENDING)
+            .le(BrokerMessageLog::getNextRetry, LocalDateTime.now())
+            .select(BrokerMessageLog.class, tableFieldInfo -&amp;gt; !&amp;quot;name&amp;quot;.equals(tableFieldInfo.getColumn()))
+            .list();
+}
+
+.select(BrokerMessageLog.class, tableFieldInfo -&amp;gt; !&amp;quot;name&amp;quot;.equals(tableFieldInfo.getColumn()))
+排除了字段名称为 name 的字段.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mybatis-plus-cha-xun-shi-pai-chu-mou-yi-lie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/idea-she-zhi/">
+                        IDEA 设置
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            自动生成serialVersionUID
+
+Ctrl+Alt+S打开设置
+搜索栏搜索 Inspections
+选项栏搜索 Serialization issues
+找到 Serializable class without &#39;SerialVersionUID&#39;, 勾选
+应用
+
+
+对应的实现了 Serializable 接口的类会报出黄色警告, Alt + Enter 组合键选中 Add SerialVersionUID field 即可生成.
+
+去除所有无用引用
+
+Ctrl+Alt+S打开设置
+勾选图中的 show notification after optimize imports action, 确认退出设置
+选中整个项目右键, 点击 optimize imports, 点击确定即可.
+在类窗口, Ctrl+Alt+O, 可以单独去除该类的无用导入.
+
+
+
+设置代码提示不缺分大小写
+
+鼠标放上提示方法描述
+
+idea 自动导包
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/idea-she-zhi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/yaml-wen-jian-mo-ren-zhi/">
+                        YAML文件默认值
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            SpringBoot引入yml文件作为配置文件, 可以通过@Value注解获取对应的值, 当然也是可以对值设定默认值的.
+比如在swagger的配置类中, 需要判定swagger是否开启, 我们在yml文件中设定属性如下:
+swagger:
+  enable: ${SWAGGER_ENABLE:false}
+
+通过上面的设置, 默认情况下, 属性的值是false, 而当有指令对SWAGGER_ENABLE属性重设之后, 参数值也会跟随改变.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/yaml-wen-jian-mo-ren-zhi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/outofmemoryerror-fen-xi/">
+                        OutOfMemoryError 分析
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-07</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            写一段代码
+堆内存溢出, 首先我们需要一段能够使堆内存溢出的代码.
+import java.util.ArrayList;
+
+/**
+ * @author imyzt
+ * @date 2019/5/7
+ * @description Main
+ */
+public class Main {
+    public static void main(String[] args) {
+        ArrayList&amp;lt;Demo&amp;gt; demos = new ArrayList&amp;lt;&amp;gt;();
+        while (true) {
+            demos.add(new Demo());
+        }
+    }
+}
+
+
+/**
+ * @author imyzt
+ * @date 2019/5/7
+ * @description Demo
+ */
+public class Demo {
+}
+
+通过制定堆内存大小, 指定堆内存快照, 可以快速获取一份堆内存溢出信息.可以通过在IDE的 VM options 设置.
+-Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError
+
+这份文件在我们项目的根目录下面. 后缀名是 .hprof.  我们可以通过eclipse提供的mat工具对堆内存快照进行分析.  mat下载地址
+接下来就是将我们的快照数据导入到工具中.
+从图中我们可以看到 Problem Suspect 1(可能出现问题的区域)比较大, 总共20M的内存, 15M都有可能出现问题
+从图中分析, 我们看到了95%的内存都被 main thread 占用, 然后点开树发现, 对象占用是最高的,几乎是主线程占用的内存的所有.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/outofmemoryerror-fen-xi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/docker-wu-fa-qi-dong/">
+                        docker 无法启动
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-07</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            就在今天, 我的服务器重启之后, docker ps突然没法用了, 提示信息如下.
+ubuntu@xxx:~$ docker ps
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+提示信息很明显,就是问我docker是否启动, 按道理来说docker应该是服务自拉起的. 既然没有启动肯定是出了问题. 需要进行排查.
+第一步我是直接 systemctl 启动一次, 不过依旧报错.  信息如下:
+ubuntu@xxx:~$ systemctl start docker.service
+Job for docker.service failed because the control process exited with error code. See &amp;quot;systemctl status docker.service&amp;quot; and &amp;quot;journalctl -xe&amp;quot; for details.
+
+提示信息说启动失败了, 然后叫我 status 查看一下, 命令执行后信息如下:
+ubuntu@xxx:~$ systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+   Active: failed (Result: start-limit-hit) since 二 2019-05-07 11:26:12 CST; 10s ago
+     Docs: https://docs.docker.com
+  Process: 26461 ExecStart=/usr/bin/dockerd -H fd:// (code=exited, status=2)
+ Main PID: 26461 (code=exited, status=2)
+
+5月 07 11:26:12 xxx systemd[1]: docker.service: Main process exited, code=exited, status=2/INVALIDARGUMENT
+5月 07 11:26:12 xxx systemd[1]: Failed to start Docker Application Container Engine.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Unit entered failed state.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Failed with result &#39;exit-code&#39;.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Service hold-off time over, scheduling restart.
+5月 07 11:26:12 xxx systemd[1]: Stopped Docker Application Container Engine.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Start request repeated too quickly.
+5月 07 11:26:12 xxx systemd[1]: Failed to start Docker Application Container Engine.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Unit entered failed state.
+5月 07 11:26:12 xxx systemd[1]: docker.service: Failed with result &#39;start-limit-hit&#39;.
+
+
+从提示信息我反正是没看出来太多有用的信息来的, 然后就祭出了搜索大法, 发现和我一样问题的挺多的.  我就直接给我问题解决的链接先.
+博客园
+根据上面博主的解决方案, 我将 /etc/docker/daemon.json 的文件进行了修改, 文件内容展示在下面如下:
+{                                                                                                                                                                                                                               
+            &amp;quot;registry-mirrors&amp;quot;: [&amp;quot;阿里云仓库加速链接&amp;quot;],
+            &amp;quot;bip&amp;quot;: &amp;quot;10.0.0.1/16&amp;quot;,
+             &amp;quot;graph&amp;quot;: &amp;quot;/mnt/docker-data&amp;quot;,
+             &amp;quot;storage-driver&amp;quot;: &amp;quot;overlay&amp;quot;
+}
+
+接下来通过 systemctl start docker.service  启动了一下docker, 问题果然消失了.  上面博主对问题描述的也已经非常清楚,我在此只是做一个引用.
+
+ocker的engine 基于Device Mapper提供的一种存储驱动,而它又依赖与 devicemapper。于是乎我将它给删除并重启服务，解决了docker无法正常启动的问题。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/docker-wu-fa-qi-dong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/docker-swarm-bian-pai-gong-ju/">
+                        docker swarm编排工具
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-05-06</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            Swarm介绍
+Swarm 是 Docker 公司在 2014 年 12 月初发布的一套较为简单的工具,用来管理 Docker 集群,它将一群 Docker 宿主机变成一个单一的,虚拟的主机。Swarm 使用标准的 Docker API接口作为其前端访问入口,换言之,各种形式的 Docker Client(docker client in go, docker_py,docker 等)均可以直接与 Swarm 通信。Swarm 几乎全部用 Go 语言来完成开发。
+Swarm deamon 只是一个调度器(Scheduler)加路由器(router),Swarm 自己不运行容器,它只是接受 docker 客户端发送过来的请求,调度适合的节点来运行容器,这意味着,即使Swarm 由于某些原因挂掉了,集群中的节点也会照常运行,当 Swarm 重新恢复运行之后,它会收集重建集群信息。下面是 Swarm 的结构图:
+
+环境准备
+
+三台服务器或者虚拟机
+
+
+server01, server02, server03
+
+
+安装了docker
+
+搭建集群
+初始化一个manager节点
+
+docker提供了init命令用于初始化一个集群, 从输出信息中可以得到对应的work节点的token
+
+n-tech-admin@server01:~$ docker swarm init 
+Swarm initialized: current node (wpx3o9mcpuq79ujpumykjkgt7) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-44a0imbc65z7o9fbfj89mxs4xfu7w3pmtfo7s50mt3ues809mr-0xhunq3plzdyhyhebswxuuds8 192.168.10.45:2377
+
+To add a manager to this swarm, run &#39;docker swarm join-token manager&#39; and follow the instructions.
+
+在其他服务器输入命令
+在上一步的输出中, 已经包含了其他节点加入该集群的命令.只需要输入即可.
+n-tech-admin@server02:~$ docker swarm join --token SWMTKN-1-44a0imbc65z7o9fbfj89mxs4xfu7w3pmtfo7s50mt3ues809mr-0xhunq3plzdyhyhebswxuuds8 192.168.10.45:2377
+This node joined a swarm as a worker.
+
+n-tech-admin@server03:~$ docker swarm join --token SWMTKN-1-44a0imbc65z7o9fbfj89mxs4xfu7w3pmtfo7s50mt3ues809mr-0xhunq3plzdyhyhebswxuuds8 192.168.10.45:2377
+This node joined a swarm as a worker.
+
+查看docker network
+创建集群之后, 我们可以看到network增加了docker_gwbridge和ingress两个网络.
+swarm的ingress连接的是ingress网络, 该网络需要通过docker_gwbridge网桥, 借助于docker daemon网桥跟主机进行连接.
+n-tech-admin@server01:~$ docker network ls
+NETWORK ID          NAME                         DRIVER              SCOPE
+cdb39c520f0b        bridge                       bridge              local
+fd5e65ece1c7        docker_gwbridge              bridge              local
+eb06b54c7e76        host                         host                local
+tbsdc0m2p1le        ingress                      overlay             swarm
+f4e8f15f758b        none                         null                local
+
+高可用
+docker默认支持高可用, 通过选举将work节点挑选为manager节点. 只需要配置所有节点为manager节点即可.
+首先可以通过docker node ls查看所有的节点信息.可以看到默认情况下MANAGER STATUS只有server01是一个Leader节点.  其他节点都是普通节点.
+n-tech-admin@server01:~$ docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+wpx3o9mcpuq79ujpumykjkgt7 *   server01            Ready               Active              Leader              18.09.3
+1bz3t5imxc9evv4poh9o3o65l     server02            Ready               Active                                  18.09.0
+nuwhcuajlf71q4x23syi7tx06     server03            Ready               Active                                  18.02.0-ce
+
+通过在manager节点执行 docker node promote 服务器名称, 可以将其他节点提升为manager节点.
+可以看到执行之后, 另外两个work节点的MANAGER STATUS也变成了Reachable
+n-tech-admin@server01:~$ docker node promote server02
+Node server02 promoted to a manager in the swarm.
+n-tech-admin@server01:~$ docker node promote server03
+Node server03 promoted to a manager in the swarm.
+n-tech-admin@server01:~$ docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+wpx3o9mcpuq79ujpumykjkgt7 *   server01            Ready               Active              Leader              18.09.3
+1bz3t5imxc9evv4poh9o3o65l     server02            Ready               Active              Reachable           18.09.0
+nuwhcuajlf71q4x23syi7tx06     server03            Ready               Active              Reachable           18.02.0-ce
+
+创建服务
+我们在 manager创建一个linux服务, 提供一个shell命令让他运行.
+通过执行 service ls命令, 可以看到刚才运行服务已经成功了.
+还可以通过 service inspect 服务名 查看服务的详细信息
+通过 service logs 服务名 查看服务的详细日志
+n-tech-admin@server01:~$ docker service create --name test01 alpine ping baidu.com
+ruzuc9hqpyv6dpe6qk8jmlc12
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================&amp;gt;] 
+verify: Service converged
+
+
+n-tech-admin@server01:~$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+ruzuc9hqpyv6        test01              replicated          1/1                 alpine:latest       
+
+
+接下来, 我们继续通过swarm创建一个nginx服务, 执行上面相同的命令, 创建完成后, 通过ls命令查看服务.
+n-tech-admin@server01:~$ docker service create --name nginx nginx
+n6svunal14gc78uffbzn5rl76
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================&amp;gt;] 
+verify: Service converged
+
+n-tech-admin@server01:~$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+n6svunal14gc        nginx               replicated          1/1                 nginx:latest        
+ruzuc9hqpyv6        test01              replicated          1/1                 alpine:latest       
+
+
+修改服务
+我们发现, nginx没有对外端口, 我们可以通过 update 命令将nginx对外暴露一个端口
+然后我们通过浏览器访问 server01, server02, server03三个服务器, 发现都能够得到正确的响应, 这是因为docker通过虚拟IP的方式帮我们访问到最终提供服务的nginx容器.
+n-tech-admin@server01:~$ docker service update --publish-add 9967:80 nginx 
+nginx
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================&amp;gt;] 
+verify: Service converged
+
+服务扩展
+docker为我们提供了 scale 命令, 可以对服务进行扩容, 我们通过 service scale nginx=3, 将nginx容器扩容到三个, 然后通过ls命令可以看到 REPLICAS 已经变成了3/3.
+n-tech-admin@server01:~$ docker service scale nginx=3
+nginx scaled to 3
+overall progress: 3 out of 3 tasks 
+1/3: running   [==================================================&amp;gt;] 
+2/3: running   [==================================================&amp;gt;] 
+3/3: running   [==================================================&amp;gt;] 
+verify: Service converged 
+
+n-tech-admin@server01:~$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+n6svunal14gc        nginx               replicated          3/3                 nginx:latest        *:9967-&amp;gt;80/tcp
+ruzuc9hqpyv6        test01              replicated          1/1                 alpine:latest       
+
+
+服务间应用连通性
+通过上面, 我们创建了 test01 服务和 nginx 服务, 然后我们通过 exec -it 登录到 alpine 的 test01 服务, 通过  ping nginx 发现不能连通, 说明默认模式下创建的服务, 不具备服务之间的连通性.
+那么, 既然问题提出了, 下面就来说一下怎么解决.
+首先, 我们创建一个 network, driver使用 overlay, 名字叫做 local-overlay. 如下
+n-tech-admin@server01:~$ docker network create -d overlay local-overlay
+7lg34csui03vtcwie57pshodd
+
+n-tech-admin@server01:~$ docker network ls
+NETWORK ID          NAME                         DRIVER              SCOPE
+cdb39c520f0b        bridge                       bridge              local
+fd5e65ece1c7        docker_gwbridge              bridge              local
+501f1e83da67        harbor_harbor                bridge              local
+eb06b54c7e76        host                         host                local
+tbsdc0m2p1le        ingress                      overlay             swarm
+7lg34csui03v        local-overlay                overlay             swarm
+f4e8f15f758b        none                         null                local
+82d08c922135        syncd                        bridge              local
+6b2cd023f92f        syncd-docker_syncd-network   bridge              local
+
+然后我们删除上面创建的两个服务.
+n-tech-admin@server01:~$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+n6svunal14gc        nginx               replicated          3/3                 nginx:latest        *:9967-&amp;gt;80/tcp
+ruzuc9hqpyv6        test01              replicated          1/1                 alpine:latest       
+n-tech-admin@server01:~$ docker service rm nginx test01 
+nginx
+test01
+n-tech-admin@server01:~$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+
+接下来, 我们再次创建两个服务, 不过这次, 我们需要给服务指定网络使用 local-overlay
+n-tech-admin@server01:~$ docker service create --name nginx --network local-overlay -p 9967:80 nginx
+9mtl0x99t67nxhllfh0ly2m43
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================&amp;gt;] 
+verify: Service converged 
+
+n-tech-admin@server01:~$ docker service create --name test02 --network local-overlay alpine ping baidu.com
+7fnhnrzrxu9ih9hpu4ysnfijw
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================&amp;gt;] 
+verify: Service converged 
+
+
+然后我们进入 test02 服务 的 alpine, 执行上面执行失败的 ping 和 wget, 我们发现, 所有的操作都已经能够正确执行了, 这是因为docker的vip为我们做了处理.
+n-tech-admin@server02:~$ docker exec -it aa sh
+/ # ping nginx
+PING nginx (10.0.0.2): 56 data bytes
+64 bytes from 10.0.0.2: seq=0 ttl=64 time=0.105 ms
+64 bytes from 10.0.0.2: seq=1 ttl=64 time=0.100 ms
+64 bytes from 10.0.0.2: seq=2 ttl=64 time=0.070 ms
+^C
+--- nginx ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 0.070/0.091/0.105 ms
+/ # wget nginx
+Connecting to nginx (10.0.0.2:80)
+index.html           100% |********************************************************************************************************************************************************************************|   612  0:00:00 ETA
+/ # 
+
+
+剔除集群中服务器
+如果想要移除集群中某一个服务器, 首先需要判断它是否是一台管理节点, 如果是管理节点, 首先需要将其降级为普通节点, 然后再执行删除命令
+降级
+docker node demote 节点的id
+
+删除
+docker node rm 节点的id
+
+stack
+docker 为集群部署的一系列操作提供了 stack 子命令, 方便一次操作.
+首先我们需要准备一个 yml 文件, 里面包含了对服务的配置, 就和 compose 文件一样, 不过比 compose文件多了一些对服务资源的限制.
+我在这里提供一个文件. external: true表示该网络已存在的意思.
+version: &amp;quot;3.4&amp;quot;
+services:
+  alpine:
+    image: alpine
+    command:
+      - &amp;quot;ping&amp;quot;
+      - &amp;quot;www.bing.com&amp;quot;
+    networks:
+      - local-overlay
+    deploy:
+      endpoint_mode: dnsrr
+      replicas: 2
+      restart_policy:
+        condition: on-faliure
+      resources:
+        limits:
+          cpus: &amp;quot;0.1&amp;quot;
+          memory: &amp;quot;50M&amp;quot;
+    depends_on:
+      - nginx
+  nginx:
+    image: nginx
+    networks:
+      - local-overlay
+    ports:
+      - 9967:80
+
+networks:
+  local-overlay:
+    external: true
+
+通过 stack deploy命令对服务进行部署. 通过 stack service 服务名 查看服务详情, 通过 stack ls 查看有多少个服务.
+n-tech-admin@server01:~/yzt_test_folder$ docker stack deploy -c service.yml test
+Creating service test_alpine
+Creating service test_nginx
+
+n-tech-admin@server01:~/yzt_test_folder$ docker stack ls
+NAME                SERVICES            ORCHESTRATOR
+test                2                   Swarm
+
+n-tech-admin@server01:~/yzt_test_folder$ docker stack services test 
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+3vqmi2loytn6        test_alpine         replicated          2/2                 alpine:latest       
+wp7qiu0nbfol        test_nginx          replicated          1/1                 nginx:latest        *:9967-&amp;gt;80/tcp
+
+n-tech-admin@server01:~/yzt_test_folder$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+3vqmi2loytn6        test_alpine         replicated          2/2                 alpine:latest       
+wp7qiu0nbfol        test_nginx          replicated          1/1                 nginx:latest        *:9967-&amp;gt;80/tcp
+
+
+网络模式
+docker 集群模式下默认使用 vip 模式, 可以显示的指定使用 dnsrr模式. 如在 stack 下, 可以在 deploy 子节点指定 endpoint_mode: dnsrr 来修改网络模式.
+vip: vip模式中每个服务都有一个固定的ip
+dnsrr: dnsrr模式是没有固定ip的, 通过dns服务解析
+查看服务的模式可以通过 docker service inspect 服务名, 然后找到 EndpointSpec节点即可查看.
+总结
+通篇说了很多, 总结下来也就那么几个命令.
+docker swarm
+docker network
+docker service
+docker node 
+docker stack
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/docker-swarm-bian-pai-gong-ju/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/fu-hao-du-fa/">
+                        符号读法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-18</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            作为技术人员, 平时常有和同事, 朋友讲述的时候, 针对平时常用的符号, 做一个汇总. 以免贻笑大方.
+
+
+中划线
+写法: -
+中文: 中划线
+英文: dash
+英文读法: dash-Google Translate
+
+
+下划线
+写法: _
+中文: 中划线
+英文: under score
+英文读法: under score-Google Translate
+
+
+反斜杠
+写法: \ 
+中文: 反斜杠
+英文: Backslash
+英文读音: Backslash-Google Translate
+
+
+斜杠
+写法: /
+中文: 斜杠
+英文: slash
+英文读音: slash-Google Translate
+
+
+英文逗号
+写法: .
+中文: 逗号
+英文: comma
+英文读音: comma-Google Translate
+
+
+英文句号
+写法: .
+中文: 句号
+英文: dot
+英文读音: dot-Google Translate
+
+
+如有不对之处, 烦请指正
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/fu-hao-du-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/8/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.github.io/page/10/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1711466946029)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

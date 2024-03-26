@@ -1,0 +1,543 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    synchronized | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            synchronized
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-02-14</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="synchronized的两种用法">synchronized的两种用法</h1>
+<ol>
+<li>对象锁</li>
+</ol>
+<blockquote>
+<p>包括方法锁(默认锁对象为<strong>this</strong>当前实例对象)和同步代码块锁(自己指定锁对象)</p>
+</blockquote>
+<ol start="2">
+<li>类锁</li>
+</ol>
+<blockquote>
+<p>指synchronized修饰 <strong>static方法</strong> 或指定锁对象为 <strong>Class对象</strong></p>
+</blockquote>
+<h1 id="对象锁">对象锁</h1>
+<h2 id="同步代码块">同步代码块</h2>
+<h3 id="使用-this-锁定代码块">使用 this 锁定代码块</h3>
+<pre><code>public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    @Override
+    public void run() {
+
+        synchronized (this) {
+            System.out.println(&quot;我是lock2, 我叫&quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &quot;, lock2 部分执行结束&quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&quot;finished&quot;);
+
+    }
+}
+</code></pre>
+<p>最终运行结果</p>
+<pre><code>我是lock2, 我叫Thread-0
+Thread-0, lock2 部分执行结束
+我是lock2, 我叫Thread-1
+Thread-1, lock2 部分执行结束
+finished
+</code></pre>
+<h3 id="使用-自定义锁对象">使用 自定义锁对象</h3>
+<pre><code>public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+
+    @Override
+    public void run() {
+
+        synchronized (lock1) {
+            System.out.println(&quot;我是lock1, 我叫&quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &quot;, lock1 部分执行结束&quot;);
+        }
+
+        synchronized (lock2) {
+            System.out.println(&quot;我是lock2, 我叫&quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &quot;, lock2 部分执行结束&quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&quot;finished&quot;);
+
+    }
+}
+</code></pre>
+<p>运行结果，可以看出来加粗部分， thread-0和thread-1同时执行和同时结束，因为两个线程使用的不是同一把锁。</p>
+<p>我是lock1, 我叫Thread-0<br>
+Thread-0, lock1 部分执行结束<br>
+<strong>我是lock2, 我叫Thread-0<br>
+我是lock1, 我叫Thread-1</strong><br>
+<strong>Thread-1, lock1 部分执行结束<br>
+Thread-0, lock2 部分执行结束</strong><br>
+我是lock2, 我叫Thread-1<br>
+Thread-1, lock2 部分执行结束<br>
+finished</p>
+<h2 id="方法锁">方法锁</h2>
+<h3 id="代码展示">代码展示</h3>
+<pre><code>public class SynchronizedObjectMethod3 implements Runnable {
+
+    public static void main(String[] args) {
+
+        SynchronizedObjectMethod3 objectMethod3 = new SynchronizedObjectMethod3();
+
+        Thread thread1 = new Thread(objectMethod3);
+        Thread thread2 = new Thread(objectMethod3);
+
+        thread1.start();
+        thread2.start();
+    }
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public synchronized void method() {
+        System.out.println(&quot;对象锁的方法修饰符形式, threadName=&quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &quot;运行结束&quot;);
+    }
+}
+</code></pre>
+<h3 id="运行结果">运行结果:</h3>
+<blockquote>
+<p>使用synchronized修饰一个成员方法, 该方法会根据实例依次执行.<br>
+对象锁的方法修饰符形式, threadName=Thread-0<br>
+Thread-0运行结束<br>
+对象锁的方法修饰符形式, threadName=Thread-1<br>
+Thread-1运行结束</p>
+</blockquote>
+<h1 id="类锁">类锁</h1>
+<h2 id="概念">概念:</h2>
+<ol>
+<li>只有一个Class对象: Java类可能会有很多个实例对象, 但是只有一个Class对象</li>
+<li>本质: 所谓的类锁, 实质上是Class对象的锁而已</li>
+<li>用法和效果: 类锁只能在同一时刻被同一对象拥有</li>
+</ol>
+<h2 id="同步一个全局方法">同步一个全局方法</h2>
+<h3 id="代码展示-2">代码展示</h3>
+<pre><code>public class SynchronizedClassStatic4 implements Runnable {
+
+    static SynchronizedClassStatic4 instance1 = new SynchronizedClassStatic4();
+    static SynchronizedClassStatic4 instance2 = new SynchronizedClassStatic4();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public static synchronized void method() {
+        System.out.println(&quot;我是类锁的第一种形式: static形式, 我叫 &quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &quot;运行结束&quot;);
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&quot;finished&quot;);
+
+    }
+}
+</code></pre>
+<h3 id="运行结果-2">运行结果:</h3>
+<blockquote>
+<p>使用synchronized修饰一个全局方法(static修饰), synchronized默认使用类作为锁对象<br>
+我是类锁的第一种形式: static形式, 我叫 Thread-0<br>
+Thread-0运行结束<br>
+我是类锁的第一种形式: static形式, 我叫 Thread-1<br>
+Thread-1运行结束<br>
+finished</p>
+</blockquote>
+<h2 id="类锁同步一个代码块">类锁同步一个代码块</h2>
+<h3 id="代码展示-3">代码展示</h3>
+<pre><code>public class SynchronizedClassClass5 implements Runnable {
+
+    static SynchronizedClassClass5 instance1 = new SynchronizedClassClass5();
+    static SynchronizedClassClass5 instance2 = new SynchronizedClassClass5();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    private void method() {
+        synchronized(SynchronizedClassClass5.class) {
+            System.out.println(&quot;类锁的第二种表现形式, synchronized(*.class)的形式, 这是&quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &quot;运行结束&quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&quot;finished&quot;);
+
+    }
+
+
+}
+</code></pre>
+<h3 id="运行结果-3">运行结果:</h3>
+<blockquote>
+<p>尽管Thread使用的不同的instance对象, 但是使用了*.class类锁之后, 代码也会按照期望值运行.<br>
+类锁的第二种表现形式, synchronized(<em>.class)的形式, 这是Thread-0<br>
+Thread-0运行结束<br>
+类锁的第二种表现形式, synchronized(</em>.class)的形式, 这是Thread-1<br>
+Thread-1运行结束<br>
+finished</p>
+</blockquote>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/springboot2-bian-xie-zi-ding-yi-autoconfig/">
+                                <h3 class="post-title">
+                                    SpringBoot2 编写自定义AutoConfig
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#synchronized%E7%9A%84%E4%B8%A4%E7%A7%8D%E7%94%A8%E6%B3%95">synchronized的两种用法</a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E9%94%81">对象锁</a>
+<ul>
+<li><a href="#%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E5%9D%97">同步代码块</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8-this-%E9%94%81%E5%AE%9A%E4%BB%A3%E7%A0%81%E5%9D%97">使用 this 锁定代码块</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%94%81%E5%AF%B9%E8%B1%A1">使用 自定义锁对象</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%B9%E6%B3%95%E9%94%81">方法锁</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA">代码展示</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C">运行结果:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E9%94%81">类锁</a>
+<ul>
+<li><a href="#%E6%A6%82%E5%BF%B5">概念:</a></li>
+<li><a href="#%E5%90%8C%E6%AD%A5%E4%B8%80%E4%B8%AA%E5%85%A8%E5%B1%80%E6%96%B9%E6%B3%95">同步一个全局方法</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA-2">代码展示</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C-2">运行结果:</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E9%94%81%E5%90%8C%E6%AD%A5%E4%B8%80%E4%B8%AA%E4%BB%A3%E7%A0%81%E5%9D%97">类锁同步一个代码块</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA-3">代码展示</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C-3">运行结果:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

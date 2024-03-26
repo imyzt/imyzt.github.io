@@ -1,0 +1,366 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    RocketMQ消息生产基本流程 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            RocketMQ消息生产基本流程
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-11-12</time>
+                            
+                                <a href="https://imyzt.github.io/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #RocketMQ
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。</p>
+<h2 id="核心概念">核心概念</h2>
+<ul>
+<li>NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部署的，多个NameServer之间互不通信。</li>
+<li>Broker：用于存储消息，在启动时会向NameServer注册自己的地址信息，启动后每30s向NameServer心跳报告健康状态；Broker实例可以有多个，相同的BrokerName为一组Broker，每个Broker组只保存一部分信息。</li>
+<li>Topic：消息的主题，一个Topic的消息可以分布在不同的Broker组下。</li>
+<li>Queue：一个Topic可以有很多Queue，默认一个Topic在同一个Broker组下是4个，如果一个Topic在2个Broker组中，则有可能是8个Queue。<strong>一个Queue只能被一个Consumer消费，一个Consumer可以同时消费多个Queue。</strong></li>
+<li>Producer：消息的生产者、可以成组出现（Producer Group）。</li>
+<li>Consumer：消息的消费者，可以成组出现（Consumer Group）。</li>
+</ul>
+<h2 id="nameserver">NameServer</h2>
+<blockquote>
+<p>NameServer是Broker和Topic路由的注册中心，支持Broker的动态注册与发现。<br>
+主要包含2个功能：</p>
+</blockquote>
+<ol>
+<li>
+<p>Broker管理：接受Broker集群的注册信息并且保存下来作为消息路由信息的基本数据，提供心跳监测机制，检查Broker是否还存活。<br>
+<img src="https://imyzt.github.io/post-images/1699778210047.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>路由信息管理：每个NameServer都保存着Broker集群的整个路由信息和用于客户端查询的队列信息，Producer和Consumer可以通过NameServer获得整个Broker集群的路由信息，从而进行消息的投递和消费。</p>
+</li>
+</ol>
+<p><strong>注册流程：</strong><br>
+NameServer每个节点之间是不通信的，每个Broker在启动时，会给所有NameServer注册自己的信息，<code>每30秒心跳</code>上报自己的信息（BrokerId、Broker地址、名称、所属集群名称等信息），NameServer收到后会更新Broker的最新存活时间。</p>
+<p><strong>优缺点：</strong><br>
+优点：NameServer集群搭建简单，随意启动即可（因为互不通信）<br>
+缺点：简单增加节点无效，Broker无法感知新NameServer不会向他注册信息和心跳。</p>
+<p><strong>路由剔除：</strong><br>
+NameServer定时任务<code>每10秒</code>扫描一次Broker列表，当Broker最新心跳时间戳距离当前时间<code>超过120秒</code>，则将Broker从列表中剔除。</p>
+<p><strong>运维方案：</strong><br>
+当需要升级RocketMQ集群时，可以依次将每个节点对外关闭读写权限。</p>
+<ol>
+<li>Producer发送到Broker会收到无权读写而切换另一个Broker投递消息。</li>
+<li>超过120秒不心跳，NameServer会自动将此Broker下线。</li>
+<li>Producer每30秒会从NameServer拉取Broker信息，当NameServer记录为下线后此Broker也不会再有Producer进行消息投递。然后再关闭升级此Broker即可。</li>
+</ol>
+<p><strong>路由发现：</strong><br>
+当Topic路由信息变化时，NameServer不会推送而是等客户端每30秒拉取一次最新的路由信息。<br>
+<img src="https://imyzt.github.io/post-images/1699778321090.png" alt="" loading="lazy"></p>
+<p><strong>客户端（Producer）NameServer选择策略：</strong></p>
+<blockquote>
+<p>首先采用<code>随机策略</code>, 然后采用<code>轮询策略</code></p>
+</blockquote>
+<p>生成一个随机数，从配置的NameServer集群地址中根据数量取模然后连接，如果连接失败会切换为轮询逐个连接其他节点。</p>
+<p>扩展：zk client如何选择zk server?<br>
+经过两次Shuffle，然后选择第一台ZK Server。<br>
+将配置文件中的zk server地址进行第一次shuffle，然后随机选择一个，这个选择出的一般都是hostname，然后获取到该hostname对应的所有IP，再对这些ip进行第二次shuffle。</p>
+<h2 id="broker">Broker</h2>
+<blockquote>
+<p>Broker充当着消息中转角色，负责存储消息、转发消息。<br>
+Broker在RocketMQ系统中负责接收并存储从生产者发送来的消息。同时为消费者的拉取请求做准备。<br>
+Broker同时存储着消息相关的元数据，包括消费者组消费进度偏移offset、主题、队列等。</p>
+</blockquote>
+<hr>
+<p>一个Topic存储在不同的Broker中，按Queue轮询存放，一个Queue在Master/Slave中存储多份做主备集群。<br>
+Broker节点集群是主从集群，Broker集群是主备集群。</p>
+<hr>
+<ul>
+<li>Remoting Module: 整个Broker的实体，负责处理来自clients的请求，由以下模块构成。</li>
+<li>Client Manager：客户端管理器，负责接受、解析来自客户端（Producer、Consumer）请求，管理客户端，比如维护Consumer的Topic订阅关系。</li>
+<li>Store Service：存储服务，处理<code>消息存储到物理硬盘</code>和<code>消息查询</code>功能。</li>
+<li>HA Service： 高可用服务，提供<code>Master Broker</code>和<code>Slave Broker</code>之间的数据同步功能。</li>
+<li>Index Service: 索引服务，根据特定的<code>Message Key</code>，对投递到Broker的消息进行索引服务，同时提供根据 <code>Message Key</code> 对消息进行快速查询的功能。</li>
+</ul>
+<h2 id="消息的生产和发送">消息的生产和发送</h2>
+<p>通过上面的流程，我们知道了NameServer和Broker的交互流程，Producer启动时，只指向了NameServer，并不知道Broker的信息。那么一条消息从Producer生产后，是如何投递到哪个Broker的哪个Queue上面的呢？</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1699778590005.png" alt="queue select" loading="lazy"></figure>
+<p>针对这种情况，RocketMQ采用了2种Queue选择算法：</p>
+<ul>
+<li>轮询算法</li>
+<li>最小投递延迟算法</li>
+</ul>
+<p>Producer可以将消息写入到某个Broker中的Queue中，过程如下：</p>
+<ol>
+<li>Producer发送消息前，会向获取NameServer获取Topic的路由信息</li>
+<li>NameServer返回该Topic的<code>路由表</code>和<code>Broker列表</code></li>
+<li>Producer根据代码中指定的Queue选择策略，从Queue列表中选择一个队列</li>
+<li>Producer对消息做处理，比如超过4M会进行压缩</li>
+<li>Producer向选择出的Queue所在的broker发送RPC请求，将消息发送到选择出的Queue中</li>
+</ol>
+<blockquote>
+<p>路由表：一个Map，Key为QueueData实例列表，QueueData并不是一个queue对应一个queueData，而是一个Broker中该Topic所有的QueueData对应一个QueueData。即只要涉及到该Topic的Broker，一个Broker对应一个QueueData。<br>
+路由表的key为Topic名称，value则为所有涉及该Topic的brokerName列表。</p>
+<p><strong>路由表(一个Topic分散在哪些Broker上面，方便消费者和生产者连接Queue)：</strong><br>
+<code>Map&lt;TopicName, List&lt;BrokerName&gt;&gt;</code></p>
+</blockquote>
+<blockquote>
+<p>Broker列表：一个Map，Key为BrokerName，Value为BrokerData，一个Broker对应一个BrokerData实例，一套BrokerName名称相同的Master-Slave小集群对应一个BrokerData<br>
+BrokerData中包含一个Map，key为brokerId，value为该broker对应的地址，<code>brokerId=0表示master</code></p>
+<p><strong>Broker列表(一个集群中Broker的分布，方便消费者和生产者连接Broker)：</strong><br>
+<code>Map&lt;BrokerName, Map&lt;brokerId, brokerAddress&gt;</code></p>
+</blockquote>
+<p>对于无序消息的Queue选择算法：</p>
+<ul>
+<li>轮询算法<br>
+默认选择方法，保证每个Queue都均匀获得消息</li>
+</ul>
+<blockquote>
+<p>问题：当Broker出问题时，此Broker上的Queue投递延迟严重时，会造成producer消息堆积。</p>
+</blockquote>
+<ul>
+<li>最小投递延迟算法<br>
+统计每次消息投递的延迟，统计处投递延迟最小的Queue，如果延迟相同则选用轮询算法</li>
+</ul>
+<blockquote>
+<p>问题：Queue上的消息分配不均，投递延迟小的Queue会存在大量消息，<strong>导致对应Queue的消费者要处理的消息很大。</strong></p>
+</blockquote>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/">
+                                <h3 class="post-title">
+                                    FastJSON 序列化反序列化驼峰和下划线互转
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">核心概念</a></li>
+<li><a href="#nameserver">NameServer</a></li>
+<li><a href="#broker">Broker</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E7%9A%84%E7%94%9F%E4%BA%A7%E5%92%8C%E5%8F%91%E9%80%81">消息的生产和发送</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

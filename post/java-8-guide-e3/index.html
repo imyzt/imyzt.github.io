@@ -1,0 +1,390 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 8 Guide E3 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 8 Guide E3
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-01-18</time>
+                            
+                                <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-error">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <blockquote>
+<p>本篇接着上篇来, 继续学习java8新特性<br>
+<a href="http://blog.didispace.com/books/java8-tutorial/">Java 8 简明教程</a></p>
+</blockquote>
+<h1 id="stream-介绍">Stream 介绍</h1>
+<p>Stream (流) 操作算是对集合的大大增强, 很多之前很复杂需要很多代码量的逻辑在此终结.</p>
+<ol>
+<li>一个Collection(集合)可以通过调用 <code>stream()</code> 和 <code>parallelStream()</code> 两个方法获得 <code>stream</code></li>
+</ol>
+<ul>
+<li>stream()方法返回一个 <code>顺序流</code>, 所有的操作必须等待上一步的完成.</li>
+<li>parallelStream()方法返回一个 <code>并行流</code>, 操作会更高效, 考虑业务使用不同的流.</li>
+</ul>
+<ol start="2">
+<li>流的操作分为 <code>中间操作</code> 和 <code>终止操作</code></li>
+</ol>
+<ul>
+<li>中间操作: 对流的处理还在进行中, 不会中指当前流. 可以返回一个流进行其他操作. 就像StringBuffer的append()一样</li>
+<li>终止操作: 对流的处理将会终结, 当前流将不能继续使用.</li>
+</ul>
+<h1 id="中间操作">中间操作</h1>
+<h2 id="filter">Filter</h2>
+<pre><code>Stream&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+</code></pre>
+<p>Filter接收一个 <code>Predicate&lt;? super T&gt;</code> 接口的参数进行过滤操作</p>
+<h2 id="sorted">Sorted</h2>
+<pre><code>Stream&lt;T&gt; sorted(Comparator&lt;? super T&gt; comparator);  
+Stream&lt;T&gt; sorted();
+</code></pre>
+<p>sorted()方法自然排序. 即调用对象本身的compareTo()方法排序.<br>
+sorted(Comparator&lt;? super T&gt; comparator);  接受一个 Comparator对象进行排序</p>
+<h2 id="map">Map</h2>
+<pre><code>&lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper);
+IntStream mapToInt(ToIntFunction&lt;? super T&gt; mapper);
+LongStream mapToLong(ToLongFunction&lt;? super T&gt; mapper);
+DoubleStream mapToDouble(ToDoubleFunction&lt;? super T&gt; mapper);
+&lt;U&gt; Stream&lt;U&gt; mapToObj(IntFunction&lt;? extends U&gt; mapper);
+</code></pre>
+<p>map有上述几个方法, 可以转换为指定的类型, 方法参数都是接受一个 <code>xxxFunction</code> 的转换器.  下面有一个演示.</p>
+<pre><code>list.stream()
+        .filter(s -&gt; s.startsWith(&quot;1&quot;))
+        .sorted(String::compareTo)
+        .mapToInt(Integer::valueOf)
+        .mapToObj(String::valueOf)
+        .mapToLong(Long::valueOf);
+</code></pre>
+<h1 id="终止操作">终止操作</h1>
+<h2 id="match">Match</h2>
+<pre><code>boolean anyMatch(Predicate&lt;? super T&gt; predicate);
+boolean allMatch(Predicate&lt;? super T&gt; predicate);
+boolean noneMatch(Predicate&lt;? super T&gt; predicate);
+</code></pre>
+<p>Match方法有三个, 都接受一个 <code>Predicate</code> 条件来决定返回true or false</p>
+<h2 id="count">Count</h2>
+<pre><code>long count();
+</code></pre>
+<p>count()计算集合大小, 这个方法很简单.</p>
+<h2 id="reduce">Reduce</h2>
+<p>有了Map, 那肯定是有Reduce, 不过Reduce是一个终止操作. 它接收一个 <code>xxxOperator</code> 的操作函数.</p>
+<pre><code>&lt;U&gt; U reduce(U identity,
+                 BiFunction&lt;U, ? super T, U&gt; accumulator,
+                 BinaryOperator&lt;U&gt; combiner);
+T reduce(T identity, BinaryOperator&lt;T&gt; accumulator);
+Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator);
+</code></pre>
+<p>下面有一个操作的演示.</p>
+<pre><code>list.stream()
+        .sorted((s1, s2) -&gt; s1.compareTo(s2) &gt; 0 ? -1 : 0)
+        .reduce((i, j) -&gt; i + &quot;#&quot; + j)
+        .ifPresent(System.out::println);
+
+System.out.println(&quot;---------------------------&quot;);
+final String join = &quot;#&quot;;
+String joinReduce = list.stream()
+        .reduce(join, (s1, s2) -&gt; s1 + join + s2);
+System.out.println(joinReduce);
+</code></pre>
+<h1 id="所有操作的代码">所有操作的代码</h1>
+<pre><code>public static void main(String[] args) {
+
+    ArrayList &lt;String&gt; list = new ArrayList &lt;&gt;();
+    list.add(&quot;11&quot;);
+    list.add(&quot;12&quot;);
+    list.add(&quot;13&quot;);
+    list.add(&quot;14&quot;);
+
+    Comparator&lt;String&gt; comparator = String::compareTo;
+    Predicate&lt;String&gt; predicate = s -&gt; s.startsWith(&quot;1&quot;);
+    IntUnaryOperator intUnaryOperator = i -&gt; i + 1;
+    ToIntFunction&lt;String&gt; toIntFunction = Integer::valueOf;
+    IntConsumer consumer = System.out::println;
+
+    list.stream()
+            .filter(predicate)
+            .sorted(comparator)
+            .mapToInt(toIntFunction)
+            .map(intUnaryOperator)
+            .forEach(consumer);
+
+
+    boolean anyMatch = list.stream()
+            .filter(s -&gt; s.startsWith(&quot;1&quot;))
+            .sorted(String::compareTo)
+            .mapToInt(Integer::valueOf)
+            .mapToObj(String::valueOf)
+            .mapToLong(Long::valueOf)
+            .anyMatch(i -&gt; i &gt; 10);
+    System.out.println(anyMatch);
+
+    long count = list.stream().count();
+    System.out.println(count);
+
+    list.stream()
+            .sorted((s1, s2) -&gt; s1.compareTo(s2) &gt; 0 ? -1 : 0)
+            .reduce((i, j) -&gt; i + &quot;#&quot; + j)
+            .ifPresent(System.out::println);
+
+    System.out.println(&quot;---------------------------&quot;);
+    final String join = &quot;#&quot;;
+    String joinReduce = list.stream()
+            .reduce(join, (s1, s2) -&gt; s1 + join + s2);
+    System.out.println(joinReduce);
+
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java-8-guide-e2/">
+                                <h3 class="post-title">
+                                    Java 8 Guide E2
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#stream-%E4%BB%8B%E7%BB%8D">Stream 介绍</a></li>
+<li><a href="#%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C">中间操作</a>
+<ul>
+<li><a href="#filter">Filter</a></li>
+<li><a href="#sorted">Sorted</a></li>
+<li><a href="#map">Map</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%88%E6%AD%A2%E6%93%8D%E4%BD%9C">终止操作</a>
+<ul>
+<li><a href="#match">Match</a></li>
+<li><a href="#count">Count</a></li>
+<li><a href="#reduce">Reduce</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%80%E6%9C%89%E6%93%8D%E4%BD%9C%E7%9A%84%E4%BB%A3%E7%A0%81">所有操作的代码</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

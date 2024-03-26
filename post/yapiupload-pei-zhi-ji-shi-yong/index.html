@@ -1,0 +1,301 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    YapiUpload配置及使用	 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            YapiUpload配置及使用	
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-06-14</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="什么是yapiupload">什么是YapiUpload</h1>
+<p>yapiUpload是为IDEA提供的快速编写 <a href="https://github.com/YMFE/yapi">yapi</a> 接口文档的工具，在编写好Spring Controller后，通过一系列配置，可以直接生成接口文档到YAPI上。</p>
+<p>yapiUpload是开源的<br>
+代码仓库在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin">https://github.com/diwand/YapiIdeaUploadPlugin</a><br>
+文档在：<a href="https://github.com/diwand/YapiIdeaUploadPlugin/wiki/%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8">https://github.com/diwand/YapiIdeaUploadPlugin/wiki</a></p>
+<h1 id="如何安装及配置">如何安装及配置</h1>
+<h2 id="idea安装插件">IDEA安装插件</h2>
+<p>插件地址：<br>
+<a href="https://plugins.jetbrains.com/plugin/12276-yapiupload">https://plugins.jetbrains.com/plugin/12276-yapiupload</a></p>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/05/q2nkc4848kg8gqgirhvv5pp2bc.png" alt="安装图" loading="lazy"></figure>
+<h2 id="配置yapiupload">配置yapiUpload</h2>
+<p>找到项目文件 <code>.idea/misc.xml</code>，在<code>&lt;project&gt;</code>节点粘贴以下内容。</p>
+<pre><code>  &lt;!--yapi配置--&gt;
+  &lt;component name=&quot;yapi&quot;&gt;
+    &lt;option name=&quot;projectToken&quot;&gt;你的token&lt;/option&gt;
+    &lt;option name=&quot;projectId&quot;&gt;14&lt;/option&gt;
+    &lt;option name=&quot;yapiUrl&quot;&gt;你的yapi地址&lt;/option&gt;
+    &lt;option name=&quot;projectType&quot;&gt;api&lt;/option&gt;
+  &lt;/component&gt;
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/05/qgo4ug4vd8jguqpci92n9lhj3v.png" alt="请输入图片描述" loading="lazy"></figure>
+<h1 id="如何使用">如何使用</h1>
+<h2 id="编写一个标准的接口">编写一个标准的接口</h2>
+<p>yapiUpload支持很多Javadoc注解，可以在官方文档查看。</p>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/05/shtq7dpcbkgmrom8ttjaprbgr5.png" alt="标准接口" loading="lazy"></figure>
+<h2 id="上传到文档地址">上传到文档地址</h2>
+<h3 id="上传成功">上传成功</h3>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/05/rn8ue7flgejktrmv2tt8qk168e.png" alt="上传成功" loading="lazy"></figure>
+<h3 id="接口列表">接口列表</h3>
+<p>登录yapi上查看即可</p>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/05/r8bpv8cg54iu1rjsk3vnik94t9.png" alt="接口列表" loading="lazy"></figure>
+<h3 id="接口详情">接口详情</h3>
+<p>修改时，一般是直接覆盖，高版本yapi的api支持修改。不过好像这个工具还不支持。<br>
+<img src="http://blog.imyzt.top/upload/2020/05/tll83ishceintqja43s3utkfk9.png" alt="接口详情" loading="lazy"></p>
+<h1 id="二次开发">二次开发</h1>
+<p>yapiUpload本身是一个IDEA的插件，可以按照IDEA编码进行二次开发。<br>
+yapi也提供了二次开发api，可以对该插件做升级。<a href="https://hellosean1025.github.io/yapi/openapi.html">https://hellosean1025.github.io/yapi/openapi.html</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/redis-lua-debug/">
+                                <h3 class="post-title">
+                                    Redis LUA debug
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFyapiupload">什么是YapiUpload</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE">如何安装及配置</a>
+<ul>
+<li><a href="#idea%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6">IDEA安装插件</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AEyapiupload">配置yapiUpload</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</a>
+<ul>
+<li><a href="#%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E6%A0%87%E5%87%86%E7%9A%84%E6%8E%A5%E5%8F%A3">编写一个标准的接口</a></li>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%96%87%E6%A1%A3%E5%9C%B0%E5%9D%80">上传到文档地址</a>
+<ul>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E6%88%90%E5%8A%9F">上传成功</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E5%88%97%E8%A1%A8">接口列表</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E8%AF%A6%E6%83%85">接口详情</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91">二次开发</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

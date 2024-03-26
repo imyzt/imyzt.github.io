@@ -1,0 +1,423 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 8 Guide E2 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 8 Guide E2
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-01-17</time>
+                            
+                                <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <blockquote>
+<p>本篇接着上篇来, 继续学习java8新特性<br>
+<a href="http://blog.didispace.com/books/java8-tutorial/">Java 8 简明教程</a></p>
+</blockquote>
+<h1 id="自定义一个函数式接口">自定义一个函数式接口</h1>
+<h2 id="代码展示">代码展示</h2>
+<pre><code>/**
+ * @author imyzt
+ * @date 2019/1/17 18:23
+ * @description 自定义函数式接口
+ */
+public class FunctionInterfaceDemo {
+    public static void main(String[] args) {
+
+        Person&lt;Boolean&gt; person = Objects::nonNull;
+        Boolean aaa = person.say(&quot;aaa&quot;);
+        System.out.println(&quot;传入的信息是否不为空: &quot; + aaa);
+
+        Person&lt;String&gt; person1 = (msg) -&gt; &quot;Hello &quot;+msg;
+        String say = person1.say(&quot;World&quot;);
+        System.out.println(say);
+    }
+}
+
+@FunctionalInterface
+interface Person&lt;T extends Object&gt; {
+    T say(String msg);
+}
+</code></pre>
+<h2 id="讲解">讲解</h2>
+<p><em>代</em> 码中定义了一个接口 <strong>Person</strong>, 接口上使用了 <strong>@FunctionalInterface</strong> 注解, 接口泛型Object是一个约束, 在这里只是演示. 实际场景中可以写需要被约束的父类.<br>
+<em>使</em> 用的时候, 实例 <strong>person</strong> 的泛型是 <strong>Boolean</strong> 布尔类型, 所以在表达式的右边, 也就是具体的实现上我调用了Objects的nonNull方法.  <strong>::</strong> 表达式可以直接引用对象的方法.<br>
+<em>实</em> 例 <strong>person1</strong> 的泛型是 <strong>String</strong>  字符串类型, 所以在表达式的右边可以定义对 <strong>say(String msg)</strong>  中msg的操作, 然后调用say()方法时就会执行上述操作.</p>
+<h2 id="结果输出">结果输出</h2>
+<pre><code>传入的信息是否不为空: true
+Hello World
+</code></pre>
+<h1 id="内置函数式接口">内置函数式接口</h1>
+<p>Java8内置了很多函数式接口便于我们使用；<br>
+当然,我们也可以自定义函数式接口通过**@FunctionalInterface**注解声明.<br>
+java.util.function下的接口最多支持到二元运算。有了这些接口，我们就可以省去创建接口的功夫，而直接使用lambda了。<br>
+Nilary 零元，Unary 一元，Binary 二元，Ternary 三元，Quaternary 四元。对于一个算子来说，一个参数，就是一元运算；2个参数就是二元运算。</p>
+<h2 id="predicate">Predicate</h2>
+<blockquote>
+<p>Predicate是一个布尔类型的函数，该函数只有一个输入参数。<br>
+Predicate接口包含了多种默认方法，用于处理复杂的逻辑动词（and, or，negate）<br>
+摘抄自 <a href="http://blog.didispace.com/books/java8-tutorial/ch1.html">http://blog.didispace.com/books/java8-tutorial/ch1.html</a></p>
+</blockquote>
+<pre><code>Predicate&lt;String&gt; predicate = (a) -&gt; a.startsWith(&quot;a&quot;);
+Predicate&lt;String&gt; predicate2 = Objects::nonNull;
+
+boolean test = predicate.negate().and(predicate2).test(&quot;abc&quot;);
+System.out.println(test);
+</code></pre>
+<h2 id="consumer">Consumer</h2>
+<p>Consumer 消费target type。参数 T，无返回值（void）。<br>
+Consumer可以理解为一个消费者, 因为他没有返回值, 只接收一个参数, 按照重写的方法执行完成后即完成操作.</p>
+<pre><code>Consumer&lt;String&gt; consumer = System.out::println;
+consumer.accept(&quot;hello world&quot;);
+</code></pre>
+<h2 id="function">Function</h2>
+<p>Function 对target type做转换。参数T，返回R。</p>
+<pre><code>Predicate&lt;String&gt; predicate = s -&gt; null != s &amp;&amp; s.startsWith(v26);
+
+Function&lt;String, String&gt; function = s -&gt; predicate.test(pageInfo) ?
+sdkHttpKit.ipPort().append(s).toString() :
+sdkHttpKit.uri().append(&quot;face/meta/&quot;).append(URLUtil.encode(meta)).toString();
+
+String url = function.apply(pageInfo);
+</code></pre>
+<h2 id="supplier">Supplier</h2>
+<p>Supplier 供应target，可以理解为target的factory。无参，返回T。<br>
+Supplier 可以理解为工厂类, 通过下面的演示可以看出它能够创建对象.不过我看了别人的博客, 理解为这个方法可以将耗时的操作放进去. 在没有调用get()方法之前, 是不会执行的.可以降低系统运行时间.<br>
+Main.java</p>
+<pre><code>Supplier&lt;People&gt; supplier = People::new;
+// 在需要的时候可以调用get()方法获得一个新的People对象.
+People people = supplier.get();
+people.hello();
+
+输出: hello
+</code></pre>
+<p>People.java</p>
+<pre><code>class People {
+    void hello() {
+        System.out.println(&quot;hello&quot;);
+    }
+}
+</code></pre>
+<h2 id="unaryoperator">UnaryOperator</h2>
+<p>UnaryOperator 一元运算。继承Function接口。参数T，返回T。<br>
+UnaryOperator 可以理解为对参数T进行处理.</p>
+<pre><code>UnaryOperator&lt;String&gt; unaryOperator = s -&gt; s + &quot;___&quot;;
+System.out.println(unaryOperator.apply(&quot;hello&quot;));
+
+输出: hello___
+</code></pre>
+<h2 id="binaryoperator">BinaryOperator</h2>
+<p>BinaryOperator 二元运算。参数 T,返回R。<br>
+BinaryOperator为UnaryOperator的二元运算, 它接收两个T参数, 返回的也是T参数, 可以理解对两个参数的条件操作</p>
+<pre><code>BiPredicate&lt;String, String&gt; biPredicate =
+    (s1, s2) -&gt; s1.startsWith(&quot;s1&quot;) &amp;&amp; s2.endsWith(&quot;s2&quot;);
+
+BinaryOperator&lt;String&gt; binaryOperator =
+    // 当条件满足时, 执行三目运算的第一个操作. 否则第二个操作执行.
+    (s1, s2) -&gt; biPredicate.test(s1, s2) ?
+    s2 + &quot;_&quot; + s1 : s1 + &quot;_&quot; + s2;
+        
+System.out.println(binaryOperator.apply(&quot;s1&quot; , &quot;s2&quot;));
+
+输出: s2_s1
+</code></pre>
+<h2 id="comparator">Comparator</h2>
+<p>这个可以用来做比较. 在上一篇已经有使用过了. 此处添加一点演示代码</p>
+<pre><code>Supplier&lt;People&gt; supplier = People::new;
+
+People people1 = supplier.get();
+people1.setPeopleId(10);
+People people2 = supplier.get();
+people2.setPeopleId(100);
+
+Comparator&lt;People&gt; comparator1 = Comparator.comparing(People::getPeopleId);
+System.out.println(comparator1.compare(people2, people1));
+
+Comparator&lt;People&gt; comparator2 = (p1, p2) -&gt; p1.getPeopleId() &gt; p2.getPeopleId() ? 1 : 0;
+System.out.println(comparator2.compare(people1, people2));
+
+第一个输出: 1  
+第二个输出: 0
+</code></pre>
+<h2 id="binary">Binary</h2>
+<p>Consumer、Function、Predicate分别还对应了Bi的函数式接口。<br>
+它们的操作与对应的一元运算也是大同小异, 只是参数多了一个. 就不细讲了<br>
+对应的也就是二元运算函数。分别是</p>
+<ul>
+<li>BiConsumer&lt;T, U&gt;  接收T对象和U对象，不返回值</li>
+<li>BiPredicate&lt;T, U&gt; 接收T对象和U对象，返回boolean</li>
+<li>BiFunction&lt;T, U, R&gt; 接收T对象和U对象，返回R对象</li>
+</ul>
+<h1 id="总结">总结</h1>
+<p>接口一大堆, 我所理解的</p>
+<ul>
+<li>
+<p>Consumer, BiConsumer: 消费</p>
+</li>
+<li>
+<p>Predicate, BiPredicate: 条件判断</p>
+</li>
+<li>
+<p>Function, BiFunction, UnaryOperator, BinaryOperator: 参数处理</p>
+</li>
+<li>
+<p>Supplier: 工厂</p>
+</li>
+</ul>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java-8-guide-e1/">
+                                <h3 class="post-title">
+                                    Java 8 Guide E1
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3">自定义一个函数式接口</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA">代码展示</a></li>
+<li><a href="#%E8%AE%B2%E8%A7%A3">讲解</a></li>
+<li><a href="#%E7%BB%93%E6%9E%9C%E8%BE%93%E5%87%BA">结果输出</a></li>
+</ul>
+</li>
+<li><a href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3">内置函数式接口</a>
+<ul>
+<li><a href="#predicate">Predicate</a></li>
+<li><a href="#consumer">Consumer</a></li>
+<li><a href="#function">Function</a></li>
+<li><a href="#supplier">Supplier</a></li>
+<li><a href="#unaryoperator">UnaryOperator</a></li>
+<li><a href="#binaryoperator">BinaryOperator</a></li>
+<li><a href="#comparator">Comparator</a></li>
+<li><a href="#binary">Binary</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

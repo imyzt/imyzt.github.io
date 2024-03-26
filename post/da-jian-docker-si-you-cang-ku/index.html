@@ -1,0 +1,388 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    搭建docker私有仓库 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            搭建docker私有仓库
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-04-12</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="前言">前言</h1>
+<p>之前就有在公司内网搭建过私有docker仓库，这次接着看这个课程。 将搭建docker仓库的过程记录下来。</p>
+<h1 id="下载镜像">下载镜像</h1>
+<p>首选， 我们从 [docker仓库官网][1] 将docker官方提供的私有仓库的镜像找到, 然后通过 <code>pull</code> 命令下载下来。<br>
+在仓库首页搜索 <code>regisrty</code>，第一个就是官方提供的镜像。 找到 tag:2 ，将其复制到命令行界面。</p>
+<pre><code>$ docker pull registry:2
+2: Pulling from library/registry
+c87736221ed0: Pull complete
+1cc8e0bb44df: Pull complete
+54d33bcb37f5: Pull complete
+e8afc091c171: Pull complete
+b4541f6d3db6: Pull complete
+Digest: sha256:3b00e5438ebd8835bcfa7bf5246445a6b57b9a50473e89c02ecc8e575be3ebb5
+Status: Downloaded newer image for registry:2
+</code></pre>
+<h1 id="启动镜像">启动镜像</h1>
+<p>完成镜像的下载之后, 肯定是要运行起来, docker官方给我们提供了启动命令. 通过运行下面的命令, 我们就能够看到私有仓库是运行起来了.</p>
+<pre><code>$ docker run -d -p 5000:5000 --restart always --name registry registry:2
+dc8e14fcb2028bd1c354750a4647c139ac62d0662651bd3c974cbfd4667a9577
+
+
+$ docker ps|grep registry
+dc8e14fcb202        registry:2                   &quot;/entrypoint.sh /etc…&quot;   47 seconds ago      Up 47 seconds       0.0.0.0:5000-&gt;5000/tcp   registry
+</code></pre>
+<h1 id="推送镜像">推送镜像</h1>
+<p>完成上面的操作，一个基本的本地私有的镜像仓库就算搭建完成了， 我们可以通过推送一个镜像到仓库中来测试是否成功。</p>
+<ul>
+<li>首先, 我们查看本地镜像, 找一个较小的alpine版本的jre试一下.</li>
+</ul>
+<pre><code>$ docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+user-edge-service     latest              8a4343ae292b        22 minutes ago      472MB
+user-service          latest              5255cb130cfc        22 minutes ago      463MB
+message-service       latest              e8a0aa292277        About an hour ago   932MB
+course-edge-service   latest              93cdb20a805f        5 hours ago         470MB
+course-service        latest              0347264048f7        6 hours ago         468MB
+api-gateway-zuul      latest              66cde019cbaf        6 hours ago         476MB
+python-base           latest              018c9430d5e1        22 hours ago        932MB
+openjdk               8-jre-alpine3.9     ce8477c7d086        2 days ago          84.9MB
+openjdk               8-jre               d55d64383c12        2 weeks ago         443MB
+python                3.6                 2bb3204ab1d1        2 weeks ago         924MB
+registry              2                   f32a97de94e1        5 weeks ago         25.8MB
+
+</code></pre>
+<ul>
+<li>通过 <code>docker tag</code> 命令我们将本地的openjdk重新打包成 <code>localhost:5000/openjdk:8-jre-alpine3.9</code> 镜像. 然后查看我们刚才打包的镜像.</li>
+</ul>
+<pre><code>$ docker tag openjdk:8-jre-alpine3.9 localhost:5000/openjdk:8-jre-alpine3.9
+
+$ docker images|grep localhost:5000
+localhost:5000/openjdk   8-jre-alpine3.9     ce8477c7d086        2 days ago          84.9MB
+
+</code></pre>
+<ul>
+<li>最后, 通过 <code>docker push</code>命令将我们刚才打包的镜像上传至本地仓库.  然后通过 <code>docker pull</code>命令来验证是否上传成功.<br>
+通过最后打印的 <font color='red'>Status: Image is up to date </font> 可以看出我们的镜像已经成功上传并且能够成功下载下来了.</li>
+</ul>
+<pre><code>$ docker push localhost:5000/openjdk:8-jre-alpine3.9
+The push refers to repository [localhost:5000/openjdk]
+aae5c057d1b6: Pushed
+dee6aef5c2b6: Pushed
+a464c54f93a9: Pushed
+8-jre-alpine3.9: digest: sha256:922d65ba63c3cccb58c0a03e8bdfa86161c60c2aeb33db85d952d99c54f9662b size: 947
+
+$ docker pull localhost:5000/openjdk:8-jre-alpine3.9
+8-jre-alpine3.9: Pulling from openjdk
+Digest: sha256:922d65ba63c3cccb58c0a03e8bdfa86161c60c2aeb33db85d952d99c54f9662b
+Status: Image is up to date for localhost:5000/openjdk:8-jre-alpine3.9
+</code></pre>
+<h1 id="仓库页面">仓库页面</h1>
+<p>有了上面的操作，我们这只算是完成了一个最基本的仓库功能。 它还没有页面。 在操作上还不是特别符合私有仓库的易用性。所以开源界有很多对 docker registry 做了界面开发， 其中非常不错的一个就是 VMware的 [harbor][2], 不过目前已经由 [goharbor][3] 组织负责维护了. 可以通过访问前面的链接, 下载 [Harbor offline installer][4] 版本. 下载速度还是非常不错的</p>
+<p>下载完成后对压缩包进行解压. 然后进入harbor的目录修改它的配置文件 <code>harbor.cfg</code>, 将 <code>hostname</code> 修改为你想要配置的地址.其它参数上面都加上了注释, 可以具体去看.<br>
+下图我展示了我的配置.</p>
+<p>![harbor.cfg配置][5]</p>
+<h2 id="安装harbor">安装harbor</h2>
+<p><font color='#EE3D11'>[Warning] 用Linux安装</font>，在安装过程中会踩无数的坑。我再次记录几个。</p>
+<p>首先我们将 docker-compose.yml 文件中的所有 <code>volumes</code> 目录前面都加上 <strong>.</strong>(当前目录), 防止文件乱窜，然后修改 <code>harbor.cfg</code> 的 <code>secretkey_path=./data</code>（设置当前目录）<br>
+接下来运行目录下面的 <code>install.sh</code> 文件. 你会收到各种错误。。。</p>
+<ul>
+<li>错误一<br>
+你可能会收到下面的提示：</li>
+</ul>
+<pre><code>OSError: [Errno 1] Operation not permitted: '/data/secretkey'
+</code></pre>
+<p>解决方法是将当前目录下面的 <code>data</code> 目录 <code>chmod 777 data -R</code>.</p>
+<ul>
+<li>错误二</li>
+</ul>
+<pre><code>[Step 2]: preparing environment ...
+loaded secret from file: ./data/secretkey
+Traceback (most recent call last):
+  File &quot;./prepare&quot;, line 220, in &lt;module&gt;
+    secret_key = get_secret_key(secretkey_path)
+  File &quot;./prepare&quot;, line 85, in get_secret_key
+    secret_key = _get_secret(path, &quot;secretkey&quot;) 
+  File &quot;./prepare&quot;, line 100, in _get_secret
+    mark_file(key_file)
+  File &quot;./prepare&quot;, line 82, in mark_file
+    os.chown(path, uid, gid)
+OSError: [Errno 1] Operation not permitted: './data/secretkey'
+</code></pre>
+<p>修改了权限之后还报这个错误的话, 用 sudo 运行 install命令, 基本上问题就不打了. 看到下面的信息, 就说明艰难的过程完成了.</p>
+<pre><code>:heavy_check_mark: ----Harbor has been installed and started successfully.----
+
+Now you should be able to visit the admin portal at http://harbor.mooc.com:10001. 
+For more details, please visit https://github.com/goharbor/harbor .
+
+</code></pre>
+<h2 id="查看harbor界面">查看Harbor界面</h2>
+<p>完成上面的步骤, 我们就可以去访问Harbor的界面了. 默认用户名/密码: admin/Harbor12345</p>
+<h3 id="创建用户">创建用户</h3>
+<p>首先, 我们尝试着创建一个用户. 如图:</p>
+<p>![创建用户][6]</p>
+<h3 id="推送镜像-2">推送镜像</h3>
+<p>然后, 我们通过对前面使用的openjdk再次打包, 对内容进行发布.推送到刚创建的harbor仓库中..</p>
+<pre><code>$ docker tag openjdk:8-jre-alpine3.9 harbor.mooc.com:800/micro-service/openjdk:8-jre-alpine3.9
+
+$ docker push harbor.mooc.com:800/micro-service/openjdk:8-jre-alpine3.9
+``
+
+----------
+
+
+  [1]: http://hub.docker.com
+  [2]: https://github.com/goharbor/harbo
+  [3]: https://github.com/goharbor
+  [4]: https://storage.googleapis.com/harbor-releases/release-1.7.0/harbor-offline-installer-v1.7.5.tgz
+  [5]: http://blog.imyzt.top/upload/2019/04/ul8re7m8bmgodr71216uvlelvc.jpg
+  [6]: http://imyzt.top/upload/2019/04/usm33su6nuj6voqufj0l76pkl9.jpg</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/win-docker-toolbox-wen-ti/">
+                                <h3 class="post-title">
+                                    win docker toolbox 问题
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F">下载镜像</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F">启动镜像</a></li>
+<li><a href="#%E6%8E%A8%E9%80%81%E9%95%9C%E5%83%8F">推送镜像</a></li>
+<li><a href="#%E4%BB%93%E5%BA%93%E9%A1%B5%E9%9D%A2">仓库页面</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85harbor">安装harbor</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8Bharbor%E7%95%8C%E9%9D%A2">查看Harbor界面</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7">创建用户</a></li>
+<li><a href="#%E6%8E%A8%E9%80%81%E9%95%9C%E5%83%8F-2">推送镜像</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

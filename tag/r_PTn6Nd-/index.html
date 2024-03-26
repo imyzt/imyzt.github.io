@@ -1,0 +1,445 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Spring</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">
+                        CircuitBreak导致ThreadLocal参数丢失问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-01-25</time>
+                    
+                        <a href="https://imyzt.github.io/tag/_KxCNznKV/" class="post-tag i-tag
+                            i-tag-error">
+            #ThreadLocal
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_3">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            背景
+使用OpenFeign时，通常会实现RequestInterceptor接口来自定义FeignConfiguration，OpenFeign暴露了feign.RequestTemplate信息，给到我们在发送请求前自定义参数信息的扩展点。
+在分布式系统中，通常会将本服务的信息（UserInfo、RequestId）透传至下游服务，从而实现分布式链路追踪等功能，对于像用户信息等，在Web系统中通常使用 ThreadLocal 来存储信息，在自定义的FeignConfiguration中获取ThreadLocal再塞入到feign.RequestTemplate中，实现向下游服务的传递，示例：
+public class FeignConfiguration implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String userId = SubjectContext.get().getUserId();
+        if (null != attributes) {
+            HttpServletRequest request = attributes.getRequest();
+            template.header(&amp;quot;token&amp;quot;, request.getHeader(&amp;quot;TOKEN&amp;quot;));
+            template.header(&amp;quot;userId&amp;quot;, userId);
+        }
+    }
+}
+
+简单的Context示例：
+public class SubjectContext {
+    protected static ThreadLocal&amp;lt;UserInfo&amp;gt; subjectContext = new ThreadLocal();
+    public static void remove() {
+        subjectContext.remove();
+    }
+    public static void set(UserInfo uerInfo) {
+        subjectContext.set(uerInfo);
+    }
+    public static UserInfo get() {
+        return (UserInfo)subjectContext.get();
+    }
+}
+
+出现错误
+上述代码在常规情况下，是能够按照预期执行的。
+但是最近项目引入了CircuitBreaker作为服务熔断的断路器之后，上述代码在执行到SubjectContext.get()时，会抛出空指针，拿不到用户信息。
+通过分析CircuitBreaker的源码，最终定位到代码出现在Resilience4JCircuitBreaker内部，在Resilience4JCircuitBreaker中有一个public &amp;lt;T&amp;gt; T run(Supplier&amp;lt;T&amp;gt; toRun, Function&amp;lt;Throwable, T&amp;gt; fallback)方法，方法入参的toRun就是封装过的我们定义的Feign接口，其包装过程在FeignCircuitBreakerInvocationHandler#asSupplier代码中，如下：
+private Supplier&amp;lt;Object&amp;gt; asSupplier(final Method method, final Object[] args) {
+    final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+    return () -&amp;gt; {
+        try {
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            // 执行我们的真正方法
+            return dispatch.get(method).invoke(args);
+        }
+        catch (RuntimeException throwable) {
+            throw throwable;
+        }
+        catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    };
+}
+
+Spring Cloud CircuitBreaker Resilience4j 提供了两种实现：
+
+使用 Semaphores 的 SemaphoreBulkhead。
+一个 FixedThreadPoolBulkhead，它使用一个有界队列和一个固定的线程池。
+
+默认情况下，Spring Cloud CircuitBreaker Resilience4j 使用 FixedThreadPoolBulkhead。要修改默认行为以使用 SemaphoreBulkhead，请将属性 spring.cloud.circuitbreaker.resilience4j.enableSemaphoreDefaultBulkhead 设为 true。
+正是由于上述原因，默认将我们的FeignConfiguration提交给了线程池，由于我们使用的是ThreadLocal导致线程本地变量没有向子线程传递，在执行FeignConfiguration时子线程无法拿到Context信息，最终导致程序的报错。
+解决办法
+通过分析源码我们发现，执行任务的线程池Resilience4JCircuitBreaker#executorService是由外部传递过来进行初始化的，调用方在Resilience4JCircuitBreakerFactory#create(java.lang.String, java.lang.String, java.util.concurrent.ExecutorService)
+在Resilience4JCircuitBreakerFactory中发现，是由本实例在create方法被调用时传入的本类的成员变量，即：
+
+private ExecutorService executorService = Executors.newCachedThreadPool();
+private ConcurrentHashMap&amp;lt;String, ExecutorService&amp;gt; executorServices = new ConcurrentHashMap&amp;lt;&amp;gt;();
+
+
+而我们在没有定义自定义Feign Group时，默认使用的就是executorService，在本类中有一个Resilience4JCircuitBreakerFactory#configureExecutorService方法专门保留了外部传入自定义线程池的扩展，我们可以自己实现创建一个支持传递Context到子线程的线程池，即可将参数向下传递，比如像这样：
+@Configurable
+@AllArgsConstructor
+public class CircuitBreakerConfiguration implements ApplicationRunner {
+
+    private final Resilience4JCircuitBreakerFactory factory;
+    
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        ContextThreadPoolExecutor contextThreadPoolExecutor = 
+                new ContextThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024));
+
+        // **change ThreadPoolExecutor**
+        factory.configureExecutorService(contextThreadPoolExecutor);
+    }
+    
+    public static class ContextThreadPoolExecutor extends ThreadPoolExecutor {
+
+        public ContextThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        public void execute(Runnable command) {
+            super.execute(wrap(command));
+        }
+
+        private static Runnable wrap(Runnable runnable) {
+            **SubjectContext context = SubjectContext.getContext();**
+            return () -&amp;gt; {
+                // 将参数向下传递
+                **SubjectContext.setContext(context);**
+                try {
+                    runnable.run();
+                } finally {
+                    **SubjectContext.clear();**
+                }
+            };
+        }
+    }
+}
+
+后记
+上述的方案只解决了没有自定义Group的情况，官方在自定义Group的情况下是没有保留扩展位的，所以给官方提了一个MR并且已成功合并到主分支，如下：
+Customizable groupExecutorService #180
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">
+                        Spring中使用到的设计模式
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-21</time>
+                    
+                        <a href="https://imyzt.github.io/tag/hheaoxZjL/" class="post-tag i-tag
+                            i-tag-other_1">
+            #设计模式
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-error">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            设计模式的基本原则：
+
+开闭原则
+单一职责原则
+里氏替换原则
+依赖倒置原则
+
+Spring中用到的模式：
+
+HandlerAdapter，适配器模式
+BeanFactory，简单工厂模式
+FactoryBean，工厂方法模式
+Controller的单例模式，也可以是原型模式
+Service@Transactional，代理模式
+@EventListener，观察者模式
+JdbcTemplate，RestTemplate，模板方法模式
+TransactionAwareCacheDecorator，装饰器模式
+AopProxy，策略模式
+
+其他在业务中常用的模式：
+业务中涉及的模式：
+策略模式：
+
+不同数据的不同处理结果
+
+观察者模式：
+
+事件监听和分发（不同处理类型）
+
+门面模式：
+
+不同活动的不同参数，统一门面，采用Jackson的类型映射子类
+
+状态模式：
+
+支付的不同状态，通过事件和状态流转
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+                        通过Spring工具类，父类获取子类泛型（多态泛型传参）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-09-22</time>
+                    
+                        <a href="https://imyzt.github.io/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-success">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。
+ResolvableType[] generics = ResolvableType.forClass(this.getClass()).getSuperType().getGenerics();
+// generics[0]是第一个泛型
+T o = (T) generalResult.toJavaObject(generics[0].resolve());
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1711466946029)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

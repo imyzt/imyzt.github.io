@@ -1,0 +1,316 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    读扩散、写扩散 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            读扩散、写扩散
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-12-07</time>
+                            
+                                <a href="https://imyzt.github.io/tag/2D49EPSEM/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #设计方案
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>读扩散、写扩散，主要应用在feed流场景中，什么是feed流？</p>
+<ul>
+<li>微博</li>
+<li>微信朋友圈<br>
+等都是典型的信息流业务，存在好友关系，如关注和粉丝，自己的主页由别人发布的内容组成。</li>
+</ul>
+<p>feed流业务最大的特点是<strong>自己的主页由别人的feed组成</strong>，获得主页本质上就是在组装别人的内容。<br>
+从技术上主要有两种方式：</p>
+<ul>
+<li>拉取（读扩散）</li>
+<li>推送（写扩散）</li>
+</ul>
+<h1 id="拉模式读扩散">拉模式（读扩散）</h1>
+<p>假设存在A关注BC，那么存储A关注B、A关注C；C的粉丝有A、B的粉丝有A，这么一组关系。<br>
+<strong>发布流程</strong>：当B/C发布内容时，只需将自己的内容存储在自己的队列（feed记录）中。<br>
+<strong>查询个人主页流程</strong>：当A查看自己的主页时：</p>
+<ol>
+<li>拉取A的关注列表：存在B、C</li>
+<li>获取所关注列表中B、C的feed记录，判断是否有可见性设置</li>
+<li>对消息进行 <code>order by time desc</code>，分页取数据</li>
+</ol>
+<h2 id="缺点">缺点</h2>
+<ol>
+<li>拉取信息流时，业务非常复杂</li>
+<li>多次访问时，每次都需要进行大量计算</li>
+</ol>
+<h2 id="优点">优点</h2>
+<ol>
+<li>存储结构简单，数据存储量较小，只存储一份不会冗余。</li>
+<li>关注、取关、发布feed的流程都很简单</li>
+<li>适合早期业务量不大的时候，可以快速实现</li>
+</ol>
+<h1 id="推模式写扩散">推模式（写扩散）</h1>
+<p>这是<strong>蓝色</strong>的文字</span></p>
+<p>继续上面的假设，关注关系依旧不变，但与读扩散不同的是，每个用户还需要<span style="color:red">存储自己<strong>收到</strong>的feed流</span><br>
+<strong>发布流程</strong>：当B/C发布内容时，需要查询自己的粉丝列表，然后分别在粉丝A的feed中，写入B、C发布的feed信息。<br>
+<strong>查询个人主页的流程</strong>：当A查看自己的主页时：<strong>直接拉取自己的feed记录即可</strong>。</p>
+<h2 id="缺点-2">缺点</h2>
+<ol>
+<li>实现关注取关时，关注时，需要将信息从写入到粉丝的feed记录中，移除时，同样需要将内容从feed记录中删除。</li>
+<li>极大的存储资源消耗，需要存储多份feed信息。</li>
+</ol>
+<h2 id="优点-2">优点</h2>
+<ol>
+<li>拉取信息时非常简单，只需直接查询feed记录。</li>
+</ol>
+<h1 id="总结">总结</h1>
+<ol>
+<li>拉模式，读扩散，feed存一份，存储小，用户集中访问数据，性能差;</li>
+<li>推模式，写扩散，feed存多份，用冗余存储换锁冲突，性能高;</li>
+</ol>
+<h1 id="参考">参考</h1>
+<p>全文参考自：<a href="https://www.51cto.com/article/697949.html">58沈剑-读扩散，写扩散，终于讲清楚了！</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">
+                                <h3 class="post-title">
+                                    分布式唯一标识设计
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E6%8B%89%E6%A8%A1%E5%BC%8F%E8%AF%BB%E6%89%A9%E6%95%A3">拉模式（读扩散）</a>
+<ul>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点</a></li>
+<li><a href="#%E4%BC%98%E7%82%B9">优点</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8E%A8%E6%A8%A1%E5%BC%8F%E5%86%99%E6%89%A9%E6%95%A3">推模式（写扩散）</a>
+<ul>
+<li><a href="#%E7%BC%BA%E7%82%B9-2">缺点</a></li>
+<li><a href="#%E4%BC%98%E7%82%B9-2">优点</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

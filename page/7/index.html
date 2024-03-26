@@ -1,0 +1,845 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/yapi-upload-cha-jian-shi-yong/">
+                        yapi upload插件使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-30</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            yapi api
+https://hellosean1025.github.io/yapi/openapi.html
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/yapi-upload-cha-jian-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/beancopier-de-gong-ju-lei/">
+                        BeanCopier的工具类
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。
+但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。
+因此，就有了这个工具类。使用和Spring工具包一样的代码（重载方法甚至比Spring的更丰富），获得更好的效率。实现中通过对BeanCopier对象的一个Map缓存，会使得其效率更高一丢丢。
+至于具体的速度对比，网上有很多的实例，我也不做对比测试了。代码如下，如有欠缺的地方，希望留言指正，不胜感激。
+
+import com.google.common.collect.Maps;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * @author imyzt
+ * @date 2020/01/15
+ * @description bean拷贝缓存工具类
+ * 合理使用, 注意Map大小
+ */
+@UtilityClass
+@Slf4j
+public class BeanCopierUtils {
+
+    private static final Map&amp;lt;String, BeanCopier&amp;gt; BEAN_COPIER_MAP = Maps.newConcurrentMap();
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param target 目标
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &amp;lt;S&amp;gt; 源对象泛型
+     * @param &amp;lt;T&amp;gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, boolean useCache, Converter converter) {
+
+        requireNonNull(source, target);
+        boolean useConverter = Objects.nonNull(converter);
+
+        Class&amp;lt;?&amp;gt; targetClass = target.getClass();
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+        beanCopier.copy(source, target, converter);
+        return target;
+    }
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param targetClass 目标类对象
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &amp;lt;S&amp;gt; 源对象泛型
+     * @param &amp;lt;T&amp;gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, boolean useCache, Converter converter) {
+
+        requireNonNull(source, targetClass);
+        boolean useConverter = Objects.nonNull(converter);
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+
+        T instance;
+        try {
+            instance = targetClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalArgumentException();
+        }
+        beanCopier.copy(source, instance, converter);
+        return instance;
+    }
+
+    private static BeanCopier getBeanCopier(boolean useCache, String key, BeanCopier beanCopier2) {
+        BeanCopier beanCopier;
+        if (useCache) {
+            beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -&amp;gt; beanCopier2);
+        } else {
+            beanCopier = beanCopier2;
+        }
+        return beanCopier;
+    }
+
+    private static &amp;lt;S&amp;gt; void requireNonNull(S source, Object targetClass) {
+        Objects.requireNonNull(source, &amp;quot;源对象不能为空&amp;quot;);
+        Objects.requireNonNull(targetClass, &amp;quot;目标对象不能为空&amp;quot;);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target) {
+        return copy(source, target, true, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass) {
+        return copy(source, targetClass, true, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, boolean useCache) {
+        return copy(source, targetClass, useCache, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, Converter converter) {
+        return copy(source, targetClass, true, converter);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, boolean useCache) {
+        return copy(source, target, useCache, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, Converter converter) {
+        return copy(source, target, true, converter);
+    }
+
+    private static &amp;lt;S, T&amp;gt; BeanCopier createBeanCopier(S source, Class&amp;lt;T&amp;gt; target, boolean useConverter) {
+        return BeanCopier.create(source.getClass(), target, useConverter);
+    }
+
+    private static &amp;lt;S, T&amp;gt; String getKey(S source, Class&amp;lt;T&amp;gt; targetClass) {
+        return source.getClass().getName() + &amp;quot;:&amp;quot; + targetClass.getName();
+    }
+}
+
+
+在使用时，有两点需要注意的地方：
+
+target不能使用lombok等工具的链式调用，只有符合标准的set方法，cglib才会调用赋值。
+只会拷贝source，target类型和名称完全一致的属性。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/beancopier-de-gong-ju-lei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mybatis-yu-fa-jiu-cuo/">
+                        Mybatis 语法纠错
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            mybatis 在type表达式中，如果是内部类，不能通过 Class.InnerClass 指定，需要通过 Class$InnerClass 指定，不然会报ClassNotFound。
+错误堆栈
+Caused by: java.lang.ClassNotFoundException: Cannot find class: Class.InnerClass
+	at org.apache.ibatis.io.ClassLoaderWrapper.classForName(ClassLoaderWrapper.java:200)
+	at org.apache.ibatis.io.ClassLoaderWrapper.classForName(ClassLoaderWrapper.java:89)
+	at org.apache.ibatis.io.Resources.classForName(Resources.java:261)
+	at org.apache.ibatis.type.TypeAliasRegistry.resolveAlias(TypeAliasRegistry.java:116)
+	... 104 common frames omitted
+
+具体的产生原因通过报错信息，发现是org.apache.ibatis.type.TypeAliasRegistry#resolveAlias方法抛出的异常
+
+通过继续往里面走，发现是org.apache.ibatis.io.ClassLoaderWrapper#classForName(java.lang.String, java.lang.ClassLoader[])方法内部使用java.lang.Class#forName加载的类，
+
+而Java的内部类在编译之后，都会以Class$InnerClass的形式进行保存字节码文件，所以说为什么使用 . 会抛出ClassNotFound，因为mybatis最终底层还是使用的Java提供的类加载工具进行累的加载的。
+通过对内部类进行javac 我们可以看到一个类编译之后的状态。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mybatis-yu-fa-jiu-cuo/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mysql-zhi-shi-dian/">
+                        MySQL知识点
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-03-16</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            知识点
+
+innodb不支持全文检索
+between包含左右边界
+3.UPDATE IGNORE 用于在更新多行时，某一行报错不影响其他行
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mysql-zhi-shi-dian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mysql-regexp-shi-yong/">
+                        MySQL REGEXP 使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-03-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。
+在此之前，首先建立对应的数据表，ddl与dml如下：
+create table if not exists test_db.products
+(
+	id int auto_increment
+		primary key,
+	prod_name varchar(20) not null
+);
+
+INSERT INTO test_db.products (id, prod_name) VALUES (1, &#39;JetPack 1000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (2, &#39;JetPack 2000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (3, &#39;1 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (4, &#39;2 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (5, &#39;TNT (1 stick)&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (6, &#39;.5 ton anvil&#39;);
+
+
+常用指令
+由于regexp与LIKE的高度相似性，所以学习时以常用的LIKE的指令作为对比学习，有助于记忆。
+基本字符匹配
+
+全文字匹配
+
+select *
+from products
+where prod_name regexp &#39;1000&#39;;
+
+
+
+模糊匹配
+类似于LIKE语句的 &#39;_&#39;（下划线）单字符匹配。模糊匹配单个字符。
+
+select *
+from products
+where prod_name regexp &#39;.000&#39;;
+
+
+OR 匹配
+select *
+from products
+where prod_name regexp &#39;1000|2000&#39;;
+
+
+匹配几个字符之一
+
+正确用法
+
+select *
+from products
+where prod_name regexp &#39;[123] ton&#39;;
+
+
+
+错误示例
+正则表达式可以用 [] 包含内容或者 | 竖线 表示 或，但如果使用下面的用法，不能获得正确的结果，因为在最后一个&#39;或&#39;时，MySQL会理解成 3 ton。得到不同的结果。
+
+select *
+from products
+where prod_name regexp &#39;1|2|3 ton&#39;;
+
+
+匹配范围
+匹配特殊字符
+匹配字符类
+匹配多个实例
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mysql-regexp-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+                        Git 原理详解及实用指南 - merge，add，log
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-02-18</time>
+                    
+                        <a href="https://imyzt.github.io/tag/Z2IdH6vis/" class="post-tag i-tag
+                            i-tag-warning">
+            #Git 原理详解及实用指南
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/" class="post-feature-image" style="background-image:url(https://imyzt.github.io/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            merge
+
+git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。
+从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。
+
+
+图 - git merge 示意图
+特殊情况，如何处理
+放弃合并
+当前处于解决冲突的中间状态， 通过 git merge --abort 取消合并，回到merge之前的状态。
+HEAD领先于当前commit
+即合并之前的commit，这是一个无意义操作，Git什么也不会做。空merge。
+HEAD落后于当前commit（快速前移）
+
+在没有其它分支的情况下，Git会把HEAD指向的branch移动到目标commit。
+当前在HEAD指向master分支，执行 git merge feature1 后的操作如下图所示：
+
+
+图 - 合并领先于HEAD的commit
+
+专有名词 - （快速前移）
+在 git pull 经常出现，比如当前master分支本地没有更新，同事推送了新的commit到远程仓库，那么在执行 git pull 时，目标commit（远程仓库最新commit） 领先于 当前commit（本地commit），HEAD会携带本地master分支快速前移。
+
+
+图 - git pull 实现原理
+add
+git add 添加的是文件改动，而不是文件。
+log
+
+git log -p[--patch] 查看具体到每个commit的改动细节。
+git log --stat 查看每个commit改动的文件。
+git show [commitId] [filePath] 查看当前commit的改动细节（精确到文件）。
+对比
+
+git diff 查看当前工作区与暂存区的区别。
+git diff --staged[--cached] 查看当前暂存区与上一条commit的区别。
+git diff HEAD 查看当前工作区与上一条commit的区别。
+
+
+
+本章命令总结
+
+git merge commit/branch 合并某个提交或分支
+git merge --abort 放弃当前合并
+git add . 添加某个文件改动到git暂存区
+git log 的详细操作 git log
+
+引用声明
+本文内容来自掘金小册-Git 原理详解及实用指南的学习笔记内容，图片等均来自原作者。此处只作为笔记记录。
+请支持原作者
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/">
+                        Git 原理详解及实用指南 - HEAD，branch，push
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-02-17</time>
+                    
+                        <a href="https://imyzt.github.io/tag/Z2IdH6vis/" class="post-tag i-tag
+                            i-tag-warning">
+            #Git 原理详解及实用指南
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/" class="post-feature-image" style="background-image:url(https://imyzt.github.io/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch.png) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            HEAD
+
+HEAD永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。
+远程分支HEAD永远指向默认分支（master）。
+HEAD是Git中独特的引用，它是唯一的。
+
+Branch
+
+也是一类引用，HEAD除了直接指向commit之外，也可以通过指向branch间接指向commit。
+
+
+ 图 - HEAD通过Branch间接指向Commit   
+
+当HEAD指向branch，发生commit时，HEAD会带着branch一起移动。如下图（HEAD携带feature1一起移动。）
+
+
+ 图 - HEAD移动示意图   
+Push
+
+将当前 branch 提交到远程仓库，并将当前 branch 的所有 commit 也提交到远程分支。
+push时，如果是远程仓库不存在的分支，需要指定名称，git push origin branch_name, 或者通过修改 git config 的 push.default 来指定推送时默认分支。
+push之后上传分支，并不会上传 HEAD, 远程仓库的 HEAD 永远指向默认分支（master）
+
+master
+master是Git中默认的branch，它与其他branch的区别在于：
+
+新建仓库中第一个commit会被master自动指向。
+在git clone时，会自动checkout到master（HEAD指向master分支，间接指向master分支的commit）。
+
+
+ 图 - 克隆远程仓库流程   
+branch的基本操作
+
+创建： git branch 名称，或 git checkout -b 名称
+切换：git checkout 名称
+删除：git branch -d/-D 名称，-D强制删除
+推送：git push [origin branch_name]，将本地分支推送到远程仓库对应分支
+
+本章命令总结
+
+git log 查看提交日志
+git branch branch的基本操作
+git commit 提交代码到本地仓库
+git checkout branch_name 切换分支
+git clone origin_url 克隆远程仓库到本地仓库
+
+总结
+
+git branch、HEAD都是围绕着commit走的；
+git push的本质是将 当前branch 位置的（commit）上传到远程仓库，并将它的commit一并提交。
+HEAD，Branch都是引用，引用的本质就是一个字符串，可以是一个commit的SHA-1码，也可以是一个branch的branch名。
+
+引用声明
+本文内容来自掘金小册-Git 原理详解及实用指南的学习笔记内容，图片等均来自原作者。此处只作为笔记记录。
+请支持原作者
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-kai-fa-gong-ju-tui-jian/">
+                        Java开发工具推荐
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-01-20</time>
+                    
+                        <a href="https://imyzt.github.io/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            工具包
+
+Google Guava
+HuTool
+Apache Commons(这玩意估计没人不知道了。)
+
+工具类
+AntPathMatcher
+作用：URL路径匹配
+？匹配一个字符
+*匹配0个或多个字符
+**匹配0个或多个目录
+StopWatch
+作用：方法耗时计算
+该类Spring和Guava都有提供，用法大同小异
+BeanCopier
+作用：拷贝bean
+比Apache和Spring提供的BeanUtils效率好点
+注意点：
+该方法与lombok提供的@Accessors(chain = true)注解冲突，在cglib最底层target调用set方法进行参数设置的时候，判断了set方法返回值是否为void，不为void不会进行赋值操作。
+解决方法有2：
+
+去掉@Accessors(chain = true)
+使用org.springframework.beans.BeanUtils
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-kai-fa-gong-ju-tui-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mybatis-xml-test-yu-fa-bug/">
+                        Mybatis XML test语法bug
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-12-11</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            事出有因
+今天遇到一个mybatis语法的bug，在此记录一下。
+业务是前台有一个跟进状态的筛选按钮，与前台约定的参数是Integer类型的0-4, 标志不同的状态，根据不同的参数做不同的过滤。mybatis的语法如下。
+&amp;lt;if test=&amp;quot;query.followStatus != null and query.followStatus != &#39;&#39;&amp;quot;&amp;gt;
+    &amp;lt;choose&amp;gt;
+        &amp;lt;!--未跟进--&amp;gt;
+        &amp;lt;when test=&amp;quot;query.followStatus == 0&amp;quot;&amp;gt;
+            AND scfu.id IS NULL
+        &amp;lt;/when&amp;gt;
+        &amp;lt;!--未选择意向--&amp;gt;
+        &amp;lt;when test=&amp;quot;query.followStatus == 4&amp;quot;&amp;gt;
+            AND scfu.intention IS NULL AND scfu.id IS NOT NULL
+        &amp;lt;/when&amp;gt;
+        &amp;lt;!--1,2,3的情况--&amp;gt;
+        &amp;lt;otherwise&amp;gt;
+            AND scfu.intention = #{query.followStatus}
+        &amp;lt;/otherwise&amp;gt;
+    &amp;lt;/choose&amp;gt;
+&amp;lt;/if&amp;gt;
+
+今天客户反馈了一个bug，该筛选项在前台选中未跟进时，会出现筛选项无效的情况。也就是第一行 if test 都没有进去，因为进去了的话，最起码什么都不符合的情况都会进入 otherwise ，所以定位到问题出现在外层 if。通过搜索发现有人遇到过相似的问题。
+解决方案
+MyBatis参数为Integer型并赋值为0时判断失误的问题解决
+根据这位博主介绍，mybatis的test语法，在类型为Integer时，如果值为0, 会被识别为 &#39;&#39;(空)， 导致第一个if的后一部分 query.followStatus != &#39;&#39; 不符合。最终没有进入 if 的逻辑。解决方法上面的博主已经给出了，我再此贴一下
+
+通过or进行二次判断
+
+&amp;lt;if test=&amp;quot;status !=null and (status!=&#39;&#39; or status == 0)&amp;quot;&amp;gt;
+    业务逻辑
+&amp;lt;/if&amp;gt;
+
+
+对Integer类型去除 != &#39;&#39; 的判断
+
+后记
+另一个常出现的问题，test语法中，布尔值比较需要用 bool == true 的语法判断，说明：bool（一个布尔值变量）
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mybatis-xml-test-yu-fa-bug/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/springboot-guan-bi-di-zhi-yan-ge-pi-pei/">
+                        SpringBoot 关闭地址严格匹配
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-11-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            问题点
+Spring默认开启了地址的严格匹配，比如 localhost:8080/api/article/{aid} 能正确访问，但是 localhost:8080**/**/api/article/{aid} 就会造成访问404
+解决方案
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/springboot-guan-bi-di-zhi-yan-ge-pi-pei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/6/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.github.io/page/8/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1711466946029)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

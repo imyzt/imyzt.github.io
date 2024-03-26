@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://imyzt.github.io</id>
+    <title>杨镇涛的一亩三分地</title>
+    <updated>2024-03-26T15:29:08.753Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://imyzt.github.io"/>
+    <link rel="self" href="https://imyzt.github.io/atom.xml"/>
+    <subtitle>分享我的技术和生活</subtitle>
+    <logo>https://imyzt.github.io/images/avatar.png</logo>
+    <icon>https://imyzt.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[花市]]></title>
+        <id>https://imyzt.github.io/post/hua-shi/</id>
+        <link href="https://imyzt.github.io/post/hua-shi/">
+        </link>
+        <updated>2024-03-26T15:20:32.000Z</updated>
+        <content type="html"><![CDATA[<p><img src="https://imyzt.github.io/post-images/1711466708760.jpg" alt="花" loading="lazy"><br>
+<img src="https://imyzt.github.io/post-images/1711466753884.jpg" alt="花" loading="lazy"></p>
+<p>-- 2024-03-24 摄于荷兰花卉小镇</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[业务逻辑编排错误 & TTL浅拷贝导致参数丢失问题]]></title>
+        <id>https://imyzt.github.io/post/ye-wu-luo-ji-bian-pai-cuo-wu-and-ttl-qian-kao-bei-dao-zhi-can-shu-diu-shi-wen-ti/</id>
+        <link href="https://imyzt.github.io/post/ye-wu-luo-ji-bian-pai-cuo-wu-and-ttl-qian-kao-bei-dao-zhi-can-shu-diu-shi-wen-ti/">
+        </link>
+        <updated>2024-03-09T06:40:35.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<p>在DDD项目中，为了方便参数的传递，通常会使用<code>ThreadLocal</code>来保存一个<code>对象</code>来实现对参数的跨方法传递，避免通过形参的形式传递。在内部项目中，有一个项目使用的是 alibaba开源的 <code>transmittable-thread-local</code>来存储参数，新建了一个上下文对象（<code>AbilityContext.java</code>），使用<code>HashMap</code>来临时存储和获取参数。</p>
+<details>
+<summary>AbilityContext 示例</summary>
+<pre><code class="language-java">public class AbilityContext {
+    private static final ThreadLocal&lt;Map&lt;String, Object&gt;&gt; CONTEXT = new TransmittableThreadLocal&lt;&gt;();
+
+    private AbilityContext() {
+    }
+
+    /**
+     * 初始化上下文
+     */
+    public static void initContext() {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&lt;&gt;(8));
+        } else {
+            CONTEXT.get().clear();
+        }
+    }
+
+    /**
+     * 清除上下文
+     */
+    public static void clearContext() {
+        CONTEXT.remove();
+    }
+
+    public static Map&lt;String, Object&gt; getInnerMap() {
+        return CONTEXT.get();
+    }
+
+    /**
+     * 获取上下文内容
+     */
+    public static &lt;T&gt; T getValue(String key) {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            return null;
+        }
+        return (T) con.get(key);
+    }
+
+    /**
+     * 设置上下文参数
+     */
+    public static void putValue(String key, Object value) {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&lt;&gt;(8));
+            con = CONTEXT.get();
+        }
+        con.put(key, value);
+    }
+}
+</code></pre>
+</details>
+<h2 id="项目情况介绍">项目情况介绍</h2>
+<p>通常来说，DDD项目的基本流程是由<code>interface-&gt;application</code>，中间封装一层来集中处理上下文的初始化和清空动作，如下图：<br>
+<img src="https://imyzt.github.io/post-images/1709967464622.png" alt="ddd" loading="lazy"></p>
+<p>在正常情况下，上述流程可以正确的完成参数的写入和获取，但是，在项目运行过程中遇到了一个bug，正常写入参数后，偶现性（低频）获取值为NULL，导致程序出错，示例代码如下（隐去业务代码，重新写的伪代码）：</p>
+<ol>
+<li>其中<code>demo()</code>方法为当时复现的方法</li>
+<li><code>demo2()</code>为伪代码，是业务代码中调用了另一个<code>application</code>，假设其逻辑和<code>demo()</code>方法一致的业务代码。</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class AlibabaTtlWrongUsageExampleApplication {
+
+    public static void main(String[] args) {
+        demo(i);
+    }
+
+    private static void demo(int idx) {
+        // 初始化
+        AbilityContext.initContext();
+        // 赋业务值
+        AbilityContext.putValue(&quot;main&quot;, &quot;mainValue&quot;);
+
+        // 这里简化了代码，实际上经过了很多层业务代码调用后才出现了此方法
+        ThreadUtil.execute(() -&gt; {
+            execute-&gt;demo2();
+        });
+
+        // do something
+
+        // 主线程再次获取业务值(偶现为null)
+        String value = AbilityContext.getValue(&quot;main&quot;);
+        if (Objects.isNull(value)) {
+            log.warn(&quot;lastGetNullValue, idx={}&quot;, idx);
+        }
+    }
+}
+</code></pre>
+<p>上述代码运行设置了一个<code>key=main</code>，值为<code>mainValue</code>。在下方<code>AbilityContext.getValue(&quot;main&quot;)</code>偶现获取==NULL。</p>
+<h2 id="展开分析">展开分析</h2>
+<p>当时在分析的开始有推测是业务代码中参数被重新赋值为NULL，但通过对后续业务代码逐行查看，并没有找到重新赋值的逻辑。<br>
+在深入业务代码分析的过程中，发现主流程中有一个异步方法调用（<code>ThreadUtil.execute()</code>），再次调用了另一个<strong>领域服务</strong>（这是不符合DDD规范的！），而<strong>领域服务的入口都会<code>AbilityContext.initContext()</code>的逻辑</strong>，通过这个线索 ，继续展开了深入分析。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1709970122111.png" alt="ddd" loading="lazy"></figure>
+<p>编码者的初衷可能是想到<strong>异步线程已经脱离了当前线程，再次调用 <code>initContext()</code>方法是初始化了一个新的对象上下文</strong>，<strong>但是</strong>由于项目使用的是 <code>alibaba TTL</code>，能够实现跨线程的传递，所以在子线程中依旧能拿到父线程的<code>HashMap</code>。并且<strong>TTL默认是使用的浅拷贝对象</strong>。由于<code>initContext()</code>中，调用了<code>HashMap.clear()</code>方法，<strong>相当于将父线程的<code>HashMap</code>给清空了！</strong>。</p>
+<p>通过比对父子线程的hashCode值确定为同一对象</p>
+<pre><code class="language-java">// 主线程获取hashCode
+final int hashCode = AbilityContext.getInnerMap().hashCode();
+ThreadUtil.execute(() -&gt; {
+    // 子线程对比hashCode
+    log.info(&quot;{}, ThreadUtil hashCode={}&quot;, idx, AbilityContext.getInnerMap().hashCode() == hashCode);
+    // 子线程再次初始化(错误的根源)
+    AbilityContext.initContext();
+    // do something
+});
+14:42:28.198 [pool-1-thread-26] INFO top.imyzt.learning.caseanalysis.ttl.AlibabaTtlWrongUsageExampleApplication -- 25, ThreadUtil hashCode=true
+</code></pre>
+<h2 id="持续分析">持续分析</h2>
+<p>有了上述的线索，基本把问题原因找到了，<strong>但是为什么是偶现的呢</strong>？<br>
+因为使用了异步线程，而线程的调度由操作系统的线程调度算法来决定，并不是一定保证顺序的，所以只要当操作系统优先调度异步线程，那么<code>HashMap</code>就被清空了，如果主线程优先往下走，那么就能够获取到完整的<code>HashMap</code>。</p>
+<h2 id="后记">后记</h2>
+<p>至此，问题分析就告一段落了，整个过程中涉及到 TTL值的父子线程传递、对象浅拷贝、线程的调度，还涉及到了DDD的不规范逻辑编排，整个分析下来花费了一上午的时间，收获还是很大的。</p>
+<ol>
+<li><a href="https://github.com/alibaba/transmittable-thread-local">transmittable-thread-local</a></li>
+<li><a href="https://github.com/alibaba/transmittable-thread-local/issues/111">TransmittableThreadLocal的传递只有浅拷贝吗？</a></li>
+<li><a href="https://redspider.gitbook.io/concurrent/di-yi-pian-ji-chu-pian/3#id-3.2-xian-cheng-de-you-xian-ji">线程的优先级</a></li>
+</ol>
+<p>我将源代码上传了<a href="https://github.com/imyzt/learning-technology-code/tree/master/error-case-analysis/alibaba-ttl-wrong-usage-example">GitHub</a>，如果你想在本地调试运行上述案例，可以下载到本地调试，有问题可以评论区沟通。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用Redis实现分布式锁的坑]]></title>
+        <id>https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/</id>
+        <link href="https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
+        </link>
+        <updated>2024-03-04T13:39:52.000Z</updated>
+        <content type="html"><![CDATA[<p>分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。<br>
+实现分布式锁的方案有很多，既可以直接使用<code>MySQL</code>作为分布式锁（例如<code>xxl-job</code>），也可以利用<code>ZooKeeper</code>、<code>Redis</code>等。<br>
+在基于<code>Spring Cloud</code>的业务系统中，一般都会引入<code>Redis</code>作为分布式缓存中间件，因此更多的人会选择使用<code>Redis</code>来实现分布式锁。本文将介绍使用<code>Redis</code>作为分布式锁时常见的问题和解决方法。</p>
+<h1 id="1-没有使用原子操作指令">1. 没有使用原子操作指令</h1>
+<h2 id="错误写法">错误写法</h2>
+<pre><code class="language-java">    Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue);
+    stringRedisTemplate.expire(lockKey, Duration.ofSeconds(expireTime));
+    if (!tryLock) {
+        return;
+    }
+</code></pre>
+<p>上述操作通常出现在新手阶段，在写入锁对象时，没有考虑到原子性问题。在<code>Redis</code>中有提供<code>SET NX PX</code>指令，支持在设置锁的同时指定过期时间，并且支持原子性判断<code>key</code>是否已存在。</p>
+<p>NX 和 PX 是 Redis 命令中用于设置 key 的两个选项。</p>
+<ul>
+<li>NX: 当指定 NX 选项时，只有在 key 不存在的情况下才会设置 key 的值。如果 key 已经存在，则不进行任何操作。</li>
+<li>PX: PX 选项用于设置 key 的过期时间（以毫秒为单位）。例如，PX 10000 表示在 10 秒后将 key 设置为过期状态。</li>
+</ul>
+<h2 id="正确写法">正确写法：</h2>
+<pre><code class="language-java">Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+</code></pre>
+<h1 id="2-释放了别人的锁">2. 释放了别人的锁</h1>
+<h2 id="错误写法-2">错误写法</h2>
+<pre><code class="language-java">try {
+    Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+    if (!tryLock) {
+        return;
+    }
+
+    // do something
+    } finally {
+    stringRedisTemplate.delete(lockKey);
+    }
+</code></pre>
+<p>在加锁的过程中，没有设定唯一值作为<code>Value</code>存储到Redis中，在释放时，不判断直接对锁进行释放。其二，将获取锁的代码放在了<code>try</code>代码块中。</p>
+<p>在上述代码中存在两个问题：</p>
+<ol>
+<li>不该执行到<code>finlly</code>代码块：A请求获得了锁正在执行业务代码，而B请求没有获得锁，但是因为获取锁的代码在<code>try</code>代码块中，导致<code>finally</code>一定会执行，B请求就会将A请求的锁释放，而如果A请求依旧未执行完毕，此时C请求过来时，<strong>则C请求错误的拿到了锁</strong>。</li>
+<li>不该删除别人的锁：在删除锁时，应该判断自己是否是上锁人，由于多次执行<code>Redis</code>指令不具备原子性，所以一般是交由<code>LUA</code>脚本来实现的。</li>
+</ol>
+<pre><code class="language-lua">if redis.call('get', KEYS[1]) == ARGV[1]
+    then
+        return redis.call('del', KEYS[1])
+    else
+        return 0
+end
+</code></pre>
+<h2 id="正确写法-2">正确写法</h2>
+<ol>
+<li>提前将LUA脚本载入到<code>Redis</code>服务端</li>
+</ol>
+<pre><code class="language-java">script = new DefaultRedisScript&lt;&gt;();
+script.setResultType(Long.class);
+script.setScriptSource(new ResourceScriptSource(new ClassPathResource(&quot;release_lock.lua&quot;)));
+</code></pre>
+<ol start="2">
+<li>获取和释放锁示例</li>
+</ol>
+<pre><code class="language-java">Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+if (!tryLock) {
+    return;
+}
+try {
+
+    // do something
+} finally {
+    ArrayList&lt;String&gt; keys = new ArrayList&lt;&gt;();
+    keys.add(context.getLockKey());
+    stringRedisTemplate.execute(this.script, keys, context.getLockValue());
+}
+</code></pre>
+<h1 id="3-事务未提交锁就释放了">3. 事务未提交锁就释放了</h1>
+<h2 id="错误代码">错误代码</h2>
+<pre><code class="language-java">/**
+    * 事务内获取分布式锁
+    */
+@Transactional(rollbackFor = Exception.class)
+public void saveUserWithDistributedLock(String name) {
+
+    String lockKey = &quot;lock_key:&quot; + name;
+    RedisLock.LockContext lockContext = redisLock.tryLock(lockKey, 10000L);
+    if (!lockContext.getTryLock()) {
+        // printLog(&quot;没拿到锁&quot;);
+        return;
+    }
+
+    printLog(&quot;拿到锁了&quot; + lockKey);
+
+    try {
+        this.save(name);
+    } finally {
+        redisLock.release(lockContext);
+        printLog(&quot;释放锁了&quot;);
+    }
+}
+</code></pre>
+<p>MySQL常规情况下是<code>RR</code>的隔离级别，只有等到事务提交数据才对其他事务可见，存在**“读视图”<strong>，在上述的代码中，A请求拿到了锁执行了业务代码，执行到<code>redisLock.release</code>时将锁释放了，但Spring的<code>@Transactional</code>依赖的是AOP，其需要等到方法执行完毕才会提交事务，在这个临界点，B请求可以正常拿到锁，但是A请求的事务还未提交，B请求的</strong>读视图**中还未查询到A请求提交的数据，最终造成了数据的不一致性。</p>
+<h2 id="正确代码">正确代码</h2>
+<p>正确的情况是在另一个方法中获取到锁之后，再调用包含事务的业务代码。此时需要注意SpringAOP在本方法内代理失效的问题，通常需要新建一个Service来处理。</p>
+<h1 id="业务代码执行超过锁过期时间">业务代码执行超过锁过期时间</h1>
+<h2 id="错误代码-2">错误代码</h2>
+<pre><code class="language-java">// Domain-Service
+public void save(String name) {
+
+    String lockKey = &quot;lock_key:&quot; + name;
+    RedisLock.LockContext lockContext = redisLock.tryLock(lockKey, 10000L);
+    if (!lockContext.getTryLock()) {
+        printLog(&quot;没拿到锁&quot;);
+        return;
+    }
+
+    printLog(&quot;拿到锁了&quot; + lockKey);
+    try {
+        userService.save(name);
+    } finally {
+        redisLock.release(lockContext);
+        printLog(&quot;释放锁了&quot;);
+    }
+}
+
+// UserService
+@Transactional(rollbackFor = Exception.class)
+public void save(String name) {
+
+    List&lt;User&gt; users = userRepository.findUsersByName(name);
+    if (CollUtil.isNotEmpty(users)) {
+        printLog(&quot;已经写入, 不再写入&quot; + users);
+        return;
+    }
+
+    // 业务保存模拟执行很慢
+    TimeUnit.SECONDS.sleep(70);
+    
+}
+</code></pre>
+<p>上述代码中，锁对象只有10s的时间，但是业务代码执行却需要70s，A请求虽然拿到了锁，此时后续10秒其他请求均无法获取锁，但是从第11秒开始的请求将可以拿到锁，而此时A请求还未执行完毕，此时开始出现错误的获取锁，最终造成数据的不一致。</p>
+<h2 id="正确写法-3">正确写法</h2>
+<p>参考<code>Redisson</code>的<code>WatchDog</code>机制，另外开辟线程每隔 10s 就给还未执行完毕的 <code>Key</code> 自动续期 30s，保证业务代码能够安全的执行完毕再自行释放锁对象。</p>
+<p>示例代码：</p>
+<pre><code class="language-java">// watch dog
+Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -&gt; {
+    if (!LOCK_CONTEXTS.isEmpty()) {
+        for (LockContext lockContext : LOCK_CONTEXTS) {
+            // 如果执行线程还未释放锁, 续期30s(模拟Redisson)
+            stringRedisTemplate.expire(lockContext.getLockKey(), Duration.ofSeconds(30));
+            Long expire = stringRedisTemplate.getExpire(lockContext.getLockKey());
+            log.info(&quot;WatchDog, expire 30s, lockKey={}, ttl={}&quot;, lockContext.getLockKey(), expire);
+        }
+    }
+        }, 0,
+        // 10秒检测一次
+        10, TimeUnit.SECONDS);
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>分布式锁的错误还有很多，本篇主要是自己在工作过程中遇到的一些坑，着重介绍新手阶段在编写分布式锁时遇到的比较基础的问题，后面有空再进行其他场景的逐个介绍。</p>
+<p>本文参考：<a href="https://juejin.cn/post/7011503283768393736">聊聊redis分布式锁的8大坑</a><br>
+本文代码：<a href="https://github.com/imyzt/learning-technology-code/tree/master/in-action/redis-lua-distributed-lock">redis-lua-distributed-lock</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[错用HashedWheelTimer导致的OOM问题]]></title>
+        <id>https://imyzt.github.io/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/</id>
+        <link href="https://imyzt.github.io/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">
+        </link>
+        <updated>2024-02-04T15:04:56.000Z</updated>
+        <content type="html"><![CDATA[<p>事件中心在私有化环境下，只要server一启动过几秒就oom，查看日志是 <code>Failed to create a thread: retVal -1073741830, errno 11</code>。</p>
+<p>异常堆栈：</p>
+<pre><code>Caused by: java.lang.OutOfMemoryError: Failed to create a thread: retVal -1073741830, errno 11   
+    at java.lang.Thread.startImpl(Native Method) 
+    at java.lang.Thread.start(Thread.java:993) 
+    at io.netty.util.HashedWheelTimer.start(HashedWheelTimer.java:366) 
+    at io.netty.util.HashedWheelTimer.newTimeout(HashedWheelTimer.java:447) 
+    at 业务调用代码省略
+</code></pre>
+<p>在标品环境下没有问题，在其他KA客户上也没有问题<br>
+通过对日志的分析，最终发现是事件中心的延迟消息代码存在缺陷，使用了<code>Netty</code>的<code>HashedWheelTimer</code>，但是语法存在问题，理论上应该是new一个<code>HashedWheelTimer</code>来处理所有时间延迟，但是错用程每次new一个新的<code>HashedWheelTimer</code>，<code>HashedWheelTimer</code>内部每次都会new一个新的线程来处理做调度，一个线程占用1MB，最终内存资源被耗尽。</p>
+<p><code>io.netty.util.HashedWheelTimer#HashedWheelTimer</code>源码：</p>
+<pre><code class="language-java">public HashedWheelTimer(
+    ThreadFactory threadFactory,
+    long tickDuration, TimeUnit unit, int ticksPerWheel, boolean leakDetection,
+    long maxPendingTimeouts, Executor taskExecutor) {
+
+    checkNotNull(threadFactory, &quot;threadFactory&quot;);
+    checkNotNull(unit, &quot;unit&quot;);
+    checkPositive(tickDuration, &quot;tickDuration&quot;);
+    checkPositive(ticksPerWheel, &quot;ticksPerWheel&quot;);
+    this.taskExecutor = checkNotNull(taskExecutor, &quot;taskExecutor&quot;);
+
+    // Normalize ticksPerWheel to power of two and initialize the wheel.
+    wheel = createWheel(ticksPerWheel);
+    mask = wheel.length - 1;
+
+    // Convert tickDuration to nanos.
+    long duration = unit.toNanos(tickDuration);
+
+    // Prevent overflow.
+    if (duration &gt;= Long.MAX_VALUE / wheel.length) {
+        throw new IllegalArgumentException(String.format(
+                &quot;tickDuration: %d (expected: 0 &lt; tickDuration in nanos &lt; %d&quot;,
+                tickDuration, Long.MAX_VALUE / wheel.length));
+    }
+
+    if (duration &lt; MILLISECOND_NANOS) {
+        logger.warn(&quot;Configured tickDuration {} smaller then {}, using 1ms.&quot;,
+                    tickDuration, MILLISECOND_NANOS);
+        this.tickDuration = MILLISECOND_NANOS;
+    } else {
+        this.tickDuration = duration;
+    }
+
+    // 每次都new一个线程来处理
+    workerThread = threadFactory.newThread(worker);
+
+    leak = leakDetection || !workerThread.isDaemon() ? leakDetector.track(this) : null;
+
+    this.maxPendingTimeouts = maxPendingTimeouts;
+
+    if (INSTANCE_COUNTER.incrementAndGet() &gt; INSTANCE_COUNT_LIMIT &amp;&amp;
+        WARNED_TOO_MANY_INSTANCES.compareAndSet(false, true)) {
+        reportTooManyInstances();
+    }
+}
+</code></pre>
+<p>因为标品和其他KA使用的是阿里云RocketMQ，此客户使用的是自建的开源版RocketMQ，开源RocketMQ是没有自定义时长的延迟消息的，所以我们自己实现了一套时间轮来实现任意时长的延迟消息，当小于60s的延迟消息会丢入我们的时间轮来处理延迟投递，当时此客户的环境中有大量的60s内的延迟消息，导致一启动就会崩溃。<br>
+不过在RocketMQ5.0也支持任意时长了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CircuitBreak导致ThreadLocal参数丢失问题]]></title>
+        <id>https://imyzt.github.io/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/</id>
+        <link href="https://imyzt.github.io/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">
+        </link>
+        <updated>2024-01-25T15:27:15.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>使用<code>OpenFeign</code>时，通常会实现<code>RequestInterceptor</code>接口来自定义<code>FeignConfiguration</code>，<code>OpenFeign</code>暴露了<code>feign.RequestTemplate</code>信息，给到我们在发送请求前自定义参数信息的扩展点。</p>
+<p>在分布式系统中，通常会将本服务的信息（<code>UserInfo</code>、<code>RequestId</code>）透传至下游服务，从而实现分布式链路追踪等功能，对于像用户信息等，在Web系统中通常使用 <code>ThreadLocal</code> 来存储信息，在自定义的<code>FeignConfiguration</code>中获取<code>ThreadLocal</code>再塞入到<code>feign.RequestTemplate</code>中，实现向下游服务的传递，示例：</p>
+<pre><code class="language-java">public class FeignConfiguration implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String userId = SubjectContext.get().getUserId();
+        if (null != attributes) {
+            HttpServletRequest request = attributes.getRequest();
+            template.header(&quot;token&quot;, request.getHeader(&quot;TOKEN&quot;));
+            template.header(&quot;userId&quot;, userId);
+        }
+    }
+}
+</code></pre>
+<p>简单的Context示例：</p>
+<pre><code class="language-java">public class SubjectContext {
+    protected static ThreadLocal&lt;UserInfo&gt; subjectContext = new ThreadLocal();
+    public static void remove() {
+        subjectContext.remove();
+    }
+    public static void set(UserInfo uerInfo) {
+        subjectContext.set(uerInfo);
+    }
+    public static UserInfo get() {
+        return (UserInfo)subjectContext.get();
+    }
+}
+</code></pre>
+<h1 id="出现错误">出现错误</h1>
+<p>上述代码在常规情况下，是能够按照预期执行的。</p>
+<p>但是最近项目引入了<code>CircuitBreaker</code>作为服务熔断的断路器之后，上述代码在执行到<code>SubjectContext.get()</code>时，会抛出空指针，拿不到用户信息。</p>
+<p>通过分析<code>CircuitBreaker</code>的源码，最终定位到代码出现在<code>Resilience4JCircuitBreaker</code>内部，在<code>Resilience4JCircuitBreaker</code>中有一个<code>public &lt;T&gt; T run(Supplier&lt;T&gt; toRun, Function&lt;Throwable, T&gt; fallback)</code>方法，方法入参的<code>toRun</code>就是封装过的我们定义的Feign接口，其包装过程在<code>FeignCircuitBreakerInvocationHandler#asSupplier</code>代码中，如下：</p>
+<pre><code class="language-java">private Supplier&lt;Object&gt; asSupplier(final Method method, final Object[] args) {
+    final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+    return () -&gt; {
+        try {
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            // 执行我们的真正方法
+            return dispatch.get(method).invoke(args);
+        }
+        catch (RuntimeException throwable) {
+            throw throwable;
+        }
+        catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    };
+}
+</code></pre>
+<p>Spring Cloud CircuitBreaker Resilience4j 提供了两种实现：</p>
+<ol>
+<li>使用 Semaphores 的 SemaphoreBulkhead。</li>
+<li>一个 FixedThreadPoolBulkhead，它使用一个有界队列和一个固定的线程池。</li>
+</ol>
+<p>默认情况下，Spring Cloud CircuitBreaker Resilience4j 使用 <code>FixedThreadPoolBulkhead</code>。要修改默认行为以使用 <code>SemaphoreBulkhead</code>，请将属性 <code>spring.cloud.circuitbreaker.resilience4j.enableSemaphoreDefaultBulkhead</code> 设为 <code>true</code>。</p>
+<p>正是由于上述原因，默认将我们的FeignConfiguration提交给了线程池，由于我们使用的是<code>ThreadLocal</code>导致<strong>线程本地变量</strong>没有向子线程传递，在执行FeignConfiguration时子线程无法拿到<code>Context</code>信息，最终导致程序的报错。</p>
+<h1 id="解决办法">解决办法</h1>
+<p>通过分析源码我们发现，执行任务的线程池<code>Resilience4JCircuitBreaker#executorService</code>是由外部传递过来进行初始化的，调用方在<code>Resilience4JCircuitBreakerFactory#create(java.lang.String, java.lang.String, java.util.concurrent.ExecutorService)</code></p>
+<p>在<code>Resilience4JCircuitBreakerFactory</code>中发现，是由本实例在<code>create</code>方法被调用时传入的本类的成员变量，即：</p>
+<ul>
+<li><code>private ExecutorService executorService = Executors.newCachedThreadPool();</code></li>
+<li><code>private ConcurrentHashMap&lt;String, ExecutorService&gt; executorServices = new ConcurrentHashMap&lt;&gt;();</code></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1706198428487.png" alt="" loading="lazy"></figure>
+<p>而我们在没有定义自定义Feign Group时，默认使用的就是<code>executorService</code>，在本类中有一个<code>Resilience4JCircuitBreakerFactory#configureExecutorService</code>方法专门保留了外部传入自定义线程池的扩展，我们可以自己实现创建一个支持传递<code>Context</code>到子线程的线程池，即可将参数向下传递，比如像这样：</p>
+<pre><code class="language-java">@Configurable
+@AllArgsConstructor
+public class CircuitBreakerConfiguration implements ApplicationRunner {
+
+    private final Resilience4JCircuitBreakerFactory factory;
+    
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        ContextThreadPoolExecutor contextThreadPoolExecutor = 
+                new ContextThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&lt;&gt;(1024));
+
+        // **change ThreadPoolExecutor**
+        factory.configureExecutorService(contextThreadPoolExecutor);
+    }
+    
+    public static class ContextThreadPoolExecutor extends ThreadPoolExecutor {
+
+        public ContextThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        public void execute(Runnable command) {
+            super.execute(wrap(command));
+        }
+
+        private static Runnable wrap(Runnable runnable) {
+            **SubjectContext context = SubjectContext.getContext();**
+            return () -&gt; {
+                // 将参数向下传递
+                **SubjectContext.setContext(context);**
+                try {
+                    runnable.run();
+                } finally {
+                    **SubjectContext.clear();**
+                }
+            };
+        }
+    }
+}
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>上述的方案只解决了没有自定义Group的情况，官方在自定义Group的情况下是没有保留扩展位的，所以给官方提了一个MR并且已成功合并到主分支，如下：<br>
+<a href="https://github.com/spring-cloud/spring-cloud-circuitbreaker/pull/181">Customizable groupExecutorService #180</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[IDEA 常用插件]]></title>
+        <id>https://imyzt.github.io/post/idea-chang-yong-cha-jian/</id>
+        <link href="https://imyzt.github.io/post/idea-chang-yong-cha-jian/">
+        </link>
+        <updated>2024-01-14T15:30:09.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="编码类">编码类</h1>
+<ol>
+<li>Generate All Getter And Setter 如其名</li>
+<li>AceJump 快速将光标导航到编辑器中可见的任何位置,ctrl+,然后输入字符，进行高亮定位</li>
+<li>GsonFormat 将JSONObject格式的String 解析成实体。</li>
+<li>Lombok 针对模型对象精简代码</li>
+<li>MybatisCodeHelperPro 通过方法名来生成sql，全自动提示，自动检测</li>
+</ol>
+<h1 id="工具类">工具类</h1>
+<ol>
+<li>any-rule 可以搜索正则表达式</li>
+<li>CamelCase 变量名转驼峰</li>
+<li>Jrebel 快速实现热部署，跳过了构建和部署的过程，可以省去大量的部署用的时间。</li>
+<li>jrebel-mybatisplus-extension 热部署中mybatis的扩展，他的功能就是配合 Jrebel 一起使用，修改 mybatis 的 mapper.xml 文件不用重启项目</li>
+<li>CodeGlance 显示代码地图插件,进行语法突出显示</li>
+<li>RestfulToolKit 可以搜索接口</li>
+<li>POJO TO JSON 将pojo类转换为json</li>
+<li>Translation 翻译插件</li>
+</ol>
+<h1 id="maven类">Maven类</h1>
+<ol>
+<li>Maven Helper 依赖冲突分析利器</li>
+<li>Maven Dependency Helper Maven中央仓库搜索</li>
+</ol>
+<h1 id="规范类">规范类</h1>
+<ol>
+<li>P3C 编码规范的一个插件，高亮提示违规代码</li>
+<li>SonarLint 打开文件的时候自动进行代码审查</li>
+</ol>
+<h1 id="提效类">提效类</h1>
+<ol>
+<li>Key Promoter X 在IDEA里面使用鼠标的时候，如果这个鼠标操作是能够用快捷键替代，此插件会进行提示</li>
+<li>POJO TO JSON 将pojo类转换为json</li>
+</ol>
+<h1 id="装修类">装修类</h1>
+<ol>
+<li>Nyan Progress Bar 漂亮的进度条</li>
+<li>Rainbow Brackets 配对括号相同颜色，并且实现选中区域代码高亮的功能</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ IDEA 2023 非常用配置]]></title>
+        <id>https://imyzt.github.io/post/idea-2023-fei-chang-yong-pei-zhi/</id>
+        <link href="https://imyzt.github.io/post/idea-2023-fei-chang-yong-pei-zhi/">
+        </link>
+        <updated>2024-01-06T09:49:24.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>
+<p>配置文件全部使用UTF-8<br>
+<code>Editor-File Encodings</code>，将所有内容均设置为UTF-8。<br>
+<code>Create UTF-8 files</code> 选择 <code>with NO BOM</code>，避免在创建文件前3个字节来标志为UTF-8文件。</p>
+</li>
+<li>
+<p>参数提示<br>
+默认情况下，是没有参数提示的，需要手动开启。<br>
+<code>Editor-General-Code Completion-Parameter Info</code><br>
+<img src="https://imyzt.github.io/post-images/1704534882953.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.github.io/post-images/1704534890065.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>注释默认在当前缩进<br>
+默认情况下，自动补全注释是在最前面，可以通过：<br>
+<code>Editor-Code Style-Java(其它语言位置类似)-Code Generation-Comment Code</code>按如下图配置进行处理。<br>
+<img src="https://imyzt.github.io/post-images/1704535032674.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>如果配置的内容，在新项目不生效，则注意此处<br>
+除了字体样式字体大小外，其它的配置IDEA官方认为，每个项目在创建时，可能都需要一些不同的配置，所以有很多内容都是跨项目不生效的（Maven、文件格式等），需要在此处配置（点进去和Settings一模一样，但是对应的是Next Project（新项目）的配置）<br>
+<img src="https://imyzt.github.io/post-images/1704535443448.png" alt="" loading="lazy"></p>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用highlightjs让Gridea支持代码高亮]]></title>
+        <id>https://imyzt.github.io/post/shi-yong-highlightjs-rang-gridea-zhi-chi-dai-ma-gao-liang/</id>
+        <link href="https://imyzt.github.io/post/shi-yong-highlightjs-rang-gridea-zhi-chi-dai-ma-gao-liang/">
+        </link>
+        <updated>2023-12-21T14:17:58.000Z</updated>
+        <content type="html"><![CDATA[<p>Gridea的Lemon主题，默认不支持代码高亮，需要自己补充。目前开源的<code>highlight.js</code>正合适。记录下处理的过程</p>
+<ol>
+<li>
+<p>打开官网，挑选自己喜欢的风格<br>
+<a href="https://highlightjs.org/examples">highlightjs.org/examples</a></p>
+</li>
+<li>
+<p>找一个CDN托管网站，避免走自己的小油管，这里推荐bootcdn（这么多年了，还是如此坚挺）<br>
+<a href="https://www.bootcdn.cn/highlight.js/">www.bootcdn.cn/highlight.js</a></p>
+</li>
+<li>
+<p>将上述找到的代码，应用在自己主题下的<code>post.ejs</code>的 <code>&lt;head&gt;</code> 代码块中。<br>
+1.<br>
+<code>~/Gridea/themes/gridea-theme-lemon</code>，找到自己的主题目录，<code>gridea-theme-lemon</code>是我的<code>Lemon</code>主题目录。<br>
+2. 编辑<code>post.ejs</code>文件，<code>vim templates/post.ejs</code><br>
+3. 在<code>&lt;head&gt;</code>中补充如下代码</p>
+</li>
+</ol>
+<pre><code class="language-css">&lt;link href=&quot;https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/此处选择自己喜欢的主题.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;hljs.initHighlightingOnLoad();&lt;/script&gt;      
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java 20~21 新特性]]></title>
+        <id>https://imyzt.github.io/post/java-20~21-xin-te-xing/</id>
+        <link href="https://imyzt.github.io/post/java-20~21-xin-te-xing/">
+        </link>
+        <updated>2023-12-19T15:34:39.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>Java 20没有发布重要的新特性，本文以Java21版本为主。<br>
+Java 21 是新的LTS版本，其中发布了众多新的特性。</p>
+</blockquote>
+<h1 id="字符串模板预览版">字符串模板（预览版）</h1>
+<h2 id="使用官方的str-fmt">使用官方的STR、FMT</h2>
+<p>支持通过<code>STR</code>、<code>FMT</code>来实现字符串拼接，可以自定义模板处理器组织字符串输出形式。</p>
+<pre><code class="language-java">import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static java.util.FormatProcessor.FMT;
+
+/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 模板字符串
+ */
+public class TemplateString {
+
+    public static void main(String[] args) {
+
+        String str = &quot;world&quot;;
+        String result = STR.&quot;hello \{str}&quot;;
+        System.out.println(result);
+        System.out.println(STR);
+
+        String name = &quot;yzt&quot;;
+        String[] blogAddress = {&quot;imyzt.top&quot;, &quot;blog.imyzt.top&quot;};
+        String text = FMT.&quot;&quot;&quot;
+                My name is \{name}
+                My blog address is \{blogAddress[0].toUpperCase()}, \{blogAddress[1].toLowerCase()}&quot;&quot;&quot;;
+        System.out.println(text);
+
+        System.out.println(STR.&quot;\{Math.random()}&quot;);
+        System.out.println(STR.&quot;\{Integer.MAX_VALUE}&quot;);
+        System.out.println(STR.&quot;\{index++}, \{++index}&quot;);
+
+        //hello world
+        //java.lang.StringTemplate$$Lambda/0x00000001260457f0@33c7353a
+        //My name is yzt
+        //My blog address is IMYZT.TOP, blog.imyzt.top
+        //0.9361799484353136
+        //2147483647
+        //现在的时间是: 2023-12-20
+        //0, 2
+    }
+}
+</code></pre>
+<h2 id="自定义stringtemplate">自定义StringTemplate</h2>
+<pre><code class="language-java">
+import java.util.Iterator;
+
+/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description 自定义StringTemplate
+ */
+public class CustomTemplate {
+
+    public static void main(String[] args) {
+
+        var INTER = StringTemplate.Processor.of((StringTemplate st) -&gt; {
+            StringBuilder sb = new StringBuilder();
+            Iterator&lt;String&gt; fragments = st.fragments().iterator();
+            for (Object value : st.values()) {
+                sb.append(fragments.next());
+                sb.append(value);
+            }
+            sb.append(fragments.next());
+            return sb.toString();
+        });
+
+        String name = &quot;yzt&quot;;
+        int index = 0;
+        String text = INTER.&quot;&quot;&quot;
+                {
+                &quot;name&quot;:\{name},
+                &quot;index&quot;:\{++index}
+                }
+                &quot;&quot;&quot;;
+        System.out.println(text);
+        //{
+        //&quot;name&quot;:yzt,
+        //&quot;index&quot;:1
+        //}
+    }
+}
+</code></pre>
+<h1 id="record-patterns">Record Patterns</h1>
+<p>记录模式更强大了，支持直接在表达式中创建和使用。还支持嵌套</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 记录模式
+ */
+public class RecordPatterns {
+
+    public static void main(String[] args) {
+
+        Object p = new Point(1, 2);
+        if (p instanceof Point(int x, int y)) {
+            System.out.println(x + y);
+        }
+
+        Object w = new Window(new Point(1, 2), 3);
+        if (w instanceof Window(Point(int x, int y), int z)) {
+            System.out.println(x + y + z);
+        }
+
+    }
+}
+record Point(int x, int y) {}
+record Window(Point p, int z) {}
+</code></pre>
+<h1 id="scopedvalue">ScopedValue</h1>
+<p><code>ScopedValue</code>是一个隐藏的方法参数，只有方法可以访问<code>ScopedValue</code>，它可以让两个方法传递参数时<strong>无需声明形参</strong>（对于Web项目中传递用户信息是非常场景的操作）</p>
+<h2 id="threadlocal的问题">ThreadLocal的问题</h2>
+<p>通常对于上述场景，都会采用<code>ThreadLocal</code>来解决，但是由于<code>ThreadLocal</code>在设计上的瑕疵，导致一直有以下问题：</p>
+<ol>
+<li>内存泄露，在使用完<code>ThreadLocal</code>之后，若没有调用<code>remove</code>方法，会出现内存泄漏。</li>
+<li>增加开销，在具有继承关系的线程中，子线程需要为父线程中<code>ThreadLocal</code>里面的数据分配内存</li>
+<li>不是不可变对象，在方法中可以随意调用<code>set</code>方法篡改。</li>
+</ol>
+<p>随着虚拟线程的到来，内存泄漏问题不用担心了，因为虚拟线程会很快的终止，此时会自动删除<code>ThreadLocal</code>中的数据，这样就不用调用<code>remove</code>方法了。<br>
+但是虚拟线程的数量是非常多的，假如有上百万个虚拟线程都要拷贝一份<code>ThreadLocal</code>中的变量（问题2），<span style="color: red">内存将会被严重的浪费掉</span>。</p>
+<h2 id="示例">示例</h2>
+<p>示例代码中通过模拟一个“送礼物”的场景，来演示<code>ScopedValue</code>。</p>
+<ol>
+<li>在 <code>giveGift</code> 方法中，将礼物送出，是500元</li>
+<li>在 <code>receiveMiddleMan</code> 方法模拟中间人抽成的场景，抽成后送出仅 200元</li>
+<li>在 <code>receiveGift</code> 方法中 ，对 <code>ScopedValue</code> 进行获取，得到的就是200元</li>
+</ol>
+<p>但整个过程中，中间人 <code>receiveMiddleMan</code> 在送出前后获取到的信息都是 500元，这正是 <code>Scope</code> 的含义，<strong>修改只在本作用域（方法）中生效</strong>。</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description ScopedValue
+ */
+public class ScopedValueTest {
+
+    private static final ScopedValue&lt;String&gt; GIFT = ScopedValue.newInstance();
+
+    public static void main(String[] args) {
+
+        ScopedValueTest test = new ScopedValueTest();
+        test.giveGift();
+        //中间人开始: 500
+        //收礼物: 200
+        //中间人结束: 500
+    }
+
+    private void giveGift() {
+        ScopedValue.where(GIFT, &quot;500&quot;).run(this::receiveMiddleMan);
+    }
+
+    private void receiveMiddleMan() {
+        System.out.println(STR.&quot;中间人开始: \{GIFT.get()}&quot;);
+        ScopedValue.where(GIFT, &quot;200&quot;).run(this::receiveGift);
+        System.out.println(STR.&quot;中间人结束: \{GIFT.get()}&quot;);
+    }
+
+    private void receiveGift() {
+        System.out.println(STR.&quot;收礼物: \{GIFT.get()}&quot;);
+    }
+}
+
+</code></pre>
+<h1 id="switch-又升级了支持when关键字了">Switch 又升级了，支持when关键字了</h1>
+<p>switch 可谓是升级升级再升级，我还是在用 if/else 啊。<br>
+从12开始，一路升级。</p>
+<ol>
+<li>支持 <code>-&gt;</code> 表达式（Java 12）</li>
+<li>支持返回值（Java 12）</li>
+<li><code>case</code>支持单行写多个条件（Java 12）</li>
+<li>新增<code>yield</code>关键字返回<code>switch</code>的值（Java 12）</li>
+<li>引入模式匹配（Java 15）</li>
+<li>这回又新增了一个<code>when</code>关键字（都快改成SQL了） （Java 21）</li>
+</ol>
+<p><a href="https://developer.aliyun.com/article/1357316">Java switch升级之路</a></p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description Switch 又升级了~, 这次支持when关键字了
+ */
+public class SwitchFuture {
+
+    void main() {
+
+        var str = &quot;yes&quot;;
+
+        var result = switch (str) {
+            case null -&gt; &quot;空对象&quot;;
+            case String s
+                    when &quot;yes&quot;.equals(s) -&gt; {
+                System.out.println(&quot;确定&quot;);
+                yield &quot;字符串的Yes&quot;;
+            }
+            case String s
+                    when &quot;no&quot;.equals(s) -&gt; {
+                System.out.println(&quot;取消&quot;);
+                yield &quot;字符串的No&quot;;
+            }
+            default -&gt; &quot;default&quot;;
+        };
+
+        System.out.println(result);
+        //确定
+        //字符串的Yes
+    }
+}
+
+</code></pre>
+<h1 id="简化了main方法注意看上一个章节的main方法">简化了main方法（注意看上一个章节的main方法）</h1>
+<ul>
+<li>Class声明和强制的public访问修饰符是必须的。当用在外部组件定义良好的接口封装代码单元时，它们很有用。但在这个小例子中，它们毫无意义。</li>
+<li>String[]参数主要用于将代码与外部组件（在本例中为操作系统的shell，接收命令传入的参数）连接。它在这里很神秘且无用，尤其是它从未被使用过。</li>
+<li>static修饰符是Java类和对象模型的一部分。对于新手来说，这不仅是神秘的，而且是有害的：要添加更多可以调用和使用的方法或字段，学​​生必须要么将它们全部声明（传播一种既不常见也不是好习惯的用法），或者就要面对是否有static修饰的区别问题，并学习如何实例化对象。</li>
+</ul>
+<h1 id="未命名模式和变量go和我有点像">未命名模式和变量（Go：和我有点像）</h1>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 像golang学习, 支持不使用的变量不命名了
+ */
+public class UnnamedVariable {
+
+    void main() {
+
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        list.add(&quot;first&quot;);
+        list.add(&quot;last&quot;);
+
+        try {
+            System.out.println(STR.&quot;first -&gt; \{list.getFirst()}&quot;);
+            System.out.println(STR.&quot;last -&gt; \{list.getLast()}&quot;);
+            System.out.println(&quot;try&quot;);
+        } catch (Exception _) {
+            System.out.println(&quot;异常了, 但是我没有 Exception&quot;);
+        }
+    }
+}
+</code></pre>
+<h1 id="有序集合">有序集合</h1>
+<h2 id="sequenced-collections">Sequenced Collections</h2>
+<p>Sequenced Collections引入了三个新接口：</p>
+<ul>
+<li>SequencedCollection</li>
+<li>SequencedMap</li>
+<li>SequencedSet<br>
+接口都附带了一些新方法，可以提高操作集合的效率。比如：<code>java.util.SequencedCollection#reversed</code>等等。</li>
+</ul>
+<h2 id="集合补充了获取收尾元素的方法hutool当我不存在">集合补充了获取收尾元素的方法（hutool：当我不存在？）</h2>
+<pre><code class="language-java">List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add(&quot;first&quot;);
+list.add(&quot;last&quot;);
+System.out.println(STR.&quot;first -&gt; \{list.getFirst()}&quot;);
+System.out.println(STR.&quot;last -&gt; \{list.getLast()}&quot;);
+</code></pre>
+<h1 id="加了一些工具类">加了一些工具类</h1>
+<ol>
+<li>StringBuilder中的repeat方法</li>
+<li>补充<code>java.lang.Character#isEmoji</code></li>
+<li>等等</li>
+</ol>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 加了些新方法
+ */
+public class SomethingExample {
+
+    void main() {
+
+        System.out.println(STR.&quot;repeat =&gt; \{new StringBuffer().repeat(&quot;*&quot;, 10)}&quot;);
+        //repeat =&gt; **********
+
+        var happy = &quot;你开心吗? 😄&quot;;
+        System.out.println(STR.&quot;isEmoji =&gt; \{happy.codePoints().anyMatch(Character::isEmoji)}&quot;);
+        //isEmoji =&gt; true
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java 19 新特性]]></title>
+        <id>https://imyzt.github.io/post/java-19-xin-te-xing/</id>
+        <link href="https://imyzt.github.io/post/java-19-xin-te-xing/">
+        </link>
+        <updated>2023-12-18T13:46:24.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>Java 19 最核心的特性就是<strong>虚拟线程（Virtual Threads）</strong></p>
+</blockquote>
+<h1 id="简介">简介</h1>
+<p>该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和<code>go</code>语言中的<code>goroutines</code>，<code>Erlang</code>中的<code>processes</code>类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改Java原有的并发模型，也不会替代原有的线程，<strong>虚拟线程主要作用是提高服务器端的吞吐量（主要解决IO密集型而非CPU密集型任务）</strong></p>
+<h1 id="吞吐量的瓶颈">吞吐量的瓶颈</h1>
+<p>服务器应用程序的伸缩性受<code>利特尔法则（Little's Law）</code>的制约，与下面三点有关：</p>
+<ul>
+<li>延迟：请求处理的耗时</li>
+<li>并发量：同一时刻处理的请求数量</li>
+<li>吞吐量：单位时间内处理的数据数量</li>
+</ul>
+<p>如果一个服务处理延迟是<code>50ms</code>，处理10个并发请求，则吞吐量是200请求/秒（10/0.05），如果吞吐量要达到2000请求/秒，则处理的并发请求数量是100. 如果按照1个请求一个线程来看，要想提高吞吐量，线程数量也要增加。</p>
+<p>Java中的线程在操作系统线程（OS Thread）进行了一层封装，而操作系统重线程是重量级资源，在硬件配置确定的前提下，不能无限制创建线程。</p>
+<p><img src="https://imyzt.github.io/post-images/1702907700240.png" alt="os thread" loading="lazy"><br>
+<img src="https://imyzt.github.io/post-images/1702907767424.png" alt="virtual thread" loading="lazy"></p>
+<p>与虚拟地址可以映射到物理内存类似，Java将大量的虚拟线程映射到少量的操作系统线程上，虚拟线程的生命周期短暂，不会有很深的栈调用，一个虚拟线程的生命周期只运行一个任务，因此可以大量创建虚拟线程，<strong>且无需池化</strong>。</p>
+<h1 id="虚拟线程的应用场景">虚拟线程的应用场景</h1>
+<p>在服务器端的应用程序中，虚拟线程能够明显提高应用的吞吐量：</p>
+<ul>
+<li>至少几千的并发任务量</li>
+<li>任务是IO密集型</li>
+</ul>
+<h1 id="平台线程和虚拟线程">平台线程和虚拟线程</h1>
+<p>平台线程（platform thread）：指Java中的线程，比如通过<code>new Thread()</code>创建的线程。<br>
+虚拟线程并不会直接分配给CPU执行，而是通过<code>调度器</code>分配给平台线程，平台线程再被调度器管理。Java中的虚拟线程的调度器采用了工作窃取的模式进行FIFO的操作，调度器的并行书默认是jvm获取的处理器数量（<code>Runtime.getRuntime().availableProcessors()</code>），调度器并非分时（<code>time sharing</code>）的。在使用虚拟线程编写程序时，不能控制虚拟线程合适分配给平台线程，也不能控制平台线程合适分配给CPU。</p>
+<p>以前任务和平台线程的关系：<br>
+<img src="https://imyzt.github.io/post-images/1702908144716.png" alt="old mode" loading="lazy"><br>
+在使用虚拟线程之后，任务-虚拟线程-调度器-平台线程的关系，1个平台线程可以被调度器分配不同的虚拟线程：<br>
+<img src="https://imyzt.github.io/post-images/1702908151069.png" alt="new mode" loading="lazy"></p>
+<h1 id="携带器">携带器</h1>
+<p>调度器将虚拟线程挂载到平台线程之后，该平台线程叫做虚拟线程的携带器，调度器并不维护虚拟线程和携带器的关联关系，<span style="color: red"><strong>因此在一个虚拟线程的生命周期可以被分配到不同的携带器</strong></span>，即虚拟线程运行了一小段代码后，可能会脱离携带器，此时其他的虚拟线程会被分配到这个携带器上。</p>
+<p>携带器和虚拟线程是相互独立的，比如：</p>
+<ul>
+<li>虚拟线程不能使用携带器的标识，<code>Thread.current()</code>方法获取的是虚拟线程本身。</li>
+<li>两者有各自的栈空间。</li>
+<li>两者不能访问对方的<code>ThreadLocal</code>变量</li>
+</ul>
+<p>在程序的执行过程中，虚拟线程遇到阻塞的操作是大部分情况下会被解除挂载，阻塞结束后，虚拟线程会被调度器重新挂载到携带器上，因此虚拟线程会频繁的挂载和解除挂载，这并不会导致操作系统线程的阻塞。<br>
+有些阻塞操作并不会导致虚拟线程接触挂载，这样会同时阻塞携带器和操作系统线程，例如：操作系统基本的文件操作，Java的<code>Object.wait()</code>方法，下面两种情况下不会导致虚拟线程的解除挂载：</p>
+<ul>
+<li>执行<code>synchronized</code>同步代码（会导致携带器阻塞，所以建议使用<code>ReentrantLock</code>替换掉<code>Synchronized</code>）</li>
+<li>执行本地方法或外部函数</li>
+</ul>
+<h1 id="虚拟线程和平台线程api的区别">虚拟线程和平台线程api的区别</h1>
+<p>从内存空间上来说，虚拟线程的栈空间可以看做是一个大块的站对象，他被存储在Java堆中，相比于单独存储对象，堆中存储虚拟线程会造成一些空间的浪费，这点在后续的Java版本中应该会得到改善，当然也有一些好处，就是可以重复利用这部分栈空间，不用多次申请开辟新的内存地址，虚拟线程的栈空间最大可以达到平台线程的栈空间容量。<br>
+<strong>虚拟线程并不是<code>GC root</code>，其中的引用不会出现<code>Stop World</code>，当虚拟线程阻塞之后比如<code>BlockingQueue.take()</code>，平台线程既不能获取到虚拟线程，也不能获取到<code>queue</code>队列，这样该平台线程可能被回收掉，虚拟线程在运行或阻塞时不会被GC</strong></p>
+<ul>
+<li>通过Thread构造方法创建的线程都是平台线程</li>
+<li>虚拟线程是守护线程，不能通过<code>setDaemon</code>方法改为非守护线程</li>
+<li>虚拟线程的优先级是默认的5，不能被修改，将来版本可能允许修改</li>
+<li>虚拟线程不支持<code>stop()</code>, <code>suspend()</code>,<code>resume()</code>方法</li>
+</ul>
+<h1 id="创建虚拟线程的方式">创建虚拟线程的方式</h1>
+<p>Java中创建的虚拟线程本质都是通过<code>Thread.Builder.OfVirtual</code>对象进行创建的，有如下三种方式：</p>
+<ul>
+<li><code>Thread.startVirtualThread()</code>直接创建一个虚拟线程</li>
+<li><code>Thread.ofVirtual().name(&quot;virtual-thread-&quot;).unstarted(r)</code></li>
+<li><code>ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()</code></li>
+</ul>
+<h1 id="示例代码">示例代码</h1>
+<h2 id="虚拟线程池">虚拟线程池</h2>
+<pre><code class="language-java">import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
+/**
+ * @author imyzt
+ * @date 2023/12/18
+ * @description VirtualThread 1
+ */
+public class VirtualThread {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        // 通过线程池创建虚拟线程池
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 10000000).forEach(i -&gt; {
+                executor.submit(() -&gt; {
+                    try {
+                        Thread.sleep(Duration.ofSeconds(1));
+                        System.out.println(&quot;执行任务: &quot; + i);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+</code></pre>
+<h2 id="创建虚拟线程">创建虚拟线程</h2>
+<pre><code class="language-java">import java.util.concurrent.TimeUnit;
+
+/**
+ * @author imyzt
+ * @date 2023/12/18
+ * @description VirtualThread 2
+ */
+public class CreateVirtualThread {
+    public static void main(String[] args) throws InterruptedException {
+
+        Runnable r = () -&gt; System.out.println(Thread.currentThread().getName() + &quot; --- 执行了&quot;);
+
+        // 创建虚拟线程, 方式1
+        Thread.startVirtualThread(r);
+
+        Thread virtualThread = Thread.ofVirtual().name(&quot;virtual-thread-&quot;).unstarted(r);
+        virtualThread.start();
+        System.out.println(&quot;是虚拟线程吗? &quot; + virtualThread.isVirtual());
+
+        Thread platformThread = Thread.ofPlatform().priority(0).daemon(true).name(&quot;platform-thread-&quot;).unstarted(r);
+        platformThread.start();
+        System.out.println(&quot;是虚拟线程吗? &quot; + platformThread.isVirtual());
+
+        // --- 执行了
+        //virtual-thread- --- 执行了
+        //是虚拟线程吗? true
+        //platform-thread- --- 执行了
+        //是虚拟线程吗? false
+
+        // 主线程休眠
+        TimeUnit.SECONDS.sleep(1);
+    }
+}
+
+</code></pre>
+<h1 id="其它">其它</h1>
+<p>除了提出虚拟线程外，还提出来新的并发编程模型<strong>结构化并发</strong>，</p>
+]]></content>
+    </entry>
+</feed>

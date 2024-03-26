@@ -1,0 +1,572 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Redis LUA RateLimiter | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Redis LUA RateLimiter
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2021-01-13</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>参考文章：<a href="https://mp.weixin.qq.com/s/ewjGZCgc_TUhiZIINCLfbg">基于Redis的限流系统的设计</a><br>
+本文作为总结和回顾</p>
+<h1 id="限流脚本">限流脚本</h1>
+<p>首先需要引入的是redis的LUA脚本.</p>
+<pre><code>
+--- 判断source_str 中是否contains pattern_str
+--- @param source_str
+--- @param patter_str
+local function contains(source_str, sub_str)
+    local start_pos, end_pos = string.find(source_str, sub_str);
+    if start_pos == nil then
+        return false;
+    end
+    local source_str_len = string.len(source_str);
+
+    if source_str_len == end_pos then
+        return true
+    elseif string.sub(source_str, end_pos + 1, end_pos + 1) == &quot;,&quot; then
+        return true
+    end
+    return false;
+end
+
+
+--- 获取令牌
+--- 返回码
+--- 0 没有令牌桶配置
+--- -1 表示取令牌失败，也就是桶里没有令牌
+--- 1 表示取令牌成功
+--- @param key 令牌的唯一标识
+--- @param permits  请求令牌数量
+--- @param curr_mill_second 当前毫秒数
+--- @param context 使用令牌的应用标识
+local function acquire(key, permits, curr_mill_second, context)
+    local rate_limit_info = redis.pcall(&quot;HMGET&quot;, key, &quot;last_mill_second&quot;, &quot;curr_permits&quot;, &quot;max_permits&quot;, &quot;rate&quot;, &quot;apps&quot;)
+    local last_mill_second = rate_limit_info[1]
+    local curr_permits = tonumber(rate_limit_info[2])
+    local max_permits = tonumber(rate_limit_info[3])
+    local rate = rate_limit_info[4]
+    local apps = rate_limit_info[5]
+
+    --- 标识没有配置令牌桶
+    if type(apps) == 'boolean' or apps == nil or not contains(apps, context) then
+        return 0
+    end
+
+
+    local local_curr_permits = max_permits;
+
+    --- 第一次, 没有last_mill_second, 所以local_curr_permits = max_permits, 
+    --- 首先设置 redis.pcall(&quot;HSET&quot;, key, &quot;last_mill_second&quot;, curr_mill_second) 将上次更新时间修改为现在
+    --- 然后直接进入到最下面 redis.pcall(&quot;HSET&quot;, key, &quot;curr_permits&quot;, local_curr_permits - permits) 用最大速率-自己用的这一次
+    
+    --- 第二次, 有last_mill_second, 走进去if的逻辑
+    --- reverse_permits -&gt; 时间差转换成秒, 然后乘以每秒的速率rage -&gt; 得到每秒需要添加多少个令牌
+    
+    --- 第二次
+
+    --- 令牌桶刚刚创建，上一次获取令牌的毫秒数为空
+    --- 根据和上一次向桶里添加令牌的时间和当前时间差，触发式往桶里添加令牌，并且更新上一次向桶里添加令牌的时间
+    --- 如果向桶里添加的令牌数不足一个，则不更新上一次向桶里添加令牌的时间
+    if (type(last_mill_second) ~= 'boolean'  and last_mill_second ~= nil) then
+        --- 当前消耗时间内 -&gt; 需要添加多少个令牌
+        --- 假设curr_mill_second - last_mill_second = 100ms,rate=10, 100ms/1000=0.1s * 10 = 1个
+        --- 假设curr_mill_second - last_mill_second = 1000000ms,rate=10, 1000000ms/1000=1000s * 10 = 1w个 -》 说明很久没有访问了，下面math.min就会丢弃掉多的
+        --- 即刚过去的这一段时间, 需要往桶里面添加1个令牌  
+        local reverse_permits = math.floor(((curr_mill_second - last_mill_second) / 1000) * rate)
+        --- 需要+的 + 当前还剩余的令牌 = 期望当前的令牌数量
+        local expect_curr_permits = reverse_permits + curr_permits;
+        --- 将期望的和最大速率比对, 取小的, 防止超载
+        --- 多于最大速率后的漏（丢弃策略）
+        local_curr_permits = math.min(expect_curr_permits, max_permits);
+
+        --- 大于0表示不是第一次获取令牌，也没有向桶里添加令牌
+        --- 如果当前消耗时间内需要添加令牌, 设置最新的添加时间为当前时间 
+        if (reverse_permits &gt; 0) then
+            redis.pcall(&quot;HSET&quot;, key, &quot;last_mill_second&quot;, curr_mill_second)
+        end
+    else
+        redis.pcall(&quot;HSET&quot;, key, &quot;last_mill_second&quot;, curr_mill_second)
+    end
+
+
+    local result = -1
+    if (local_curr_permits - permits &gt;= 0) then
+        result = 1
+        redis.pcall(&quot;HSET&quot;, key, &quot;curr_permits&quot;, local_curr_permits - permits)
+    else
+        redis.pcall(&quot;HSET&quot;, key, &quot;curr_permits&quot;, local_curr_permits)
+    end
+
+    return result
+end
+
+
+--- 初始化令牌桶配置
+--- @param key 令牌的唯一标识
+--- @param max_permits 桶大小
+--- @param rate  向桶里添加令牌的速率
+--- @param apps  可以使用令牌桶的应用列表，应用之前用逗号分隔
+local function init(key, max_permits, rate, apps)
+    local rate_limit_info = redis.pcall(&quot;HMGET&quot;, key, &quot;last_mill_second&quot;, &quot;curr_permits&quot;, &quot;max_permits&quot;, &quot;rate&quot;, &quot;apps&quot;)
+    local org_max_permits = tonumber(rate_limit_info[3])
+    local org_rate = rate_limit_info[4]
+    local org_apps = rate_limit_info[5]
+
+    if (org_max_permits == nil) or (apps ~= org_apps or rate ~= org_rate or max_permits ~= org_max_permits) then
+        redis.pcall(&quot;HMSET&quot;, key, &quot;max_permits&quot;, max_permits, &quot;rate&quot;, rate, &quot;curr_permits&quot;, max_permits, &quot;apps&quot;, apps)
+    end
+    return 1;
+end
+
+
+--- 删除令牌桶
+local function delete(key)
+    redis.pcall(&quot;DEL&quot;, key)
+    return 1;
+end
+
+
+local key = KEYS[1]
+local method = ARGV[1]
+
+if method == 'acquire' then
+    return acquire(key, ARGV[2], ARGV[3], ARGV[4])
+elseif method == 'init' then
+    return init(key, ARGV[2], ARGV[3], ARGV[4])
+elseif method == 'delete' then
+    return delete(key)
+else
+    --ignore
+end
+
+
+</code></pre>
+<h2 id="概览">概览</h2>
+<ol>
+<li>LUA的下标是从1开始的</li>
+<li>LUA的KEYS是调用方逗号分割前一部分，ARGV是后一部分。</li>
+</ol>
+<p>整个脚本包含了4个方法，入口处使用ARGV[1]判断，决定调用哪一个方法</p>
+<p>其核心使用了一个 <code>HASH</code> 来存放策略信息。其中包括：</p>
+<ul>
+<li>max_permits -&gt; 每秒最大速率</li>
+<li>rate -&gt; 每秒放入速率</li>
+<li>curr_permits -&gt; 当前速率</li>
+<li>apps -&gt; 应用列表</li>
+<li>last_mill_second -&gt; 上次添加令牌时间</li>
+</ul>
+<h2 id="delete">delete</h2>
+<p>delete方法最为简单，就是调用DEL删除key即可，相当于删除了访问控制的策略。</p>
+<h2 id="init">init</h2>
+<p>初始化方法即将数据库或其他三方的元数据，加载到redis中，以redis的数据格式 <code>Hash</code> 存储。<br>
+此方法是幂等的，在加入之前会进行判断，如果没有才会添加。</p>
+<h2 id="acquire">acquire</h2>
+<p>此方法最为核心，是从桶中获取令牌的动作，并且模拟RateLimiter实现了触发式添加，从而提升QPS。</p>
+<p>方法前面内容均为赋值操作和基本判空操作，没什么好说的。<br>
+从<code>local local_curr_permits = max_permits;</code>便开始了触发式添加动作。<br>
+从<code>if (local_curr_permits - permits &gt;= 0) then</code>开始消耗动作。</p>
+<pre><code>--- 获取令牌
+--- 返回码
+--- 0 没有令牌桶配置
+--- -1 表示取令牌失败，也就是桶里没有令牌
+--- 1 表示取令牌成功
+--- @param key 令牌的唯一标识
+--- @param permits  请求令牌数量
+--- @param curr_mill_second 当前毫秒数
+--- @param context 使用令牌的应用标识
+local function acquire(key, permits, curr_mill_second, context)
+    local rate_limit_info = redis.pcall(&quot;HMGET&quot;, key, &quot;last_mill_second&quot;, &quot;curr_permits&quot;, &quot;max_permits&quot;, &quot;rate&quot;, &quot;apps&quot;)
+    local last_mill_second = rate_limit_info[1]
+    local curr_permits = tonumber(rate_limit_info[2])
+    local max_permits = tonumber(rate_limit_info[3])
+    local rate = rate_limit_info[4]
+    local apps = rate_limit_info[5]
+
+    if type(apps) == 'boolean' or apps == nil or not contains(apps, context) then
+        return 0
+    end
+
+    --- 将当前令牌调整为配置的最大速率
+    local local_curr_permits = max_permits;
+
+    --- 此处为触发式添加令牌动作
+    --- 判断是否有上次添加令牌时间, 此处有三种情况:
+    --- 1. 第一次进来, last_mill_second = nil, 直接走进else, 然后消耗令牌
+    --- 2. 第二次进来, 分为两种情况
+    --- 2.1 在第一次后的1秒内访问, 即下方情况1
+    --- 2.2 在第一次后的1秒后访问, 即下方情况2
+    if (type(last_mill_second) ~= 'boolean'  and last_mill_second ~= nil) then
+        --- 向下取整(距离上次添加过去多少秒 * rate) = 需要向令牌桶添加的令牌数量
+        --- 假设rate=10, max_permits=10
+        --- 情况1: 距离上次添加过去多少秒 &lt; 1秒 假设=0.2秒 * 10 = 2个令牌
+        --- 情况2: 距离上次添加过去多少秒 &gt; 1秒 假设=10秒 * 10 = 100个令牌
+        local reverse_permits = math.floor(((curr_mill_second - last_mill_second) / 1000) * rate)
+        --- 本次需要添加的令牌 + 剩余的令牌 = 期望令牌数量
+        --- 情况1: 可能出现两种情况
+        --- 情况1.1 reverse_permits = 2, curr_permits &gt;= 9 , 即桶中还只消耗1个或没有消耗, 但是本次需要添加2个, 多了, 下方min函数会将其漏掉
+        --- 情况1.2 reverse_permits = 2, curr_permits &lt; 9 , 即桶中消耗了超过2个, 本次添加2个, 符合
+        --- 情况2: 绝对多了, 下方min函数会将其漏掉
+        local expect_curr_permits = reverse_permits + curr_permits;
+        --- 此处解决上面两种情况, 防止过载(即将多的令牌丢弃的动作)
+        --- 情况1: 期望令牌 &lt; max_permits(10), 设置期望令牌到当前令牌
+        --- 情况2: 期望令牌 &gt; max_permits(10), 设置最大令牌到当前令牌 -&gt; 即很久没有访问后的一次访问动作
+        local_curr_permits = math.min(expect_curr_permits, max_permits);
+
+        --- 如果需要向令牌桶添加的令牌数量 &gt; 0, 就更新上次添加令牌时间
+        if (reverse_permits &gt; 0) then
+            redis.pcall(&quot;HSET&quot;, key, &quot;last_mill_second&quot;, curr_mill_second)
+        end
+    else
+        redis.pcall(&quot;HSET&quot;, key, &quot;last_mill_second&quot;, curr_mill_second)
+    end
+
+
+    local result = -1
+    --- 当前令牌 够本次 申请的令牌数量
+    if (local_curr_permits - permits &gt;= 0) then
+        result = 1
+        --- 消耗令牌
+        redis.pcall(&quot;HSET&quot;, key, &quot;curr_permits&quot;, local_curr_permits - permits)
+    else
+        --- 上面的if不满足, 即令牌没有了
+        redis.pcall(&quot;HSET&quot;, key, &quot;curr_permits&quot;, local_curr_permits)
+    end
+
+    return result
+end
+
+</code></pre>
+<h1 id="java客户端编写">Java客户端编写</h1>
+<h2 id="载入脚本">载入脚本</h2>
+<p>整个脚本较大，可以事先载入到redis服务器，采用SHA1串访问。<br>
+多个实例创建多份rateLimiterLua也无妨，因为是同一个脚本文件内容，创建出来的sha1串也是一致的。</p>
+<pre><code>@Bean
+public DefaultRedisScript&lt;Long&gt; rateLimiterLua() {
+    DefaultRedisScript&lt;Long&gt; redisScript = new DefaultRedisScript&lt;&gt;();
+    redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(&quot;scripts/rate_limiter.lua&quot;)));
+    redisScript.setResultType(Long.class);
+    return redisScript;
+}
+</code></pre>
+<h2 id="编写java访问客户端">编写Java访问客户端</h2>
+<ol>
+<li>init() - 初始化访问策略</li>
+<li>acquire() - 获取令牌</li>
+<li>delete() - 删除访问策略</li>
+</ol>
+<pre><code>public class RateLimiterClient {
+
+    @Autowired
+    @Qualifier(&quot;longRedisTemplate&quot;)
+    private RedisTemplate&lt;String, Long&gt; longRedisTemplate;
+    @Autowired
+    private RedisTemplate&lt;String, String&gt; redisTemplate;
+
+    @Resource
+    private RedisScript&lt;Long&gt; rateLimiterLua;
+
+    /**
+     * 获取访问令牌
+     * @param context 应用名称
+     * @param key 限制速率key
+     * @param permits 获取令牌数量
+     * @return token
+     */
+    public Token acquireToken(String context, String key, Integer permits) {
+
+        Token token;
+        try {
+            // redis当前时间
+            Long currMillSecond = longRedisTemplate.execute(RedisServerCommands::time);
+            // 获取令牌
+            Long acquire = longRedisTemplate.execute(rateLimiterLua, ImmutableList.of(getKey(key)), RATE_LIMITER_ACQUIRE_METHOD, permits.toString(), currMillSecond, context);
+
+            if (acquire == null) {
+                log.error(&quot;no rate limit config for context = {}&quot;, context);
+                return Token.NO_CONFIG;
+            }
+
+            if (acquire == 1) {
+                token = Token.PASS;
+            } else if (acquire == -1) {
+                token = Token.FUSING;
+            } else {
+                log.error(&quot;no rate limit config for context = {}&quot;, context);
+                token = Token.NO_CONFIG;
+            }
+        } catch (Exception e) {
+            log.error(&quot;get rage limit token for redis error, key = &quot; + key, e);
+            token = Token.ACCESS_REDIS_FAIL;
+        }
+        return token;
+    }
+
+    public void deleteRateLimiter(String key) {
+        redisTemplate.execute(rateLimiterLua, ImmutableList.of(getKey(key)), RATE_LIMITER_DELETE_METHOD);
+    }
+
+    public void initRateLimiter(String code, Integer maxPermits, Integer rate, String apps) {
+        redisTemplate.execute(rateLimiterLua,
+                ImmutableList.of(getKey(code)),
+                RATE_LIMITER_INIT_METHOD,
+                maxPermits.toString(),
+                rate.toString(),
+                apps);
+    }
+    
+    private String getKey(String key) {
+        return RateLimiterConstants.RATE_LIMITER_KEY_PREFIX + key;
+    }
+
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/shou-xie-yi-ge-springboot-conditionon/">
+                                <h3 class="post-title">
+                                    手写一个SpringBoot ConditionOn*
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E9%99%90%E6%B5%81%E8%84%9A%E6%9C%AC">限流脚本</a>
+<ul>
+<li><a href="#%E6%A6%82%E8%A7%88">概览</a></li>
+<li><a href="#delete">delete</a></li>
+<li><a href="#init">init</a></li>
+<li><a href="#acquire">acquire</a></li>
+</ul>
+</li>
+<li><a href="#java%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BC%96%E5%86%99">Java客户端编写</a>
+<ul>
+<li><a href="#%E8%BD%BD%E5%85%A5%E8%84%9A%E6%9C%AC">载入脚本</a></li>
+<li><a href="#%E7%BC%96%E5%86%99java%E8%AE%BF%E9%97%AE%E5%AE%A2%E6%88%B7%E7%AB%AF">编写Java访问客户端</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

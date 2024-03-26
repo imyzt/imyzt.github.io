@@ -1,0 +1,424 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Go 切片数组 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Go 切片数组
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-08-23</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="数组">数组</h1>
+<p>数组只能存储同一种数据类型的数据<br>
+数组长度一经初始化，不能够修改</p>
+<h2 id="数组的声明">数组的声明</h2>
+<p>var 数组名称 [长度]数据类型</p>
+<p>获取数组的长度使用内置函数len(arr)<br>
+获取数组的容量使用内置函数cap(arr)</p>
+<p>func main() {</p>
+<pre><code>// var 数组名词 [长度]数据类型
+var arr [5]int
+arr[0] = 1
+arr[1] = 2
+
+// 没有赋值的内容, 默认为数组数据类型的零值
+fmt.Println(arr[2])	// 0
+
+fmt.Println(&quot;数组的长度为:&quot;, len(arr))	// 5
+fmt.Println(&quot;数组的容量为:&quot;, cap(arr))	// 3
+</code></pre>
+<p>}</p>
+<h2 id="数组的创建">数组的创建</h2>
+<p>数组创建有四种方式</p>
+<p>func main() {</p>
+<pre><code>// 0. 创建时制定长度, 不赋值
+var arr0 [5]int
+arr0[0] = 1
+fmt.Println(arr0[0])	// 1
+
+// 1. 创建时, 直接将值赋值到数组里面
+arr := [3]int{1,2,3}
+fmt.Println(arr[2])		// 3
+
+// 2. 指定对应位置的值
+arr1 := [3]int{0:3, 1:2, 2:1}
+fmt.Println(arr1[0])	// 3
+
+// 3. 创建时, 不指定数组长度, 由初始化赋值长度自动推断
+arr2 := [...]int{1, 2, 3, 4, 5}
+fmt.Println(&quot;arr2 len: &quot;, len(arr2))	// 5
+fmt.Println(&quot;arr2 cap: &quot;, cap(arr2))	// 5
+</code></pre>
+<p>}</p>
+<h2 id="数组的遍历">数组的遍历</h2>
+<p>func main() {</p>
+<pre><code>arr := [...]int{1,2,3,4,5}
+
+// range方式遍历
+for a := range arr {
+	fmt.Println(a)
+}
+
+fmt.Println(&quot;---&quot;)
+
+// for循环方式
+for idx, a := range arr {
+	fmt.Println(&quot;idx=&quot;, idx, &quot;arr=&quot;, a)
+}
+</code></pre>
+<p>}</p>
+<h2 id="二维数组">二维数组</h2>
+<p>func main() {</p>
+<pre><code>// 定义, 后赋值
+// arr1 := [2][3]int
+
+// 定义时初始化
+arr := [2][3]int{{1,2,3},{11,22,33}}
+
+printArr(arr)
+
+//[0][0]=1
+//[0][1]=2
+//[0][2]=3
+//[1][0]=11
+//[1][1]=22
+//[1][2]=33
+
+fmt.Println(&quot;---&quot;)
+
+// 通过下标修改数组元素
+arr[1][0] = 111
+
+printArr(arr)
+
+//[0][0]=1
+//[0][1]=2
+//[0][2]=3
+//[1][0]=111
+//[1][1]=22
+//[1][2]=33
+</code></pre>
+<p>}</p>
+<p>func printArr(arr [2][3]int) {<br>
+for one, ints := range arr {<br>
+for two, i2 := range ints {<br>
+fmt.Println(fmt.Sprintf(&quot;[%v][%v]=%v&quot;, one, two, i2))<br>
+}<br>
+}<br>
+}</p>
+<h1 id="切片slice">切片Slice</h1>
+<h2 id="切片的声明">切片的声明</h2>
+<p>它与数组的唯一区别，就是[]中不指定长度</p>
+<p>var 切片名称 []数据类型<br>
+切片名称 := make([]数据类型, 初始数据, 初始容量)</p>
+<p>// 声明一个切片slice<br>
+var slice []int<br>
+// 初始化一个长度为2, 容量为5的切片<br>
+slice := make([]int, 2, 5)</p>
+<h2 id="切片的创建与扩容">切片的创建与扩容</h2>
+<p>通过make函数创建切片<br>
+通过append添加元素<br>
+切片的扩容是成倍的,扩容后内存地址改变</p>
+<p>func main() {</p>
+<pre><code>// 初始化一个长度为2, 容量为5的切片
+slice := make([]int, 2, 5)
+
+fmt.Println(slice)
+fmt.Println(&quot;len=&quot;, len(slice), &quot;cap=&quot;, cap(slice))
+
+// 切片通过append添加元素
+slice = append(slice, 2, 3, 4, 5, 6)
+fmt.Println(slice)
+// 当切片容量不够时, 成倍扩容
+fmt.Println(&quot;len=&quot;, len(slice), &quot;cap=&quot;, cap(slice))
+//[0 0]
+//len= 2 cap= 5
+//[0 0 2 3 4 5 6]
+//len= 7 cap= 10
+
+
+// 添加一组切片到另一切片中
+slice1 := append(slice)
+// 修改源切片会影响到新切片, 因为是浅拷贝
+slice[1] = 1
+fmt.Println(slice)
+fmt.Println(slice1)
+//[0 1 2 3 4 5 6]
+//[0 1 2 3 4 5 6]
+
+s1 := make([]int, 0, 3)
+fmt.Printf(&quot;地址%p,长度%d,容量%d\n&quot;, s1, len(s1), cap(s1))
+s1 = append(s1, 1, 2)
+fmt.Printf(&quot;地址%p,长度%d,容量%d\n&quot;, s1, len(s1), cap(s1))
+s1 = append(s1, 3, 4, 5)
+fmt.Printf(&quot;地址%p,长度%d,容量%d\n&quot;, s1, len(s1), cap(s1))
+
+//地址0xc000016160,长度0,容量3
+//地址0xc000016160,长度2,容量3
+//地址0xc00001c180,长度5,容量6
+</code></pre>
+<p>}</p>
+<h2 id="make与new-的区别">make()与new() 的区别</h2>
+<p>make()是Go语言中的内置函数，主要用于创建并初始化slice切片类型，或者map字典类型，或者channel通道类型数据。他与new方法的区别是。new用于各种数据类型的内存分配，在Go语言中认为他返回的是一个指针。指向的是一个某种类型的零值。make 返回的是一个有着初始值的非零值。</p>
+<p>func main() {</p>
+<pre><code>slice1 := new([]int)
+fmt.Println(slice1) // &amp;[]
+
+slice2 := make([]int, 3)
+fmt.Println(slice2)	// [0 0 0]
+
+//结果出错 slice1是一个空指针 invalid operation: slice1[0] (type *[]int does not support indexing)
+fmt.Println(slice1[0])
+//结果为 0 因为已经初始化了
+fmt.Println(slice2[0])
+</code></pre>
+<p>}</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/go-yu-yan-de-bian-liang-yu-chang-liang/">
+                                <h3 class="post-title">
+                                    go语言的变量与常量
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E6%95%B0%E7%BB%84">数组</a>
+<ul>
+<li><a href="#%E6%95%B0%E7%BB%84%E7%9A%84%E5%A3%B0%E6%98%8E">数组的声明</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%9B%E5%BB%BA">数组的创建</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84%E7%9A%84%E9%81%8D%E5%8E%86">数组的遍历</a></li>
+<li><a href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84">二维数组</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%87%E7%89%87slice">切片Slice</a>
+<ul>
+<li><a href="#%E5%88%87%E7%89%87%E7%9A%84%E5%A3%B0%E6%98%8E">切片的声明</a></li>
+<li><a href="#%E5%88%87%E7%89%87%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%89%A9%E5%AE%B9">切片的创建与扩容</a></li>
+<li><a href="#make%E4%B8%8Enew-%E7%9A%84%E5%8C%BA%E5%88%AB">make()与new() 的区别</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

@@ -1,0 +1,999 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/spring-boot-jpa-query/">
+                        Spring boot JPA @Query
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-08</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            今天在写一个很简单的查询语句的时候，因为结果只需要大表中的三四个字段，项目又使用的jpa作为数据框架，所以考虑使用 @Query 注解自定义SQL，然后遇到了一个报错， 始终没有解决。最终在CSDN搜索到一个回答解决了这个小问题.
+在自定义SQL的时候，需要加上 nativeQuery = true 属性，否则JPA将按照默认的  hql 执行我们写的原生SQL。
+错误堆栈：
+2019-03-08 15:36:45.601  INFO 14220 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
+2019-03-08 15:36:45.603  INFO 14220 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-03-08 15:36:45.788  INFO 14220 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-03-08 15:36:45.983  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2019-03-08 15:36:46.112  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2019-03-08 15:36:46.126  INFO 14220 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2019-03-08 15:36:47.085  INFO 14220 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit &#39;default&#39;
+2019-03-08 15:36:47.660  INFO 14220 --- [           main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2019-03-08 15:36:47.722  WARN 14220 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;dataController&#39; defined in file [D:\dev\Ntech\data\target\classes\cn\anytec\data\controller\DataController.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+2019-03-08 15:36:47.724  INFO 14220 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit &#39;default&#39;
+2019-03-08 15:36:47.727  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2019-03-08 15:36:47.735  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2019-03-08 15:36:47.752  INFO 14220 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2019-03-08 15:36:47.771  INFO 14220 --- [           main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with &#39;debug&#39; enabled.
+2019-03-08 15:36:47.786 ERROR 14220 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;dataController&#39; defined in file [D:\dev\Ntech\data\target\classes\cn\anytec\data\controller\DataController.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:769) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:218) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1325) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1171) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:849) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:877) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.__refresh(AbstractApplicationContext.java:549) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.jrLockAndRefresh(AbstractApplicationContext.java:40002) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:41008) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:142) ~[spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1260) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1248) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at cn.anytec.data.DataApplication.main(DataApplication.java:16) [classes/:na]
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:596) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:374) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:592) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1247) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1167) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:857) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:760) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 21 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1762) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1247) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1167) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:593) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 35 common frames omitted
+Caused by: java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.validateQuery(SimpleJpaQuery.java:93) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.&amp;lt;init&amp;gt;(SimpleJpaQuery.java:63) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryFactory.fromMethodWithQueryString(JpaQueryFactory.java:76) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryFactory.fromQueryAnnotation(JpaQueryFactory.java:56) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$DeclaredQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:139) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$CreateIfNotFoundQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:206) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$AbstractQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:79) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lookupQuery(RepositoryFactorySupport.java:566) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lambda$mapMethodsToQuery$1(RepositoryFactorySupport.java:559) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193) ~[na:1.8.0_171]
+	at java.util.Iterator.forEachRemaining(Iterator.java:116) ~[na:1.8.0_171]
+	at java.util.Collections$UnmodifiableCollection$1.forEachRemaining(Collections.java:1049) ~[na:1.8.0_171]
+	at java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1801) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:481) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:471) ~[na:1.8.0_171]
+	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:708) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:1.8.0_171]
+	at java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:499) ~[na:1.8.0_171]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.mapMethodsToQuery(RepositoryFactorySupport.java:561) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lambda$new$0(RepositoryFactorySupport.java:551) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at java.util.Optional.map(Optional.java:215) ~[na:1.8.0_171]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.&amp;lt;init&amp;gt;(RepositoryFactorySupport.java:551) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:324) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$5(RepositoryFactoryBeanSupport.java:297) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:211) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.util.Lazy.get(Lazy.java:94) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:300) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean.afterPropertiesSet(JpaRepositoryFactoryBean.java:119) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1821) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1758) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 45 common frames omitted
+Caused by: java.lang.IllegalArgumentException: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped [select name,gender,group_id as groupId,id_number as idNumber,sdk_id as sdkId from tb_person where sdk_id = ?1]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:138) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:181) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:188) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.createQuery(AbstractSharedSessionContract.java:713) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSessionImpl.createQuery(AbstractSessionImpl.java:23) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_171]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.__invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:45009) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:45012) ~[na:1.8.0_171]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_171]
+	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:350) ~[spring-orm-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at com.sun.proxy.$Proxy101.createQuery(Unknown Source) ~[na:na]
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.validateQuery(SimpleJpaQuery.java:87) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	... 74 common frames omitted
+Caused by: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped [select name,gender,group_id as groupId,id_number as idNumber,sdk_id as sdkId from tb_person where sdk_id = ?1]
+	at org.hibernate.hql.internal.ast.QuerySyntaxException.generateQueryException(QuerySyntaxException.java:79) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.QueryException.wrapWithQueryString(QueryException.java:103) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.doCompile(QueryTranslatorImpl.java:219) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.compile(QueryTranslatorImpl.java:143) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.HQLQueryPlan.&amp;lt;init&amp;gt;(HQLQueryPlan.java:119) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.HQLQueryPlan.&amp;lt;init&amp;gt;(HQLQueryPlan.java:80) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.QueryPlanCache.getHQLQueryPlan(QueryPlanCache.java:153) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.getQueryPlan(AbstractSharedSessionContract.java:595) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.createQuery(AbstractSharedSessionContract.java:704) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	... 84 common frames omitted
+Caused by: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped
+	at org.hibernate.hql.internal.ast.util.SessionFactoryHelper.requireClassPersister(SessionFactoryHelper.java:169) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.tree.FromElementFactory.addFromElement(FromElementFactory.java:91) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.tree.FromClause.addFromElement(FromClause.java:79) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.HqlSqlWalker.createFromElement(HqlSqlWalker.java:331) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromElement(HqlSqlBaseWalker.java:3695) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromElementList(HqlSqlBaseWalker.java:3584) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromClause(HqlSqlBaseWalker.java:720) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.query(HqlSqlBaseWalker.java:576) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.selectStatement(HqlSqlBaseWalker.java:313) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.statement(HqlSqlBaseWalker.java:261) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.analyze(QueryTranslatorImpl.java:271) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.doCompile(QueryTranslatorImpl.java:191) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	... 90 common frames omitted
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/spring-boot-jpa-query/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/">
+                        java获取服务器内存数据
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-05</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            导包
+&amp;lt;dependency&amp;gt;
+	&amp;lt;groupId&amp;gt;org.fusesource&amp;lt;/groupId&amp;gt;
+	&amp;lt;artifactId&amp;gt;sigar&amp;lt;/artifactId&amp;gt;
+	&amp;lt;version&amp;gt;1.6.4&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+使用
+
+伪代码
+
+Sigar sigar = new Sigar();
+Mem mem =  sigar.getMem();
+
+//计数单位 K
+Long totalMemory = mem.getTotal() / 1024L;
+Long usedMemory = mem.getUsed() / 1024L;
+Long freeMemory = mem.getFree() / 1024L;
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/python-da-kai-wen-jian/">
+                        python打开文件
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+
+
+mode
+说明
+注意
+
+
+
+
+&#39;r&#39;
+只读
+文件必须存在
+
+
+&#39;w&#39;
+只写
+文件不存在则创建, 存在则清空内容
+
+
+&#39;a&#39;
+追加
+文件不存在则创建
+
+
+&#39;r+&#39; / &#39;w+&#39;
+读写
+
+
+
+&#39;a+&#39;
+追加和读写
+文件必须存在
+
+
+
+rb, wb, ab, rb+, wb+, ab+: 二进制方式打开
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/python-da-kai-wen-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/">
+                        JAVA53个关键字(包含2个保留字)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            访问控制符
+
+
+
+
+public
+protected
+缺省
+private
+
+
+
+
+同类可见
+√
+√
+√
+√
+
+
+同包子类可见
+√
+√
+√
+×
+
+
+同包非子类可见
+√
+√
+√
+×
+
+
+不同包子类可见
+√
+√
+×
+×
+
+
+不同包非子类可见
+√
+×
+×
+×
+
+
+
+类,方法和变量修饰符
+
+abstract
+表名类或者类中的方法时抽象的
+class
+声明类
+extends
+声明继承xx类
+final
+声明类标识不可继承、方法不可重写
+implements
+声明实现xx接口
+interface
+声明接口
+native
+声明本地方法
+new
+创建xx类的实例对象
+static
+表明域或方法是静态的，即该域或方法是属于类的
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/qian-shi-yi-qie-de-gen-yuan/">
+                        钱是一切的根源
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            钱是一切的根源
+马克思在《资本论》里说：
+如果有20%的利润，资本就会蠢蠢欲动；
+如果有50%的利润，资本就敢于冒险；
+如果有100%的利润，资本就可以冒着绞首的危险；
+如果有300%的利润，资本就敢于践踏人间一切的法律。
+这段话也可以这样理解：
+20%的利润是人类谎言的界限；
+50%的利润是人类违法的界限；
+100%的利润是人类赴死的界限；
+300%的利润则是人类变成兽的界限；
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/qian-shi-yi-qie-de-gen-yuan/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/docker-zhi-ding-rong-qi-ip/">
+                        docker 指定容器IP
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-28</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            docker的网络模式
+docker 总共有四种网络模式, 分别是
+
+host 模式
+bridge 模式
+none 模式
+container 模式
+
+关于docker的网络模式, 在这篇文章中有非常详尽的说明, 就不赘述了. 理解Docker的网络模式
+为什么需要指定容器IP
+实际部署中, 我们需要指定IP, 避免IP混乱
+如何实现指定容器IP
+docker的bridge(docker0)网络, 在docker安装时就已经创建好了, 不支持指定容器IP, 所以我们需要再创建一个docker的bridge网络(bridge1), 为其指定子网, 使其支持指定容器IP, 接下来将通过命令演示的方式创建一个支持指定IP的docker bridge网络.
+创建一个驱动为bridge的网络, 命名为newbridge
+docker network create --driver bridge --subnet 172.16.12.0/16 --gateway 172.16.1.1 newbridge
+
+
+查看刚刚创建的网络
+docker network ls
+
+
+创建容器测试
+docker run -itd -h test --name test --network newbridge --ip 172.16.12.3 ubuntu
+
+验证容器的ip
+
+此命令为查看所有容器ip命令
+
+docker inspect --format=&#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; $(docker ps -aq)
+
+
+可以看到容器的ip已经是刚才我们创建容器时指定的ip了. 大功告成.
+引用说明
+文中操作学习自 Docker 创建容器时指定容器ip
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/docker-zhi-ding-rong-qi-ip/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/wu-sheng-de-zhong-guo/">
+                        无声的中国
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            中国人的性情是总喜欢调和折中的，譬如你说，这屋子太暗，须在这里开一个窗，大家一定不允许的。但如果你主张拆掉屋顶他们就来调和，愿意开窗了。
+——鲁迅 《无声的中国》
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/wu-sheng-de-zhong-guo/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/yuan-zhu-jie/">
+                        元注解
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是元注解
+在java.lang.annotation包下, 提供了四个用来注解注解的元注解, 用于在自定义注解时使用.
+
+@Documented -- 注解是否包含在javaDoc中
+@Retention -- 什么时候用该注解
+@Target -- 注解用在什么地方
+@Inherited -- 是否允许子类继承该注解
+
+@Documented
+一个简单的Annotations注解标记, 标识是否将注解加入到Java文档中.
+@Retention
+
+定义该注解的生命周期
+
+
+RetentionPolicy.SOURCE  在编译阶段丢弃, 注解在编译之后就不会再有任何意义, 不会写入字节码文件. @Override, @SupperssWarnings都属于该生命周期.
+RetentionPolicy.CLASS 在类加载的时候丢弃, 在字节码处理过程中有用, 默认使用该生命周期
+RetentionPolicy.RUNTIME 始终不会丢弃, 运行期也保留该注解, 可以使用反射读取该注解的信息, 自定义注解时常使用该生命周期
+
+@Target
+
+定义该注解用在什么地方, 默认可以用在所有地方
+
+
+ElementType.TYPE -- 用于描述类
+ElementType.METHOD -- 用于描述方法
+ElementType.FIELD -- 用于描述成员变量, 对象, 属性(包括enum)
+ElementType.PACKAGE -- 用于描述包
+ElementType.CONSTRUCTOR -- 用于描述构造函数
+ElementType.LOCAL_VARIABLE -- 用于描述局部变量
+ElementType.PARAMETER -- 用于描述类, 接口(包括注解类型)或enum声明
+
+@Inherited
+@Inherited 元注解是一个标记注解，@Inherited 阐述了某个被标注的类型是被继承的。如果一个使用了@Inherited 修饰的annotation 类型被用于一个class，则这个annotation 将被用于该class 的子类。
+栗子
+@Documented
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Inherited
+@interface AnnotationTest{
+    String value() default &amp;quot;&amp;quot;;
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/yuan-zhu-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+                        前后端分离使用NGINX做服务转发
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。
+nginx配置
+在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 sites-enabled 下面编写配置信息.
+map $http_upgrade $connection_upgrade {  
+	default upgrade;  
+	&#39;&#39; close;  
+}  
+upstream muti_instance_43{
+#	server 192.168.10.62:9999 weight=10;
+	server 192.168.10.62:9999;
+#	server 192.168.10.213:9997 weight=2;
+	keepalive 200;
+}
+
+server {
+	listen 0.0.0.0:10070;
+	sendfile off;
+
+
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+#	resolver 114.114.114.114 223.5.5.5 valid=3600s;
+        resolver_timeout 3s;
+
+	proxy_http_version 1.1;
+	proxy_set_header Connection &amp;quot;&amp;quot;;
+
+	#root /data/securityUI/static/;
+
+
+	location  / { 
+                #add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;
+		#add_header &#39;Access-Control-Allow-Methods&#39; &#39;GET&#39;;
+		#add_header &#39;Access-Control-Allow-Headers&#39; &#39;DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization&#39;;
+		#add_header &#39;Access-Control-Expose-Headers&#39; &#39;Content-Length,Content-Range&#39;;
+		#add_header &#39;Access-Control-Max-Age&#39; 2592000;
+		client_max_body_size    15g;
+		#dav_access user:rw group:rw all:rw;
+		#dav_methods PUT DELETE MKCOL COPY MOVE;
+
+		#create_full_put_path on;
+
+		#autoindex off;
+		#autoindex_exact_size off;
+		#autoindex_localtime on;
+		#charset utf-8;
+		if ($request_uri ~* /.) {
+			proxy_pass http://muti_instance_43;
+			break;
+			#root /data/securityUI/static/;
+                	#index index.html index.htm;
+	
+		}
+		root /data/securityUI/static/;
+                index login.html;
+	}
+
+	location ^~ /static/offlineMap/ {
+		alias /data/securityUI/map/;
+		#proxy_pass http://map_server;
+	}
+
+	location  /static/ {
+
+		client_max_body_size 15g;
+		alias /data/securityUI/static/;
+		allow all;
+
+	}
+	location ^~ /index {
+		alias /data/securityUI/static/;
+		index index.html;
+
+	}
+
+	location ^~ /gee/ {
+		proxy_pass http://muti_instance_43;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection &amp;quot;upgrade&amp;quot;;
+		proxy_http_version 1.1;
+		proxy_set_header        Host            $host;
+		proxy_set_header        X-Real-IP       $remote_addr;
+		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+	}
+}
+
+
+总结
+配置中最关键的点在 location  / {} 节点, 其中的 if 判断, 如果是访问的 ip:port/xxx 带了任何内容, 就会转发到 muti_instance_43 中, 如果没有带内容(即访问的首页), 就会将其转发到配置好了的静态首页面.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/efk-ri-zhi-xi-tong-da-jian/">
+                        EFK日志系统搭建
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是EFK
+这里引用一下 ELK 架构之 Elasticsearch 和 Kibana 安装配置 一文对ELK的介绍，详细内容在文中都有介绍，我主要将其从实体机安装转向在Docker-compose服务编排，EFK与ELK大同小异.
+
+ELK 是三个开源软件的缩写，分别为：Elasticsearch、Logstash 以及 Kibana，它们都是开源软件。不过现在还新增了一个 Beats，它是一个轻量级的日志收集处理工具（Agent），Beats 占用资源少，适合于在各个服务器上搜集日志后传输给 Logstash，官方也推荐此工具，目前由于原本的 ELK Stack 成员中加入了 Beats 工具所以已改名为 Elastic Stack。
+
+ElasticSearch搭建
+ElasticSearch的安装需要替换配置文件的以下几个点
+network.host: 0.0.0.0 #所有地址都能够访问  
+http.port: 9200 #端口  
+http.cors.enabled: true 
+ http.cors.allow-origin: &amp;quot;*&amp;quot;
+
+问题解决
+在配置ElasticSearch时容易出现以下几点错误, 在此讲解以下如何解决:
+
+见图1-[ElasticSearch问题]
+原因：这是在因为系统不支持SecComp，而ES5.2.0默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动。
+解决：在elasticsearch.yml中配置bootstrap.system_call_filter为false，注意要在Memory下面:
+
+bootstrap.memory_lock: false
+bootstrap.system_call_filter: false
+
+
+见图1-[ElasticSearch问题]第二个红框
+出现此问题只需要修改了 宿主机 系统的max_map_count参数即可.
+
+vim /etc/sysctl.conf
+vm.max_map_count=655360
+sysctl -p
+
+
+图1-[ElasticSearch问题]
+Logstash搭建
+Logstash的安装需要替换配置文件的以下几点
+server.port: 5601 
+server.host: &amp;quot;0.0.0.0&amp;quot; 
+elasticsearch.url: &amp;quot;http://elasticsearch:9200&amp;quot;
+
+Kibana搭建
+配置一个filebeat的服务接收端
+input {
+ beats {
+   port =&amp;gt; 10515
+  }
+}
+output {
+    elasticsearch {
+      hosts =&amp;gt; [&amp;quot;127.0.0.1:9200&amp;quot;]
+      # 注释不能被解析,线上删除.此处做讲解
+      # %{[fields][logtype]} 对应filebeat配置文件, 只需在此配置, 写入ElasticSearch的索引就可以主动创建和filebeat相关的索引
+      index =&amp;gt; &amp;quot;%{[fields][logtype]}-%{+YYYY.MM.dd}&amp;quot;
+    }
+}
+
+filebeat搭建
+filebeat作为 日志探测器 需要配置一个日志探测配置文件, 可以是log4j的网络传输, 也可以是系统的某个目录.配置文件下图讲解的非常细致
+
+还需要做如下修改:
+注释掉默认开启的 ElasticSearch
+
+开启默认未开启的 logstash, 指定logstash地址, 指定主机名而非localhost
+
+容器编排
+version: &#39;2&#39;
+
+services: 
+  elasticsearch:  
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    volumes: 
+      - ./es/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/logs:/path/to/logs
+    ports: 
+      - &#39;9200:9200&#39;
+      - &#39;9300:9300&#39;
+    environment:
+      - &amp;quot;bootstrap.memory_lock=true&amp;quot;
+      - &amp;quot;ES_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - efk
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.6.0
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/pattern:/usr/share/logstash/pattern
+    ports:
+      - &amp;quot;5044:5044&amp;quot;
+      - &amp;quot;10515:10515&amp;quot;
+    environment:
+      - &amp;quot;LS_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    command: logstash -f /usr/share/logstash/config/logstash-sample.conf
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - &amp;quot;5601:5601&amp;quot;
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+
+networks:
+  efk:
+    driver: bridge
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/efk-ri-zhi-xi-tong-da-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/11/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.github.io/page/13/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1711466946029)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

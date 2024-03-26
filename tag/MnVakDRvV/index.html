@@ -1,0 +1,248 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Snowflake | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Snowflake</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">
+                        分布式唯一标识设计
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-03</time>
+                    
+                        <a href="https://imyzt.github.io/tag/MnVakDRvV/" class="post-tag i-tag
+                            i-tag-info">
+            #Snowflake
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            当数据库面临分库分表时，无法依赖数据库自增主键来生成业务标识，或业务场景设计时为了防止自增id被外部撞库猜测数据，通常会考虑引入全局唯一标识生成器来解决此类问题。
+介绍
+目前市面上比较常见的基本为Twitter开源的Snowflake及其变种，Snowflake的核心思想是将64bit的二进制数字分为若干部分，每一部分都存储具有特定含义的数据，比如时间戳、机器ID、序列号等，最终生成全局唯一有序ID，标准算法如下图：
+
+
+41位的时间戳部分可以支撑pow(2,41)/1000/60/60/24/365 年，约等于 69 年。
+如果系统部署在多机房，那么 10 位的机器 ID 可以继续划分为 2～3 位的 IDC 标示（可以支撑 4 个或者 8 个 IDC 机房）和 7～8 位的 机器 ID（支持 128-256 台机器）。
+12 位的序列号代表着每个节点每毫秒最多可以生成 4096 的 ID。
+
+部署方式
+雪花ID具有两种使用方式，一种是独立部署一套发号器，外部请求下发，另一种更为常见的做法是直接嵌入到应用内，使用Snowflake工具类直接获取使用，当嵌入到应用内部时，可以考虑将机器ID部分，分散标识到不同业务系统。
+缺点
+时间回拨问题
+Snowflake算法设计很简单和巧妙，性能高效，具有全局唯一性、单调递增性和有业务含义的ID，但是它也有一定缺点，其中最大的缺点就是他依赖于系统的时间戳，一旦时间不准，就有可能生成重复的ID。如果是独立部署的发号器，如果发现系统时间不准，可以直接暂停发号，知道时间准确为止。
+QPS低引起单调重复
+如果发号器的QPS不高，例如每毫秒只能发一个ID，就会造成ID的末尾永远是1，如果在分库分表系统中使用ID作为分区间，就会造成库表分配的不均匀。
+如何解决：
+
+时间戳不记录毫秒而是记录秒，这样在一个时间区间内可以多发几个号，避免出现分库分表时数据分配不均。
+生成的序列号的起始号可以做一下随机，这一秒是21，下一秒可以是30，这样也会保证均衡。
+
+参考
+
+发号器：如何保证分库分表后 ID 的全局唯一性？
+万亿级调用系统：微信序列号生成器架构设计及演变
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1711466946029)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

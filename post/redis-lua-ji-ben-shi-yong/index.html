@@ -1,0 +1,340 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Redis LUA基本使用 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1711466946029">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1711466946029" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Redis LUA基本使用
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-06-14</time>
+                            
+                        </div>
+                        
+                            <div class="post-feature-image" style="background-image: url('https://redis.io/images/redis-white.png')"></div>
+                            
+                                <div class="post-content">
+                                    <h1 id="eval-lua">EVAL LUA</h1>
+<h2 id="rediscall">redis.call</h2>
+<ol>
+<li>通过EVAL指令，使用 redis.call 执行LUA脚本，3指定的是，前三个参数是KEYS的，然后后面的是ARGV的。</li>
+<li>LUA索引从1开始。</li>
+</ol>
+<pre><code>127.0.0.1:6379&gt; EVAL &quot;return redis.call(’SET', KEYS[2], ARGV[3])&quot; 3 1 2 3 4 5 6
+127.0.0.1:6379&gt; get 2
+&quot;6&quot;
+
+[1 2 3]是KEYS的
+[4 5 6]是ARGV的
+</code></pre>
+<h2 id="redispcall">redis.pcall</h2>
+<ol>
+<li>redis.call 在遇到异常之后，不会继续往后执行。</li>
+<li>redis.pcall 可以捕获异常，如果没处理的话，将继续往后执行。</li>
+</ol>
+<pre><code>此处第一条语句报错，第二条语句将不会执行。
+127.0.0.1:6379&gt; EVAL &quot;redis.call('SETRRRR', KEYS[1], ARGV[1]); redis.call('SET', KEYS[2], ARGV[2])&quot; 2 a b c d e f g
+(error) ERR Error running script (call to f_8a873e7e4125dc92ef97aa5e8b07e22f7d185183): @user_script:1: @user_script: 1: Unknown Redis command called from Lua script
+127.0.0.1:6379&gt; get b
+(nil)
+
+通过redis.pcall命令，对错误进行捕获后，会继续执行第二条语句。
+127.0.0.1:6379&gt; EVAL &quot;redis.pcall('SETRRRR', KEYS[1], ARGV[1]); redis.call('SET', KEYS[2], ARGV[2])&quot; 2 a b c d e f g
+(nil)
+127.0.0.1:6379&gt; get b
+&quot;d&quot;
+</code></pre>
+<h1 id="script">SCRIPT</h1>
+<h2 id="script作用">SCRIPT作用</h2>
+<p>在开发过程中，如果LUA脚本比较长，是会有一定的网络开销的。可以事先将LUA脚本缓存到redis服务器上，还可以防止脚本暴露在程序中被篡改。</p>
+<ol>
+<li>可以通过 <code>SCRIPT LOAD </code>指令将LUA脚本缓存到服务端，服务端返回一个RSA加密后的串。</li>
+<li>执行时，通过 <code>EVALSHA</code> 执行 <code>RSA串</code> 即可。</li>
+</ol>
+<pre><code>127.0.0.1:6379&gt; SCRIPT LOAD &quot;redis.call('SET', KEYS[1], ARGV[1])&quot;
+&quot;fcd2612e1ca113b83fdfbc2a88493d3b231a32ad&quot;
+127.0.0.1:6379&gt; EVALSHA fcd2612e1ca113b83fdfbc2a88493d3b231a32ad 2 a b c d e f g
+(nil)
+127.0.0.1:6379&gt; get a
+&quot;c&quot;
+</code></pre>
+<h2 id="script基础指令">SCRIPT基础指令</h2>
+<h3 id="script-exists-检查是否存在脚本">SCRIPT EXISTS 检查是否存在脚本</h3>
+<pre><code>127.0.0.1:6379&gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32ad
+1) (integer) 1
+127.0.0.1:6379&gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32adaaa
+1) (integer) 0
+</code></pre>
+<h3 id="script-flush-清空所有脚本">SCRIPT FLUSH 清空所有脚本</h3>
+<pre><code>127.0.0.1:6379&gt; SCRIPT FLUSH
+OK
+127.0.0.1:6379&gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32ad
+1) (integer) 0
+</code></pre>
+<h3 id="script-kill-杀死当前正在运行的脚本">SCRIPT KILL 杀死当前正在运行的脚本</h3>
+<p>loop.lua</p>
+<pre><code>local i=0
+while true
+do
+	i=i+1
+	redis.debug(i)
+end
+return &quot;OK&quot;
+</code></pre>
+<pre><code>redis-cli --eval loop.lua
+进入锁死状态，开一个新窗口。所有指令都返回Redis服务器处于繁忙状态
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/06/rqj21n5tuajciqe98qdlp3tek3.png" alt="锁死" loading="lazy"></figure>
+<pre><code>通过KILL指令干掉当前正在执行的指令。
+127.0.0.1:6379&gt; SCRIPT KILL
+OK
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/06/41h4b4jrrghg0pjagomun2fpbv.png" alt="释放" loading="lazy"></figure>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/xian-cheng-chi-dong-tai-guan-li/">
+                                <h3 class="post-title">
+                                    线程池动态管理
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#eval-lua">EVAL LUA</a>
+<ul>
+<li><a href="#rediscall">redis.call</a></li>
+<li><a href="#redispcall">redis.pcall</a></li>
+</ul>
+</li>
+<li><a href="#script">SCRIPT</a>
+<ul>
+<li><a href="#script%E4%BD%9C%E7%94%A8">SCRIPT作用</a></li>
+<li><a href="#script%E5%9F%BA%E7%A1%80%E6%8C%87%E4%BB%A4">SCRIPT基础指令</a>
+<ul>
+<li><a href="#script-exists-%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E8%84%9A%E6%9C%AC">SCRIPT EXISTS 检查是否存在脚本</a></li>
+<li><a href="#script-flush-%E6%B8%85%E7%A9%BA%E6%89%80%E6%9C%89%E8%84%9A%E6%9C%AC">SCRIPT FLUSH 清空所有脚本</a></li>
+<li><a href="#script-kill-%E6%9D%80%E6%AD%BB%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E8%84%9A%E6%9C%AC">SCRIPT KILL 杀死当前正在运行的脚本</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>
