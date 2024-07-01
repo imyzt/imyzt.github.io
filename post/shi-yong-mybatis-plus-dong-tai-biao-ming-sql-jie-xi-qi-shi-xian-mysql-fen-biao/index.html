@@ -1,0 +1,330 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-08-21</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="前言">前言</h1>
+<p>随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。<br>
+一般的扩展方案分为两种，一种是<strong>垂直扩展</strong>，即增大单机的配置。  另一种则是<strong>水平扩展</strong>，是将任务分配到多台计算机上。</p>
+<p>我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus提供的 <code>DynamicTableNameParser </code> 处理器直接在程序中做动态路由。<br>
+由于官方文档在此处描述的并不是特别详细，所以写这篇博客作为记录。</p>
+<h1 id="开发">开发</h1>
+<p>分表策略就不在此做说明了，网上已经有非常多不同的处理方式了，在这里主要阐述怎么样使用Mybatis-Plus提供的 <code>ITableNameHandler </code>  接口将不同表的做出不同处理。</p>
+<h2 id="实现-itablenamehandler-接口">实现 ITableNameHandler 接口</h2>
+<p>首先我们需要实现 <code>ITableNameHandler</code> 接口，该接口有两个方法(process, dynamicTableName)，process()方法是做表名SQL处理的，该方法有默认实现，它依赖于dynamicTableName()方法，所以我们需要重写的方法便是dynamicTableName()方法<br>
+dynamicTableName()方法有三个入参，metaObject包括了元数据对象，sql是我们即将要执行的SQL，tableName则是我们执行的SQL表名称。我们需要修改的便是tableName。<br>
+下方我的代码逻辑是从DaysContext上下文对象中拿到事先设置的表名动态规则生成的表后缀，拼接上tableName便是我们需要动态路由的表名称了。</p>
+<pre><code>@Component
+public class MyDynamicTableNameParser implements ITableNameHandler {
+
+    @Override
+    public String dynamicTableName(MetaObject metaObject, String sql, String tableName) {
+
+        DaysContext.Days days = DaysContext.get();
+
+        // 加上分表逻辑后缀
+        return tableName + &quot;_&quot; + days.getTableSuffix();
+    }
+}
+</code></pre>
+<h2 id="将配置注入到mybatis-plus配置中">将配置注入到Mybatis-Plus配置中</h2>
+<p>接下来需要将我们的动态表名处理器 <code>MyDynamicTableNameParser</code> 配置到 <code>PaginationInterceptor</code> 对象中</p>
+<pre><code>@Configuration
+public class MybatisPlusConfig {
+
+    private final MyDynamicTableNameParser myDynamicTableNameParser;
+
+    public MybatisPlusConfig(MyDynamicTableNameParser myDynamicTableNameParser) {
+        this.myDynamicTableNameParser = myDynamicTableNameParser;
+    }
+
+    /**
+     * 分页, 分表插件
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptorMysql() {
+
+        // 分页
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType(&quot;mysql&quot;);
+
+        // 分表
+        dynamicTableNameParser(page);
+
+        return page;
+    }
+
+    /**
+     * 分表
+     */
+    private void dynamicTableNameParser(PaginationInterceptor page) {
+
+        // 为指定表设置动态表名处理器
+        HashMap&lt;String, ITableNameHandler&gt; map = new HashMap&lt;&gt;(2);
+        map.put(&quot;sys_user&quot;, myDynamicTableNameParser);
+        map.put(&quot;sys_logs&quot;, myDynamicTableNameParser);
+
+        // 将需要处理的表添加到动态表名 SQL 解析器
+        DynamicTableNameParser dynamicTableNameParser = new DynamicTableNameParser();
+        dynamicTableNameParser.setTableNameHandlerMap(map);
+
+        // 加入处理器链中
+        List&lt;ISqlParser&gt; iSqlParsers = new ArrayList&lt;&gt;();
+        iSqlParsers.add(dynamicTableNameParser);
+        page.setSqlParserList(iSqlParsers);
+    }
+}
+</code></pre>
+<p>在dynamicTableNameParser()方法中，第一个代码块将需要动态路由的表通过K-V的形式配置我们刚编写的路由处理器对象。<br>
+第二个代码块中将我们添加的表名处理器设置到 Mybatis-Plus的 表名处理器 DynamicTableNameParser 中<br>
+第三个代码块将我们配置的表名处理器添加到Mybatis-Plus的处理器链中<br>
+通过上面的配置，我们就能够根据配置的路由规则，将配置的需要路由的表动态拼接上我们生成的后缀名了。</p>
+<h1 id="总结">总结</h1>
+<p>框架做了很好的封装，整个过程还是非常顺利的，也顺利通过了测试。写这篇博客做个记录。</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
+                                <h3 class="post-title">
+                                    MySQL 分组查询最新数据
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%BC%80%E5%8F%91">开发</a>
+<ul>
+<li><a href="#%E5%AE%9E%E7%8E%B0-itablenamehandler-%E6%8E%A5%E5%8F%A3">实现 ITableNameHandler 接口</a></li>
+<li><a href="#%E5%B0%86%E9%85%8D%E7%BD%AE%E6%B3%A8%E5%85%A5%E5%88%B0mybatis-plus%E9%85%8D%E7%BD%AE%E4%B8%AD">将配置注入到Mybatis-Plus配置中</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

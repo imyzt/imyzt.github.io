@@ -1,0 +1,482 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Neo4j 常用命令 一 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Neo4j 常用命令 一
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-05-08</time>
+                            
+                                <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-success">
+                            #Neo4j
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="where">WHERE</h1>
+<p>可以类似于SQL的写法来实现，首先通过<code>match</code>将节点查询出来(n,m)，然后通过<code>WHERE</code>将数据</p>
+<pre><code class="language-cql">match (n:Lianhuachi),(m:Lianhuachi) where n.name = '去种田的向凹凸' and m.name = &quot;向云朵&quot;
+return id(n),n.name,id(m),m.name
+</code></pre>
+<pre><code class="language-cql">match (n:Lianhuachi {name: &quot;去种田的向凹凸&quot;}),(m:Lianhuachi {name: &quot;向云朵&quot;})
+return id(n),n.name,id(m),m.name
+</code></pre>
+<h1 id="delete-删除节点">DELETE-删除节点</h1>
+<ul>
+<li>删除节点（如果节点存在关系时，是无法删除的）</li>
+</ul>
+<pre><code class="language-cql">match (n: Person {name: &quot;xxx&quot;}) delete n
+</code></pre>
+<ul>
+<li>删除关系</li>
+</ul>
+<pre><code class="language-cql">match (n: Person {name: &quot;小红&quot;})-[r]-&gt;(m: Person {name: &quot;小明&quot;}) delete r
+</code></pre>
+<h1 id="remove-删除属性">REMOVE-删除属性</h1>
+<h2 id="首先在student和person标签创建1一个节点">首先，在student和person标签创建1一个节点</h2>
+<pre><code class="language-cql">create (n:student:person {name: &quot;张三&quot;, age: 18}) return n
+</code></pre>
+<h2 id="查询节点">查询节点</h2>
+<p><code>MATCH (n:person) where n.name = &quot;张三&quot; RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1715301497013.png" alt="" loading="lazy"><br>
+<code>MATCH (n:student) RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1715301490854.png" alt="" loading="lazy"></p>
+<h2 id="删除标签中的节点">删除标签中的节点</h2>
+<p><code>MATCH (n:person) where n.name = &quot;张三&quot; remove n</code></p>
+<h2 id="删除标签中节点的属性">删除标签中节点的属性</h2>
+<p>删除前，age=18 <code>MATCH (n:student) where n.name = &quot;张三&quot; return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301732611.png" alt="" loading="lazy"><br>
+删除后，age无了 <code>MATCH (n:student) where n.name = &quot;张三&quot; remove n.age return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301781763.png" alt="" loading="lazy"></p>
+<h2 id="修改标签中节点的属性">修改标签中节点的属性</h2>
+<p>修改后，age回来了 <code>MATCH (n:student) where n.name = &quot;张三&quot; set n.age=18 return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301862819.png" alt="" loading="lazy"><br>
+给榜首增加一个属性 <code>match (n:Lianhuachi {name: &quot;我是野农&quot;}) set n.title = '虾米榜榜首' return n</code><br>
+<img src="https://imyzt.github.io/post-images/1719409420804.png" alt="" loading="lazy"></p>
+<h1 id="order-by-排序">ORDER BY - 排序</h1>
+<p>补充测试数据<br>
+<code>create (n:student {name: &quot;张三&quot;, age: 18}),(m:student {name: &quot;李四&quot;, age: 22}) return n,m</code></p>
+<h2 id="排序">排序</h2>
+<p><code>match (n:student) return id(n), n.name,n.age order by n.age desc </code></p>
+<table>
+<thead>
+<tr>
+<th>id(n)</th>
+<th>n.name</th>
+<th>n.age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>120</td>
+<td>&quot;李四&quot;</td>
+<td>22</td>
+</tr>
+<tr>
+<td>119</td>
+<td>&quot;张三&quot;</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<h1 id="null-null属性">NULL - NULL属性</h1>
+<p>查询<code>name</code>属性不为空的节点<br>
+<code>match (n:student) where n.name is not null return n.name,n.label</code></p>
+<table>
+<thead>
+<tr>
+<th>n.name</th>
+<th>n.label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;张三&quot;</td>
+<td>null</td>
+</tr>
+<tr>
+<td>&quot;李四&quot;</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<p>查询<code>sex</code>属性为空的节点<br>
+<code>match (n:student) where n.sex is null return n.name,n.label</code></p>
+<table>
+<thead>
+<tr>
+<th>n.name</th>
+<th>n.label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;张三&quot;</td>
+<td>null</td>
+</tr>
+<tr>
+<td>&quot;李四&quot;</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<p>给<strong>张三</strong>设置<code>sex</code>属性，注意<code>where</code>在前，<code>set</code>在后，和<code>MySQL</code>等相反<br>
+<code>match (n:student)  where n.name='张三' set n.sex='男' return n.name,n.sex,n.age</code><br>
+查询结果：<code>match (n:student) return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715526279128.png" alt="" loading="lazy"></p>
+<h1 id="in-查询多个">IN - 查询多个</h1>
+<p>查询<code>name</code>等于张三或李四的人：<br>
+<code>match (n:student) where n.name in [&quot;张三&quot;, &quot;李四&quot;] return n</code></p>
+<h1 id="索引">索引</h1>
+<p><a href="https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/">官方文档</a></p>
+<h2 id="旧版本">旧版本</h2>
+<ul>
+<li>
+<p>创建索引：<br>
+<code>create index on :节点 (属性)</code></p>
+</li>
+<li>
+<p>删除索引：<br>
+<code>drop index on :节点(属性)</code></p>
+</li>
+</ul>
+<h2 id="新版本5或更高版本">新版本(5或更高版本)</h2>
+<ul>
+<li>
+<p>创建索引：<br>
+缺省索引名称：<br>
+<code>CREATE INDEX [index_name（可缺省）] FOR (n:person) ON (n.name)</code><br>
+指定索引名称：<br>
+<code>create index index_test for (n:person) on (n.name)</code><br>
+<code>Added 1 index, completed after 992 ms.</code></p>
+</li>
+<li>
+<p>查询所有索引：<br>
+<code>show indexes</code></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>state</th>
+<th>populationPercent</th>
+<th>type</th>
+<th>entityType</th>
+<th>labelsOrTypes</th>
+<th>properties</th>
+<th>indexProvider</th>
+<th>owningConstraint</th>
+<th>lastRead</th>
+<th>readCount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>&quot;index_343aff4e&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;LOOKUP&quot;</td>
+<td>&quot;NODE&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>&quot;token-lookup-1.0&quot;</td>
+<td>null</td>
+<td>&quot;2024-05-18T13:26:33.878000000Z&quot;</td>
+<td>571</td>
+</tr>
+<tr>
+<td>3</td>
+<td>&quot;index_a302cc54&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;RANGE&quot;</td>
+<td>&quot;NODE&quot;</td>
+<td>[&quot;person&quot;]</td>
+<td>[&quot;name&quot;]</td>
+<td>&quot;range-1.0&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&quot;index_f7700477&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;LOOKUP&quot;</td>
+<td>&quot;RELATIONSHIP&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>&quot;token-lookup-1.0&quot;</td>
+<td>null</td>
+<td>&quot;2024-05-10T00:48:00.395000000Z&quot;</td>
+<td>67</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>删除索引：<br>
+<code>drop index index_a302cc54</code><br>
+<code>Removed 1 index, completed after 5 ms.</code></li>
+</ul>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/">
+                                <h3 class="post-title">
+                                    使用Neo4j建立莲花池人物关系图（核心人物，简版）
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#where">WHERE</a></li>
+<li><a href="#delete-%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9">DELETE-删除节点</a></li>
+<li><a href="#remove-%E5%88%A0%E9%99%A4%E5%B1%9E%E6%80%A7">REMOVE-删除属性</a>
+<ul>
+<li><a href="#%E9%A6%96%E5%85%88%E5%9C%A8student%E5%92%8Cperson%E6%A0%87%E7%AD%BE%E5%88%9B%E5%BB%BA1%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9">首先，在student和person标签创建1一个节点</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E8%8A%82%E7%82%B9">查询节点</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E6%A0%87%E7%AD%BE%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9">删除标签中的节点</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E6%A0%87%E7%AD%BE%E4%B8%AD%E8%8A%82%E7%82%B9%E7%9A%84%E5%B1%9E%E6%80%A7">删除标签中节点的属性</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E6%A0%87%E7%AD%BE%E4%B8%AD%E8%8A%82%E7%82%B9%E7%9A%84%E5%B1%9E%E6%80%A7">修改标签中节点的属性</a></li>
+</ul>
+</li>
+<li><a href="#order-by-%E6%8E%92%E5%BA%8F">ORDER BY - 排序</a>
+<ul>
+<li><a href="#%E6%8E%92%E5%BA%8F">排序</a></li>
+</ul>
+</li>
+<li><a href="#null-null%E5%B1%9E%E6%80%A7">NULL - NULL属性</a></li>
+<li><a href="#in-%E6%9F%A5%E8%AF%A2%E5%A4%9A%E4%B8%AA">IN - 查询多个</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95">索引</a>
+<ul>
+<li><a href="#%E6%97%A7%E7%89%88%E6%9C%AC">旧版本</a></li>
+<li><a href="#%E6%96%B0%E7%89%88%E6%9C%AC5%E6%88%96%E6%9B%B4%E9%AB%98%E7%89%88%E6%9C%AC">新版本(5或更高版本)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

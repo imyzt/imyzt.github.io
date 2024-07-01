@@ -1,0 +1,399 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    使用Neo4j建立莲花池人物关系图（核心人物，简版） | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            使用Neo4j建立莲花池人物关系图（核心人物，简版）
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-04-22</time>
+                            
+                                <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #Neo4j
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>最近关注了沅陵的莲花池，整个村子都是钓鱼佬，人均up主，基本都是沾亲带故的，错综复杂，恰逢正在学习Neo4j，可以借此机会将人物关系通过图谱的方式呈现出来。</p>
+<h1 id="人物标签创建">人物标签创建</h1>
+<p>首先将人物关系建立出来，利用<code>create</code>来创建效率实在太低了 ，所以决定采用数据导入的方式。</p>
+<details>
+<summary>点击查看莲花池人物详情</summary>
+<div>
+  去种田的向凹凸  
+  <div>
+    小白兔的胡萝卜甜（冉甜）
+  </div>
+  <div>
+    向云朵
+  </div>
+  <div>
+    我是野农
+  </div>
+  <div>
+    画燕儿
+  </div>
+  <div>
+    向鹿鸣
+  </div>
+  <div>
+    路人阿丙X
+  </div>
+  <div>
+    大明星（冉蜜）
+  </div>
+  <div>
+    向偶然
+  </div>
+  <div>
+    荷塘星星
+  </div>
+  <div>
+    向尘俊
+  </div>
+  <div>
+    向星言
+  </div>
+  <div>
+    多肉葡萄肉多多
+  </div>
+  <div>
+    白叔
+  </div>
+  <div>
+    播音哥
+  </div>
+  <div>
+    三叔
+  </div>
+  <div>
+    丹宝
+  </div>
+  <div>
+    守山人阿亮
+  </div>
+</div>  
+</details>
+<p>导入数据：</p>
+<pre><code>load csv from &quot;file:///莲花池人物.csv&quot; as line 
+create (:Lianhuachi {name: line[0]})
+</code></pre>
+<p>最终效果图：<br>
+<code>MATCH (n:Lianhuachi) RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1713798289894.png" alt="" loading="lazy"></p>
+<h1 id="人物关系标签创建">人物关系标签创建</h1>
+<details>
+<summary>莲花池人物关系（简版）</summary>
+  <div>小白兔的胡萝卜甜（冉甜）,丈夫,去种田的向凹凸</div>
+  <div>去种田的向凹凸,妻子,小白兔的胡萝卜甜（冉甜）</div>
+  <div>小白兔的胡萝卜甜（冉甜）,女儿,向云朵</div>
+  <div>去种田的向凹凸,女儿,向云朵</div>
+  <div>画燕儿,丈夫,我是野农</div>
+  <div>我是野农,妻子,画燕儿</div>
+  <div>画燕儿,儿子,向鹿鸣</div>
+  <div>我是野农,儿子,向鹿鸣</div>
+  <div>大明星（冉蜜）,丈夫,路人阿丙X</div>
+  <div>路人阿丙X,妻子,大明星（冉蜜）</div>
+  <div>大明星（冉蜜）,女儿,向偶然</div>
+  <div>路人阿丙X,女儿,向偶然</div>
+  <div>多肉葡萄肉多多,丈夫,荷塘星星</div>
+  <div>荷塘星星,妻子,多肉葡萄肉多多</div>
+  <div>荷塘星星,儿子,向尘俊</div>
+  <div>多肉葡萄肉多多,儿子,向尘俊</div>
+  <div>荷塘星星,女儿,向星言</div>
+  <div>多肉葡萄肉多多,女儿,向星言</div>
+  <div>向星言,亲哥,向尘俊</div>
+  <div>向尘俊,亲妹,向星言</div>
+  <div>荷塘星星,父亲,三叔</div>
+  <div>三叔,儿子,荷塘星星</div>
+  <div>荷塘星星,表哥,守山人阿亮</div>
+  <div>守山人阿亮,表弟,荷塘星星</div>
+  <div>我是野农,亲弟,路人阿丙X</div>
+  <div>路人阿丙X,亲哥,我是野农</div>
+  <div>我是野农,钓友,去种田的向凹凸</div>
+  <div>去种田的向凹凸,钓友,我是野农</div>
+  <div>去种田的向凹凸,同村,荷塘星星</div>
+  <div>我是野农,钓友,荷塘星星</div>
+  <div>荷塘星星,钓友,我是野农</div>
+  <div>去种田的向凹凸,同村,荷塘星星</div>
+</details>
+<p>导入数据：</p>
+<pre><code>load csv from &quot;file:///莲花池人物关系.csv&quot; as line 
+create (n:LianhuachiRelation {from: line[0], relation: line[1], to: line[2]})
+return n.from, n.relation, n.to
+</code></pre>
+<p>最终效果：<br>
+<code>MATCH (n:LianhuachiRelation) RETURN n.from, n.relation, n.to</code><br>
+<img src="https://imyzt.github.io/post-images/1714056955094.png" alt="" loading="lazy"></p>
+<h1 id="借助人物关系标签创建人物关系">借助人物关系标签，创建人物关系</h1>
+<pre><code>match (f:Lianhuachi),(r:LianhuachiRelation),(t:Lianhuachi) where f.name=r.from and t.name=r.to
+create (f)-[rr:莲花池人物关系 {relation: r.relation}]-&gt;(t)
+return f.name, rr.relation, t.name
+</code></pre>
+<p>最终效果：<br>
+<code>MATCH p=()-[r:</code>莲花池人物关系<code>]-&gt;() RETURN p LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1714057384358.png" alt="" loading="lazy"></p>
+<h1 id="查询人物关系">查询人物关系</h1>
+<pre><code>match (n:Lianhuachi {name: &quot;向云朵&quot;}),(m:LianhuachiRelation) where m.from='向云朵'
+    return n.name, m.relation, m.to
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1713968908751.png" alt="" loading="lazy"></figure>
+<h1 id="在现有的基础上补充人物关系">在现有的基础上，补充人物关系</h1>
+<pre><code class="language-sql">match (n:Lianhuachi{name:&quot;大明星（冉蜜）&quot;}),(m:Lianhuachi{name:&quot;小白兔的胡萝卜甜（冉甜）&quot;})
+create (n)-[r:`莲花池人物关系`{relation:&quot;亲姐&quot;}]-&gt;(m)
+
+match (n:Lianhuachi{name:&quot;大明星（冉蜜）&quot;}),(m:Lianhuachi{name:&quot;小白兔的胡萝卜甜（冉甜）&quot;})
+create (m)-[r:`莲花池人物关系`{relation:&quot;亲妹&quot;}]-&gt;(n)
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.github.io/post-images/1714204509855.png" alt="" loading="lazy"></figure>
+<h1 id="删除重建人物关系">删除重建人物关系</h1>
+<pre><code class="language-sql">MATCH (n:Lianhuachi {name:&quot;去种田的向凹凸&quot;})-[r:`莲花池人物关系` {relation: &quot;钓友&quot;}]-&gt;(m:Lianhuachi {name:&quot;我是野农&quot;})
+delete r
+MATCH (n:Lianhuachi {name:&quot;我是野农&quot;})-[r:`莲花池人物关系` {relation: &quot;钓友&quot;}]-&gt;(m:Lianhuachi {name:&quot;去种田的向凹凸&quot;})
+delete r
+
+MATCH (n:Lianhuachi {name:&quot;去种田的向凹凸&quot;}),(m:Lianhuachi {name:&quot;我是野农&quot;})
+create (n)-[r2:`莲花池人物关系` {relation: &quot;表哥&quot;}]-&gt;(m)
+create (m)-[r3:`莲花池人物关系` {relation: &quot;表弟&quot;}]-&gt;(n)
+ return r2.relation,r3.relation
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.github.io/post-images/1715004118846.png" alt="" loading="lazy"></figure>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
+                                <h3 class="post-title">
+                                    Java8 使用sun.tools.javadoc 读取注释信息
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BA%BA%E7%89%A9%E6%A0%87%E7%AD%BE%E5%88%9B%E5%BB%BA">人物标签创建</a></li>
+<li><a href="#%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB%E6%A0%87%E7%AD%BE%E5%88%9B%E5%BB%BA">人物关系标签创建</a></li>
+<li><a href="#%E5%80%9F%E5%8A%A9%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB%E6%A0%87%E7%AD%BE%E5%88%9B%E5%BB%BA%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB">借助人物关系标签，创建人物关系</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB">查询人物关系</a></li>
+<li><a href="#%E5%9C%A8%E7%8E%B0%E6%9C%89%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B8%8A%E8%A1%A5%E5%85%85%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB">在现有的基础上，补充人物关系</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E9%87%8D%E5%BB%BA%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB">删除重建人物关系</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

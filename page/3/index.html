@@ -1,0 +1,2074 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-20~21-xin-te-xing/">
+                        Java 20~21 新特性
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-19</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_2">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+Java 20没有发布重要的新特性，本文以Java21版本为主。
+Java 21 是新的LTS版本，其中发布了众多新的特性。
+
+字符串模板（预览版）
+使用官方的STR、FMT
+支持通过STR、FMT来实现字符串拼接，可以自定义模板处理器组织字符串输出形式。
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static java.util.FormatProcessor.FMT;
+
+/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 模板字符串
+ */
+public class TemplateString {
+
+    public static void main(String[] args) {
+
+        String str = &amp;quot;world&amp;quot;;
+        String result = STR.&amp;quot;hello \{str}&amp;quot;;
+        System.out.println(result);
+        System.out.println(STR);
+
+        String name = &amp;quot;yzt&amp;quot;;
+        String[] blogAddress = {&amp;quot;imyzt.top&amp;quot;, &amp;quot;blog.imyzt.top&amp;quot;};
+        String text = FMT.&amp;quot;&amp;quot;&amp;quot;
+                My name is \{name}
+                My blog address is \{blogAddress[0].toUpperCase()}, \{blogAddress[1].toLowerCase()}&amp;quot;&amp;quot;&amp;quot;;
+        System.out.println(text);
+
+        System.out.println(STR.&amp;quot;\{Math.random()}&amp;quot;);
+        System.out.println(STR.&amp;quot;\{Integer.MAX_VALUE}&amp;quot;);
+        System.out.println(STR.&amp;quot;\{index++}, \{++index}&amp;quot;);
+
+        //hello world
+        //java.lang.StringTemplate$$Lambda/0x00000001260457f0@33c7353a
+        //My name is yzt
+        //My blog address is IMYZT.TOP, blog.imyzt.top
+        //0.9361799484353136
+        //2147483647
+        //现在的时间是: 2023-12-20
+        //0, 2
+    }
+}
+
+自定义StringTemplate
+
+import java.util.Iterator;
+
+/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description 自定义StringTemplate
+ */
+public class CustomTemplate {
+
+    public static void main(String[] args) {
+
+        var INTER = StringTemplate.Processor.of((StringTemplate st) -&amp;gt; {
+            StringBuilder sb = new StringBuilder();
+            Iterator&amp;lt;String&amp;gt; fragments = st.fragments().iterator();
+            for (Object value : st.values()) {
+                sb.append(fragments.next());
+                sb.append(value);
+            }
+            sb.append(fragments.next());
+            return sb.toString();
+        });
+
+        String name = &amp;quot;yzt&amp;quot;;
+        int index = 0;
+        String text = INTER.&amp;quot;&amp;quot;&amp;quot;
+                {
+                &amp;quot;name&amp;quot;:\{name},
+                &amp;quot;index&amp;quot;:\{++index}
+                }
+                &amp;quot;&amp;quot;&amp;quot;;
+        System.out.println(text);
+        //{
+        //&amp;quot;name&amp;quot;:yzt,
+        //&amp;quot;index&amp;quot;:1
+        //}
+    }
+}
+
+Record Patterns
+记录模式更强大了，支持直接在表达式中创建和使用。还支持嵌套
+/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 记录模式
+ */
+public class RecordPatterns {
+
+    public static void main(String[] args) {
+
+        Object p = new Point(1, 2);
+        if (p instanceof Point(int x, int y)) {
+            System.out.println(x + y);
+        }
+
+        Object w = new Window(new Point(1, 2), 3);
+        if (w instanceof Window(Point(int x, int y), int z)) {
+            System.out.println(x + y + z);
+        }
+
+    }
+}
+record Point(int x, int y) {}
+record Window(Point p, int z) {}
+
+ScopedValue
+ScopedValue是一个隐藏的方法参数，只有方法可以访问ScopedValue，它可以让两个方法传递参数时无需声明形参（对于Web项目中传递用户信息是非常场景的操作）
+ThreadLocal的问题
+通常对于上述场景，都会采用ThreadLocal来解决，但是由于ThreadLocal在设计上的瑕疵，导致一直有以下问题：
+
+内存泄露，在使用完ThreadLocal之后，若没有调用remove方法，会出现内存泄漏。
+增加开销，在具有继承关系的线程中，子线程需要为父线程中ThreadLocal里面的数据分配内存
+不是不可变对象，在方法中可以随意调用set方法篡改。
+
+随着虚拟线程的到来，内存泄漏问题不用担心了，因为虚拟线程会很快的终止，此时会自动删除ThreadLocal中的数据，这样就不用调用remove方法了。
+但是虚拟线程的数量是非常多的，假如有上百万个虚拟线程都要拷贝一份ThreadLocal中的变量（问题2），内存将会被严重的浪费掉。
+示例
+示例代码中通过模拟一个“送礼物”的场景，来演示ScopedValue。
+
+在 giveGift 方法中，将礼物送出，是500元
+在 receiveMiddleMan 方法模拟中间人抽成的场景，抽成后送出仅 200元
+在 receiveGift 方法中 ，对 ScopedValue 进行获取，得到的就是200元
+
+但整个过程中，中间人 receiveMiddleMan 在送出前后获取到的信息都是 500元，这正是 Scope 的含义，修改只在本作用域（方法）中生效。
+/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description ScopedValue
+ */
+public class ScopedValueTest {
+
+    private static final ScopedValue&amp;lt;String&amp;gt; GIFT = ScopedValue.newInstance();
+
+    public static void main(String[] args) {
+
+        ScopedValueTest test = new ScopedValueTest();
+        test.giveGift();
+        //中间人开始: 500
+        //收礼物: 200
+        //中间人结束: 500
+    }
+
+    private void giveGift() {
+        ScopedValue.where(GIFT, &amp;quot;500&amp;quot;).run(this::receiveMiddleMan);
+    }
+
+    private void receiveMiddleMan() {
+        System.out.println(STR.&amp;quot;中间人开始: \{GIFT.get()}&amp;quot;);
+        ScopedValue.where(GIFT, &amp;quot;200&amp;quot;).run(this::receiveGift);
+        System.out.println(STR.&amp;quot;中间人结束: \{GIFT.get()}&amp;quot;);
+    }
+
+    private void receiveGift() {
+        System.out.println(STR.&amp;quot;收礼物: \{GIFT.get()}&amp;quot;);
+    }
+}
+
+
+Switch 又升级了，支持when关键字了
+switch 可谓是升级升级再升级，我还是在用 if/else 啊。
+从12开始，一路升级。
+
+支持 -&amp;gt; 表达式（Java 12）
+支持返回值（Java 12）
+case支持单行写多个条件（Java 12）
+新增yield关键字返回switch的值（Java 12）
+引入模式匹配（Java 15）
+这回又新增了一个when关键字（都快改成SQL了） （Java 21）
+
+Java switch升级之路
+/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description Switch 又升级了~, 这次支持when关键字了
+ */
+public class SwitchFuture {
+
+    void main() {
+
+        var str = &amp;quot;yes&amp;quot;;
+
+        var result = switch (str) {
+            case null -&amp;gt; &amp;quot;空对象&amp;quot;;
+            case String s
+                    when &amp;quot;yes&amp;quot;.equals(s) -&amp;gt; {
+                System.out.println(&amp;quot;确定&amp;quot;);
+                yield &amp;quot;字符串的Yes&amp;quot;;
+            }
+            case String s
+                    when &amp;quot;no&amp;quot;.equals(s) -&amp;gt; {
+                System.out.println(&amp;quot;取消&amp;quot;);
+                yield &amp;quot;字符串的No&amp;quot;;
+            }
+            default -&amp;gt; &amp;quot;default&amp;quot;;
+        };
+
+        System.out.println(result);
+        //确定
+        //字符串的Yes
+    }
+}
+
+
+简化了main方法（注意看上一个章节的main方法）
+
+Class声明和强制的public访问修饰符是必须的。当用在外部组件定义良好的接口封装代码单元时，它们很有用。但在这个小例子中，它们毫无意义。
+String[]参数主要用于将代码与外部组件（在本例中为操作系统的shell，接收命令传入的参数）连接。它在这里很神秘且无用，尤其是它从未被使用过。
+static修饰符是Java类和对象模型的一部分。对于新手来说，这不仅是神秘的，而且是有害的：要添加更多可以调用和使用的方法或字段，学​​生必须要么将它们全部声明（传播一种既不常见也不是好习惯的用法），或者就要面对是否有static修饰的区别问题，并学习如何实例化对象。
+
+未命名模式和变量（Go：和我有点像）
+/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 像golang学习, 支持不使用的变量不命名了
+ */
+public class UnnamedVariable {
+
+    void main() {
+
+        List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        list.add(&amp;quot;first&amp;quot;);
+        list.add(&amp;quot;last&amp;quot;);
+
+        try {
+            System.out.println(STR.&amp;quot;first -&amp;gt; \{list.getFirst()}&amp;quot;);
+            System.out.println(STR.&amp;quot;last -&amp;gt; \{list.getLast()}&amp;quot;);
+            System.out.println(&amp;quot;try&amp;quot;);
+        } catch (Exception _) {
+            System.out.println(&amp;quot;异常了, 但是我没有 Exception&amp;quot;);
+        }
+    }
+}
+
+有序集合
+Sequenced Collections
+Sequenced Collections引入了三个新接口：
+
+SequencedCollection
+SequencedMap
+SequencedSet
+接口都附带了一些新方法，可以提高操作集合的效率。比如：java.util.SequencedCollection#reversed等等。
+
+集合补充了获取收尾元素的方法（hutool：当我不存在？）
+List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+list.add(&amp;quot;first&amp;quot;);
+list.add(&amp;quot;last&amp;quot;);
+System.out.println(STR.&amp;quot;first -&amp;gt; \{list.getFirst()}&amp;quot;);
+System.out.println(STR.&amp;quot;last -&amp;gt; \{list.getLast()}&amp;quot;);
+
+加了一些工具类
+
+StringBuilder中的repeat方法
+补充java.lang.Character#isEmoji
+等等
+
+/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 加了些新方法
+ */
+public class SomethingExample {
+
+    void main() {
+
+        System.out.println(STR.&amp;quot;repeat =&amp;gt; \{new StringBuffer().repeat(&amp;quot;*&amp;quot;, 10)}&amp;quot;);
+        //repeat =&amp;gt; **********
+
+        var happy = &amp;quot;你开心吗? 😄&amp;quot;;
+        System.out.println(STR.&amp;quot;isEmoji =&amp;gt; \{happy.codePoints().anyMatch(Character::isEmoji)}&amp;quot;);
+        //isEmoji =&amp;gt; true
+    }
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-20~21-xin-te-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-19-xin-te-xing/">
+                        Java 19 新特性
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-18</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+Java 19 最核心的特性就是虚拟线程（Virtual Threads）
+
+简介
+该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改Java原有的并发模型，也不会替代原有的线程，虚拟线程主要作用是提高服务器端的吞吐量（主要解决IO密集型而非CPU密集型任务）
+吞吐量的瓶颈
+服务器应用程序的伸缩性受利特尔法则（Little&#39;s Law）的制约，与下面三点有关：
+
+延迟：请求处理的耗时
+并发量：同一时刻处理的请求数量
+吞吐量：单位时间内处理的数据数量
+
+如果一个服务处理延迟是50ms，处理10个并发请求，则吞吐量是200请求/秒（10/0.05），如果吞吐量要达到2000请求/秒，则处理的并发请求数量是100. 如果按照1个请求一个线程来看，要想提高吞吐量，线程数量也要增加。
+Java中的线程在操作系统线程（OS Thread）进行了一层封装，而操作系统重线程是重量级资源，在硬件配置确定的前提下，不能无限制创建线程。
+
+
+与虚拟地址可以映射到物理内存类似，Java将大量的虚拟线程映射到少量的操作系统线程上，虚拟线程的生命周期短暂，不会有很深的栈调用，一个虚拟线程的生命周期只运行一个任务，因此可以大量创建虚拟线程，且无需池化。
+虚拟线程的应用场景
+在服务器端的应用程序中，虚拟线程能够明显提高应用的吞吐量：
+
+至少几千的并发任务量
+任务是IO密集型
+
+平台线程和虚拟线程
+平台线程（platform thread）：指Java中的线程，比如通过new Thread()创建的线程。
+虚拟线程并不会直接分配给CPU执行，而是通过调度器分配给平台线程，平台线程再被调度器管理。Java中的虚拟线程的调度器采用了工作窃取的模式进行FIFO的操作，调度器的并行书默认是jvm获取的处理器数量（Runtime.getRuntime().availableProcessors()），调度器并非分时（time sharing）的。在使用虚拟线程编写程序时，不能控制虚拟线程合适分配给平台线程，也不能控制平台线程合适分配给CPU。
+以前任务和平台线程的关系：
+
+在使用虚拟线程之后，任务-虚拟线程-调度器-平台线程的关系，1个平台线程可以被调度器分配不同的虚拟线程：
+
+携带器
+调度器将虚拟线程挂载到平台线程之后，该平台线程叫做虚拟线程的携带器，调度器并不维护虚拟线程和携带器的关联关系，因此在一个虚拟线程的生命周期可以被分配到不同的携带器，即虚拟线程运行了一小段代码后，可能会脱离携带器，此时其他的虚拟线程会被分配到这个携带器上。
+携带器和虚拟线程是相互独立的，比如：
+
+虚拟线程不能使用携带器的标识，Thread.current()方法获取的是虚拟线程本身。
+两者有各自的栈空间。
+两者不能访问对方的ThreadLocal变量
+
+在程序的执行过程中，虚拟线程遇到阻塞的操作是大部分情况下会被解除挂载，阻塞结束后，虚拟线程会被调度器重新挂载到携带器上，因此虚拟线程会频繁的挂载和解除挂载，这并不会导致操作系统线程的阻塞。
+有些阻塞操作并不会导致虚拟线程接触挂载，这样会同时阻塞携带器和操作系统线程，例如：操作系统基本的文件操作，Java的Object.wait()方法，下面两种情况下不会导致虚拟线程的解除挂载：
+
+执行synchronized同步代码（会导致携带器阻塞，所以建议使用ReentrantLock替换掉Synchronized）
+执行本地方法或外部函数
+
+虚拟线程和平台线程api的区别
+从内存空间上来说，虚拟线程的栈空间可以看做是一个大块的站对象，他被存储在Java堆中，相比于单独存储对象，堆中存储虚拟线程会造成一些空间的浪费，这点在后续的Java版本中应该会得到改善，当然也有一些好处，就是可以重复利用这部分栈空间，不用多次申请开辟新的内存地址，虚拟线程的栈空间最大可以达到平台线程的栈空间容量。
+虚拟线程并不是GC root，其中的引用不会出现Stop World，当虚拟线程阻塞之后比如BlockingQueue.take()，平台线程既不能获取到虚拟线程，也不能获取到queue队列，这样该平台线程可能被回收掉，虚拟线程在运行或阻塞时不会被GC
+
+通过Thread构造方法创建的线程都是平台线程
+虚拟线程是守护线程，不能通过setDaemon方法改为非守护线程
+虚拟线程的优先级是默认的5，不能被修改，将来版本可能允许修改
+虚拟线程不支持stop(), suspend(),resume()方法
+
+创建虚拟线程的方式
+Java中创建的虚拟线程本质都是通过Thread.Builder.OfVirtual对象进行创建的，有如下三种方式：
+
+Thread.startVirtualThread()直接创建一个虚拟线程
+Thread.ofVirtual().name(&amp;quot;virtual-thread-&amp;quot;).unstarted(r)
+ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()
+
+示例代码
+虚拟线程池
+import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
+/**
+ * @author imyzt
+ * @date 2023/12/18
+ * @description VirtualThread 1
+ */
+public class VirtualThread {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        // 通过线程池创建虚拟线程池
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 10000000).forEach(i -&amp;gt; {
+                executor.submit(() -&amp;gt; {
+                    try {
+                        Thread.sleep(Duration.ofSeconds(1));
+                        System.out.println(&amp;quot;执行任务: &amp;quot; + i);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+创建虚拟线程
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author imyzt
+ * @date 2023/12/18
+ * @description VirtualThread 2
+ */
+public class CreateVirtualThread {
+    public static void main(String[] args) throws InterruptedException {
+
+        Runnable r = () -&amp;gt; System.out.println(Thread.currentThread().getName() + &amp;quot; --- 执行了&amp;quot;);
+
+        // 创建虚拟线程, 方式1
+        Thread.startVirtualThread(r);
+
+        Thread virtualThread = Thread.ofVirtual().name(&amp;quot;virtual-thread-&amp;quot;).unstarted(r);
+        virtualThread.start();
+        System.out.println(&amp;quot;是虚拟线程吗? &amp;quot; + virtualThread.isVirtual());
+
+        Thread platformThread = Thread.ofPlatform().priority(0).daemon(true).name(&amp;quot;platform-thread-&amp;quot;).unstarted(r);
+        platformThread.start();
+        System.out.println(&amp;quot;是虚拟线程吗? &amp;quot; + platformThread.isVirtual());
+
+        // --- 执行了
+        //virtual-thread- --- 执行了
+        //是虚拟线程吗? true
+        //platform-thread- --- 执行了
+        //是虚拟线程吗? false
+
+        // 主线程休眠
+        TimeUnit.SECONDS.sleep(1);
+    }
+}
+
+
+其它
+除了提出虚拟线程外，还提出来新的并发编程模型结构化并发，
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-19-xin-te-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-17~18-xin-te-xing/">
+                        Java 17~18 新特性
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-17</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_1">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            特性列表
+
+
+
+版本
+特性
+
+
+
+
+Java 17（LTS）
+1. switch 类型推断  2. 伪随机数变化
+
+
+Java 18
+1. 使用UTF-8编码 2. jwebserver  3. Object、Thread部分方法标记废弃 4. 增加@snippet注解
+
+
+
+Java 17
+switch 类型推断，伪随机数变化
+
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
+
+/**
+ * @author imyzt
+ * @date 2023/12/17
+ * @description switch 类型推断
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        Animal animal = new Cat();
+        switch (animal) {
+            case Cat c -&amp;gt; c.say();
+            case Dog d -&amp;gt; d.say();
+            case null -&amp;gt; System.out.println(&amp;quot;null&amp;quot;);
+            default -&amp;gt; System.out.println(&amp;quot;default&amp;quot;);
+        }
+
+        /*
+        ➜  java17 git:(master) ✗ java -version
+        openjdk version &amp;quot;21.0.1&amp;quot; 2023-10-17 LTS
+        OpenJDK Runtime Environment Corretto-21.0.1.12.1 (build 21.0.1+12-LTS)
+        OpenJDK 64-Bit Server VM Corretto-21.0.1.12.1 (build 21.0.1+12-LTS, mixed mode, sharing)
+        ➜  java17 git:(master) ✗ java SwitchFuture.java
+        汪汪汪
+         */
+
+        RandomGeneratorFactory&amp;lt;RandomGenerator&amp;gt; factory = RandomGeneratorFactory.getDefault();
+        RandomGenerator randomGenerator = factory.create();
+        randomGenerator.ints(10).forEach(System.out::println);
+        //261824154
+        //540138312
+        //-1600972486
+        //-467718820
+        //-660092685
+        //-1149689401
+        //-46916737
+        //2110685130
+        //-1910355456
+        //-814203516
+    }
+}
+
+class Animal {
+
+}
+
+class Cat extends Animal {
+    void say() {
+        System.out.println(&amp;quot;汪汪汪&amp;quot;);
+    }
+}
+class Dog extends Animal {
+    void say() {
+        System.out.println(&amp;quot;喵喵喵&amp;quot;);
+    }
+}
+
+Java 18
+默认使用UTF-8字符编码
+从jdk18开始，默认使用UTF-8字符编码，如果需要修改为其他字符，可以使用命令 -Dfile.encoding=UTF-8来指定。
+简单web服务器
+➜  java17 git:(master) ✗ jwebserver            
+默认情况下绑定到环回。如果要表示所有接口，请使用 &amp;quot;-b 0.0.0.0&amp;quot; 或 &amp;quot;-b ::&amp;quot;。
+为 127.0.0.1 端口 8000 上的 /xxxxxxxxx目录/java17 及子目录提供服务
+URL http://127.0.0.1:8000/
+127.0.0.1 - - [17/12月/2023:10:38:18 +0800] &amp;quot;GET / HTTP/1.1&amp;quot; 200 -
+127.0.0.1 - - [17/12月/2023:10:38:18 +0800] &amp;quot;GET /favicon.ico HTTP/1.1&amp;quot; 404 -
+127.0.0.1 - - [17/12月/2023:10:38:20 +0800] &amp;quot;GET /SwitchFuture.java HTTP/1.1&amp;quot; 200 -
+
+将被废弃的方法
+
+java.lang.Object#finalize
+java.lang.Thread#stop
+
+新增@snippet展示代码
+之前需要用&amp;lt;code&amp;gt;标签框代码，不方便，现在通过@snippet还是框代码
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-17~18-xin-te-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-10~16-xin-te-xing/">
+                        Java 10~16 新特性
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-16</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_3">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            主要特性
+
+
+
+版本
+特性
+
+
+
+
+Java 10
+1. var声明局部变量
+
+
+Java 11 （LTS）
+1. 字符串补充工具方法  2. lambda 类型推断
+
+
+Java 12
+1. switch 箭头表达式
+
+
+Java 13
+1. switch 支持返回值，增加yield关键字 2. 多行字符串
+
+
+Java 14
+1. instanceof优化 2. NPE优化  3. record类型
+
+
+Java 15
+1. scale密封类
+
+
+Java 16
+1. 包装类构造方法警告 2. DateTimeFormatter增加匹配方式 3. InvocationHandler新增方法
+
+
+
+Java 10
+var 声明局部变量
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Var
+ */
+public class VarDemo {
+    public static void main(String[] args) {
+        var str = &amp;quot;hello world&amp;quot;;
+        var num = 10;
+
+        System.out.println(str);
+        System.out.println(num);
+    }
+}
+
+Java 11
+字符串补充工具方法, lambda 类型推断
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description String 补充工具方法
+ */
+public class StrUtil {
+
+    public static void main(String[] args) {
+        //Unicode空白字符
+        char c = &#39;\u2000&#39;;
+        String str = c + &amp;quot;abc&amp;quot; + c;
+        // 去除普通空白字符
+        System.out.println(str.trim());
+        // 去除Unicode空白字符
+        System.out.println(str.strip());
+        // 去除前面的空白字符
+        System.out.println(str.stripLeading());
+        // 去除后面的空白字符
+        System.out.println(str.stripTrailing());
+        // abc 
+        //abc
+        //abc 
+        // abc
+
+        // 判空
+        System.out.println(&amp;quot; &amp;quot;.isBlank());
+        // 支持直接定义常量使用format
+        System.out.println(&amp;quot;%s_%s&amp;quot;.formatted(&amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;));
+        // 重复字符串
+        System.out.println(&amp;quot;abc&amp;quot;.repeat(3));
+        //true
+        //a_b
+        //abcabcabc
+
+        // lambda 类型推断
+        // java11前
+        MyFunc s1 = (String a, Integer b) -&amp;gt; a + b;
+        MyFunc s2 = (a, b) -&amp;gt; a + b;
+        // java11后, 支持类型推断(作用不大)
+        MyFunc s3 = (var a, var b) -&amp;gt; a + b;
+    }
+}
+
+@FunctionalInterface
+interface MyFunc {
+    String foo(String a, Integer b);
+}
+
+Java 12
+switch 箭头表达式
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description switch
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        int month = LocalDate.now().getMonthValue();
+
+        // java12 前 switch
+        switch (month) {
+            case 3:
+            case 4:
+            case 5:
+                System.out.println(&amp;quot;spring&amp;quot;);
+                break;
+            case 6:
+            case 7:
+            case 8:
+                System.out.println(&amp;quot;summer&amp;quot;);
+                break;
+            case 9:
+            case 10:
+            case 11:
+                System.out.println(&amp;quot;fall&amp;quot;);
+                break;
+            case 12:
+            case 1:
+            case 2:
+                System.out.println(&amp;quot;winter&amp;quot;);
+                break;
+            default:
+                System.out.println(&amp;quot;err&amp;quot;);
+        }
+
+        // java12 之后的switch
+        switch (month) {
+            case 3,4,5 -&amp;gt; System.out.println(&amp;quot;spring&amp;quot;);
+            case 6,7,8 -&amp;gt; System.out.println(&amp;quot;summer&amp;quot;);
+            case 9,10,11 -&amp;gt; System.out.println(&amp;quot;fall&amp;quot;);
+            case 12,1,2 -&amp;gt; System.out.println(&amp;quot;winter&amp;quot;);
+            default -&amp;gt; System.out.println(&amp;quot;err&amp;quot;);
+
+        }
+    }
+}
+
+Java 13
+switch 箭头表达式支持返回值，多行字符串，增加yield关键字作为switch多行时的返回值
+import java.time.LocalDate;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description switch 返回值
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        int month = LocalDate.now().getMonthValue();
+        // java13 之后的switch
+        String str = switch (month) {
+            case 3, 4, 5 -&amp;gt; &amp;quot;spring&amp;quot;;
+            case 6, 7, 8 -&amp;gt; &amp;quot;summer&amp;quot;;
+            case 9, 10, 11 -&amp;gt; &amp;quot;fall&amp;quot;;
+            case 12, 1, 2 -&amp;gt; &amp;quot;winter&amp;quot;;
+            default -&amp;gt; {
+                System.out.println(&amp;quot;err&amp;quot;);
+                yield &amp;quot;err&amp;quot;;
+            }
+        };
+        System.out.println(str);
+        // winter
+
+        String strline = &amp;quot;&amp;quot;&amp;quot;
+                第一行
+                第二行
+                第三行&amp;quot;&amp;quot;&amp;quot;;
+        System.out.println(strline);
+        //第一行
+        //第二行
+        //第三行
+    }
+}
+
+Java 14
+instanceof 优化
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description instanceof 优化
+ */
+public class InstanceofFuture {
+
+    public static void main(String[] args) {
+
+        // Java 14之前
+        Object o = &amp;quot;str&amp;quot;;
+        if (o instanceof String) {
+            String str = (String) o;
+            System.out.println(str);
+        }
+
+        // Java 14之后
+        if (o instanceof String str) {
+            System.out.println(str);
+        }
+    }
+}
+
+NPE优化，在链式调用时, 如果有空指针, 可以明确是哪个变量空指针
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 友好的NPE提示
+ */
+public class NpeFuture {
+
+    public static void main(String[] args) {
+        C c = new C();
+        // 在链式调用时, 如果有空指针, 可以明确是哪个变量空指针
+        String name = c.b.a.name;
+        System.out.println(name);
+        // Cannot read field &amp;quot;a&amp;quot; because &amp;quot;c.b&amp;quot; is null
+    }
+}
+class A {
+    public String name;
+}
+
+class B {
+    public A a;
+}
+
+class C {
+    public B b;
+}
+
+record模式
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description record模式
+ */
+public class RecordFuture {
+
+    public static void main(String[] args) {
+        Student student = new Student(&amp;quot;yzt&amp;quot;, 25);
+        System.out.println(student);
+        // Student[name=yzt, age=25]
+
+        student.study();
+        // good good study!
+    }
+}
+
+record Student(String name, Integer age) {
+    public void study() {
+        System.out.println(&amp;quot;good good study!&amp;quot;);
+    }
+}
+
+
+Java 15
+scale密封类
+
+需要使用sealed声明, 使用permits指定
+继承密封类，必须指定自己为final(Dog)，或选择继续将自己指定为密封类(Cat)
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description scale, permits
+ */
+public class ScaleFuture {
+}
+
+/**
+ * 只希望Dog和Cat能继承, 需要使用sealed声明, 使用permits指定
+ */
+sealed class Animal permits Dog, Cat {
+    
+}
+
+/**
+ * 继承密封类,必须指定自己为final(Dog), 或继续将自己指定为密封类(Cat)
+ */
+final class Dog extends Animal {
+    
+}
+
+/**
+ * 将自己指定为密封类, 并且通过permits指定只有Cat2能够继承
+ */
+sealed class Cat extends Animal permits Cat2 {
+    
+}
+
+final class Cat2 extends Cat {
+    
+}
+
+Java 16
+包装类型的构造方法被标记过期
+/**
+ * @author imyzt
+ * @date 2023/12/17
+ * @description Integer
+ */
+public class IntegerFuture {
+
+    public static void main(String[] args) {
+        // &#39;Integer(int)&#39; is deprecated and marked for removal
+        Integer i = new Integer(2);
+        System.out.println(i);
+
+        // 不建议这样编写,因为数字在常量池中, 会和其他毫不相干的地方使用同一个锁对象
+        synchronized (i) {
+            System.out.println(1);
+        }
+
+        // time format
+        // All letters &#39;A&#39; to &#39;Z&#39; and &#39;a&#39; to &#39;z&#39; are reserved as pattern letters. The following pattern letters are defined:
+        System.out.println(DateTimeFormatter.ofPattern(&amp;quot;B&amp;quot;).format(LocalDateTime.now()));
+
+        //2
+        //1
+        //凌晨
+    }
+}
+
+DateTimeFormatter
+官方文档
+
+
+
+Symbol
+Meaning
+Presentation
+Examples
+
+
+
+
+G
+era
+text
+AD; Anno Domini; A
+
+
+u
+year
+year
+2004; 04
+
+
+y
+year-of-era
+year
+2004; 04
+
+
+D
+day-of-year
+number
+189
+
+
+M/L
+month-of-year
+number/text
+7; 07; Jul; July; J
+
+
+d
+day-of-month
+number
+10
+
+
+g
+modified-julian-day
+number
+2451334
+
+
+Q/q
+quarter-of-year
+number/text
+3; 03; Q3; 3rd quarter
+
+
+Y
+week-based-year
+year
+1996; 96
+
+
+w
+week-of-week-based-year
+number
+27
+
+
+W
+week-of-month
+number
+4
+
+
+E
+day-of-week
+text
+Tue; Tuesday; T
+
+
+e/c
+localized day-of-week
+number/text
+2; 02; Tue; Tuesday; T
+
+
+F
+day-of-week-in-month
+number
+3
+
+
+a
+am-pm-of-day
+text
+PM
+
+
+B
+period-of-day
+text
+in the morning
+
+
+h
+clock-hour-of-am-pm (1-12)
+number
+12
+
+
+K
+hour-of-am-pm (0-11)
+number
+0
+
+
+k
+clock-hour-of-day (1-24)
+number
+24
+
+
+H
+hour-of-day (0-23)
+number
+0
+
+
+m
+minute-of-hour
+number
+30
+
+
+s
+second-of-minute
+number
+55
+
+
+S
+fraction-of-second
+fraction
+978
+
+
+A
+milli-of-day
+number
+1234
+
+
+n
+nano-of-second
+number
+987654321
+
+
+N
+nano-of-day
+number
+1234000000
+
+
+V
+time-zone ID
+zone-id
+America/Los_Angeles; Z; -08:30
+
+
+v
+generic time-zone name
+zone-name
+Pacific Time; PT
+
+
+z
+time-zone name
+zone-name
+Pacific Standard Time; PST
+
+
+O
+localized zone-offset
+offset-O
+GMT+8; GMT+08:00; UTC-08:00
+
+
+X
+zone-offset &#39;Z&#39; for zero
+offset-X
+Z; -08; -0830; -08:30; -083015; -08:30:15
+
+
+x
+zone-offset
+offset-x
++0000; -08; -0830; -08:30; -083015; -08:30:15
+
+
+Z
+zone-offset
+offset-Z
++0000; -0800; -08:00
+
+
+p
+pad next
+pad modifier
+1
+
+
+&#39;
+escape for text
+delimiter
+
+
+
+&#39;&#39;
+single quote
+literal
+&#39;
+
+
+[
+optional section start
+
+
+
+
+]
+optional section end
+
+
+
+
+#
+reserved for future use
+
+
+
+
+{
+reserved for future use
+
+
+
+
+}
+reserved for future use
+
+
+
+
+
+InvocationHandler新增方法
+该接口补充了新方法 java.lang.reflect.InvocationHandler#invokeDefault，可以调用父接口中的default方法。
+@CallerSensitive
+public static Object invokeDefault(Object proxy, Method method, Object... args)
+        throws Throwable {
+    Objects.requireNonNull(proxy);
+    Objects.requireNonNull(method);
+    return Proxy.invokeDefault(proxy, method, args, Reflection.getCallerClass());
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-10~16-xin-te-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-9-xin-te-xing/">
+                        Java 9 新特性
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-16</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_3">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            主要特性
+
+接口中支持定义 private 方法
+try-with-resource 方式优化
+不可以使用 “_”下划线命名变量
+@Deprecated 注解支持指定废弃版本(since), 以及标记未来版本是否删除(forRemoval)
+String字符串的变化
+模块化
+jshell
+
+接口定义private方法
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description java 9 在接口中可以定义 private 方法, 只可在本接口中调用
+ */
+public interface InterfaceFuture {
+
+    void foo();
+
+    /**
+     * java 8
+     */
+    default void foo1() throws InterruptedException {
+        sleep();
+    }
+
+    /**
+     * java 8
+     */
+    static void foo2() throws InterruptedException {
+        sleep2();
+    }
+
+    /**
+     * java 9
+     */
+    private void sleep() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+
+    /**
+     * java 9
+     */
+    private static void sleep2() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+}
+
+
+try-with-resource 方式优化
+package top.imyzt.jdk.features.jdk9;
+
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 1. try 代码块简化, 2. 不可以再使用 &amp;quot;_&amp;quot;(下划线)命名变量
+ */
+public class TryWithResource {
+
+    public static void main(String[] args) throws FileNotFoundException {
+
+        // java 8
+        try (FileInputStream fis1 = new FileInputStream(&amp;quot;&amp;quot;);
+             FileOutputStream fos1 = new FileOutputStream(&amp;quot;&amp;quot;)) {
+            fis1.read();
+        } catch (Exception e) {
+
+        }
+
+        // java 9
+        // 可以将变量写到 try 代码块中, 让代码块更简洁
+        FileInputStream fis2 = new FileInputStream(&amp;quot;&amp;quot;);
+        FileOutputStream fos2 = new FileOutputStream(&amp;quot;&amp;quot;);
+        try (fis2; fos2) {
+
+        } catch (Exception e) {
+
+        }
+
+
+        // java 9 运行报错 As of Java 9, &#39;_&#39; is a keyword, and may not be used as an identifier
+        // String _ = &amp;quot;123&amp;quot;;
+
+    }
+
+    /**
+     * `@Deprecated` 注解支持指定废弃版本(since), 以及标记未来是否废弃(forRemoval)
+     */
+    @Deprecated(since = &amp;quot;9&amp;quot;, forRemoval = true)
+    private void test() {
+
+    }
+}
+
+
+
+@Deprecated 注解升级
+例如java.lang.Object#finalize方法就在 Java9 中被标记废弃，并且在未来可能会被删除。
+@Deprecated(since=&amp;quot;9&amp;quot;, forRemoval=true)
+protected void finalize() throws Throwable { }
+
+String字符串的变化
+在 Java9 之前的版本中，String内部使用char数组存储，对于使用英语的人来说，一个字符用一个byte就能存储，使用char存储字符会浪费一半的内存空间，因此在 Java9 中将String内部的char数组改成了byte数组，这样就节省了一半的内存占用。
+char c = &#39;a&#39;; // 2个字节
+byte b = 97; // 1个字节
+
+String中增加了2个成员变量
+
+static final boolean COMPACT_STRINGS;：判断是否压缩，默认为true，如果=false，则不压缩，使用UTF-16编码。
+private final byte coder;：用来区分使用的字符编码
+
+LATIN1，值为0，存储英文
+UTF-16，值为1，存储中文，或夹杂中文的英文（为了区分字符边界，如果英文使用1byte，则不利于字符串的sub等操作，也无法计算长度）
+
+
+
+@Native static final byte LATIN1 = 0;
+@Native static final byte UTF16  = 1;
+
+public int length() {
+    // 如果开启压缩，`coder()=0`，不进行位移，返回value数组长度
+    // 如果开启压缩，`coder()=1`，右移1=除以2，因为中文存储1个字符占用2个byte的空间
+    return value.length &amp;gt;&amp;gt; coder();
+}
+byte coder() {
+    // 如果开启压缩，则`coder=LATIN1=0`，否则`coder=UTF16=1`
+    return COMPACT_STRINGS ? coder : UTF16;
+}
+
+byte数组如何存储中文？通过源码 java.lang.StringUTF16#toBytes(char[], int, int) 可以看到，1个中文会被存储到byte数组中的两个元素上 ，即存储一个中文，byte数组长度为2，存储2个中文，byte数组长度为4.
+
+StringUTF16 部分源码截取，高八位和低八位分别存储，占用2个byte数组的空间：
+static final int HI_BYTE_SHIFT;
+static final int LO_BYTE_SHIFT;
+static {
+    // CPU架构大小端
+    if (isBigEndian()) {
+        HI_BYTE_SHIFT = 8;
+        LO_BYTE_SHIFT = 0;
+    } else {
+        HI_BYTE_SHIFT = 0;
+        LO_BYTE_SHIFT = 8;
+    }
+}
+@IntrinsicCandidate
+// intrinsic performs no bounds checks
+static void putChar(byte[] val, int index, int c) {
+    assert index &amp;gt;= 0 &amp;amp;&amp;amp; index &amp;lt; length(val) : &amp;quot;Trusted caller missed bounds check&amp;quot;;
+    index &amp;lt;&amp;lt;= 1;
+    val[index++] = (byte)(c &amp;gt;&amp;gt; HI_BYTE_SHIFT);
+    val[index]   = (byte)(c &amp;gt;&amp;gt; LO_BYTE_SHIFT);
+}
+
+@IntrinsicCandidate
+// intrinsic performs no bounds checks
+static char getChar(byte[] val, int index) {
+    assert index &amp;gt;= 0 &amp;amp;&amp;amp; index &amp;lt; length(val) : &amp;quot;Trusted caller missed bounds check&amp;quot;;
+    index &amp;lt;&amp;lt;= 1;
+    return (char)(((val[index++] &amp;amp; 0xff) &amp;lt;&amp;lt; HI_BYTE_SHIFT) |
+                    ((val[index]   &amp;amp; 0xff) &amp;lt;&amp;lt; LO_BYTE_SHIFT));
+}
+
+模块化
+Java8 和之前的版本中，主要源代码是放在 rt.jar 中的，但是其中很多包是我们平时不会用到的，比如 java.awt 如果全载入到内存中，会造成一定的浪费。
+所以在 Java9 开始，将 rt.jar 分成了不同的模块，一个模块下可以包含多个包，模块之间存在依赖关系。其中 java.base 为基础模块（包含java.lang,java.util..），不依赖其他模块。
+模块与包类似，只不过一个模块下可以包含多个包。
+Java8文档
+
+Java9文档
+
+.jar包中含有.class文件，配置文件。
+.jmod除了上述文件外，还包含navite library，legal licenses等。
+两者主要区别是.jmod主要用在编译器和链接期，并非运行期，对于开发者来说，运行期任然需要使用jar包。
+模块化的优点
+
+精简JVM运行所需加载的class类，提升加载速度。
+对包更精细的控制，提高安全。
+
+关键字
+
+exports： 声明导出包，正常可使用，反射可以使用。
+opens：声明导出包，只有反射可以使用，正常编写代码编译无法通过，报错 Package &#39;package_name&#39; is declared in module &#39;develop&#39;, which does not export it to module &#39;test&#39;
+requires：声明依赖包。
+
+示例工程
+
+创建项目
+创建模块 develop 、 test
+在模块 develop 下创建 Cat.java, Apple.java，创建 module-info.java，声明 export develop
+
+package top.imyzt.learing.jdkfuture.dev1;
+
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Cat
+ */
+public class Cat {
+
+    public void eat() {
+        System.out.println(&amp;quot;吃鱼&amp;quot;);
+    }
+}
+
+package top.imyzt.learing.jdkfuture.dev2;
+
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Apple
+ */
+public class Apple {
+    public Apple() {
+        System.out.println(&amp;quot;Apple Constructor&amp;quot;);
+    }
+}
+
+module develop {
+    // 导出包
+    exports top.imyzt.learing.jdkfuture.dev1;
+    // 导出包, 只能通过反射访问
+    opens top.imyzt.learing.jdkfuture.dev2;
+}
+
+
+
+在模块 test 下创建 Test.java，创建 module-info.java，声明 requie develop
+
+package main.top.imyzt.learing.jdkfuture.test;
+
+
+import top.imyzt.learing.jdkfuture.dev1.Cat;
+// Package &#39;top.imyzt.learing.jdkfuture.dev2&#39; is declared in module &#39;develop&#39;, which does not export it to module &#39;test&#39;
+// import top.imyzt.learing.jdkfuture.dev2.Apple;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 描述信息
+ */
+public class Test {
+
+    public static void main(String[] args) throws Exception {
+        Cat cat = new Cat();
+        cat.eat();
+
+        Class&amp;lt;?&amp;gt; clazz = Class.forName(&amp;quot;top.imyzt.learing.jdkfuture.dev2.Apple&amp;quot;);
+        clazz.getDeclaredConstructor().newInstance();
+    }
+}
+
+module test {
+    requires develop;
+}
+
+
+项目结构图
+
+源代码
+示例项目
+jshell
+作用不大，主要对于初学者可以学习语法。
+➜  jshell
+|  欢迎使用 JShell -- 版本 21.0.1
+|  要大致了解该版本, 请键入: /help intro
+
+jshell&amp;gt; System.out.println(&amp;quot;hello world&amp;quot;);
+hello world
+
+jshell&amp;gt; int a = 1;
+a ==&amp;gt; 1
+
+jshell&amp;gt; int b = 2;
+b ==&amp;gt; 2
+
+jshell&amp;gt; System.out.println(a+b);
+3
+
+jshell&amp;gt; /exit
+|  再见
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-9-xin-te-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/du-kuo-san-xie-kuo-san/">
+                        读扩散、写扩散
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-07</time>
+                    
+                        <a href="https://imyzt.github.io/tag/2D49EPSEM/" class="post-tag i-tag
+                            i-tag-">
+            #设计方案
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            读扩散、写扩散，主要应用在feed流场景中，什么是feed流？
+
+微博
+微信朋友圈
+等都是典型的信息流业务，存在好友关系，如关注和粉丝，自己的主页由别人发布的内容组成。
+
+feed流业务最大的特点是自己的主页由别人的feed组成，获得主页本质上就是在组装别人的内容。
+从技术上主要有两种方式：
+
+拉取（读扩散）
+推送（写扩散）
+
+拉模式（读扩散）
+假设存在A关注BC，那么存储A关注B、A关注C；C的粉丝有A、B的粉丝有A，这么一组关系。
+发布流程：当B/C发布内容时，只需将自己的内容存储在自己的队列（feed记录）中。
+查询个人主页流程：当A查看自己的主页时：
+
+拉取A的关注列表：存在B、C
+获取所关注列表中B、C的feed记录，判断是否有可见性设置
+对消息进行 order by time desc，分页取数据
+
+缺点
+
+拉取信息流时，业务非常复杂
+多次访问时，每次都需要进行大量计算
+
+优点
+
+存储结构简单，数据存储量较小，只存储一份不会冗余。
+关注、取关、发布feed的流程都很简单
+适合早期业务量不大的时候，可以快速实现
+
+推模式（写扩散）
+这是蓝色的文字
+继续上面的假设，关注关系依旧不变，但与读扩散不同的是，每个用户还需要存储自己收到的feed流
+发布流程：当B/C发布内容时，需要查询自己的粉丝列表，然后分别在粉丝A的feed中，写入B、C发布的feed信息。
+查询个人主页的流程：当A查看自己的主页时：直接拉取自己的feed记录即可。
+缺点
+
+实现关注取关时，关注时，需要将信息从写入到粉丝的feed记录中，移除时，同样需要将内容从feed记录中删除。
+极大的存储资源消耗，需要存储多份feed信息。
+
+优点
+
+拉取信息时非常简单，只需直接查询feed记录。
+
+总结
+
+拉模式，读扩散，feed存一份，存储小，用户集中访问数据，性能差;
+推模式，写扩散，feed存多份，用冗余存储换锁冲突，性能高;
+
+参考
+全文参考自：58沈剑-读扩散，写扩散，终于讲清楚了！
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/du-kuo-san-xie-kuo-san/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">
+                        分布式唯一标识设计
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-03</time>
+                    
+                        <a href="https://imyzt.github.io/tag/MnVakDRvV/" class="post-tag i-tag
+                            i-tag-primary">
+            #Snowflake
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            当数据库面临分库分表时，无法依赖数据库自增主键来生成业务标识，或业务场景设计时为了防止自增id被外部撞库猜测数据，通常会考虑引入全局唯一标识生成器来解决此类问题。
+介绍
+目前市面上比较常见的基本为Twitter开源的Snowflake及其变种，Snowflake的核心思想是将64bit的二进制数字分为若干部分，每一部分都存储具有特定含义的数据，比如时间戳、机器ID、序列号等，最终生成全局唯一有序ID，标准算法如下图：
+
+
+41位的时间戳部分可以支撑pow(2,41)/1000/60/60/24/365 年，约等于 69 年。
+如果系统部署在多机房，那么 10 位的机器 ID 可以继续划分为 2～3 位的 IDC 标示（可以支撑 4 个或者 8 个 IDC 机房）和 7～8 位的 机器 ID（支持 128-256 台机器）。
+12 位的序列号代表着每个节点每毫秒最多可以生成 4096 的 ID。
+
+部署方式
+雪花ID具有两种使用方式，一种是独立部署一套发号器，外部请求下发，另一种更为常见的做法是直接嵌入到应用内，使用Snowflake工具类直接获取使用，当嵌入到应用内部时，可以考虑将机器ID部分，分散标识到不同业务系统。
+缺点
+时间回拨问题
+Snowflake算法设计很简单和巧妙，性能高效，具有全局唯一性、单调递增性和有业务含义的ID，但是它也有一定缺点，其中最大的缺点就是他依赖于系统的时间戳，一旦时间不准，就有可能生成重复的ID。如果是独立部署的发号器，如果发现系统时间不准，可以直接暂停发号，知道时间准确为止。
+QPS低引起单调重复
+如果发号器的QPS不高，例如每毫秒只能发一个ID，就会造成ID的末尾永远是1，如果在分库分表系统中使用ID作为分区间，就会造成库表分配的不均匀。
+如何解决：
+
+时间戳不记录毫秒而是记录秒，这样在一个时间区间内可以多发几个号，避免出现分库分表时数据分配不均。
+生成的序列号的起始号可以做一下随机，这一秒是21，下一秒可以是30，这样也会保证均衡。
+
+参考
+
+发号器：如何保证分库分表后 ID 的全局唯一性？
+万亿级调用系统：微信序列号生成器架构设计及演变
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/threadpoolexecutor-fei-chang-yong-fang-fa/">
+                        ThreadPoolExecutor “非常用” 方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-29</time>
+                    
+                        <a href="https://imyzt.github.io/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-primary">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-success">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-success">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时在使用线程池时，更多关注到的是coreSize、maxSize、blockQueue、RejectedExecutionHandler这些参数，但在线程池监控领域，还需要关注到其他的一些方法。在此处做统一记录和备忘：
+public static void main(String[] args) {
+
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    // 启动所有核心线程(预热)
+    threadPoolExecutor.prestartAllCoreThreads();
+    // 启动一个核心线程
+    threadPoolExecutor.prestartCoreThread();
+
+    // 默认情况下构造器中的keepAliveTime指定的是非核心线程的空闲时间, 通过如下方法, 可以允许核心线程超时
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+
+    // ⭐️ 动态线程池必备方法
+    // 启动后, 设置核心线程数量
+    threadPoolExecutor.setCorePoolSize(3);
+    // 启动后, 设置最大线程数量
+    threadPoolExecutor.setMaximumPoolSize(10);
+    // 已执行完的任务总数
+    threadPoolExecutor.getTaskCount();
+    // 获取工作队列剩余数量
+    threadPoolExecutor.getQueue().remainingCapacity();
+    }
+
+
+后记
+通过上面的代码可知，在运行过程中我们也是可以操作coreSize和maxSize的。那么如何才能实现对Queue的大小进行控制呢？目前开源届常用的是采取RabbitMQ中的VariableLinkedBlockingQueue来实现。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/threadpoolexecutor-fei-chang-yong-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/rocketmq-client-qi-dong-yi-chang-jie-jue/">
+                        RocketMQ Client 启动异常解决
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-28</time>
+                    
+                        <a href="https://imyzt.github.io/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-info">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.github.io/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-other_2">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            现象
+rocketmq-common-4.9.3 版本作为客户端消费数据时，从MessageExt.getMsgId()获取消息ID时，会存在一个潜在的依赖冲突问题，最终导致方法执行失败，如下图：
+
+从现象来看，Could not initialize class org.apache.rocketmq.common.message.MessageClientIDSetter 表示 MessageClientIDSetter类为正确被加载，通过搜索类似的资料找到了以下文章：
+
+Client dependency conflict, cause NoClassDefFoundError. Require for shaded client
+记一次RocketMQ消息消费异常
+
+从51cto的文章来看，基本可以分析出是MessageClientIDSetter的静态代码块在执行时异常导致类加载器加载类失败。
+static {
+        byte[] ip;
+        try {
+            // 执行异常，导致`MessageClientIDSetter`未成功被类加载器加载
+            ip = UtilAll.getIP();
+        } catch (Exception e) {
+            ip = createFakeIP();
+        }
+        LEN = ip.length + 2 + 4 + 4 + 2;
+        ByteBuffer tempBuffer = ByteBuffer.allocate(ip.length + 2 + 4);
+        tempBuffer.put(ip);
+        tempBuffer.putShort((short) UtilAll.getPid());
+        tempBuffer.putInt(MessageClientIDSetter.class.getClassLoader().hashCode());
+        FIX_STRING = UtilAll.bytes2string(tempBuffer.array()).toCharArray();
+        setStartTime(System.currentTimeMillis());
+        COUNTER = new AtomicInteger(0);
+    }
+
+分析
+从上面的博客中已经可以得到结论是依赖冲突造成的，但问题是部分服务会出现，大多数服务不会出现，通过往深层次分析得出结论：
+rocketmq-acl rocketmq-client 均依赖于 commons-validator-1.7 版本，而项目中如果有类似于 aliyun-log-appender 老版本的依赖，会传递依赖于旧版本的  commons-validator ，如下图所示：
+
+Maven在遇到依赖冲突时，首先会采用就近原则，上图中第一个传递依赖有5个层级，而下一个传递依赖只有4个层级，所以就近取到了错误的1.4.0版本。
+其它的服务更多是单模块项目，直接依赖于RocketMQ的client代码，而出现问题的服务是一个多模块依赖关系的服务，最终依赖传递了3层，导致依赖链路变长，最终优先依赖了链路更近的由 log-appender 引入进来的 1.4.0 版本。
+相关文章： Maven依赖冲突避坑指北
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/rocketmq-client-qi-dong-yi-chang-jie-jue/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/hash-chong-tu-jie-jue-fang-fa/">
+                        Hash冲突解决方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-27</time>
+                    
+                        <a href="https://imyzt.github.io/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-other_2">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是hash冲突？
+
+hash冲突就是在操作哈希表（散列表）的时候，不同的key值经过hash函数（散列算法）之后得到相同的hash值，那么一个位置没法放置两份value，这种情况就是hash冲突。
+
+Hash冲突常用解决方法
+开放地址法（open addressing）
+简单来说就是通过计算出来冲突的hash值进行再次的运算，直到得到可用的地址，主要有以下3种：
+
+线性探测再散列：发生冲突时，顺序查看哈希表下一单元是否可用，直到找到可用的单元
+二次探测再散列：发生冲突时，以冲突的位置为中心向左右探测是否有可用单元
+伪随机探测再散列：通过一组伪随机数列计算得到对应的单位位置
+
+单独链表法
+就是在哈希表中，针对相同的hash值使用链表的方式来存放
+再Hash
+提供多个hash函数，冲突时使用其他的hash函数再次运算
+建立公共溢出区
+建立一个溢出表，hash冲突的时候放入溢出表
+Java中HashMap如何解决冲突
+其实，Java中的HashMap采用的hash冲突解决方案就是单独链表法，也就是在hash表节点使用链表存储hash值相同的值
+不过需要知道的是JDK8之后，如果链表长度超过8将会将链表转化为红黑树以便提高在hash冲突严重情况下的查询效率，也能够避免一定的hash碰撞攻击。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/hash-chong-tu-jie-jue-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/2/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.github.io/page/4/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,348 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java Throwable异常堆栈收集的性能问题 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java Throwable异常堆栈收集的性能问题
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2021-01-02</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>在项目中，大家通常都喜欢使用 <code>throw new BusinessException()</code> 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，<code>@RestControllerAdvice</code> 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。</p>
+<p>但是使用此方式是具有一定的性能损耗的，因为在基类Throwable 的fillInStackTrace()方法会不断收集各层的调用链路，而SpringMVC又是在外层的Tomcat到DispatcherServlet到应用自定义的各种intercepter层层调用，调用堆栈通常较长。所以多多少少具有一定的性能消耗，下面进行了一个基本测试。</p>
+<p>第一个for循环是为了给JVM预热。<br>
+第二个模拟普通的异常。<br>
+第三个模拟重写了fillInStackTrace()方法的异常。</p>
+<pre><code>/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 异常收集测试
+ */
+public class TestMain {
+
+
+    public static void main(String[] args) {
+
+
+        int idx = 1000022;
+
+
+        long t1Start = System.currentTimeMillis();
+        for (int i = 0; i &lt; idx; i++) {
+            Test test = new Test(&quot;aa&quot; + i);
+        }
+        long t1end = System.currentTimeMillis();
+        System.out.println(t1end - t1Start);
+
+
+
+
+        long t2Start = System.currentTimeMillis();
+        for (int i = 0; i &lt; idx; i++) {
+            try {
+                throw new ThrowableTest(&quot;aa&quot; + i);
+            } catch (ThrowableTest throwableTest) {
+            }
+        }
+        long t2end = System.currentTimeMillis();
+        System.out.println(t2end - t2Start);
+
+
+
+
+
+
+        long t3Start = System.currentTimeMillis();
+        for (int i = 0; i &lt; idx; i++) {
+            try {
+                throw new ThrowableTest2(&quot;aa&quot; + i);
+            } catch (ThrowableTest2 throwableTest) {
+
+
+            }
+        }
+        long t3end = System.currentTimeMillis();
+        System.out.println(t3end - t3Start);
+    }
+
+
+
+
+    public static class Test {
+
+
+        private String name;
+
+
+        public Test(String name) {
+            this.name = name;
+        }
+    }
+
+
+    public static class ThrowableTest extends RuntimeException {
+
+
+        private String msg;
+
+
+        public ThrowableTest(String msg) {
+            super(msg);
+            this.msg = msg;
+        }
+    }
+
+
+    public static class ThrowableTest2 extends RuntimeException {
+
+
+        private String msg;
+
+
+        public ThrowableTest2(String msg) {
+            super(msg);
+            this.msg = msg;
+        }
+
+
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+            return this;
+        }
+    }
+}
+</code></pre>
+<p>耗时对比：</p>
+<p>88<br>
+1631<br>
+74</p>
+<p>通过结果可以看出，即使在非Web环境下都有如此巨大的性能差距，web环境下冗长的调用链路差距只会更大，大家可使用web环境下进行测试。</p>
+<p>但是不是说有性能损耗就不用， 也需要结合业务进行权衡，比如可以将类似于参数错误等无需通过调用堆栈判断的、但是出现频率有很高的的异常进行重写基类的<code>fillInStackTrace()</code>方法，使其不收集堆栈，但是此举会使出现异常后无法排查，所以只能使用在无需通过堆栈判断问题的场景下用于提升性能。</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/mysql-80-gong-yong-biao-biao-da-shi-cte/">
+                                <h3 class="post-title">
+                                    MySQL 8.0 公用表表达式（CTE）
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                                <!-- id-card -->
+                                
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+                                    
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

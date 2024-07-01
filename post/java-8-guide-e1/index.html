@@ -1,0 +1,342 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 8 Guide E1 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 8 Guide E1
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-01-17</time>
+                            
+                                <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-banana">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="文章系学习java8新特性">文章系学习Java8新特性</h1>
+<p>教程地址: <a href="http://blog.didispace.com/books/java8-tutorial/">Java8简明教程</a></p>
+<h1 id="在接口中定义默认方法">在接口中定义默认方法</h1>
+<ul>
+<li>通过static修饰, 该方法不可被重写.</li>
+<li>通过default修饰, 该方法不仅仅默认实现, 还可以被实现类重写</li>
+</ul>
+<h2 id="示例代码">示例代码</h2>
+<pre><code>/**
+ * Created by imyzt on 2019/1/17 10:59
+ * 可以在接口中定义默认方法
+ */
+public interface Formula {
+
+    double calculate(int a);
+
+    default double sqrt(int a) {
+        return Math.sqrt(a);
+    }
+
+    static int abs (int b) {
+        return Math.abs(b);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Formula formula = new Formula() {
+            @Override
+            public double calculate(int a) {
+                return sqrt(a * 1000);
+            }
+        };
+
+        double calculate = formula.calculate(1);
+        System.out.println(calculate);              //31.622776601683793
+
+        double sqrt = formula.sqrt(1000);
+        System.out.println(sqrt);                   //31.622776601683793
+
+        int abs = Formula.abs(1000);
+        System.out.println(abs);                    //1000
+    }
+}
+</code></pre>
+<h1 id="lambda表达式">Lambda表达式</h1>
+<p>Lambda表达式是java8最大的更新了, 使得一些操作十分简单明了.</p>
+<h2 id="不使用lambda表达式进行集合排序">不使用lambda表达式进行集合排序</h2>
+<pre><code>List&lt;String&gt; names = Arrays.asList(&quot;peter&quot;, &quot;anna&quot;, &quot;mike&quot;, &quot;xenia&quot;);
+Collections.sort(names, new Comparator &lt;String&gt;() {
+    @Override
+    public int compare(String a, String b) {
+        return b.compareTo(a);
+    }
+});        
+</code></pre>
+<h2 id="使用lambda表达式进行集合排序">使用Lambda表达式进行集合排序</h2>
+<pre><code> Collections.sort(names, (String a, String b) -&gt; {
+     return b.compareTo(a);
+});
+</code></pre>
+<ul>
+<li>不过，还可以省去返回值的表述</li>
+</ul>
+<pre><code>Collections.sort(names, (String a, String b) -&gt; b.compareTo(a));
+</code></pre>
+<ul>
+<li>Lambda可以自动识别类型, 因此我们可以删除掉类型声明</li>
+</ul>
+<pre><code>Collections.sort(names, (a, b) -&gt; b.compareTo(a));
+</code></pre>
+<ul>
+<li>当然, 也可以将具体动作简化</li>
+</ul>
+<pre><code>Collections.sort(names, Comparator.reverseOrder());
+</code></pre>
+<ul>
+<li>最后, java8的jdk集合中实现了sort方法, 因此我们可以用最后这句话来实现集合的排序</li>
+</ul>
+<pre><code>names.sort(Comparator.reverseOrder());
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/spring-aop-shi-xian/">
+                                <h3 class="post-title">
+                                    Spring AOP 实现
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E6%96%87%E7%AB%A0%E7%B3%BB%E5%AD%A6%E4%B9%A0java8%E6%96%B0%E7%89%B9%E6%80%A7">文章系学习Java8新特性</a></li>
+<li><a href="#%E5%9C%A8%E6%8E%A5%E5%8F%A3%E4%B8%AD%E5%AE%9A%E4%B9%89%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95">在接口中定义默认方法</a>
+<ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81">示例代码</a></li>
+</ul>
+</li>
+<li><a href="#lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F">Lambda表达式</a>
+<ul>
+<li><a href="#%E4%B8%8D%E4%BD%BF%E7%94%A8lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BF%9B%E8%A1%8C%E9%9B%86%E5%90%88%E6%8E%92%E5%BA%8F">不使用lambda表达式进行集合排序</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BF%9B%E8%A1%8C%E9%9B%86%E5%90%88%E6%8E%92%E5%BA%8F">使用Lambda表达式进行集合排序</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

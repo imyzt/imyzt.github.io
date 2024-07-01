@@ -1,0 +1,404 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    RocketMQ消息存储过程 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            RocketMQ消息存储过程
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-11-15</time>
+                            
+                                <a href="https://imyzt.github.io/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-other_4">
+                            #RocketMQ
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <blockquote>
+<p>讲完了消息的生产过程，接下来记录一下消息发送到<code>Broker</code>后如何存储和分发。</p>
+</blockquote>
+<h1 id="前言">前言</h1>
+<p>首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的<code>store</code>目录中：<br>
+<img src="https://imyzt.github.io/post-images/1700059028911.png" alt="" loading="lazy"></p>
+<ul>
+<li>abort：该文件在Broker启动后自动创建，正常关闭自动消息，如果没有启动Broker的情况下看到此文件表示上次Broker是非正常关闭的</li>
+<li>checkpoint：存储着<code>commitlog</code>,<code>consumequeue</code>,<code>index</code>文件的最后刷盘时间</li>
+<li>commitlog：存放<code>commitlog</code>文件，消息就是存储在其中</li>
+<li>consumerqueue：存放<code>consumequeue</code>文件，队列就是存放在其中</li>
+<li>index：存放消息索引文件，支持根据<code>key</code>查询的依据</li>
+<li>lock：运行期间使用到的全局资源锁</li>
+</ul>
+<h1 id="消息存储">消息存储</h1>
+<h2 id="如何保证高性能读写">如何保证高性能读写</h2>
+<p>传统的IO读写方式，存在多次上下文切换和多次数据的拷贝，在并发极高的MQ场景下，会严重影响读写效率。所以为了减少内核态&lt;=&gt;用户态切换，减少数据拷贝次数，引入了<strong>零拷贝</strong>技术。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1699977065073.png" alt="" loading="lazy"></figure>
+<h2 id="零拷贝">零拷贝</h2>
+<p>零拷贝是一种思想，指的是CPU不需要先将数据从某处内存复制到另一个特定区域，实现零拷贝的方式有以下几种方式：</p>
+<ul>
+<li>mmap()</li>
+<li>sendfile()</li>
+</ul>
+<h3 id="mmap">mmap()</h3>
+<p>mmap(memory map) 是一种内存映射方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对应关系。<br>
+对应上图中<code>内核缓冲区-&gt;用户缓冲区-&gt;Socket缓冲区</code>的过程直接变成了<code>内核缓冲区-(CPU拷贝)-&gt;Socket缓冲区</code>，减少了一次拷贝所需的时间。<br>
+但整个过程中，上下文切换依旧是<strong>4次</strong>，相比于传统IO没有提升，切换过程：</p>
+<ol>
+<li>当用户发起mmap调用的时候会发生上下文切换1，进行内存映射；</li>
+<li>然后数据被拷贝到内核缓冲区，mmap返回，发生上下文切换2；</li>
+<li>随后用户调用write，发生上下文切换3；</li>
+<li>将内核缓冲区的数据拷贝到Socket缓冲区，write返回，发生上下文切换4。<br>
+<img src="https://imyzt.github.io/post-images/1700059059450.png" alt="" loading="lazy"></li>
+</ol>
+<pre><code class="language-java">FileChannel fileChannel = 
+new RandomAccessFile(&quot;mmap_test.txt&quot;, &quot;rw&quot;).getChannel(); 
+MappedByteBuffer mappedByteBuffer = 
+fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, fileChannel.size());
+</code></pre>
+<h3 id="sendfile">sendfile()</h3>
+<p>sendfile()和mmap()一样可以减少一次CPU拷贝，但它可以减少2次上下文切换，切换过程：</p>
+<ol>
+<li>用户发起sendfile()调用时会发生切换1，之后数据通过DMA拷贝到内核缓冲区</li>
+<li>之后再将内核缓冲区的数据CPU拷贝到Socket缓冲区，最后拷贝到网卡，sendfile()返回，发生切换2。</li>
+</ol>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.github.io/post-images/1700059065166.png" alt="" loading="lazy"></figure>
+<pre><code class="language-java">//调用transferTo方法向目标数据传输 
+FileChannel channel = FileChannel.open(Paths.get(&quot;./test.txt&quot;),
+ StandardOpenOption.WRITE, StandardOpenOption.CREATE); 
+
+channel.transferTo(position, len, target);
+</code></pre>
+<h1 id="commitlogmappedfile">commitlog（mappedFile）</h1>
+<h2 id="目录与文件">目录与文件</h2>
+<blockquote>
+<p>真正存储消息，<strong>一个Broker只有一个<code>commitlog</code>目录，所有Topic的消息都存放于此。</strong></p>
+</blockquote>
+<p>mappedFile大小1G，文件名由20位十进制数组成，<strong>表示当前文件的第一条消息的起始位置偏移量。</strong></p>
+<ul>
+<li>第一个文件名一定是20位0构成，第一条消息的偏移量commitlog offset为0.</li>
+<li>当第一个文件放满时，会自动生成第二个文件继续存放消息，假设第一个<code>1073741820</code>字节（1G=1073741824字节），最后只剩4字节不够存放下一条数据。则下一个文件名为<code>00000000001073741824</code></li>
+</ul>
+<h2 id="消息单元">消息单元</h2>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.github.io/post-images/1700059080546.png" alt="" loading="lazy"></figure>
+<h1 id="consumequeue">consumequeue</h1>
+<p><strong>存储topic消息在commitlog的位置索引。</strong></p>
+<p>为了提高效率，会为每个topic在<code>~/store/consumequeue</code>中创建一个目录<code>{TopicId}/{QueueId}</code>，<code>consumequeue</code>文件是<code>commitlog</code>的索引文件，可以根据<code>consumequeue</code>定位到具体的消息在<code>commitlog</code>中的位置。</p>
+<p>consumequeue文件名也是由20位数字组成，<strong>表示当前文件的第一个索引条目的起始位置偏移量</strong>，与mappedFile文件不同的是，其后续的文件名也是固定的，因为consumequeue文件大小是固定不变的。</p>
+<p><code>每个consumequeue文件可以包含30w</code>个索引条目，其中包含：</p>
+<ul>
+<li>消息在mappedFile文件中的偏移量<code>commitlog offset</code></li>
+<li>消息长度</li>
+<li>消息Tag的hashcode值<br>
+这三个属性占用20个字节，所以每个文件的大小是固定的30w * 20字节</li>
+</ul>
+<p><img src="https://imyzt.github.io/post-images/1700059143933.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.github.io/post-images/1700059149125.png" alt="" loading="lazy"></p>
+<h1 id="对文件的读写">对文件的读写</h1>
+<figure data-type="image" tabindex="4"><img src="https://imyzt.github.io/post-images/1700059156240.png" alt="" loading="lazy"></figure>
+<h2 id="消息写入">消息写入</h2>
+<p>一条消息进入到Broker后经历了以下几个过程才最终被持久化：</p>
+<ul>
+<li>Broker根据queueId，获取到该消息对应索引条目要在consumequeue目录中的写入偏移量，即QueueOffset</li>
+<li>将queueId、queueOffset等数据，与消息一起封装为消息单元</li>
+<li>将消息单元写入到commitlog</li>
+<li>形成消息索引条目</li>
+<li>将消息索引条目分发到相应的consumequeue</li>
+</ul>
+<h2 id="消息拉取">消息拉取</h2>
+<p>当Consumer来拉取消息时会经历以下几个步骤：</p>
+<ul>
+<li>Consumer获取到其要消费消息所在Queue的<code>消费偏移量offset</code>，计算出其要消费消息的<code>消费offset</code></li>
+</ul>
+<blockquote>
+<p>消费offset即消费进度，consumer对某个queue的消费offset，即消费到了该queue的第几条消息<br>
+消息offset = 消费offset + 1</p>
+</blockquote>
+<ul>
+<li>Consumer向Broker发送拉取请求，其中会包含其要拉取消息的Queue、消息offset及消息Tag</li>
+<li>Broker计算在该consumequeue中的queueOffset</li>
+</ul>
+<blockquote>
+<p>queueOffset = 消息offset * 20字节</p>
+</blockquote>
+<ul>
+<li>从该queueOffset处开始向后查找第一个指定Tag的索引条目</li>
+<li>解析该索引条目的<code>前8个字节</code>，即可定位到该消息在commitlog中的commitlog offset</li>
+<li>从对应commitlog offset中读取消息单元，并发送给Consumer</li>
+</ul>
+<h1 id="刷盘机制">刷盘机制</h1>
+<p>RocketMQ消息写入到Commitlog文件中时并不是直接写入到文件，而是先写到PageCache中，也就是前面IO图中的内核缓冲区，所以RocketMQ也和MySQL等类似的log刷盘机制</p>
+<h2 id="异步刷盘">异步刷盘</h2>
+<p>写入到PageCache后直接返回生产者消息存储成功，另外的后台线程在将消息刷到磁盘。其提供了2套刷盘机制：</p>
+<ul>
+<li>固定时间，默认每隔0.5s会刷一次【默认方式】</li>
+<li>每存一次会通知刷盘，但不会等待结果，同时如果0.5s没有收到通知，也会主动刷盘。</li>
+</ul>
+<h2 id="同步刷盘">同步刷盘</h2>
+<p>同步刷盘机制很好理解，即每次一定等写入成功磁盘才会返回生产者写入成功，此方式可靠性更高，但会一定程度上影响系统吞吐量。</p>
+<h1 id="后记">后记</h1>
+<p>本文参考：<br>
+<a href="https://juejin.cn/post/7186880907582636069">https://juejin.cn/post/7186880907582636069</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+                                <h3 class="post-title">
+                                    Java 实现简单单机时间轮方案
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8">消息存储</a>
+<ul>
+<li><a href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E9%AB%98%E6%80%A7%E8%83%BD%E8%AF%BB%E5%86%99">如何保证高性能读写</a></li>
+<li><a href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D">零拷贝</a>
+<ul>
+<li><a href="#mmap">mmap()</a></li>
+<li><a href="#sendfile">sendfile()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#commitlogmappedfile">commitlog（mappedFile）</a>
+<ul>
+<li><a href="#%E7%9B%AE%E5%BD%95%E4%B8%8E%E6%96%87%E4%BB%B6">目录与文件</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E5%8D%95%E5%85%83">消息单元</a></li>
+</ul>
+</li>
+<li><a href="#consumequeue">consumequeue</a></li>
+<li><a href="#%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%BB%E5%86%99">对文件的读写</a>
+<ul>
+<li><a href="#%E6%B6%88%E6%81%AF%E5%86%99%E5%85%A5">消息写入</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E6%8B%89%E5%8F%96">消息拉取</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%B7%E7%9B%98%E6%9C%BA%E5%88%B6">刷盘机制</a>
+<ul>
+<li><a href="#%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98">异步刷盘</a></li>
+<li><a href="#%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98">同步刷盘</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

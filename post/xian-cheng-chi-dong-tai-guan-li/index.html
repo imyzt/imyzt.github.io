@@ -1,0 +1,300 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    线程池动态管理 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            线程池动态管理
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-06-13</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="介绍">介绍</h1>
+<p>​	看了美团  <a href="https://mp.weixin.qq.com/s/baYuX8aCwQ9PP6k7TDl2Ww">Java线程池实现原理及其在美团业务中的实践</a> 这篇文章之后，对线程池有了一些新的认识，后面看到了 <a href="https://mp.weixin.qq.com/s/9HLuPcoWmTqAeFKa1kj-_A">如何设置线程池参数？美团给出了一个让面试官虎躯一震的回答</a> 四川好男人的一顿骚操作，瞬间又认识的更清晰了一些。就想着能不能做一套这样的线程池管理系统，然后就有了后文。</p>
+<p>​	Web应用系统中，ThreadPoolExecutor一般是由代码硬编码的，core/max/queueSize都是定数，而系统的流量不是一个定数。在峰值期间，线程池无法动态扩容，导致大量请求处理失败进行拒绝策略。本系统主要是做了一个可以动态调参的线程池，依赖ThreadPoolExecutor本身提供的set方法，对运行中的各项基本参数进行动态调控。并且包括监控报警、Web界面、自动扩容策略等。</p>
+<h1 id="设计">设计</h1>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/06/rshg8a6buigc7rdvcdk9q193rj.png" alt="架构图" loading="lazy"></figure>
+<h1 id="实现">实现</h1>
+<h2 id="客户端">客户端</h2>
+<p>配置文件需配置服务端地址</p>
+<p>线程池配置需配置线程池（三种接入方式）</p>
+<ol>
+<li>
+<p>接入方式， 提供三种[##feature]</p>
+</li>
+<li>
+<p>启动时，携带应用名上报对应的线程池配置(多实例同时启动， 此接口需要幂等)</p>
+</li>
+<li>
+<p>通过Java定时器，定时上报线程池数据。</p>
+</li>
+<li>
+<p>与服务端维持长连接，60秒一次，服务端线程池配置（web操作）变化时，返回对应发生改变的[线程池名称]。然后客户端请求服务端获取对应线程池新的配置。</p>
+</li>
+</ol>
+<h2 id="服务端">服务端</h2>
+<ol>
+<li>
+<p>上报接口</p>
+<p>1.1 配置上报接口(配置带版本号)</p>
+<p>1.1.1 初次上报(数据库无法查询, 即视为初次上报)， 存储初始化参数</p>
+<p>1.1.2 服务端Web发起调参, 自行记录， 无需客户端上报(可优化为客户端上报)</p>
+<p>1.2 工作状态上报接口</p>
+<p>​	1.2.1 定时上报应用每个线程池各项指标</p>
+</li>
+<li>
+<p>发起调参后，接受客户端请求最新线程池参数请求</p>
+</li>
+<li>
+<p>存储上报数据， 负责提供数据展示接口，读取数据</p>
+</li>
+</ol>
+<h2 id="feature">feature</h2>
+<ol>
+<li>接入方式新增, 除了Dynamic，让默认的Spring的task和jdk的executor都支持，只有dynamic支持修改队列大小。</li>
+</ol>
+<h2 id="todo-list">todo-list</h2>
+<p><a href="https://github.com/imyzt/dynamic-thread-pool/projects/1">https://github.com/imyzt/dynamic-thread-pool/projects/1</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/">
+                                <h3 class="post-title">
+                                    FastJSON继承类反序列化参数
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1">设计</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0">实现</a>
+<ul>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF">服务端</a></li>
+<li><a href="#feature">feature</a></li>
+<li><a href="#todo-list">todo-list</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

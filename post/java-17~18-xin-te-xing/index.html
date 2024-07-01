@@ -1,0 +1,365 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 17~18 新特性 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 17~18 新特性
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-12-17</time>
+                            
+                                <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-primary">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="特性列表">特性列表</h1>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>特性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java 17（<strong>LTS</strong>）</td>
+<td>1. <code>switch</code> 类型推断 <br/> 2. 伪随机数变化</td>
+</tr>
+<tr>
+<td>Java 18</td>
+<td>1. 使用<code>UTF-8</code>编码<br/> 2. <code>jwebserver</code> <br/> 3. Object、Thread部分方法标记废弃<br/> 4. 增加<code>@snippet</code>注解</td>
+</tr>
+</tbody>
+</table>
+<h1 id="java-17">Java 17</h1>
+<h2 id="switch-类型推断伪随机数变化">switch 类型推断，伪随机数变化</h2>
+<pre><code>
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
+
+/**
+ * @author imyzt
+ * @date 2023/12/17
+ * @description switch 类型推断
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        Animal animal = new Cat();
+        switch (animal) {
+            case Cat c -&gt; c.say();
+            case Dog d -&gt; d.say();
+            case null -&gt; System.out.println(&quot;null&quot;);
+            default -&gt; System.out.println(&quot;default&quot;);
+        }
+
+        /*
+        ➜  java17 git:(master) ✗ java -version
+        openjdk version &quot;21.0.1&quot; 2023-10-17 LTS
+        OpenJDK Runtime Environment Corretto-21.0.1.12.1 (build 21.0.1+12-LTS)
+        OpenJDK 64-Bit Server VM Corretto-21.0.1.12.1 (build 21.0.1+12-LTS, mixed mode, sharing)
+        ➜  java17 git:(master) ✗ java SwitchFuture.java
+        汪汪汪
+         */
+
+        RandomGeneratorFactory&lt;RandomGenerator&gt; factory = RandomGeneratorFactory.getDefault();
+        RandomGenerator randomGenerator = factory.create();
+        randomGenerator.ints(10).forEach(System.out::println);
+        //261824154
+        //540138312
+        //-1600972486
+        //-467718820
+        //-660092685
+        //-1149689401
+        //-46916737
+        //2110685130
+        //-1910355456
+        //-814203516
+    }
+}
+
+class Animal {
+
+}
+
+class Cat extends Animal {
+    void say() {
+        System.out.println(&quot;汪汪汪&quot;);
+    }
+}
+class Dog extends Animal {
+    void say() {
+        System.out.println(&quot;喵喵喵&quot;);
+    }
+}
+</code></pre>
+<h1 id="java-18">Java 18</h1>
+<h2 id="默认使用utf-8字符编码">默认使用UTF-8字符编码</h2>
+<p>从jdk18开始，默认使用UTF-8字符编码，如果需要修改为其他字符，可以使用命令 <code>-Dfile.encoding=UTF-8</code>来指定。</p>
+<h2 id="简单web服务器">简单web服务器</h2>
+<pre><code class="language-shell">➜  java17 git:(master) ✗ jwebserver            
+默认情况下绑定到环回。如果要表示所有接口，请使用 &quot;-b 0.0.0.0&quot; 或 &quot;-b ::&quot;。
+为 127.0.0.1 端口 8000 上的 /xxxxxxxxx目录/java17 及子目录提供服务
+URL http://127.0.0.1:8000/
+127.0.0.1 - - [17/12月/2023:10:38:18 +0800] &quot;GET / HTTP/1.1&quot; 200 -
+127.0.0.1 - - [17/12月/2023:10:38:18 +0800] &quot;GET /favicon.ico HTTP/1.1&quot; 404 -
+127.0.0.1 - - [17/12月/2023:10:38:20 +0800] &quot;GET /SwitchFuture.java HTTP/1.1&quot; 200 -
+</code></pre>
+<h2 id="将被废弃的方法">将被废弃的方法</h2>
+<ul>
+<li><code>java.lang.Object#finalize</code></li>
+<li><code>java.lang.Thread#stop</code></li>
+</ul>
+<h2 id="新增snippet展示代码">新增@snippet展示代码</h2>
+<p>之前需要用<code>&lt;code&gt;</code>标签框代码，不方便，现在通过<code>@snippet</code>还是框代码<br>
+<img src="https://imyzt.github.io/post-images/1702781281538.png" alt="snippet" loading="lazy"></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java-10~16-xin-te-xing/">
+                                <h3 class="post-title">
+                                    Java 10~16 新特性
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E7%89%B9%E6%80%A7%E5%88%97%E8%A1%A8">特性列表</a></li>
+<li><a href="#java-17">Java 17</a>
+<ul>
+<li><a href="#switch-%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E5%8F%98%E5%8C%96">switch 类型推断，伪随机数变化</a></li>
+</ul>
+</li>
+<li><a href="#java-18">Java 18</a>
+<ul>
+<li><a href="#%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8utf-8%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81">默认使用UTF-8字符编码</a></li>
+<li><a href="#%E7%AE%80%E5%8D%95web%E6%9C%8D%E5%8A%A1%E5%99%A8">简单web服务器</a></li>
+<li><a href="#%E5%B0%86%E8%A2%AB%E5%BA%9F%E5%BC%83%E7%9A%84%E6%96%B9%E6%B3%95">将被废弃的方法</a></li>
+<li><a href="#%E6%96%B0%E5%A2%9Esnippet%E5%B1%95%E7%A4%BA%E4%BB%A3%E7%A0%81">新增@snippet展示代码</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

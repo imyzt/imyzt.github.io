@@ -1,0 +1,313 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    错用HashedWheelTimer导致的OOM问题 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            错用HashedWheelTimer导致的OOM问题
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-02-04</time>
+                            
+                                <a href="https://imyzt.github.io/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #RabbitMQ
+                        </a>
+                                
+                                <a href="https://imyzt.github.io/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-info">
+                            #问题解决
+                        </a>
+                                
+                                <a href="https://imyzt.github.io/tag/i73r1WX7G/" class="post-tag i-tag
+                            i-tag-other_2">
+                            #TimeingWheel
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>事件中心在私有化环境下，只要server一启动过几秒就oom，查看日志是 <code>Failed to create a thread: retVal -1073741830, errno 11</code>。</p>
+<p>异常堆栈：</p>
+<pre><code>Caused by: java.lang.OutOfMemoryError: Failed to create a thread: retVal -1073741830, errno 11   
+    at java.lang.Thread.startImpl(Native Method) 
+    at java.lang.Thread.start(Thread.java:993) 
+    at io.netty.util.HashedWheelTimer.start(HashedWheelTimer.java:366) 
+    at io.netty.util.HashedWheelTimer.newTimeout(HashedWheelTimer.java:447) 
+    at 业务调用代码省略
+</code></pre>
+<p>在标品环境下没有问题，在其他KA客户上也没有问题<br>
+通过对日志的分析，最终发现是事件中心的延迟消息代码存在缺陷，使用了<code>Netty</code>的<code>HashedWheelTimer</code>，但是语法存在问题，理论上应该是new一个<code>HashedWheelTimer</code>来处理所有时间延迟，但是错用程每次new一个新的<code>HashedWheelTimer</code>，<code>HashedWheelTimer</code>内部每次都会new一个新的线程来处理做调度，一个线程占用1MB，最终内存资源被耗尽。</p>
+<p><code>io.netty.util.HashedWheelTimer#HashedWheelTimer</code>源码：</p>
+<pre><code class="language-java">public HashedWheelTimer(
+    ThreadFactory threadFactory,
+    long tickDuration, TimeUnit unit, int ticksPerWheel, boolean leakDetection,
+    long maxPendingTimeouts, Executor taskExecutor) {
+
+    checkNotNull(threadFactory, &quot;threadFactory&quot;);
+    checkNotNull(unit, &quot;unit&quot;);
+    checkPositive(tickDuration, &quot;tickDuration&quot;);
+    checkPositive(ticksPerWheel, &quot;ticksPerWheel&quot;);
+    this.taskExecutor = checkNotNull(taskExecutor, &quot;taskExecutor&quot;);
+
+    // Normalize ticksPerWheel to power of two and initialize the wheel.
+    wheel = createWheel(ticksPerWheel);
+    mask = wheel.length - 1;
+
+    // Convert tickDuration to nanos.
+    long duration = unit.toNanos(tickDuration);
+
+    // Prevent overflow.
+    if (duration &gt;= Long.MAX_VALUE / wheel.length) {
+        throw new IllegalArgumentException(String.format(
+                &quot;tickDuration: %d (expected: 0 &lt; tickDuration in nanos &lt; %d&quot;,
+                tickDuration, Long.MAX_VALUE / wheel.length));
+    }
+
+    if (duration &lt; MILLISECOND_NANOS) {
+        logger.warn(&quot;Configured tickDuration {} smaller then {}, using 1ms.&quot;,
+                    tickDuration, MILLISECOND_NANOS);
+        this.tickDuration = MILLISECOND_NANOS;
+    } else {
+        this.tickDuration = duration;
+    }
+
+    // 每次都new一个线程来处理
+    workerThread = threadFactory.newThread(worker);
+
+    leak = leakDetection || !workerThread.isDaemon() ? leakDetector.track(this) : null;
+
+    this.maxPendingTimeouts = maxPendingTimeouts;
+
+    if (INSTANCE_COUNTER.incrementAndGet() &gt; INSTANCE_COUNT_LIMIT &amp;&amp;
+        WARNED_TOO_MANY_INSTANCES.compareAndSet(false, true)) {
+        reportTooManyInstances();
+    }
+}
+</code></pre>
+<p>因为标品和其他KA使用的是阿里云RocketMQ，此客户使用的是自建的开源版RocketMQ，开源RocketMQ是没有自定义时长的延迟消息的，所以我们自己实现了一套时间轮来实现任意时长的延迟消息，当小于60s的延迟消息会丢入我们的时间轮来处理延迟投递，当时此客户的环境中有大量的60s内的延迟消息，导致一启动就会崩溃。<br>
+不过在RocketMQ5.0也支持任意时长了。</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">
+                                <h3 class="post-title">
+                                    CircuitBreak导致ThreadLocal参数丢失问题
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                                <!-- id-card -->
+                                
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+                                    
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

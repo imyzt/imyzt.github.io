@@ -1,0 +1,1601 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+                        前后端分离使用NGINX做服务转发
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。
+nginx配置
+在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 sites-enabled 下面编写配置信息.
+map $http_upgrade $connection_upgrade {  
+	default upgrade;  
+	&#39;&#39; close;  
+}  
+upstream muti_instance_43{
+#	server 192.168.10.62:9999 weight=10;
+	server 192.168.10.62:9999;
+#	server 192.168.10.213:9997 weight=2;
+	keepalive 200;
+}
+
+server {
+	listen 0.0.0.0:10070;
+	sendfile off;
+
+
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+#	resolver 114.114.114.114 223.5.5.5 valid=3600s;
+        resolver_timeout 3s;
+
+	proxy_http_version 1.1;
+	proxy_set_header Connection &amp;quot;&amp;quot;;
+
+	#root /data/securityUI/static/;
+
+
+	location  / { 
+                #add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;
+		#add_header &#39;Access-Control-Allow-Methods&#39; &#39;GET&#39;;
+		#add_header &#39;Access-Control-Allow-Headers&#39; &#39;DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization&#39;;
+		#add_header &#39;Access-Control-Expose-Headers&#39; &#39;Content-Length,Content-Range&#39;;
+		#add_header &#39;Access-Control-Max-Age&#39; 2592000;
+		client_max_body_size    15g;
+		#dav_access user:rw group:rw all:rw;
+		#dav_methods PUT DELETE MKCOL COPY MOVE;
+
+		#create_full_put_path on;
+
+		#autoindex off;
+		#autoindex_exact_size off;
+		#autoindex_localtime on;
+		#charset utf-8;
+		if ($request_uri ~* /.) {
+			proxy_pass http://muti_instance_43;
+			break;
+			#root /data/securityUI/static/;
+                	#index index.html index.htm;
+	
+		}
+		root /data/securityUI/static/;
+                index login.html;
+	}
+
+	location ^~ /static/offlineMap/ {
+		alias /data/securityUI/map/;
+		#proxy_pass http://map_server;
+	}
+
+	location  /static/ {
+
+		client_max_body_size 15g;
+		alias /data/securityUI/static/;
+		allow all;
+
+	}
+	location ^~ /index {
+		alias /data/securityUI/static/;
+		index index.html;
+
+	}
+
+	location ^~ /gee/ {
+		proxy_pass http://muti_instance_43;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection &amp;quot;upgrade&amp;quot;;
+		proxy_http_version 1.1;
+		proxy_set_header        Host            $host;
+		proxy_set_header        X-Real-IP       $remote_addr;
+		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+	}
+}
+
+
+总结
+配置中最关键的点在 location  / {} 节点, 其中的 if 判断, 如果是访问的 ip:port/xxx 带了任何内容, 就会转发到 muti_instance_43 中, 如果没有带内容(即访问的首页), 就会将其转发到配置好了的静态首页面.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/efk-ri-zhi-xi-tong-da-jian/">
+                        EFK日志系统搭建
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是EFK
+这里引用一下 ELK 架构之 Elasticsearch 和 Kibana 安装配置 一文对ELK的介绍，详细内容在文中都有介绍，我主要将其从实体机安装转向在Docker-compose服务编排，EFK与ELK大同小异.
+
+ELK 是三个开源软件的缩写，分别为：Elasticsearch、Logstash 以及 Kibana，它们都是开源软件。不过现在还新增了一个 Beats，它是一个轻量级的日志收集处理工具（Agent），Beats 占用资源少，适合于在各个服务器上搜集日志后传输给 Logstash，官方也推荐此工具，目前由于原本的 ELK Stack 成员中加入了 Beats 工具所以已改名为 Elastic Stack。
+
+ElasticSearch搭建
+ElasticSearch的安装需要替换配置文件的以下几个点
+network.host: 0.0.0.0 #所有地址都能够访问  
+http.port: 9200 #端口  
+http.cors.enabled: true 
+ http.cors.allow-origin: &amp;quot;*&amp;quot;
+
+问题解决
+在配置ElasticSearch时容易出现以下几点错误, 在此讲解以下如何解决:
+
+见图1-[ElasticSearch问题]
+原因：这是在因为系统不支持SecComp，而ES5.2.0默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动。
+解决：在elasticsearch.yml中配置bootstrap.system_call_filter为false，注意要在Memory下面:
+
+bootstrap.memory_lock: false
+bootstrap.system_call_filter: false
+
+
+见图1-[ElasticSearch问题]第二个红框
+出现此问题只需要修改了 宿主机 系统的max_map_count参数即可.
+
+vim /etc/sysctl.conf
+vm.max_map_count=655360
+sysctl -p
+
+
+图1-[ElasticSearch问题]
+Logstash搭建
+Logstash的安装需要替换配置文件的以下几点
+server.port: 5601 
+server.host: &amp;quot;0.0.0.0&amp;quot; 
+elasticsearch.url: &amp;quot;http://elasticsearch:9200&amp;quot;
+
+Kibana搭建
+配置一个filebeat的服务接收端
+input {
+ beats {
+   port =&amp;gt; 10515
+  }
+}
+output {
+    elasticsearch {
+      hosts =&amp;gt; [&amp;quot;127.0.0.1:9200&amp;quot;]
+      # 注释不能被解析,线上删除.此处做讲解
+      # %{[fields][logtype]} 对应filebeat配置文件, 只需在此配置, 写入ElasticSearch的索引就可以主动创建和filebeat相关的索引
+      index =&amp;gt; &amp;quot;%{[fields][logtype]}-%{+YYYY.MM.dd}&amp;quot;
+    }
+}
+
+filebeat搭建
+filebeat作为 日志探测器 需要配置一个日志探测配置文件, 可以是log4j的网络传输, 也可以是系统的某个目录.配置文件下图讲解的非常细致
+
+还需要做如下修改:
+注释掉默认开启的 ElasticSearch
+
+开启默认未开启的 logstash, 指定logstash地址, 指定主机名而非localhost
+
+容器编排
+version: &#39;2&#39;
+
+services: 
+  elasticsearch:  
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    volumes: 
+      - ./es/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/logs:/path/to/logs
+    ports: 
+      - &#39;9200:9200&#39;
+      - &#39;9300:9300&#39;
+    environment:
+      - &amp;quot;bootstrap.memory_lock=true&amp;quot;
+      - &amp;quot;ES_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - efk
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.6.0
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/pattern:/usr/share/logstash/pattern
+    ports:
+      - &amp;quot;5044:5044&amp;quot;
+      - &amp;quot;10515:10515&amp;quot;
+    environment:
+      - &amp;quot;LS_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    command: logstash -f /usr/share/logstash/config/logstash-sample.conf
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - &amp;quot;5601:5601&amp;quot;
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+
+networks:
+  efk:
+    driver: bridge
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/efk-ri-zhi-xi-tong-da-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/pu-tong-rong-qi-bian-pai/">
+                        普通容器编排
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            介绍
+容器主要包括了三个数据库MongoDB，MySQL，Redis，一个消息中间件RabbitMQ。security程序依赖三个数据库，security-rabbit依赖RabbitMQ，最后forward-nginx依赖于security程序。
+
+
+# 容器编排
+version: &amp;quot;3&amp;quot;
+services:
+  security:
+    image: anytec/security:0.0.1
+    container_name: anytec-security
+    expose:
+      - &amp;quot;9999&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - mysql
+      - mongodb
+      - redis
+      - rabbitmq
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  security-rabbitmq:
+    image: anytec/security-rabbitmq:0.0.1
+    container_name: anytec-security-rabbitmq
+    expose:
+      - &amp;quot;9998&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - rabbitmq
+      - security
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  forward-nginx:
+    image: nginx:latest
+    container_name: anytec-forward-nginx
+    ports:
+      - &amp;quot;10070:10070&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - security
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /anytec/docker-server/forward-nginx/sites-enabled:/etc/nginx/sites-enabled/
+      - /data/securityUI:/data/securityUI
+      - /anytec/docker-server/forward-nginx/conf:/etc/nginx/
+  rabbitmq:
+    image: anytec/rabbitmq:3.6.15
+    container_name: anytec-rabbitmq
+    expose:
+      - &amp;quot;5672&amp;quot;
+    ports:
+      - &amp;quot;15672:15672&amp;quot;
+    networks:
+      - docker-server
+    environment:
+     - RABBITMQ_DEFAULT_USER=admin
+     - RABBITMQ_DEFAULT_PASS=ntech
+     - RABBITMQ_USER admin
+     - ENV RABBITMQ_PASSWORD ntech
+     - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.config
+     - RABBITMQ_ERLANG_COOKIE=CURIOAPPLICATION
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  mongodb:
+    image: mongo:latest
+    container_name: anytec-mongodb
+    expose:
+      - &amp;quot;27017&amp;quot;
+    networks:
+      - docker-server
+    restart: always
+    #environment:
+      #MONGO_INITDB_ROOT_PASSWORD: ntech
+      #MONGO_INITDB_ROOT_USERNAME: root
+    volumes:
+      - /anytec/docker-server/mongodb/data:/data/db
+      - /anytec/docker-server/mongodb/conf/mongodb.conf:/etc/mongodb.conf 
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  redis:
+    image: redis
+    container_name: anytec-redis
+    expose:
+      - &amp;quot;6379&amp;quot;
+    networks:
+      - docker-server
+    volumes:
+      - /anytec/docker-server/redis/data:/data
+      - /anytec/docker-server/redis/conf:/usr/local/etc/redis/
+    command: [&#39;redis-server&#39;, &#39;/usr/local/etc/redis/redis.conf&#39;]
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  mysql:
+    image: anytec/mysql:5.7
+    container_name: anytec-mysql
+    expose:
+     - &amp;quot;3306&amp;quot;
+    networks:
+     - docker-server
+    environment:
+      MYSQL_ROOT_PASSWORD: ntech
+      MYSQL_ROOT_HOST: &#39;%&#39;
+      MYSQL_DATABASE: securitydb
+    volumes:
+      - /anytec/docker-server/mysql/data:/var/lib/mysql
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+networks:
+  docker-server:
+    driver: bridge
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/pu-tong-rong-qi-bian-pai/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/synchronized/">
+                        synchronized
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            synchronized的两种用法
+
+对象锁
+
+
+包括方法锁(默认锁对象为this当前实例对象)和同步代码块锁(自己指定锁对象)
+
+
+类锁
+
+
+指synchronized修饰 static方法 或指定锁对象为 Class对象
+
+对象锁
+同步代码块
+使用 this 锁定代码块
+public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    @Override
+    public void run() {
+
+        synchronized (this) {
+            System.out.println(&amp;quot;我是lock2, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock2 部分执行结束&amp;quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+最终运行结果
+我是lock2, 我叫Thread-0
+Thread-0, lock2 部分执行结束
+我是lock2, 我叫Thread-1
+Thread-1, lock2 部分执行结束
+finished
+
+使用 自定义锁对象
+public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+
+    @Override
+    public void run() {
+
+        synchronized (lock1) {
+            System.out.println(&amp;quot;我是lock1, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock1 部分执行结束&amp;quot;);
+        }
+
+        synchronized (lock2) {
+            System.out.println(&amp;quot;我是lock2, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock2 部分执行结束&amp;quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+运行结果，可以看出来加粗部分， thread-0和thread-1同时执行和同时结束，因为两个线程使用的不是同一把锁。
+我是lock1, 我叫Thread-0
+Thread-0, lock1 部分执行结束
+我是lock2, 我叫Thread-0
+我是lock1, 我叫Thread-1
+Thread-1, lock1 部分执行结束
+Thread-0, lock2 部分执行结束
+我是lock2, 我叫Thread-1
+Thread-1, lock2 部分执行结束
+finished
+方法锁
+代码展示
+public class SynchronizedObjectMethod3 implements Runnable {
+
+    public static void main(String[] args) {
+
+        SynchronizedObjectMethod3 objectMethod3 = new SynchronizedObjectMethod3();
+
+        Thread thread1 = new Thread(objectMethod3);
+        Thread thread2 = new Thread(objectMethod3);
+
+        thread1.start();
+        thread2.start();
+    }
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public synchronized void method() {
+        System.out.println(&amp;quot;对象锁的方法修饰符形式, threadName=&amp;quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+    }
+}
+
+运行结果:
+
+使用synchronized修饰一个成员方法, 该方法会根据实例依次执行.
+对象锁的方法修饰符形式, threadName=Thread-0
+Thread-0运行结束
+对象锁的方法修饰符形式, threadName=Thread-1
+Thread-1运行结束
+
+类锁
+概念:
+
+只有一个Class对象: Java类可能会有很多个实例对象, 但是只有一个Class对象
+本质: 所谓的类锁, 实质上是Class对象的锁而已
+用法和效果: 类锁只能在同一时刻被同一对象拥有
+
+同步一个全局方法
+代码展示
+public class SynchronizedClassStatic4 implements Runnable {
+
+    static SynchronizedClassStatic4 instance1 = new SynchronizedClassStatic4();
+    static SynchronizedClassStatic4 instance2 = new SynchronizedClassStatic4();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public static synchronized void method() {
+        System.out.println(&amp;quot;我是类锁的第一种形式: static形式, 我叫 &amp;quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+运行结果:
+
+使用synchronized修饰一个全局方法(static修饰), synchronized默认使用类作为锁对象
+我是类锁的第一种形式: static形式, 我叫 Thread-0
+Thread-0运行结束
+我是类锁的第一种形式: static形式, 我叫 Thread-1
+Thread-1运行结束
+finished
+
+类锁同步一个代码块
+代码展示
+public class SynchronizedClassClass5 implements Runnable {
+
+    static SynchronizedClassClass5 instance1 = new SynchronizedClassClass5();
+    static SynchronizedClassClass5 instance2 = new SynchronizedClassClass5();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    private void method() {
+        synchronized(SynchronizedClassClass5.class) {
+            System.out.println(&amp;quot;类锁的第二种表现形式, synchronized(*.class)的形式, 这是&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+
+
+}
+
+运行结果:
+
+尽管Thread使用的不同的instance对象, 但是使用了*.class类锁之后, 代码也会按照期望值运行.
+类锁的第二种表现形式, synchronized(.class)的形式, 这是Thread-0
+Thread-0运行结束
+类锁的第二种表现形式, synchronized(.class)的形式, 这是Thread-1
+Thread-1运行结束
+finished
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/synchronized/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/springboot2-bian-xie-zi-ding-yi-autoconfig/">
+                        SpringBoot2 编写自定义AutoConfig
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-31</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是Spring AutoConfig
+
+Spring Boot auto-configuration attempts to automatically configure your Spring application based on the jar dependencies that you have added. For example, if HSQLDB is on your classpath, and you have not manually configured any database connection beans, then Spring Boot auto-configures an in-memory database.
+You need to opt-in to auto-configuration by adding the @EnableAutoConfiguration  or @SpringBootApplication annotations to one of your @Configuration classes.
+引用自: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-auto-configuration.html
+
+怎样编写SpringBoot2 AutoConfig
+使用自动配置HttpClient作为例子.
+编写一个属性配置类
+@ConfigurationProperties(prefix = &amp;quot;spring.httpclient&amp;quot;)
+@Data
+public class HttpClientProperties {
+    private Integer connectTimeOut = 1000;
+    private Integer socketTimeOut = 10000;
+    private String agent = &amp;quot;agent&amp;quot;;
+    private Integer maxConnPerRoute = 10;
+    private Integer maxConnTotal = 50;
+}
+
+@ConfigurationProperties 的 prefix 提示Spring在启动时将配置文件中 spring.httpclient 的与本类属性相对应的属性自动加载进来.
+@Data 是lombok的注解.
+编写自动配置核心类
+@Configuration
+@ConditionalOnClass({HttpClient.class})
+@EnableConfigurationProperties(HttpClientProperties.class)
+public class HttpClientAutoConfiguration {
+
+    private final HttpClientProperties properties;
+
+    public HttpClientAutoConfiguration(HttpClientProperties properties) {
+        this.properties = properties;
+    }
+
+
+    /**
+     * httpclient bean的定义
+     * @return Http Client
+     *
+     * ConditionalOnMissingBean -&amp;gt; 当用户未定义的时候才会创建
+     */
+    @Bean
+    @ConditionalOnMissingBean(HttpClient.class)
+    public HttpClient httpClient() {
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(properties.getConnectTimeOut())
+                .setSocketTimeout(properties.getSocketTimeOut())
+                .build();
+        return HttpClientBuilder.create()
+                .setDefaultRequestConfig(requestConfig)
+                .setUserAgent(properties.getAgent())
+                .setMaxConnPerRoute(properties.getMaxConnPerRoute())
+                .setMaxConnTotal(properties.getMaxConnTotal())
+                // 防止重试
+                .setConnectionReuseStrategy(new NoConnectionReuseStrategy())
+                .build();
+    }
+}
+
+
+@Configuration： 将本类标识为SpringBoot的Java配置类
+@ConditionalOnClass({HttpClient.class})： 只有在HttpClient.class存在时才会加载java config
+@EnableConfigurationProperties(HttpClientProperties.class)：本类加载时注入 HttpClientProperties 属性配置的bean
+httpClient()的@ConditionalOnMissingBean(HttpClient.class)：只有当没有创建HttpClient bean的时候，才会执行 httpClient()方法创建一个HttpClient bean
+
+使Spring感知自动配置类.
+
+在 spring-boot-autoconfigure 的 META-INF/spring.factories 中, 编写了非常多的开源软件的自动配置类. 而如果我们自己编写自动配置类. 有以下几种方式：
+
+方式一
+autoconfig在本项目的 @SpringBootApplication 目录下，不需要其他配置, 可以直接通过 @AutoWired 注入 HttpClient，如：
+···
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class HouseApplicationTests {
+@Autowired
+private HttpClient httpClient;
+
+@Test
+public void contextLoads() throws IOException {
+	String toString = httpClient.execute(new HttpGet(&amp;quot;http://www.imyzt.top&amp;quot;)).getEntity().toString();
+	System.out.println(toString);
+}
+
+}
+···
+方式二
+autoconfig不在本项目的 @SpringBootApplication 目录下，可以有两种方式自动配置：
+
+在本项目的resources下编写 META-INF/spring.factories 文件.
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+top1.imyzt.autoconfig.HttpClientAutoConfiguration
+
+
+[推荐] 编写 @EnableHttpClient
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(HttpClientAutoConfiguration.class)
+public @interface EnableHttpClient {
+}
+
+在启动类上加上注解, 即可开启HttpClient配置.
+总结
+教程是在学习慕课网上的 Java从单体到微服务打造房产销售平台 时学习到的, 在此博客做一个总结, 以便后面复习.
+上述代码在我的 Github 上可以找到.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/springboot2-bian-xie-zi-ding-yi-autoconfig/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/about/">
+                        关于
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-25</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+欢迎来到我的小站呀，很高兴遇见你！🤝
+
+🏠 关于本站
+该站是我通过Gridea搭建的小站。感谢Gridea
+👨‍💻 博主是谁
+我叫杨镇涛，是一名Java程序员。
+现阶段本职工作是Java服务端开发, 平时会花一些时间做 Kubernetes 方面的学习研究。
+⛹ 兴趣爱好
+爬山，徒步
+📬 联系我呀
+github.com/imyzt
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/about/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-8-guide-e4/">
+                        Java 8 Guide E4
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-21</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-success">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+Map
+putIfAbsent
+代码展示
+Map&amp;lt;String, Object&amp;gt; hashMap = new LinkedHashMap&amp;lt;&amp;gt;();
+
+hashMap.put(&amp;quot;val_1&amp;quot;, 1);
+hashMap.put(&amp;quot;val_2&amp;quot;, 2L);
+hashMap.put(&amp;quot;val_3&amp;quot;, null);
+
+
+System.out.println(hashMap);
+
+Object val_1 = hashMap.putIfAbsent(&amp;quot;val_1&amp;quot;, 111);
+System.out.println(val_1);
+Object val_3 = hashMap.putIfAbsent(&amp;quot;val_3&amp;quot;, 3);
+System.out.println(val_3);
+Object val_4 = hashMap.putIfAbsent(&amp;quot;val_4&amp;quot;, 4);
+System.out.println(val_4);
+
+System.out.println(hashMap);
+
+输出: 
+{val_1=1, val_2=2, val_3=null}
+1
+null
+null
+{val_1=1, val_2=2, val_3=3, val_4=4}
+
+对比
+
+在之前如果我们存储一个key时, 需要判断是否存在, 不存在时添加. 我们需要先判断再添加. 在jdk1.8之后, 我们只需要 putIfAbsent(k,v) 方法就可以完成.
+
+if (!hashMap.containsKey(&amp;quot;val_3&amp;quot;)) {
+    hashMap.put(&amp;quot;val_3&amp;quot;, &amp;quot;val_3&amp;quot;);
+}
+
+方法详解
+
+hashMap.putIfAbsent(&amp;quot;val_1&amp;quot;, 111);, 存在key时, 如果 value != null, 不替换, 返回原本存储的 value
+hashMap.putIfAbsent(&amp;quot;val_3&amp;quot;, 3);, 存在key时, 如果 value == null, 替换value, 返回 null
+hashMap.putIfAbsent(&amp;quot;val_4&amp;quot;, 4);, 不存在key时, 直接put进去.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-8-guide-e4/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-8-guide-e3/">
+                        Java 8 Guide E3
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-18</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_3">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+Stream 介绍
+Stream (流) 操作算是对集合的大大增强, 很多之前很复杂需要很多代码量的逻辑在此终结.
+
+一个Collection(集合)可以通过调用 stream() 和 parallelStream() 两个方法获得 stream
+
+
+stream()方法返回一个 顺序流, 所有的操作必须等待上一步的完成.
+parallelStream()方法返回一个 并行流, 操作会更高效, 考虑业务使用不同的流.
+
+
+流的操作分为 中间操作 和 终止操作
+
+
+中间操作: 对流的处理还在进行中, 不会中指当前流. 可以返回一个流进行其他操作. 就像StringBuffer的append()一样
+终止操作: 对流的处理将会终结, 当前流将不能继续使用.
+
+中间操作
+Filter
+Stream&amp;lt;T&amp;gt; filter(Predicate&amp;lt;? super T&amp;gt; predicate);
+
+Filter接收一个 Predicate&amp;lt;? super T&amp;gt; 接口的参数进行过滤操作
+Sorted
+Stream&amp;lt;T&amp;gt; sorted(Comparator&amp;lt;? super T&amp;gt; comparator);  
+Stream&amp;lt;T&amp;gt; sorted();
+
+sorted()方法自然排序. 即调用对象本身的compareTo()方法排序.
+sorted(Comparator&amp;lt;? super T&amp;gt; comparator);  接受一个 Comparator对象进行排序
+Map
+&amp;lt;R&amp;gt; Stream&amp;lt;R&amp;gt; map(Function&amp;lt;? super T, ? extends R&amp;gt; mapper);
+IntStream mapToInt(ToIntFunction&amp;lt;? super T&amp;gt; mapper);
+LongStream mapToLong(ToLongFunction&amp;lt;? super T&amp;gt; mapper);
+DoubleStream mapToDouble(ToDoubleFunction&amp;lt;? super T&amp;gt; mapper);
+&amp;lt;U&amp;gt; Stream&amp;lt;U&amp;gt; mapToObj(IntFunction&amp;lt;? extends U&amp;gt; mapper);
+
+map有上述几个方法, 可以转换为指定的类型, 方法参数都是接受一个 xxxFunction 的转换器.  下面有一个演示.
+list.stream()
+        .filter(s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;))
+        .sorted(String::compareTo)
+        .mapToInt(Integer::valueOf)
+        .mapToObj(String::valueOf)
+        .mapToLong(Long::valueOf);
+
+终止操作
+Match
+boolean anyMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+boolean allMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+boolean noneMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+
+Match方法有三个, 都接受一个 Predicate 条件来决定返回true or false
+Count
+long count();
+
+count()计算集合大小, 这个方法很简单.
+Reduce
+有了Map, 那肯定是有Reduce, 不过Reduce是一个终止操作. 它接收一个 xxxOperator 的操作函数.
+&amp;lt;U&amp;gt; U reduce(U identity,
+                 BiFunction&amp;lt;U, ? super T, U&amp;gt; accumulator,
+                 BinaryOperator&amp;lt;U&amp;gt; combiner);
+T reduce(T identity, BinaryOperator&amp;lt;T&amp;gt; accumulator);
+Optional&amp;lt;T&amp;gt; reduce(BinaryOperator&amp;lt;T&amp;gt; accumulator);
+
+下面有一个操作的演示.
+list.stream()
+        .sorted((s1, s2) -&amp;gt; s1.compareTo(s2) &amp;gt; 0 ? -1 : 0)
+        .reduce((i, j) -&amp;gt; i + &amp;quot;#&amp;quot; + j)
+        .ifPresent(System.out::println);
+
+System.out.println(&amp;quot;---------------------------&amp;quot;);
+final String join = &amp;quot;#&amp;quot;;
+String joinReduce = list.stream()
+        .reduce(join, (s1, s2) -&amp;gt; s1 + join + s2);
+System.out.println(joinReduce);
+
+所有操作的代码
+public static void main(String[] args) {
+
+    ArrayList &amp;lt;String&amp;gt; list = new ArrayList &amp;lt;&amp;gt;();
+    list.add(&amp;quot;11&amp;quot;);
+    list.add(&amp;quot;12&amp;quot;);
+    list.add(&amp;quot;13&amp;quot;);
+    list.add(&amp;quot;14&amp;quot;);
+
+    Comparator&amp;lt;String&amp;gt; comparator = String::compareTo;
+    Predicate&amp;lt;String&amp;gt; predicate = s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;);
+    IntUnaryOperator intUnaryOperator = i -&amp;gt; i + 1;
+    ToIntFunction&amp;lt;String&amp;gt; toIntFunction = Integer::valueOf;
+    IntConsumer consumer = System.out::println;
+
+    list.stream()
+            .filter(predicate)
+            .sorted(comparator)
+            .mapToInt(toIntFunction)
+            .map(intUnaryOperator)
+            .forEach(consumer);
+
+
+    boolean anyMatch = list.stream()
+            .filter(s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;))
+            .sorted(String::compareTo)
+            .mapToInt(Integer::valueOf)
+            .mapToObj(String::valueOf)
+            .mapToLong(Long::valueOf)
+            .anyMatch(i -&amp;gt; i &amp;gt; 10);
+    System.out.println(anyMatch);
+
+    long count = list.stream().count();
+    System.out.println(count);
+
+    list.stream()
+            .sorted((s1, s2) -&amp;gt; s1.compareTo(s2) &amp;gt; 0 ? -1 : 0)
+            .reduce((i, j) -&amp;gt; i + &amp;quot;#&amp;quot; + j)
+            .ifPresent(System.out::println);
+
+    System.out.println(&amp;quot;---------------------------&amp;quot;);
+    final String join = &amp;quot;#&amp;quot;;
+    String joinReduce = list.stream()
+            .reduce(join, (s1, s2) -&amp;gt; s1 + join + s2);
+    System.out.println(joinReduce);
+
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-8-guide-e3/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-8-guide-e2/">
+                        Java 8 Guide E2
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+自定义一个函数式接口
+代码展示
+/**
+ * @author imyzt
+ * @date 2019/1/17 18:23
+ * @description 自定义函数式接口
+ */
+public class FunctionInterfaceDemo {
+    public static void main(String[] args) {
+
+        Person&amp;lt;Boolean&amp;gt; person = Objects::nonNull;
+        Boolean aaa = person.say(&amp;quot;aaa&amp;quot;);
+        System.out.println(&amp;quot;传入的信息是否不为空: &amp;quot; + aaa);
+
+        Person&amp;lt;String&amp;gt; person1 = (msg) -&amp;gt; &amp;quot;Hello &amp;quot;+msg;
+        String say = person1.say(&amp;quot;World&amp;quot;);
+        System.out.println(say);
+    }
+}
+
+@FunctionalInterface
+interface Person&amp;lt;T extends Object&amp;gt; {
+    T say(String msg);
+}
+
+讲解
+代 码中定义了一个接口 Person, 接口上使用了 @FunctionalInterface 注解, 接口泛型Object是一个约束, 在这里只是演示. 实际场景中可以写需要被约束的父类.
+使 用的时候, 实例 person 的泛型是 Boolean 布尔类型, 所以在表达式的右边, 也就是具体的实现上我调用了Objects的nonNull方法.  :: 表达式可以直接引用对象的方法.
+实 例 person1 的泛型是 String  字符串类型, 所以在表达式的右边可以定义对 say(String msg)  中msg的操作, 然后调用say()方法时就会执行上述操作.
+结果输出
+传入的信息是否不为空: true
+Hello World
+
+内置函数式接口
+Java8内置了很多函数式接口便于我们使用；
+当然,我们也可以自定义函数式接口通过**@FunctionalInterface**注解声明.
+java.util.function下的接口最多支持到二元运算。有了这些接口，我们就可以省去创建接口的功夫，而直接使用lambda了。
+Nilary 零元，Unary 一元，Binary 二元，Ternary 三元，Quaternary 四元。对于一个算子来说，一个参数，就是一元运算；2个参数就是二元运算。
+Predicate
+
+Predicate是一个布尔类型的函数，该函数只有一个输入参数。
+Predicate接口包含了多种默认方法，用于处理复杂的逻辑动词（and, or，negate）
+摘抄自 http://blog.didispace.com/books/java8-tutorial/ch1.html
+
+Predicate&amp;lt;String&amp;gt; predicate = (a) -&amp;gt; a.startsWith(&amp;quot;a&amp;quot;);
+Predicate&amp;lt;String&amp;gt; predicate2 = Objects::nonNull;
+
+boolean test = predicate.negate().and(predicate2).test(&amp;quot;abc&amp;quot;);
+System.out.println(test);
+
+Consumer
+Consumer 消费target type。参数 T，无返回值（void）。
+Consumer可以理解为一个消费者, 因为他没有返回值, 只接收一个参数, 按照重写的方法执行完成后即完成操作.
+Consumer&amp;lt;String&amp;gt; consumer = System.out::println;
+consumer.accept(&amp;quot;hello world&amp;quot;);
+
+Function
+Function 对target type做转换。参数T，返回R。
+Predicate&amp;lt;String&amp;gt; predicate = s -&amp;gt; null != s &amp;amp;&amp;amp; s.startsWith(v26);
+
+Function&amp;lt;String, String&amp;gt; function = s -&amp;gt; predicate.test(pageInfo) ?
+sdkHttpKit.ipPort().append(s).toString() :
+sdkHttpKit.uri().append(&amp;quot;face/meta/&amp;quot;).append(URLUtil.encode(meta)).toString();
+
+String url = function.apply(pageInfo);
+
+Supplier
+Supplier 供应target，可以理解为target的factory。无参，返回T。
+Supplier 可以理解为工厂类, 通过下面的演示可以看出它能够创建对象.不过我看了别人的博客, 理解为这个方法可以将耗时的操作放进去. 在没有调用get()方法之前, 是不会执行的.可以降低系统运行时间.
+Main.java
+Supplier&amp;lt;People&amp;gt; supplier = People::new;
+// 在需要的时候可以调用get()方法获得一个新的People对象.
+People people = supplier.get();
+people.hello();
+
+输出: hello
+
+People.java
+class People {
+    void hello() {
+        System.out.println(&amp;quot;hello&amp;quot;);
+    }
+}
+
+UnaryOperator
+UnaryOperator 一元运算。继承Function接口。参数T，返回T。
+UnaryOperator 可以理解为对参数T进行处理.
+UnaryOperator&amp;lt;String&amp;gt; unaryOperator = s -&amp;gt; s + &amp;quot;___&amp;quot;;
+System.out.println(unaryOperator.apply(&amp;quot;hello&amp;quot;));
+
+输出: hello___
+
+BinaryOperator
+BinaryOperator 二元运算。参数 T,返回R。
+BinaryOperator为UnaryOperator的二元运算, 它接收两个T参数, 返回的也是T参数, 可以理解对两个参数的条件操作
+BiPredicate&amp;lt;String, String&amp;gt; biPredicate =
+    (s1, s2) -&amp;gt; s1.startsWith(&amp;quot;s1&amp;quot;) &amp;amp;&amp;amp; s2.endsWith(&amp;quot;s2&amp;quot;);
+
+BinaryOperator&amp;lt;String&amp;gt; binaryOperator =
+    // 当条件满足时, 执行三目运算的第一个操作. 否则第二个操作执行.
+    (s1, s2) -&amp;gt; biPredicate.test(s1, s2) ?
+    s2 + &amp;quot;_&amp;quot; + s1 : s1 + &amp;quot;_&amp;quot; + s2;
+        
+System.out.println(binaryOperator.apply(&amp;quot;s1&amp;quot; , &amp;quot;s2&amp;quot;));
+
+输出: s2_s1
+
+Comparator
+这个可以用来做比较. 在上一篇已经有使用过了. 此处添加一点演示代码
+Supplier&amp;lt;People&amp;gt; supplier = People::new;
+
+People people1 = supplier.get();
+people1.setPeopleId(10);
+People people2 = supplier.get();
+people2.setPeopleId(100);
+
+Comparator&amp;lt;People&amp;gt; comparator1 = Comparator.comparing(People::getPeopleId);
+System.out.println(comparator1.compare(people2, people1));
+
+Comparator&amp;lt;People&amp;gt; comparator2 = (p1, p2) -&amp;gt; p1.getPeopleId() &amp;gt; p2.getPeopleId() ? 1 : 0;
+System.out.println(comparator2.compare(people1, people2));
+
+第一个输出: 1  
+第二个输出: 0
+
+Binary
+Consumer、Function、Predicate分别还对应了Bi的函数式接口。
+它们的操作与对应的一元运算也是大同小异, 只是参数多了一个. 就不细讲了
+对应的也就是二元运算函数。分别是
+
+BiConsumer&amp;lt;T, U&amp;gt;  接收T对象和U对象，不返回值
+BiPredicate&amp;lt;T, U&amp;gt; 接收T对象和U对象，返回boolean
+BiFunction&amp;lt;T, U, R&amp;gt; 接收T对象和U对象，返回R对象
+
+总结
+接口一大堆, 我所理解的
+
+
+Consumer, BiConsumer: 消费
+
+
+Predicate, BiPredicate: 条件判断
+
+
+Function, BiFunction, UnaryOperator, BinaryOperator: 参数处理
+
+
+Supplier: 工厂
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-8-guide-e2/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-8-guide-e1/">
+                        Java 8 Guide E1
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                        <a href="https://imyzt.github.io/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            文章系学习Java8新特性
+教程地址: Java8简明教程
+在接口中定义默认方法
+
+通过static修饰, 该方法不可被重写.
+通过default修饰, 该方法不仅仅默认实现, 还可以被实现类重写
+
+示例代码
+/**
+ * Created by imyzt on 2019/1/17 10:59
+ * 可以在接口中定义默认方法
+ */
+public interface Formula {
+
+    double calculate(int a);
+
+    default double sqrt(int a) {
+        return Math.sqrt(a);
+    }
+
+    static int abs (int b) {
+        return Math.abs(b);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Formula formula = new Formula() {
+            @Override
+            public double calculate(int a) {
+                return sqrt(a * 1000);
+            }
+        };
+
+        double calculate = formula.calculate(1);
+        System.out.println(calculate);              //31.622776601683793
+
+        double sqrt = formula.sqrt(1000);
+        System.out.println(sqrt);                   //31.622776601683793
+
+        int abs = Formula.abs(1000);
+        System.out.println(abs);                    //1000
+    }
+}
+
+Lambda表达式
+Lambda表达式是java8最大的更新了, 使得一些操作十分简单明了.
+不使用lambda表达式进行集合排序
+List&amp;lt;String&amp;gt; names = Arrays.asList(&amp;quot;peter&amp;quot;, &amp;quot;anna&amp;quot;, &amp;quot;mike&amp;quot;, &amp;quot;xenia&amp;quot;);
+Collections.sort(names, new Comparator &amp;lt;String&amp;gt;() {
+    @Override
+    public int compare(String a, String b) {
+        return b.compareTo(a);
+    }
+});        
+
+使用Lambda表达式进行集合排序
+ Collections.sort(names, (String a, String b) -&amp;gt; {
+     return b.compareTo(a);
+});
+
+
+不过，还可以省去返回值的表述
+
+Collections.sort(names, (String a, String b) -&amp;gt; b.compareTo(a));
+
+
+Lambda可以自动识别类型, 因此我们可以删除掉类型声明
+
+Collections.sort(names, (a, b) -&amp;gt; b.compareTo(a));
+
+
+当然, 也可以将具体动作简化
+
+Collections.sort(names, Comparator.reverseOrder());
+
+
+最后, java8的jdk集合中实现了sort方法, 因此我们可以用最后这句话来实现集合的排序
+
+names.sort(Comparator.reverseOrder());
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-8-guide-e1/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/13/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.github.io/page/15/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

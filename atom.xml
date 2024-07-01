@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://imyzt.github.io</id>
+    <title>杨镇涛的一亩三分地</title>
+    <updated>2024-07-01T14:11:53.177Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://imyzt.github.io"/>
+    <link rel="self" href="https://imyzt.github.io/atom.xml"/>
+    <subtitle>分享我的技术和生活</subtitle>
+    <logo>https://imyzt.github.io/images/avatar.png</logo>
+    <icon>https://imyzt.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程]]></title>
+        <id>https://imyzt.github.io/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/</id>
+        <link href="https://imyzt.github.io/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">
+        </link>
+        <updated>2024-06-30T09:00:27.000Z</updated>
+        <content type="html"><![CDATA[<p>官方文档： <a href="https://docs.spring.io/spring-data/neo4j/docs/current-SNAPSHOT/reference/html/">Spring Data Neo4j</a></p>
+<p>基于官方文档，基本就能完成基本的接入，Neo4j的版本很乱，如果使用SpringBoot2.+的话，一定要注意Neo4j Server的版本与Driver的匹配关系，否则很容易踩坑。 由于我不是生产使用，直接用官方最新反倒是没遇到此类问题，但网上对于这个问题遇到的很多。</p>
+<h1 id="简单接入">简单接入</h1>
+<p>写了几个单测，看了下流程，得益于SpringBoot-Data的封装，和操作MongoDB、MySQL等关系型数据库基本无异，使用过程很丝滑。</p>
+<pre><code class="language-java">@Test
+    public void readAll() {
+        List&lt;Person&gt; personList = personRepository.findAll();
+        Assert.isTrue(!personList.isEmpty(), &quot;isEmpty&quot;);
+    }
+
+    @Test
+    public void delById() {
+        personRepository.findById(71L).ifPresent(person -&gt; {
+            System.out.println(&quot;before delete: &quot; + person.getName());
+        });
+        personRepository.deleteById(71L);
+        Person person = personRepository.findById(71L).orElse(null);
+        System.out.println(&quot;after delete: &quot; + person);
+    }
+
+    @Test
+    public void save() {
+        Person person = new Person();
+        person.setName(&quot;人参果树&quot;);
+        personRepository.save(person);
+    }
+</code></pre>
+<ol>
+<li>findAll<br>
+<img src="https://imyzt.github.io/post-images/1719738560721.png" alt="" loading="lazy"></li>
+<li>delById<br>
+删除前：<br>
+<img src="https://imyzt.github.io/post-images/1719738566977.png" alt="" loading="lazy"><br>
+删除后：<br>
+<img src="https://imyzt.github.io/post-images/1719738573248.png" alt="" loading="lazy"></li>
+<li>saveOne<br>
+<img src="https://imyzt.github.io/post-images/1719738577960.png" alt="" loading="lazy"></li>
+</ol>
+<h1 id="关系的创建">关系的创建</h1>
+<p>对于节点的基本查询，由于其结构类似于结构性，和结构性数据库查询无异，但是对于N4o4j特殊的关系结构，就有一些不一样了。</p>
+<pre><code class="language-java">
+@Repository
+public interface PersonRepository extends Neo4jRepository&lt;Person, Long&gt; {
+
+    Person findByName(String name);
+
+    /**
+     * 创建人物关系
+     * @param from 源
+     * @param relation 关系
+     * @param to 目标
+     */
+    @Query(&quot;match (n:person {name: $from}),(m:person {name: $to}) &quot; +
+            &quot;create (n)-[:西游人物关系{relation:$relation}]-&gt;(m)&quot;)
+    void createRelation(String from, String relation, String to);
+}
+
+
+@SpringBootTest
+public class PersonRelationShipRepositoryTest {
+    @Resource
+    private PersonRepository personRepository;
+    @Test
+    public void addRelation() {
+        Person personYangjian = personRepository.findByName(&quot;杨戬&quot;);
+        Person person2 = new Person();
+        person2.setName(&quot;玉鼎真人&quot;);
+        PersonRelationShip relationShip = new PersonRelationShip();
+        relationShip.setChild(person2);
+        relationShip.setRelation(&quot;师傅&quot;);
+        personYangjian.getPersonRelationShips().add(relationShip);
+        personRepository.save(personYangjian);
+    }
+    @Test
+    public void addRelation2() {
+        personRepository.createRelation(&quot;玉皇大帝&quot;, &quot;妻子&quot;, &quot;王母娘娘&quot;);
+    }
+}
+</code></pre>
+<p>创建关系第一种方式<br>
+<img src="https://imyzt.github.io/post-images/1719748762850.png" alt="" loading="lazy"><br>
+创建关系第二种方式<br>
+<img src="https://imyzt.github.io/post-images/1719748767396.png" alt="" loading="lazy"></p>
+<h1 id="坑">坑</h1>
+<h2 id="坑1">坑1</h2>
+<p>spring-boot-data 3.+的很多注解都改变了，例如：</p>
+<ol>
+<li>在老版本中标注节点使用的是<code>@NodeEntity</code>，新版本被替换为<code>@Node(labels = &quot;person&quot;)</code></li>
+<li>在老版本中，关系的表述是在关系对象中通过<code>@RelationshipEntity</code>、<code>@StartNode</code>、<code>@EndNode</code>来描述，在新版这些都没有了。取而代之的是在源对象中补充属性<code>@Relationship(type = &quot;师傅&quot;, direction = Relationship.Direction.OUTGOING)</code>来描述关系。<br>
+老关系：</li>
+</ol>
+<pre><code class="language-java">@Data
+@RelationshipEntity(type = &quot;xxx&quot;)
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @StartNode
+    private Person parent;
+    @TargetNode
+    private Person child;
+}
+</code></pre>
+<p>新关系：</p>
+<pre><code class="language-java">@Node(labels = &quot;person&quot;)
+@Data
+public class Person {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Property
+    private String name;
+    @Relationship(type = &quot;师傅&quot;, direction = Relationship.Direction.OUTGOING)
+    private List&lt;PersonRelationShip&gt; personRelationShips;
+}
+@Data
+@RelationshipProperties
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @TargetNode
+    private Person child;
+    @Property
+    private String relation;
+}
+</code></pre>
+<h2 id="坑2">坑2</h2>
+<p>spring-boot-data 3.+的<code>@Query</code>中想要获取参数，需要使用 <code>$fieldName</code>，而不是 <code>{0}</code> 的方式，如果自己写的时候一定要注意。比如：</p>
+<pre><code class="language-java">/**
+    * 创建人物关系
+    * @param from 源
+    * @param relation 关系
+    * @param to 目标
+    */
+@Query(&quot;match (n:person {name: $from}),(m:person {name: $to}) &quot; +
+        &quot;create (n)-[:西游人物关系{relation:$relation}]-&gt;(m)&quot;)
+void createRelation(String from, String relation, String to);
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用Cloudflare加速Github Pages]]></title>
+        <id>https://imyzt.github.io/post/shi-yong-cloudflare-jia-su-github-pages/</id>
+        <link href="https://imyzt.github.io/post/shi-yong-cloudflare-jia-su-github-pages/">
+        </link>
+        <updated>2024-06-28T12:50:23.000Z</updated>
+        <content type="html"><![CDATA[<p>之前就有了解过Cloudflare，但是一直没有去实践，最近了解到它提供了免费的CDN可以加速，所以想找个教程按流程试一下，一个是确实Github Pages访问太慢了（虽说Cloudflare在国内也没有节点...但聊胜于无），另一个主要是也可以学习拓展下知识。其实使用起来整个过程还是挺简单的，基本无脑操作。</p>
+<ol>
+<li>注册Cloudflare的账号，填写你的域名，交给它托管（打开官网，点击就送）</li>
+<li>拷贝Cloudflare提供的DNS解析，替换你的域名服务商提供的解析（我使用的aliyun，在域名-管理-DNS解析）处可替换</li>
+<li>等待几分钟，即可失效。</li>
+</ol>
+<p>上面的步骤更像是把大象放进冰箱的步骤，过于简单，主要是网络上针对此流程提供的优秀博客数不胜数，没必要再产生一篇重复的内容，并且文章也主要是用于记录自己接入的过程和遇到的坑。</p>
+<p>我看的博客是： <a href="https://www.jun997.xyz/2022/05/18/62ef741104da.html">使用cdn加速Github Pages的访问速度</a></p>
+<p>跟着这个博客基本就可以把域名完成托管，整个过程主要是遇到一个坑，在配置完成之后，发现本来通过aliyun解析的网站还能打开，托管之后反倒是打不开了，Chrome提示“重定向的次数过多”，这一步主要是因为解析配置的问题，可以登陆Cloudflare，然后再SSL/TLS菜单里调整下面的配置即可：<br>
+原本选中的是“灵活的”，调整为“严谨”即可。<br>
+<img src="https://imyzt.github.io/post-images/1719579571878.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Neo4j常用函数]]></title>
+        <id>https://imyzt.github.io/post/neo4j-chang-yong-han-shu/</id>
+        <link href="https://imyzt.github.io/post/neo4j-chang-yong-han-shu/">
+        </link>
+        <updated>2024-06-26T15:05:34.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="字符串函数">字符串函数</h1>
+<pre><code class="language-cql">match (n:Lianhuachi) where n.name = '去种田的向凹凸' return n.name,substring(n.name, 0,3)
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1719414420545.png" alt="" loading="lazy"></figure>
+<h1 id="aggregation聚合函数">AGGREGATION聚合函数</h1>
+<p>和普通SQL一致的含义</p>
+<pre><code class="language-cql">match (n:Lianhuachi) return count(n),max(n.age),min(n.age),avg(n.age),sum(n.age)
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.github.io/post-images/1719414601279.png" alt="" loading="lazy"></figure>
+<h1 id="关系函数">关系函数</h1>
+<pre><code class="language-cql">match (x)-[n:`莲花池人物关系`]-&gt;(y) return id(n),n
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.github.io/post-images/1719414748513.png" alt="" loading="lazy"></figure>
+<h1 id="备份">备份</h1>
+<p>Neo4j 官方文档： <a href="https://neo4j.com/docs/operations-manual/current/backup-restore/modes/">Backup modes</a></p>
+<pre><code class="language-cql">➜  bin ./neo4j-admin database dump neo4j --to-path=/tmp
+2024-06-26 15:24:15.414+0000 INFO  [o.n.c.d.DumpCommand] Starting dump of database 'neo4j'
+Done: 37 files, 2.993MiB processed.
+2024-06-26 15:24:19.338+0000 INFO  [o.n.c.d.DumpCommand] Dump completed successfully
+
+
+➜  bin ll /tmp/ |grep &quot;neo4j.dump&quot;
+-rw-r--r--  1 imyzt   wheel   305K Jun 26 23:24 neo4j.dump
+
+</code></pre>
+<h1 id="恢复">恢复</h1>
+<p>Neo4j 官方文档： <a href="https://neo4j.com/docs/operations-manual/current/backup-restore/restore-dump/">Restore a database dump</a></p>
+<pre><code>➜  bin ./neo4j-admin database load --from-path=/tmp/ neo4j --overwrite-destination=true
+Done: 37 files, 2.993MiB processed.
+</code></pre>
+<p>可以看到，数据恢复了过来。<br>
+<img src="https://imyzt.github.io/post-images/1719735796053.png" alt="neo4j_restore" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Neo常用命令 二]]></title>
+        <id>https://imyzt.github.io/post/neo-chang-yong-ming-ling-er/</id>
+        <link href="https://imyzt.github.io/post/neo-chang-yong-ming-ling-er/">
+        </link>
+        <updated>2024-06-26T13:57:44.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="unique约束">UNIQUE约束</h1>
+<p>避免重复时使用（姓名、身份证不能重复）</p>
+<h2 id="旧版本">旧版本</h2>
+<pre><code class="language-cql">create constraint on (n:Lianhuachi) assert n.name is unique
+</code></pre>
+<h2 id="新版本">新版本</h2>
+<p>如果再执行上面的语法时报错，说明你使用的是新版本的Neo4j，变更了命令语法。</p>
+<pre><code class="language-cql">create constraint uniq_name for (n:Lianhuachi) require n.name is unique
+</code></pre>
+<p>在加了唯一索引后，可以看到，在添加重复数据时会报错：<br>
+<img src="https://imyzt.github.io/post-images/1719409875933.png" alt="" loading="lazy"></p>
+<h2 id="删除唯一约束">删除唯一约束</h2>
+<pre><code class="language-cql">drop constraint uniq_name 
+</code></pre>
+<p>可以看到，在删除之后再进行添加，是可以添加进去的。</p>
+<pre><code class="language-cql">create (n:Lianhuachi {name: &quot;我是野农&quot;, &quot;field&quot;: &quot;test&quot;}) return n
+match (n:Lianhuachi {name: &quot;我是野农&quot;&quot;}) return n
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1719410056076.png" alt="" loading="lazy"></figure>
+<h1 id="distinct去重">distinct去重</h1>
+<p>和SQL一致，对内容进行去重</p>
+<pre><code class="language-cql">match (n:Lianhuachi) return distinct(n.name)
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring AI]]></title>
+        <id>https://imyzt.github.io/post/spring-ai/</id>
+        <link href="https://imyzt.github.io/post/spring-ai/">
+        </link>
+        <updated>2024-06-19T15:17:18.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>当一开始听说Spring-AI项目时是很懵的，什么？Spring开始训练模型了？不应该啊，Java还能卷模型赛道了吗？...<br>
+打开官网了解了下，才知道原来是缝合怪：</p>
+<blockquote>
+<p>Spring AI is an application framework for AI engineering. Its goal is to apply to the AI domain Spring ecosystem design principles such as portability and modular design and promote using POJOs as the building blocks of an application to the AI domain.</p>
+</blockquote>
+<p>官网地址：<a href="https://spring.io/projects/spring-ai">https://spring.io/projects/spring-ai</a></p>
+<p>换言之就是虽然Java不能卷算法，但是我可以提供一套封装来让你们调用模型提供的API服务，众所周知，我的抽象封装能力还是很强的。你看你们现在这么多厂商提供服务，不得需要一个统一的门面来减少接入成本嘛...</p>
+<p>官网列举了目前国外主流的平台：<br>
+<strong>Chat Models</strong><br>
+OpenAI<br>
+Azure Open AI<br>
+Amazon Bedrock<br>
+Cohere's Command<br>
+AI21 Labs' Jurassic-2<br>
+Meta's LLama 2<br>
+Amazon's Titan<br>
+Google Vertex AI Palm<br>
+Google Gemini<br>
+HuggingFace - access thousands of models, including those from Meta such as Llama2<br>
+Ollama - run AI models on your local machine<br>
+MistralAI</p>
+<p><strong>Text-to-image Models</strong><br>
+OpenAI with DALL-E<br>
+StabilityAI</p>
+<p><strong>Transcription (audio to text) Models</strong><br>
+OpenAI<br>
+... 数不胜数，更何况还有很多国内大厂开源的模型。</p>
+<p>所以Spring提供了一套统一的封装门面，其他的厂商也可以基于门面来实现自己的Client，比如Alibaba就接入了<code>com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient</code>。</p>
+<p>这就引申出了本博客，记录了下我接入Spring-Ai（OpenAI）、Spring-Ai-Alibaba（TongYi）的过程。</p>
+<h1 id="接入spring-ai">接入Spring-Ai</h1>
+<p>Spring-Ai的接入相对简单，因为最新的<code>start.spring.io</code>已经维护了<code>OpenAI</code>的依赖包，在IDEA使用<code>Spring-Initializr</code>即可完成初始化。<br>
+<img src="https://imyzt.github.io/post-images/1718893769472.png" alt="" loading="lazy"></p>
+<p>完成Gradle的初始化之后，得到了一个标准的Spring项目，只需要做一个简单的配置:</p>
+<pre><code class="language-properties">spring.application.name=spring-ai-demo
+# 生成结果多样性参数，值在0~2之间，值越大越随机越小越固定，但就算为0也会有随机性
+spring.ai.openai.chat.temperature=0.7
+spring.ai.chat.client.enabled=true
+# 如果你需要代理的话
+spring.ai.openai.base-url=https://api.xty.app
+# 填写自己的key
+spring.ai.openai.api-key=${OPENAI_API_KEY}
+# 填写你需要使用的模型（也可以使用时代码指定）
+spring.ai.openai.chat.options.model=gpt-3.5-turbo
+</code></pre>
+<p>接下来只需要编写一个Java的控制器，来接收HTTP请求，就可以完成对OpenAI的对话。</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2024/06/19
+ * @description AI 入口
+ */
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+
+    @GetMapping(&quot;/ai/chat&quot;)
+    Map&lt;String, Object&gt; chat(@RequestParam String question) {
+        ChatClient.ChatClientRequest.CallPromptResponseSpec call = chatClient.prompt(new Prompt(question)).call();
+        return Map.of(&quot;question&quot;, question, &quot;answer&quot;, call.chatResponse());
+    }
+}
+</code></pre>
+<p>整体接入还是比较简单的，但是这里踩了一个坑，不知道是我引入的版本比较新还是什么缘故，它的<code>ChatClient</code> Bean 竟然没有自动注册！所以我还手动注册了一个Bean，代码如下：</p>
+<pre><code class="language-java">@Bean
+public ChatClient chatClient(@Autowired OpenAiChatModel openAiChatModel) {
+    return ChatClient.builder(openAiChatModel).build();
+}
+</code></pre>
+<h2 id="代码">代码</h2>
+<p><a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-demo/spring-ai-demo">https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-demo/spring-ai-demo</a></p>
+<h1 id="spring-ai-alibaba">Spring-Ai-Alibaba</h1>
+<p>OpenAI由于API-KEY的费用蛮高，虽然完成了代码的接入，但是最终我还是没有购买它的API...所以又看了国内的厂商，目前主要是Alibaba完成了Spring-Ai的接入，整体接入其实也很简单，建议首先看一遍<a href="https://sca.aliyun.com/docs/2023/user-guide/ai/quick-start/">官网的例子</a>，接下来可以跟着步骤走一下试试。</p>
+<h1 id="创建项目引入依赖">创建项目，引入依赖</h1>
+<p>首先完成一个普通SpringBootWeb项目创建，然后引入Alibaba-Ai的依赖</p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-ai&lt;/artifactId&gt;
+        &lt;exclusions&gt;
+            &lt;exclusion&gt;
+                &lt;artifactId&gt;spring-ai-core&lt;/artifactId&gt;
+                &lt;groupId&gt;org.springframework.ai&lt;/groupId&gt;
+            &lt;/exclusion&gt;
+        &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;io.springboot.ai&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-ai-core&lt;/artifactId&gt;
+        &lt;version&gt;1.0.3&lt;/version&gt;
+    &lt;/dependency&gt;
+
+&lt;/dependencies&gt;
+
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;2023.0.1.0&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+</code></pre>
+<p>上面的内容，我把无关紧要的依赖去除了，只保留了核心部分，其中有一个关键点是<code>exclusions</code>了<code>spring-ai-core</code>，因为Alibaba引入的版本太老了。改为自己重新引入最新的版本，其他的和官方文档无差别。</p>
+<h2 id="配置">配置</h2>
+<pre><code class="language-yml">spring:
+  application:
+    name: spring-ai-alibaba-demo
+  cloud:
+    ai:
+      tongyi:
+        api-key: ${TONGYI_KEY}
+        images:
+         enabled: true
+        chat:
+          enabled: true
+</code></pre>
+<h2 id="编写控制器">编写控制器</h2>
+<pre><code class="language-java">@Slf4j
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+    @Resource
+    private ImageClient imageClient;
+
+    @GetMapping(&quot;/ai/chat&quot;)
+    public String chat(@RequestParam String question) {
+        ChatResponse call = chatClient.call(new Prompt(question));
+        return call.getResult().getOutput().getContent();
+    }
+
+    @GetMapping(&quot;/ai/aigc&quot;)
+    public String aigc(@RequestParam String question) {
+        ImageResponse call = imageClient.call(new ImagePrompt(question));
+        return call.getResult().getOutput().getUrl();
+    }
+}
+</code></pre>
+<p>完成上面的步骤，基本就完成了接入，在<code>postman</code>上面输入地址，就可以进行测试了。因为通义不仅有chat，还可以文生图，所以我完成下演示：</p>
+<h3 id="文生文">文生文</h3>
+<p>（质量不予置评）<br>
+<img src="https://imyzt.github.io/post-images/1718894828906.png" alt="" loading="lazy"></p>
+<h3 id="文生图">文生图</h3>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1718894931102.png" alt="" loading="lazy"></figure>
+<p>Spring-Ai-Alibaba还提供了一些示例，在他们的<a href="https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/ai-example/spring-cloud-ai-example">官方Github</a>上，可以参考。<br>
+官方还提供了一个简单的HTML来进行页面展示，也可以自己跑一下看看，最终效果如下：<br>
+<img src="https://imyzt.github.io/post-images/1718895254096.png" alt="" loading="lazy"></p>
+<h2 id="代码-2">代码</h2>
+<p><a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-alibaba-demo/spring-ai-alibaba-demo">https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-alibaba-demo/spring-ai-alibaba-demo</a></p>
+<h1 id="参考博客">参考博客</h1>
+<ul>
+<li><a href="https://www.cnblogs.com/xiezhr/p/18251683#!comments">阿里也出手了！Spring CloudAlibaba AI问世了 </a></li>
+<li><a href="https://www.cnblogs.com/jingzh/p/18235636">AI框架之Spring AI与Spring Cloud Alibaba AI使用讲解 </a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java New Future CDS]]></title>
+        <id>https://imyzt.github.io/post/java-new-future-cds/</id>
+        <link href="https://imyzt.github.io/post/java-new-future-cds/">
+        </link>
+        <updated>2024-06-01T15:06:04.000Z</updated>
+        <content type="html"><![CDATA[<p>什么是CDS？CDS即 <code>Class-Data Sharing</code>，类数据共享功能，该功能可以减少Java应用程序的启动时间和内存占用。</p>
+<p>类数据共享功能有助于减少多个Java虚拟机之间的启动时间和内存占用，从JDK12开始，默认的CDS归档文件和JDK二进制文件预先打包，我是用的JDK为OpenJDK <code>OpenJDK 64-Bit Server VM Zulu17.42+19-CA (build 17.0.7+7-LTS, mixed mode, sharing)</code>，是支持CDS的。</p>
+<h1 id="使用">使用</h1>
+<h2 id="训练应用程序">训练应用程序</h2>
+<ol>
+<li>首先初始化一个标准的SpringBoot应用，使用 <code>SpringBoot-3.3.0</code> + <code>Java17</code></li>
+</ol>
+<pre><code class="language-shell">├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── top
+│   │   │       └── imyzt
+│   │   │           └── learning
+│   │   │               └── cds
+│   │   │                   └── Java12NewFuturesCdsApplication.java
+</code></pre>
+<pre><code class="language-java">@SpringBootApplication
+public class Java12NewFuturesCdsApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(Java12NewFuturesCdsApplication.class, args);
+    }
+}
+</code></pre>
+<ol start="2">
+<li>将其执行<code>Maven</code>打包成<code>jar</code>文件</li>
+</ol>
+<pre><code>➜  mvn package -DskipTests=true
+</code></pre>
+<ol start="3">
+<li>执行训练命令</li>
+</ol>
+<pre><code class="language-shell">➜  cd target
+➜  target ✗ java -Djarmode=tools -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar extract --destination application  
+➜  cd application
+➜  application ✗ java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+</code></pre>
+<p>训练完成后，<code>application</code>目录下，生成了一系列文件：</p>
+<pre><code class="language-shell">➜  application git:(master) ✗ tree
+.
+├── application.jsa
+├── java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+└── lib
+    ├── jackson-annotations-2.17.1.jar
+    ├── jackson-core-2.17.1.jar
+    ├── jackson-databind-2.17.1.jar
+    ├── jackson-datatype-jdk8-2.17.1.jar
+    ├── jackson-datatype-jsr310-2.17.1.jar
+    ├── jackson-module-parameter-names-2.17.1.jar
+    ├── jakarta.annotation-api-2.1.1.jar
+    ├── jul-to-slf4j-2.0.13.jar
+    ├── log4j-api-2.23.1.jar
+    ├── log4j-to-slf4j-2.23.1.jar
+    ├── logback-classic-1.5.6.jar
+    ├── logback-core-1.5.6.jar
+    ├── micrometer-commons-1.13.0.jar
+    ├── micrometer-observation-1.13.0.jar
+    ├── slf4j-api-2.0.13.jar
+    ├── snakeyaml-2.2.jar
+    ├── spring-aop-6.1.8.jar
+    ├── spring-beans-6.1.8.jar
+    ├── spring-boot-3.3.0.jar
+    ├── spring-boot-autoconfigure-3.3.0.jar
+    ├── spring-boot-jarmode-tools-3.3.0.jar
+    ├── spring-context-6.1.8.jar
+    ├── spring-core-6.1.8.jar
+    ├── spring-expression-6.1.8.jar
+    ├── spring-jcl-6.1.8.jar
+    ├── spring-web-6.1.8.jar
+    ├── spring-webmvc-6.1.8.jar
+    ├── tomcat-embed-core-10.1.24.jar
+    ├── tomcat-embed-el-10.1.24.jar
+    └── tomcat-embed-websocket-10.1.24.jar
+1 directory, 32 files
+</code></pre>
+<ol start="4">
+<li>使用训练的缓存，在启动应用程序时，补充<code>-XX:SharedArchiveFile</code>参数即可。</li>
+</ol>
+<pre><code>➜  application ✗ java -XX:SharedArchiveFile=application.jsa -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+</code></pre>
+<p>启动日志：<br>
+Started Java12NewFuturesCdsApplication in <strong>2.262 seconds</strong> (process running for 2.805)</p>
+<p>对比不使用CDS缓存的启动日志：<br>
+Started Java12NewFuturesCdsApplication in <strong>4.464 seconds</strong> (process running for 5.341)</p>
+<p>可以看出来，尽管只是一个空项目，但是相同配置情况下启动速度都有倍增。</p>
+<h1 id="结语">结语</h1>
+<p>从上面的测试可以看出来，项目的启动速度是有成本的效率增长的，但同时也存在弊端，就是每次应用程序发生变更时，需要冲洗进行jsa文件的训练。</p>
+<p>不管是native-jar还是CDS，都是Java在云原生时代解决应用启动过程慢的探索，在应用的自动扩容领域，还是有不少的应用场景。</p>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/pRzztgb_lnob552QM_3ixA">Spring Boot 3.3.0 新特性| 使用 CDS 优化启动时间</a></li>
+<li><a href="https://www.cnblogs.com/use-D/p/17206585.html">CDS即Class-Data Sharing</a></li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring 异步初始化]]></title>
+        <id>https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/</id>
+        <link href="https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/">
+        </link>
+        <updated>2024-05-22T13:39:45.000Z</updated>
+        <content type="html"><![CDATA[<p>在Spring6.2版本后，支持了异步初始化。<br>
+什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。<br>
+在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。</p>
+<h1 id="模拟初始化bean耗时">模拟初始化Bean耗时</h1>
+<ol>
+<li>ABean</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class TestABean {
+    @SneakyThrows
+    public TestABean() {
+        log.info(&quot;A Bean开始初始化&quot;);
+        TimeUnit.SECONDS.sleep(5);
+        log.info(&quot;A Bean初始化完成&quot;);
+    }
+}
+</code></pre>
+<ol start="2">
+<li>BBean</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class TestBBean {
+    @SneakyThrows
+    public TestBBean() {
+        log.info(&quot;B Bean开始初始化&quot;);
+        TimeUnit.SECONDS.sleep(6);
+        log.info(&quot;B Bean初始化完成&quot;);
+    }
+}
+</code></pre>
+<ol start="3">
+<li>配置类</li>
+</ol>
+<pre><code class="language-java">@Configuration
+public class RegisterConfiguration {
+    @Bean
+    public TestABean testABean() {
+        return new TestABean();
+    }
+    @Bean
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+}
+</code></pre>
+<ol start="4">
+<li>启动类</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+@ComponentScan(&quot;top.imyzt.learning.spring.startup&quot;)
+public class Application {
+    public static void main(String[] args) {
+        StopWatch stopWatch = new StopWatch(&quot;Spring启动&quot;);
+        stopWatch.start();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+}
+</code></pre>
+<ol start="5">
+<li>启动日志</li>
+</ol>
+<pre><code class="language-log">21:39:33.658 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testABean'
+21:39:33.663 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:39:38.667 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:39:38.669 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testBBean'
+21:39:38.670 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:39:44.673 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch 'Spring启动': 11.555947229 seconds
+------------------------------------------
+Seconds       %       Task name
+------------------------------------------
+11.55594723   100%    
+</code></pre>
+<ol start="6">
+<li>小结<br>
+可以看到，在常规情况下，A和B Bean是串行初始化的，整个初始化耗时11.5s。</li>
+</ol>
+<h1 id="异步初始化">异步初始化</h1>
+<p>在Spring6.2版本中，<code>@Bean</code>注解引入了一个新的属性：<code>bootstrap</code>，默认<code>Bean.Bootstrap.DEFAULT</code>时为串行初始化，当指定为<code>Bean.Bootstrap.BACKGROUND</code>时，Spring会尝试异步初始化该Bean，但是需要配置一个名为<code>bootstrapExecutor</code>的线程池，用作异步初始化时所需的线程。<br>
+只需要将配置类稍作修改，就可以将指定的Bean进行异步初始化：</p>
+<pre><code class="language-java">@Configuration
+public class RegisterConfiguration {
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestABean testABean() {
+        return new TestABean();
+    }
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+
+    @Bean()
+    public Executor bootstrapExecutor() {
+        return new ThreadPoolExecutor(2, 10, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&lt;&gt;(1024));
+    }
+}
+</code></pre>
+<p>然后我们再查看启动效果：</p>
+<pre><code class="language-log">21:53:49.023 [pool-1-thread-1] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testABean'
+21:53:49.024 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:53:49.025 [pool-1-thread-2] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testBBean'
+21:53:49.026 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:53:54.029 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:53:55.031 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch 'Spring启动': 6.740055683 seconds
+-----------------------------------------
+Seconds       %       Task name
+-----------------------------------------
+6.740055683   100%    
+</code></pre>
+<p>可以看到启动时间从11.5s降为6.7s，效果十分显著，在部分需要依赖外部或已知需要耗时初始化的Bean，可以通过此方法进行优化。“我可以不用，你不能没有”。</p>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/FVHURjv5QZ3oYW4n8-kpLw">13年过去了，Spring官方竟然真的支持Bean的异步初始化了！</a></li>
+<li><a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-async-startup">博客对应代码</a></li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[非静态内部类持有外部类的引用]]></title>
+        <id>https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/</id>
+        <link href="https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
+        </link>
+        <updated>2024-05-13T13:16:11.000Z</updated>
+        <content type="html"><![CDATA[<p>在分析<code>内存泄漏</code>领域的问题时，时常会提到的就是<strong>非静态内部类持有外部类的引用</strong>导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。</p>
+<p>我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。</p>
+<h1 id="静态内部类持有外部类的引用">静态内部类持有外部类的引用</h1>
+<p>我们写一个非静态内部类对象示例：</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2024/05/13
+ * @description 非静态内部类,匿名持有外部类的引用
+ */
+public class NonStaticInnerClazz {
+    private final String name;
+    public NonStaticInnerClazz(String name) {
+        this.name = name;
+    }
+    public class Inner {
+        public void print() {
+            System.out.println(name);
+        }
+    }
+}
+</code></pre>
+<p>可以看到javac之后的代码中，第九行方法形参将外部类<code>NonStaticInnerClazz</code>传入给了内部类的<code>this.this$0</code>属性进行引用。<br>
+<img src="https://imyzt.github.io/post-images/1715606537329.png" alt="" loading="lazy"></p>
+<h1 id="非静态内部类无法引用外部类的属性">非静态内部类无法引用外部类的属性</h1>
+<p>而非静态内部类则没有这种情况。</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2024/05/13
+ * @description 静态内部类,无法引用外部类的属性
+ */
+public class StaticInnerClazz {
+    private final String name;
+    public StaticInnerClazz(String name) {
+        this.name = name;
+    }
+    public static class Inner2 {
+        public void print2() {
+            // Non-static field 'name' cannot be referenced from a static context
+            // System.out.println(name);
+        }
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1715606551056.png" alt="" loading="lazy"></figure>
+<h1 id="其他非静态内部类引用的情况">其他非静态内部类引用的情况</h1>
+<p>而其他非静态内部类的情况也有类似的问题：<br>
+编写测试类：</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2024/05/13
+ * @description 描述信息
+ */
+public class NonStaticFieldClazz {
+    // 成员变量-匿名内部类的非static实例
+    private Inner3 inner3_1 = new Inner3() {
+        private Integer field_111;
+    };
+    // 成员变量-非静态内部类的非static实例
+    private Inner3 inner3_2 = new Inner3();
+    public void print() {
+        // 局部变量-匿名内部类的非static实例
+        Inner3 inner3_3 = new Inner3() {
+            private Integer field_333;
+        };
+        // 局部变量-非静态内部类的非static实例
+        Inner3 inner3_4 = new Inner3();
+    }
+    public class Inner3 {
+    }
+}
+</code></pre>
+<h2 id="1-成员变量-匿名内部类的非static实例">1. 成员变量-匿名内部类的非static实例</h2>
+<pre><code class="language-java">class NonStaticFieldClazz$1 extends NonStaticFieldClazz.Inner3 {
+    private Integer field_111;
+    NonStaticFieldClazz$1(NonStaticFieldClazz var1) {
+        super(var1);
+        this.this$0 = var1;
+    }
+}
+</code></pre>
+<h2 id="2-局部变量-匿名内部类的非static实例">2. 局部变量-匿名内部类的非static实例</h2>
+<pre><code class="language-java">class NonStaticFieldClazz$2 extends NonStaticFieldClazz.Inner3 {
+    private Integer field_333;
+    NonStaticFieldClazz$2(NonStaticFieldClazz var1) {
+        super(var1);
+        this.this$0 = var1;
+    }
+}
+</code></pre>
+<h2 id="3-局部变量和成员变量的非static内部类的非static实例">3. 局部变量和成员变量的非static内部类的非static实例</h2>
+<pre><code class="language-java">public class NonStaticFieldClazz$Inner3 {
+    public NonStaticFieldClazz$Inner3(NonStaticFieldClazz var1) {
+        this.this$0 = var1;
+    }
+}
+</code></pre>
+<h1 id="参考">参考：</h1>
+<ul>
+<li><a href="https://blog.csdn.net/whurs/article/details/103231427">内存泄漏-内部类持有外部类引用</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Neo4j 常用命令 一]]></title>
+        <id>https://imyzt.github.io/post/neo4j-chang-yong-ming-ling/</id>
+        <link href="https://imyzt.github.io/post/neo4j-chang-yong-ming-ling/">
+        </link>
+        <updated>2024-05-08T15:08:23.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="where">WHERE</h1>
+<p>可以类似于SQL的写法来实现，首先通过<code>match</code>将节点查询出来(n,m)，然后通过<code>WHERE</code>将数据</p>
+<pre><code class="language-cql">match (n:Lianhuachi),(m:Lianhuachi) where n.name = '去种田的向凹凸' and m.name = &quot;向云朵&quot;
+return id(n),n.name,id(m),m.name
+</code></pre>
+<pre><code class="language-cql">match (n:Lianhuachi {name: &quot;去种田的向凹凸&quot;}),(m:Lianhuachi {name: &quot;向云朵&quot;})
+return id(n),n.name,id(m),m.name
+</code></pre>
+<h1 id="delete-删除节点">DELETE-删除节点</h1>
+<ul>
+<li>删除节点（如果节点存在关系时，是无法删除的）</li>
+</ul>
+<pre><code class="language-cql">match (n: Person {name: &quot;xxx&quot;}) delete n
+</code></pre>
+<ul>
+<li>删除关系</li>
+</ul>
+<pre><code class="language-cql">match (n: Person {name: &quot;小红&quot;})-[r]-&gt;(m: Person {name: &quot;小明&quot;}) delete r
+</code></pre>
+<h1 id="remove-删除属性">REMOVE-删除属性</h1>
+<h2 id="首先在student和person标签创建1一个节点">首先，在student和person标签创建1一个节点</h2>
+<pre><code class="language-cql">create (n:student:person {name: &quot;张三&quot;, age: 18}) return n
+</code></pre>
+<h2 id="查询节点">查询节点</h2>
+<p><code>MATCH (n:person) where n.name = &quot;张三&quot; RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1715301497013.png" alt="" loading="lazy"><br>
+<code>MATCH (n:student) RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1715301490854.png" alt="" loading="lazy"></p>
+<h2 id="删除标签中的节点">删除标签中的节点</h2>
+<p><code>MATCH (n:person) where n.name = &quot;张三&quot; remove n</code></p>
+<h2 id="删除标签中节点的属性">删除标签中节点的属性</h2>
+<p>删除前，age=18 <code>MATCH (n:student) where n.name = &quot;张三&quot; return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301732611.png" alt="" loading="lazy"><br>
+删除后，age无了 <code>MATCH (n:student) where n.name = &quot;张三&quot; remove n.age return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301781763.png" alt="" loading="lazy"></p>
+<h2 id="修改标签中节点的属性">修改标签中节点的属性</h2>
+<p>修改后，age回来了 <code>MATCH (n:student) where n.name = &quot;张三&quot; set n.age=18 return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715301862819.png" alt="" loading="lazy"><br>
+给榜首增加一个属性 <code>match (n:Lianhuachi {name: &quot;我是野农&quot;}) set n.title = '虾米榜榜首' return n</code><br>
+<img src="https://imyzt.github.io/post-images/1719409420804.png" alt="" loading="lazy"></p>
+<h1 id="order-by-排序">ORDER BY - 排序</h1>
+<p>补充测试数据<br>
+<code>create (n:student {name: &quot;张三&quot;, age: 18}),(m:student {name: &quot;李四&quot;, age: 22}) return n,m</code></p>
+<h2 id="排序">排序</h2>
+<p><code>match (n:student) return id(n), n.name,n.age order by n.age desc </code></p>
+<table>
+<thead>
+<tr>
+<th>id(n)</th>
+<th>n.name</th>
+<th>n.age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>120</td>
+<td>&quot;李四&quot;</td>
+<td>22</td>
+</tr>
+<tr>
+<td>119</td>
+<td>&quot;张三&quot;</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<h1 id="null-null属性">NULL - NULL属性</h1>
+<p>查询<code>name</code>属性不为空的节点<br>
+<code>match (n:student) where n.name is not null return n.name,n.label</code></p>
+<table>
+<thead>
+<tr>
+<th>n.name</th>
+<th>n.label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;张三&quot;</td>
+<td>null</td>
+</tr>
+<tr>
+<td>&quot;李四&quot;</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<p>查询<code>sex</code>属性为空的节点<br>
+<code>match (n:student) where n.sex is null return n.name,n.label</code></p>
+<table>
+<thead>
+<tr>
+<th>n.name</th>
+<th>n.label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;张三&quot;</td>
+<td>null</td>
+</tr>
+<tr>
+<td>&quot;李四&quot;</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<p>给<strong>张三</strong>设置<code>sex</code>属性，注意<code>where</code>在前，<code>set</code>在后，和<code>MySQL</code>等相反<br>
+<code>match (n:student)  where n.name='张三' set n.sex='男' return n.name,n.sex,n.age</code><br>
+查询结果：<code>match (n:student) return n</code><br>
+<img src="https://imyzt.github.io/post-images/1715526279128.png" alt="" loading="lazy"></p>
+<h1 id="in-查询多个">IN - 查询多个</h1>
+<p>查询<code>name</code>等于张三或李四的人：<br>
+<code>match (n:student) where n.name in [&quot;张三&quot;, &quot;李四&quot;] return n</code></p>
+<h1 id="索引">索引</h1>
+<p><a href="https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/">官方文档</a></p>
+<h2 id="旧版本">旧版本</h2>
+<ul>
+<li>
+<p>创建索引：<br>
+<code>create index on :节点 (属性)</code></p>
+</li>
+<li>
+<p>删除索引：<br>
+<code>drop index on :节点(属性)</code></p>
+</li>
+</ul>
+<h2 id="新版本5或更高版本">新版本(5或更高版本)</h2>
+<ul>
+<li>
+<p>创建索引：<br>
+缺省索引名称：<br>
+<code>CREATE INDEX [index_name（可缺省）] FOR (n:person) ON (n.name)</code><br>
+指定索引名称：<br>
+<code>create index index_test for (n:person) on (n.name)</code><br>
+<code>Added 1 index, completed after 992 ms.</code></p>
+</li>
+<li>
+<p>查询所有索引：<br>
+<code>show indexes</code></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>state</th>
+<th>populationPercent</th>
+<th>type</th>
+<th>entityType</th>
+<th>labelsOrTypes</th>
+<th>properties</th>
+<th>indexProvider</th>
+<th>owningConstraint</th>
+<th>lastRead</th>
+<th>readCount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>&quot;index_343aff4e&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;LOOKUP&quot;</td>
+<td>&quot;NODE&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>&quot;token-lookup-1.0&quot;</td>
+<td>null</td>
+<td>&quot;2024-05-18T13:26:33.878000000Z&quot;</td>
+<td>571</td>
+</tr>
+<tr>
+<td>3</td>
+<td>&quot;index_a302cc54&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;RANGE&quot;</td>
+<td>&quot;NODE&quot;</td>
+<td>[&quot;person&quot;]</td>
+<td>[&quot;name&quot;]</td>
+<td>&quot;range-1.0&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&quot;index_f7700477&quot;</td>
+<td>&quot;ONLINE&quot;</td>
+<td>100</td>
+<td>&quot;LOOKUP&quot;</td>
+<td>&quot;RELATIONSHIP&quot;</td>
+<td>null</td>
+<td>null</td>
+<td>&quot;token-lookup-1.0&quot;</td>
+<td>null</td>
+<td>&quot;2024-05-10T00:48:00.395000000Z&quot;</td>
+<td>67</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>删除索引：<br>
+<code>drop index index_a302cc54</code><br>
+<code>Removed 1 index, completed after 5 ms.</code></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用Neo4j建立莲花池人物关系图（核心人物，简版）]]></title>
+        <id>https://imyzt.github.io/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/</id>
+        <link href="https://imyzt.github.io/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/">
+        </link>
+        <updated>2024-04-22T14:17:43.000Z</updated>
+        <content type="html"><![CDATA[<p>最近关注了沅陵的莲花池，整个村子都是钓鱼佬，人均up主，基本都是沾亲带故的，错综复杂，恰逢正在学习Neo4j，可以借此机会将人物关系通过图谱的方式呈现出来。</p>
+<h1 id="人物标签创建">人物标签创建</h1>
+<p>首先将人物关系建立出来，利用<code>create</code>来创建效率实在太低了 ，所以决定采用数据导入的方式。</p>
+<details>
+<summary>点击查看莲花池人物详情</summary>
+<div>
+  去种田的向凹凸  
+  <div>
+    小白兔的胡萝卜甜（冉甜）
+  </div>
+  <div>
+    向云朵
+  </div>
+  <div>
+    我是野农
+  </div>
+  <div>
+    画燕儿
+  </div>
+  <div>
+    向鹿鸣
+  </div>
+  <div>
+    路人阿丙X
+  </div>
+  <div>
+    大明星（冉蜜）
+  </div>
+  <div>
+    向偶然
+  </div>
+  <div>
+    荷塘星星
+  </div>
+  <div>
+    向尘俊
+  </div>
+  <div>
+    向星言
+  </div>
+  <div>
+    多肉葡萄肉多多
+  </div>
+  <div>
+    白叔
+  </div>
+  <div>
+    播音哥
+  </div>
+  <div>
+    三叔
+  </div>
+  <div>
+    丹宝
+  </div>
+  <div>
+    守山人阿亮
+  </div>
+</div>  
+</details>
+<p>导入数据：</p>
+<pre><code>load csv from &quot;file:///莲花池人物.csv&quot; as line 
+create (:Lianhuachi {name: line[0]})
+</code></pre>
+<p>最终效果图：<br>
+<code>MATCH (n:Lianhuachi) RETURN n LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1713798289894.png" alt="" loading="lazy"></p>
+<h1 id="人物关系标签创建">人物关系标签创建</h1>
+<details>
+<summary>莲花池人物关系（简版）</summary>
+  <div>小白兔的胡萝卜甜（冉甜）,丈夫,去种田的向凹凸</div>
+  <div>去种田的向凹凸,妻子,小白兔的胡萝卜甜（冉甜）</div>
+  <div>小白兔的胡萝卜甜（冉甜）,女儿,向云朵</div>
+  <div>去种田的向凹凸,女儿,向云朵</div>
+  <div>画燕儿,丈夫,我是野农</div>
+  <div>我是野农,妻子,画燕儿</div>
+  <div>画燕儿,儿子,向鹿鸣</div>
+  <div>我是野农,儿子,向鹿鸣</div>
+  <div>大明星（冉蜜）,丈夫,路人阿丙X</div>
+  <div>路人阿丙X,妻子,大明星（冉蜜）</div>
+  <div>大明星（冉蜜）,女儿,向偶然</div>
+  <div>路人阿丙X,女儿,向偶然</div>
+  <div>多肉葡萄肉多多,丈夫,荷塘星星</div>
+  <div>荷塘星星,妻子,多肉葡萄肉多多</div>
+  <div>荷塘星星,儿子,向尘俊</div>
+  <div>多肉葡萄肉多多,儿子,向尘俊</div>
+  <div>荷塘星星,女儿,向星言</div>
+  <div>多肉葡萄肉多多,女儿,向星言</div>
+  <div>向星言,亲哥,向尘俊</div>
+  <div>向尘俊,亲妹,向星言</div>
+  <div>荷塘星星,父亲,三叔</div>
+  <div>三叔,儿子,荷塘星星</div>
+  <div>荷塘星星,表哥,守山人阿亮</div>
+  <div>守山人阿亮,表弟,荷塘星星</div>
+  <div>我是野农,亲弟,路人阿丙X</div>
+  <div>路人阿丙X,亲哥,我是野农</div>
+  <div>我是野农,钓友,去种田的向凹凸</div>
+  <div>去种田的向凹凸,钓友,我是野农</div>
+  <div>去种田的向凹凸,同村,荷塘星星</div>
+  <div>我是野农,钓友,荷塘星星</div>
+  <div>荷塘星星,钓友,我是野农</div>
+  <div>去种田的向凹凸,同村,荷塘星星</div>
+</details>
+<p>导入数据：</p>
+<pre><code>load csv from &quot;file:///莲花池人物关系.csv&quot; as line 
+create (n:LianhuachiRelation {from: line[0], relation: line[1], to: line[2]})
+return n.from, n.relation, n.to
+</code></pre>
+<p>最终效果：<br>
+<code>MATCH (n:LianhuachiRelation) RETURN n.from, n.relation, n.to</code><br>
+<img src="https://imyzt.github.io/post-images/1714056955094.png" alt="" loading="lazy"></p>
+<h1 id="借助人物关系标签创建人物关系">借助人物关系标签，创建人物关系</h1>
+<pre><code>match (f:Lianhuachi),(r:LianhuachiRelation),(t:Lianhuachi) where f.name=r.from and t.name=r.to
+create (f)-[rr:莲花池人物关系 {relation: r.relation}]-&gt;(t)
+return f.name, rr.relation, t.name
+</code></pre>
+<p>最终效果：<br>
+<code>MATCH p=()-[r:</code>莲花池人物关系<code>]-&gt;() RETURN p LIMIT 25</code><br>
+<img src="https://imyzt.github.io/post-images/1714057384358.png" alt="" loading="lazy"></p>
+<h1 id="查询人物关系">查询人物关系</h1>
+<pre><code>match (n:Lianhuachi {name: &quot;向云朵&quot;}),(m:LianhuachiRelation) where m.from='向云朵'
+    return n.name, m.relation, m.to
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.github.io/post-images/1713968908751.png" alt="" loading="lazy"></figure>
+<h1 id="在现有的基础上补充人物关系">在现有的基础上，补充人物关系</h1>
+<pre><code class="language-sql">match (n:Lianhuachi{name:&quot;大明星（冉蜜）&quot;}),(m:Lianhuachi{name:&quot;小白兔的胡萝卜甜（冉甜）&quot;})
+create (n)-[r:`莲花池人物关系`{relation:&quot;亲姐&quot;}]-&gt;(m)
+
+match (n:Lianhuachi{name:&quot;大明星（冉蜜）&quot;}),(m:Lianhuachi{name:&quot;小白兔的胡萝卜甜（冉甜）&quot;})
+create (m)-[r:`莲花池人物关系`{relation:&quot;亲妹&quot;}]-&gt;(n)
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.github.io/post-images/1714204509855.png" alt="" loading="lazy"></figure>
+<h1 id="删除重建人物关系">删除重建人物关系</h1>
+<pre><code class="language-sql">MATCH (n:Lianhuachi {name:&quot;去种田的向凹凸&quot;})-[r:`莲花池人物关系` {relation: &quot;钓友&quot;}]-&gt;(m:Lianhuachi {name:&quot;我是野农&quot;})
+delete r
+MATCH (n:Lianhuachi {name:&quot;我是野农&quot;})-[r:`莲花池人物关系` {relation: &quot;钓友&quot;}]-&gt;(m:Lianhuachi {name:&quot;去种田的向凹凸&quot;})
+delete r
+
+MATCH (n:Lianhuachi {name:&quot;去种田的向凹凸&quot;}),(m:Lianhuachi {name:&quot;我是野农&quot;})
+create (n)-[r2:`莲花池人物关系` {relation: &quot;表哥&quot;}]-&gt;(m)
+create (m)-[r3:`莲花池人物关系` {relation: &quot;表弟&quot;}]-&gt;(n)
+ return r2.relation,r3.relation
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.github.io/post-images/1715004118846.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+</feed>

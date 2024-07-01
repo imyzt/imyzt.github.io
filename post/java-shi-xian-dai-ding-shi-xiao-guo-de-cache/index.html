@@ -1,0 +1,507 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java实现带定时效果的Cache | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java实现带定时效果的Cache
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2018-12-17</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h2 id="原文链接">原文链接</h2>
+<p>CSDN:  <a href="https://blog.csdn.net/qq_35030994/article/details/80871279">https://blog.csdn.net/qq_35030994/article/details/80871279</a></p>
+<h2 id="修改了以下内容">修改了以下内容</h2>
+<ol>
+<li>将定时扫描过期Key的任务使用Spring注解<code>@Scheduled</code>的cron实现</li>
+<li>将Cache改变为支持泛型，调整为单例模式。</li>
+</ol>
+<h2 id="cache源代码">Cache源代码</h2>
+<pre><code>package cn.anytec.cloud.bus.utils;
+
+import cn.anytec.cloud.bus.service.ScheduledService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Cache缓存
+ * @author imyzt
+ */
+public class Cache&lt;K, V&gt; {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(Cache.class);
+
+    /**
+     * 缓存最大个数
+     */
+    private static final Integer CACHE_MAX_NUMBER = Constant.DEFAULT_CACHE_MAX_NUMBER;
+    /**
+     * 当前缓存个数
+     */
+    private static Integer CURRENT_SIZE = 0;
+    /**
+     * 缓存对象
+     */
+    private final Map&lt;K, CacheObj&lt;V&gt;&gt; CACHE_OBJECT_MAP = new ConcurrentHashMap&lt;&gt;();
+    /**
+     * 这个记录了缓存使用的最后一次的记录，最近使用的在最前面
+     */
+    private final List&lt;K&gt; CACHE_USE_LOG_LIST = new LinkedList&lt;&gt;();
+
+    /**
+     * 默认Key
+     */
+    private final String DEFAULT_VALUE = &quot;DEFAULT_VALUE&quot;;
+
+    private Cache() { }
+    private static Cache cache = new Cache();
+
+    public static Cache defaultCache() {
+        return cache;
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue, long cacheTime) {
+        Long ttlTime = null;
+        if (cacheTime &lt;= 0L) {
+            if (cacheTime == -1L) {
+                ttlTime = -1L;
+            } else {
+                return;
+            }
+        }
+        checkSize();
+        saveCacheUseLog(cacheKey);
+        CURRENT_SIZE = CURRENT_SIZE + 1;
+        if (ttlTime == null) {
+            ttlTime = System.currentTimeMillis() + cacheTime;
+        }
+        CacheObj&lt;V&gt; cacheObj = new CacheObj(cacheValue, ttlTime);
+        CACHE_OBJECT_MAP.put(cacheKey, cacheObj);
+        LOGGER.info(&quot;have set key :&quot; + cacheKey);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue) {
+        set(cacheKey, cacheValue, -1L);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, long cacheTime) {
+        set(cacheKey, (V) DEFAULT_VALUE, cacheTime);
+    }
+
+    /**
+     * 获取缓存
+     */
+    public Object get(K cacheKey) {
+        if (checkCache(cacheKey)) {
+            saveCacheUseLog(cacheKey);
+            return CACHE_OBJECT_MAP.get(cacheKey).getCacheValue();
+        }
+        return null;
+    }
+
+    /**
+     * 是否包含某一个Key值
+     * @param cacheKey
+     * @return
+     */
+    public  boolean containsKey(K cacheKey) {
+        return checkCache(cacheKey);
+    }
+
+    /**
+     * 删除所有缓存
+     */
+    public void clear() {
+        LOGGER.info(&quot;have clean all key !&quot;);
+        CACHE_OBJECT_MAP.clear();
+        CURRENT_SIZE = 0;
+    }
+
+    /**
+     * 删除某个缓存
+     */
+    public void del(K cacheKey) {
+        Object cacheValue = CACHE_OBJECT_MAP.remove(cacheKey);
+        if (cacheValue != null) {
+            LOGGER.info(&quot;have delete key :&quot; + cacheKey);
+            CURRENT_SIZE = CURRENT_SIZE - 1;
+        }
+    }
+
+    /**
+     * 判断缓存在不在,过没过期
+     */
+    private boolean checkCache(K cacheKey) {
+        CacheObj cacheObj = CACHE_OBJECT_MAP.get(cacheKey);
+        if (cacheObj == null) {
+            return false;
+        }
+        if (cacheObj.getTtlTime() == -1L) {
+            return true;
+        }
+        if (cacheObj.getTtlTime() &lt; System.currentTimeMillis()) {
+            del(cacheKey);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除最近最久未使用的缓存
+     */
+    private void deleteLRU() {
+        LOGGER.info(&quot;delete Least recently used run!&quot;);
+        K cacheKey = CACHE_USE_LOG_LIST.remove(CACHE_USE_LOG_LIST.size() - 1);
+        del(cacheKey);
+    }
+
+    /**
+     * 删除过期的缓存
+     * 禁止手动调用! 由定时任务定时拉起
+     * @see ScheduledService#deleteTimeOut()
+     */
+    public void deleteTimeOut() {
+        LOGGER.info(&quot;delete time out run!&quot;);
+        List&lt;K&gt; deleteKeyList = new LinkedList&lt;&gt;();
+        for(Map.Entry&lt;K, CacheObj&lt;V&gt;&gt; entry : CACHE_OBJECT_MAP.entrySet()) {
+            if (entry.getValue().getTtlTime() &lt; System.currentTimeMillis() &amp;&amp; entry.getValue().getTtlTime() != -1L) {
+                deleteKeyList.add(entry.getKey());
+            }
+        }
+
+        for (K deleteKey : deleteKeyList) {
+            del(deleteKey);
+        }
+        LOGGER.info(&quot;delete cache count is :&quot; + deleteKeyList.size());
+
+    }
+
+    /**
+     * 检查大小
+     * 当当前大小如果已经达到最大大小
+     * 首先删除过期缓存，如果过期缓存删除过后还是达到最大缓存数目
+     * 删除最久未使用缓存
+     */
+    private  void checkSize() {
+        if (CURRENT_SIZE &gt;= CACHE_MAX_NUMBER) {
+            deleteTimeOut();
+        }
+        if (CURRENT_SIZE &gt;= CACHE_MAX_NUMBER) {
+            deleteLRU();
+        }
+    }
+
+    /**
+     * 保存缓存的使用记录
+     */
+    private synchronized void saveCacheUseLog(K cacheKey) {
+        CACHE_USE_LOG_LIST.remove(cacheKey);
+        CACHE_USE_LOG_LIST.add(0, cacheKey);
+    }
+
+    public  void showUtilsInfo() {
+        System.out.println(&quot;cache max count is :&quot; + CACHE_MAX_NUMBER);
+        System.out.println(&quot;cache current count is :&quot; + CURRENT_SIZE);
+        System.out.println(&quot;cache object map is :&quot; + CACHE_OBJECT_MAP.toString());
+        System.out.println(&quot;cache use log list is :&quot; + CACHE_USE_LOG_LIST.toString());
+
+    }
+
+}
+
+class CacheObj&lt;V&gt; {
+    /**
+     * 缓存对象
+     */
+    private V cacheValue;
+    /**
+     * 缓存过期时间
+     */
+    private Long ttlTime;
+
+    CacheObj(V cacheValue, Long ttlTime) {
+        this.cacheValue = cacheValue;
+        this.ttlTime = ttlTime;
+    }
+
+    Object getCacheValue() {
+        return cacheValue;
+    }
+
+    Long getTtlTime() {
+        return ttlTime;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;CacheObj{&quot; +
+                &quot;cacheValue=&quot; + cacheValue +
+                &quot;, ttlTime=&quot; + ttlTime +
+                '}';
+    }
+}
+
+</code></pre>
+<h2 id="定时任务">定时任务</h2>
+<pre><code>@Component
+public class ScheduledService {
+
+    @Scheduled(cron = &quot;${bus.cache-delete-cycle}&quot;)
+    public void deleteTimeOut() {
+        Cache.defaultCache().deleteTimeOut();
+    }
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/ping-bi-bai-jia-hao/">
+                                <h3 class="post-title">
+                                    屏蔽百家号
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5">原文链接</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E4%BA%86%E4%BB%A5%E4%B8%8B%E5%86%85%E5%AE%B9">修改了以下内容</a></li>
+<li><a href="#cache%E6%BA%90%E4%BB%A3%E7%A0%81">Cache源代码</a></li>
+<li><a href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1">定时任务</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

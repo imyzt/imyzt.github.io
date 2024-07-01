@@ -1,0 +1,1153 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/spring-aop-shi-xian/">
+                        Spring AOP 实现
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            常用AOP代理形式
+AOP常见有静态代理和动态代理
+静态代理代表为AspectJ；
+动态代理有jdk动态代理， cglib动态代理。
+静态代理
+AspectJ是静态代理的增强， 即编译时生成代理类， 也成为编译时增强。性能较好。 不过由于需要特定的编译器进行处理。
+动态代理
+动态代理是每次运行的时候生成代理AOP代理类，不会修改字节码文件。代理对象创建在内存中。
+由于是在运行的时候生成代理，故性能稍差一点。
+JDK动态代理实例
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * @author imyzt
+ * @date 2019/1/17 9:51
+ * @description JDK动态代理演示
+ */
+public class JdkDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        // 创建需要被代理的实例对象
+        JdkDynamicProxyClass jdkDynamicProxyClass = new JdkDynamicProxyClass();
+
+        JdkDynamicProxyInvocationHandler invocationHandler =
+                new JdkDynamicProxyInvocationHandler(jdkDynamicProxyClass);
+
+        // 增强代理类
+        // Proxy.newProxyInstance();
+        JdkDynamicProxyInterface proxyInstance = (JdkDynamicProxyInterface) Proxy.newProxyInstance(
+                jdkDynamicProxyClass.getClass().getClassLoader(),
+                jdkDynamicProxyClass.getClass().getInterfaces(),
+                invocationHandler);
+
+        // 执行被增强的方法
+        proxyInstance.proxyMethod();
+    }
+
+}
+
+interface JdkDynamicProxyInterface {
+    void proxyMethod();
+}
+
+class JdkDynamicProxyClass implements JdkDynamicProxyInterface {
+
+    @Override
+    public void proxyMethod() {
+        System.out.println(&amp;quot;JDK Dynamic Proxy Method is running&amp;quot;);
+    }
+}
+
+class JdkDynamicProxyInvocationHandler implements InvocationHandler {
+
+    private Object target;
+
+    public JdkDynamicProxyInvocationHandler(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&amp;quot;execute before JDK Dynamic Method = &amp;quot; + name);
+        Object invoke = method.invoke(target, args);
+        System.out.println(&amp;quot;execute after JDK Dynamic Method = &amp;quot; + name);
+
+        return invoke;
+    }
+}
+
+运行结果展示
+
+CGLIB 动态代理
+/**
+ * @author imyzt
+ * @date 2019/1/17 10:05
+ * @description CGLIB 动态代理演示
+ */
+public class CglibDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        CglibDynamicProxy cglibDynamicProxy = new CglibDynamicProxy();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(CglibDynamicClass.class);
+        enhancer.setCallback(cglibDynamicProxy);
+
+        CglibDynamicClass cglibDynamicClass = (CglibDynamicClass) enhancer.create();
+
+        String yyy = cglibDynamicClass.proxyMethod(&amp;quot;yyy&amp;quot;);
+
+        System.out.println(yyy);
+
+
+    }
+}
+class CglibDynamicClass {
+    public String proxyMethod(String message){
+        System.out.println(&amp;quot;hello! you say &amp;quot; + message);
+        return message;
+    }
+}
+class CglibDynamicProxy implements MethodInterceptor {
+
+    @Override
+    public Object intercept(Object proxyClass, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&amp;quot;execute before CGLIB Dynamic Method = &amp;quot; + name);
+        Object invoke = **methodProxy.invokeSuper**(proxyClass, args);
+        System.out.println(&amp;quot;execute after CGLIB Dynamic Method = &amp;quot; + name);
+
+        return invoke;
+    }
+}
+
+运行结果展示
+
+Spring AOP
+
+Spring AOP在使用的时候会判断，如果需要代理的类实现了接口， 则会使用JDK代理，如果没有实现接口， 则使用CGLIB代理。
+
+JDK动态代理通过反射来接收被代理的类，并且要求被代理的类必须实现一个接口。JDK动态代理的核心是InvocationHandler接口和Proxy类。
+如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类（通过修改字节码来实现代理）。
+注意，CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为final，那么它是无法使用CGLIB做动态代理的。
+文章中部分内容转载自掘金-年糕妈妈技术团队
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/spring-aop-shi-xian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/powerdesigner-chang-yong-bei-wang/">
+                        PowerDesigner常用备忘
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-04</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            创建一个实体关系
+File -&amp;gt; New Model -&amp;gt; Model types -&amp;gt; Physical Data Model -&amp;gt; Physical Diagram
+修改code 不随着name一起改变
+Tools -&amp;gt; General Options -&amp;gt; Dialog 取消勾选 Name to Code mirroring
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/powerdesigner-chang-yong-bei-wang/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-shi-xian-dai-ding-shi-xiao-guo-de-cache/">
+                        Java实现带定时效果的Cache
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-12-17</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            原文链接
+CSDN:  https://blog.csdn.net/qq_35030994/article/details/80871279
+修改了以下内容
+
+将定时扫描过期Key的任务使用Spring注解@Scheduled的cron实现
+将Cache改变为支持泛型，调整为单例模式。
+
+Cache源代码
+package cn.anytec.cloud.bus.utils;
+
+import cn.anytec.cloud.bus.service.ScheduledService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Cache缓存
+ * @author imyzt
+ */
+public class Cache&amp;lt;K, V&amp;gt; {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(Cache.class);
+
+    /**
+     * 缓存最大个数
+     */
+    private static final Integer CACHE_MAX_NUMBER = Constant.DEFAULT_CACHE_MAX_NUMBER;
+    /**
+     * 当前缓存个数
+     */
+    private static Integer CURRENT_SIZE = 0;
+    /**
+     * 缓存对象
+     */
+    private final Map&amp;lt;K, CacheObj&amp;lt;V&amp;gt;&amp;gt; CACHE_OBJECT_MAP = new ConcurrentHashMap&amp;lt;&amp;gt;();
+    /**
+     * 这个记录了缓存使用的最后一次的记录，最近使用的在最前面
+     */
+    private final List&amp;lt;K&amp;gt; CACHE_USE_LOG_LIST = new LinkedList&amp;lt;&amp;gt;();
+
+    /**
+     * 默认Key
+     */
+    private final String DEFAULT_VALUE = &amp;quot;DEFAULT_VALUE&amp;quot;;
+
+    private Cache() { }
+    private static Cache cache = new Cache();
+
+    public static Cache defaultCache() {
+        return cache;
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue, long cacheTime) {
+        Long ttlTime = null;
+        if (cacheTime &amp;lt;= 0L) {
+            if (cacheTime == -1L) {
+                ttlTime = -1L;
+            } else {
+                return;
+            }
+        }
+        checkSize();
+        saveCacheUseLog(cacheKey);
+        CURRENT_SIZE = CURRENT_SIZE + 1;
+        if (ttlTime == null) {
+            ttlTime = System.currentTimeMillis() + cacheTime;
+        }
+        CacheObj&amp;lt;V&amp;gt; cacheObj = new CacheObj(cacheValue, ttlTime);
+        CACHE_OBJECT_MAP.put(cacheKey, cacheObj);
+        LOGGER.info(&amp;quot;have set key :&amp;quot; + cacheKey);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue) {
+        set(cacheKey, cacheValue, -1L);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, long cacheTime) {
+        set(cacheKey, (V) DEFAULT_VALUE, cacheTime);
+    }
+
+    /**
+     * 获取缓存
+     */
+    public Object get(K cacheKey) {
+        if (checkCache(cacheKey)) {
+            saveCacheUseLog(cacheKey);
+            return CACHE_OBJECT_MAP.get(cacheKey).getCacheValue();
+        }
+        return null;
+    }
+
+    /**
+     * 是否包含某一个Key值
+     * @param cacheKey
+     * @return
+     */
+    public  boolean containsKey(K cacheKey) {
+        return checkCache(cacheKey);
+    }
+
+    /**
+     * 删除所有缓存
+     */
+    public void clear() {
+        LOGGER.info(&amp;quot;have clean all key !&amp;quot;);
+        CACHE_OBJECT_MAP.clear();
+        CURRENT_SIZE = 0;
+    }
+
+    /**
+     * 删除某个缓存
+     */
+    public void del(K cacheKey) {
+        Object cacheValue = CACHE_OBJECT_MAP.remove(cacheKey);
+        if (cacheValue != null) {
+            LOGGER.info(&amp;quot;have delete key :&amp;quot; + cacheKey);
+            CURRENT_SIZE = CURRENT_SIZE - 1;
+        }
+    }
+
+    /**
+     * 判断缓存在不在,过没过期
+     */
+    private boolean checkCache(K cacheKey) {
+        CacheObj cacheObj = CACHE_OBJECT_MAP.get(cacheKey);
+        if (cacheObj == null) {
+            return false;
+        }
+        if (cacheObj.getTtlTime() == -1L) {
+            return true;
+        }
+        if (cacheObj.getTtlTime() &amp;lt; System.currentTimeMillis()) {
+            del(cacheKey);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除最近最久未使用的缓存
+     */
+    private void deleteLRU() {
+        LOGGER.info(&amp;quot;delete Least recently used run!&amp;quot;);
+        K cacheKey = CACHE_USE_LOG_LIST.remove(CACHE_USE_LOG_LIST.size() - 1);
+        del(cacheKey);
+    }
+
+    /**
+     * 删除过期的缓存
+     * 禁止手动调用! 由定时任务定时拉起
+     * @see ScheduledService#deleteTimeOut()
+     */
+    public void deleteTimeOut() {
+        LOGGER.info(&amp;quot;delete time out run!&amp;quot;);
+        List&amp;lt;K&amp;gt; deleteKeyList = new LinkedList&amp;lt;&amp;gt;();
+        for(Map.Entry&amp;lt;K, CacheObj&amp;lt;V&amp;gt;&amp;gt; entry : CACHE_OBJECT_MAP.entrySet()) {
+            if (entry.getValue().getTtlTime() &amp;lt; System.currentTimeMillis() &amp;amp;&amp;amp; entry.getValue().getTtlTime() != -1L) {
+                deleteKeyList.add(entry.getKey());
+            }
+        }
+
+        for (K deleteKey : deleteKeyList) {
+            del(deleteKey);
+        }
+        LOGGER.info(&amp;quot;delete cache count is :&amp;quot; + deleteKeyList.size());
+
+    }
+
+    /**
+     * 检查大小
+     * 当当前大小如果已经达到最大大小
+     * 首先删除过期缓存，如果过期缓存删除过后还是达到最大缓存数目
+     * 删除最久未使用缓存
+     */
+    private  void checkSize() {
+        if (CURRENT_SIZE &amp;gt;= CACHE_MAX_NUMBER) {
+            deleteTimeOut();
+        }
+        if (CURRENT_SIZE &amp;gt;= CACHE_MAX_NUMBER) {
+            deleteLRU();
+        }
+    }
+
+    /**
+     * 保存缓存的使用记录
+     */
+    private synchronized void saveCacheUseLog(K cacheKey) {
+        CACHE_USE_LOG_LIST.remove(cacheKey);
+        CACHE_USE_LOG_LIST.add(0, cacheKey);
+    }
+
+    public  void showUtilsInfo() {
+        System.out.println(&amp;quot;cache max count is :&amp;quot; + CACHE_MAX_NUMBER);
+        System.out.println(&amp;quot;cache current count is :&amp;quot; + CURRENT_SIZE);
+        System.out.println(&amp;quot;cache object map is :&amp;quot; + CACHE_OBJECT_MAP.toString());
+        System.out.println(&amp;quot;cache use log list is :&amp;quot; + CACHE_USE_LOG_LIST.toString());
+
+    }
+
+}
+
+class CacheObj&amp;lt;V&amp;gt; {
+    /**
+     * 缓存对象
+     */
+    private V cacheValue;
+    /**
+     * 缓存过期时间
+     */
+    private Long ttlTime;
+
+    CacheObj(V cacheValue, Long ttlTime) {
+        this.cacheValue = cacheValue;
+        this.ttlTime = ttlTime;
+    }
+
+    Object getCacheValue() {
+        return cacheValue;
+    }
+
+    Long getTtlTime() {
+        return ttlTime;
+    }
+
+    @Override
+    public String toString() {
+        return &amp;quot;CacheObj{&amp;quot; +
+                &amp;quot;cacheValue=&amp;quot; + cacheValue +
+                &amp;quot;, ttlTime=&amp;quot; + ttlTime +
+                &#39;}&#39;;
+    }
+}
+
+
+定时任务
+@Component
+public class ScheduledService {
+
+    @Scheduled(cron = &amp;quot;${bus.cache-delete-cycle}&amp;quot;)
+    public void deleteTimeOut() {
+        Cache.defaultCache().deleteTimeOut();
+    }
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-shi-xian-dai-ding-shi-xiao-guo-de-cache/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/ping-bi-bai-jia-hao/">
+                        屏蔽百家号
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-12-08</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+自从百家号发布后，使用百度搜索内容，前几条全部都是百家号的抄袭文章。使用体验非常不爽。
+寻找解决方法
+前段时间看到有人用油猴写了一个自动展开CSDN【阅读全文】的脚本，大有启发，然后用油猴写了几句非常简单的js脚本，结合百度高级搜索的 -() 命令，解决了这个烦恼许久问题。
+代码如下，导入油猴即可使用（非常简单，主要提供了思路，路过大神勿喷）：
+// ==UserScript==
+// @author        imyzt
+// @namespace     http://imyzt.top/28
+// @version       1.0
+// @name          exclude baijiahao
+// @namespace     http://imyzt.top
+// @description   屏蔽百家号
+// @include       https://www.baidu.com/*
+// ==/UserScript==
+
+// 文本框的值
+var wd = document.getElementById(&#39;kw&#39;).value;
+// 当输入框中有值或者 文本框不包含-(baijiahao)字眼时, 执行变更, 然后刷新页面
+if (wd !== &#39;&#39; &amp;amp;&amp;amp; wd.indexOf(&#39;-(baijiahao)&#39;) == -1) {
+    changeValAndReload(wd)
+}
+
+// 监听在文本框加入内容的事件
+$(&#39;#kw&#39;).on(&#39;change&#39;, function() {
+    var value = document.getElementById(&#39;kw&#39;).value;
+    var rep = value.replace(&amp;quot;-(baijiahao)&amp;quot;,&amp;quot;&amp;quot;);
+    changeValAndReload(rep)
+});
+
+// 修改值
+function changeValAndReload(val) {
+    document.getElementById(&#39;kw&#39;).value = val + &#39; -(baijiahao)&#39;;
+    document.getElementById(&#39;su&#39;).click()
+}
+
+
+授人以渔
+油猴的脚本更多就是JavaScript的操作，如果需要学习，可以 点击这里, 前往学习.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/ping-bi-bai-jia-hao/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
+                        记录从Github迁移到Gitlab(非最优解)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-29</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            起因
+公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。
+思路
+1.在公司代码库建立一个新的代码库
+2. 修改本地代码库的git remote地址
+3. 提交代码到新的gitlab代码库
+操作
+
+因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了git upstream地址。
+
+
+
+先在gitlab上面新建主仓库，使用自己的账号fork主仓库代码。
+
+
+本地修改git remote地址。
+
+
+git remote remove origin # 删除远程仓库别名  
+git remote remove upstream # 删除上游仓库别名  
+git remote add origin git@....... # 添加新的仓库地址  
+git remote add upstream git@...... # 添加新的上游仓库地址  
+
+
+
+拉取上游和远程仓库
+git pull origin master # 拉取远程仓库
+git fetch upstream  # fetch源分支的新版本到本地, 也就是更新upstream主仓库的代码.
+git merge upstream/master  # 合并主仓库更新的内容
+
+
+提交本地未提交代码
+
+
+git add . # 提交所有未提交内容到缓存区  
+git commit -m &#39;xxxx&#39; # 为本次提交撰写评论信息&amp;lt;fort clolr=&#39;red&#39;&amp;gt;! 必须&amp;lt;/fort&amp;gt;  
+git push origin master # 提交代码到远程仓库  
+
+
+在gitlab界面提交PR请求.
+
+遇到的问题
+
+在上述第三步操作时，遇到了问题，错误信息如下：
+
+$ git pull upstream   
+remote: HTTP Basic: Access denied   
+fatal: Authentication failed for &#39;git仓库地址&#39;   
+
+错误原因：访问被拒绝，本地最好配置ssh连接，不要使用http拉取。gitlab都有密码的。
+
+在进行git push时遇到的问题，错误信息如下：
+
+$ git push origin master   
+To git仓库地址 
+ ! [rejected]        master -&amp;gt; master (fetch first)  
+error: failed to push some refs to &#39;git仓库地址&#39;   
+hint: Updates were rejected because the remote contains work that you do   
+hint: not have locally. This is usually caused by another repository pushing   
+hint: to the same ref. You may want to first integrate the remote changes   
+hint: (e.g., &#39;git pull ...&#39;) before pushing again.   
+hint: See the &#39;Note about fast-forwards&#39; in &#39;git push --help&#39; for details.   
+
+错误原因：本地代码相对于远程仓库不是最新的代码，需要使用git pull origin xxx  先拉取最新代码
+
+在进行git pull时又遇到了问题.错误信息如下:
+
+$ git pull origin master  
+From git仓库地址  
+ * branch            master     -&amp;gt; FETCH_HEAD    
+fatal: refusing to merge unrelated histories  
+
+错误原因：因为我们是在gitlab新建了一个仓库，然后将本地本身是github的代码提交过去，git提示我们不能将两个完全不相干的仓库合并。
+解决方法就是加上·--allow-unrelated-histories·参数，参数含义是：强制将两个不相干的仓库合并。
+! 此操作风险较大，必须保证gitlab新仓库没有代码，不然合并过程中可能出现冲突
+总结
+至此，迁移仓库的不完美解决方案就算完成了。
+上述只是git操作中的沧海一粟，只有通过不断的学习，才能进步。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/java-jar-qi-dong-springboot-xian-shang-bao-cuo-filenotfoundexception/">
+                        java -jar 启动Springboot线上报错FileNotFoundException
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-29</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            发现问题
+今天在将项目打包放在线上后，遇到了一个问题，错误堆栈如下：
+java.io.FileNotFoundException: /tmp/tomcat.3411451253170172517.9998/work/Tomcat/localhost/ROOT/upload_95a9f6c4_32ff_4372_a19b_c447216971a3_00000017.tmp (No such file or directory)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.&amp;lt;init&amp;gt;(FileInputStream.java:138)
+	at org.apache.tomcat.util.http.fileupload.disk.DiskFileItem.getInputStream(DiskFileItem.java:194)
+	at org.apache.catalina.core.ApplicationPart.getInputStream(ApplicationPart.java:100)
+	at org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile.getInputStream(StandardMultipartHttpServletRequest.java:250)
+	at cn.anytec.anguan.util.SpringAsyncUtil.analyseDataPersistence(SpringAsyncUtil.java:33)
+	at cn.anytec.anguan.util.SpringAsyncUtil$$FastClassBySpringCGLIB$$9155c306.invoke(&amp;lt;generated&amp;gt;)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:748)
+
+分析问题
+代码逻辑主要是将摄像头传递过来的图片进行保存，在开发机win上面没有问题，并且在Linux线上，第一次报错，第二次不会报错，成功运行。
+寻找解决方案
+问题比较离奇，遂Google寻找解决方案。
+发现已经有大神遇到过此问题，并且给出了完整的解决方案和错误原理分析。
+链接：superlovelei
+解决方案及总结
+虽然大神已经给出了原因，我再次再做一次表述吧。
+在Linux系统中，通过java -jar 运行的项目，会在操作系统的 /tmp/tomcat... 目录下新建一个目录，上传的文件都会先临时存放在此，而由于linux的系统机制，如果超过10天没有操作过此文件目录，会将目录删除，所以如果当前linux主机第一次运行上传相关的程序或者很久（超过10天）没有操作过此临时目录，就会出现报错。
+而通过配置springboot的yml文件，修改server的配置文件，手动指定临时目录（不会被机制删除的路径），此问题就迎刃而解。
+server:
+  tomcat:
+    basedir: /tmp
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/java-jar-qi-dong-springboot-xian-shang-bao-cuo-filenotfoundexception/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mongodb-xue-xi-bi-ji-ru-men/">
+                        MongoDB学习笔记(入门)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-01</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            教程的主要内容
+MongoDB的基础概念，数据库、集合的创建、基础的增删改查、高级查询的聚合管道
+MongoDB是什么？它有什么优势（为什么要用它）？
+MongoDB是什么：
+MongoDB是一款为web应用程序和互联网基础设施设计的数据库管理系统。是NoSQL类型的数据库。同时也是最像关系型数据库的非关系型数据库。
+为什么要用MongoDB：
+
+
+MongoDB提出的是文档、集合的概念，使用BSON（类JSON）作为其数据模型结构，其结构是面向对象的而不是二维表，存储一个用户在MongoDB中是这样子的。
+{
+username: &#39;imyzt&#39;,
+password: &#39;123&#39;
+}
+
+
+使用这样的数据模型，使得MongoDB能在生产环境中提供高读写的能力，吞吐量较于mysql等SQL数据库大大增强。
+
+
+易伸缩，自动故障转移。易伸缩指的是提供了分片能力，能对数据集进行分片，数据的存储压力分摊给多台服务器。自动故障转移是副本集的概念，MongoDB能检测主节点是否存活，当失活时能自动提升从节点为主节点，达到故障转移。
+
+
+数据模型因为是面向对象的，所以可以表示丰富的、有层级的数据结构，比如博客系统中能把“评论”直接嵌入“文章“的文档中，而不必像myqsl一样创建三张表来描述这样的关系。
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mongodb-xue-xi-bi-ji-ru-men/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
+                        MySQL SQL语句执行效率分析
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-10-29</time>
+                    
+                        <a href="https://imyzt.github.io/tag/_LPtQMqgT/" class="post-tag i-tag
+                            i-tag-info">
+            #数据库
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+今天在掘金看到了一篇关于SQL优化的文章(原文在此)，了解到了Explain工具。本文则是对Explain工具的学习和总结。
+SQL语句性能分析工具Explain
+Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。
+执行以下语句：
+EXPLAIN SELECT * FROM t_options WHERE `name` IS NOT NULL GROUP BY `name`   
+
+得到如下结果：
+
+对于返回信息，主要关注点在如下几个字段：
+
+
+Type
+ALL是全表扫描，效率低；其它的index、range、const、ref、system则是比较好的。
+
+
+Possible_keys
+可能被用到的索引
+
+
+Key
+查询过程中用到的索引，当为null时，表示没有使用索引，通常是不好的。
+
+
+ken_len
+索引字段最大可能使用的长度，也叫索引基数。索引基数越大，表示可能查询的行数越多，查询效率越低。
+
+
+Rows
+MySQL估计的需要扫描的行数，只是估计，越多表示查询的行数越大，自然越慢。
+
+
+Extra
+显示上述信息之外的其它信息，非常重要。其主要有一下返回结果。
+Usingindex
+表明此查询使用了覆盖索引(CoveringIndex)，即通过索引就能返回结果，无需访问表。（覆盖索引是一种非常优秀的索引，其使用见http://blog.csdn.net/hzy38324/article/details/44857721）
+
+
+
+若没显示&amp;quot;Usingindex&amp;quot;表示读取了表数据。
+Usingindex condition
+    可能会使用索引    
+
+Usingwhere    
+
+    表示 MySQL 服务器先读取整行数据，再检查此行是否符合 where 句的条件，符合就留下，不符合便丢弃。效率较慢。
+Usingfilesort    
+
+    表示Mysql会按查询所需的顺序对结果进行排序，这时就会出现 Usingfilesort 。排序自然会增加查询时间，导致效率变慢。解决方法是利用索引进行排序。若查询所需的排序与使用的索引的排序一致，因为索引是已排序的，因此按索引的顺序读取结果返回，此时就不会出现Using filesort。
+
+关于“Using index” 和 “Using index condition”的区别，笔者参考了一下stackoverflow上的一篇文章
+简单的说
+Using index就是一定使用索引，这种索引成为覆盖索引，Using index condition则是在必要的时候才使用索引
+怎样才能让Usingindex condition变成Using index，答案自然是创建一个覆盖索引，同样，笔者将会在之后章节介绍覆盖索引如何创建。
+参考链接： CSDN
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/deng-shan-zu-dui/">
+                        登山组队
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-10-29</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            七娘山介绍
+七娘山位于龙岗区南澳镇新大村，是大鹏半岛南岛的主要山峰，是深圳市内山脉中仅次于梧桐山的第二高峰。它有七个山峰，主峰海拔高度867米。传说有七个仙女下凡到山上游玩而得名。在抗日战争时期东江纵队曾在山北鸡公秃村办兵工厂，并在山下种过粮食。
+活动时间
+2018年11月24日 - 2018年11月25日
+
+行程不是固定的，大家讨论后决定时间。此时间只做参考。
+
+山车地点
+深圳市地铁三号线爱联地铁站
+出行方式
+打车前往
+预计费用
+150/人，不包含烧烤等餐饮。
+天气预报
+深圳天气：http://www.weather.com.cn/html/weather/101280601.shtml
+行程及路线安排
+路线一
+
+第一天中午市内爱联站集合，打车前往到杨梅坑（预计1小时13分钟，见附图四），然后在杨梅坑腐败一天，杨梅坑5KM处鹿嘴山庄是《美人鱼》拍摄取景地，杨梅坑附近还有著名的露天烧烤。
+第二天早上出发按照轨迹一（见附图五）开始登山。下午三点左右就能到大鹏半岛地质公园。然后选择公交或打车回到市内。
+
+
+选择大鹏半岛地质公园为下山点，回程较为便利。
+
+路线二
+
+第一天同路线一。
+第二天早上出发按照轨迹二（见附图六）开始登山。预计下午两点左右就能回到深圳东冲海岸。欣赏一下大海景后选择公交或打车回到市内。
+
+
+东冲为深圳最美海岸，可以欣赏海景。但是东冲作为深圳最后一个没有省级公路的村，做为下山点可能回程不是特别便利。
+
+路线三
+
+第一天上午市内爱联站集合，打车前往大鹏半岛地质公园（预计1小时9分钟，见附图五），然后按照轨迹三(见附图八)开始登山，当天晚上能到杨梅坑。然后可以选择
+
+
+继续腐败，然后露营，BBQ。第二天通过打车或公交从杨梅坑返回市内。
+下山后返回市内。
+
+
+此路线轨迹类似于路线一，但是大有不同。此路线走的山脊线，攀登较为容易。大部分地段已铺石台阶。
+
+路线四
+
+第一天同路线一。
+第二天早上出发按照轨迹四（见附图九）开始登山。预计中午能到地质公园。然后选择公交或打车回到市内。
+
+
+路线比较短，耗时少。走的另一座山谷，风景不必路线一差。
+
+线路对比
+
+路线距离：线路一（14.3 公里） &amp;gt; 线路三（12.9 公里） &amp;gt;  线路二（13 公里）  &amp;gt; 路线四(7.6 公里)
+耗时对比：线路一（2天）== 线路二（2天） &amp;gt; 线路四（2天） &amp;gt; 线路三(1天或2天)
+难度级别：线路一 &amp;gt; 线路三 &amp;gt; 线路二 &amp;gt; 路线四
+
+个人装备
+
+普通装备：双肩背包、手机、雨具；
+服装：徒步鞋或者军胶、长袖衣裤、太阳帽、手套、毛巾；
+食品：一餐干粮、3升以上饮用水、功能饮料、榨菜、水果等零食；
+药品：蛇药、马蜂药、创可贴、蚊怕水、个人特殊品 、十滴水、霍香正气水等防暑用品；
+其他：头灯、手电、垃圾袋（自己带走垃圾）、个人证件 、少量现金；
+露营装备：帐篷，睡袋（15度以下），防潮垫。
+务必购买户外运动保险，保险不是万能的，但少了保险是万万不能的！建议买一份保险做一个有责任心的人
+活动自愿，风险自担，雨天顺延
+
+注意事项
+
+本次活动无领队，属约伴同行，共同学习 。
+请报名前做好功课，了解线路的行程线（下撤路线）、难度和强度再决定是否参加。
+活动所有集体行为全部AA。
+
+免责声明
+
+本活动为非盈利性质的自助游活动并有一定的危险性，凡报名参加者均视为具有完全民事行为能力人，参加者须对自己的安全负责；凡报名者均视为已接受放弃损害赔偿 。
+本次活动约伴人与同行驴友均为无偿提供活动的援助、支持者。如在活动中发生人身损害后果，赔偿责任领队不承担，由受损害人依据法律规定和本领队声明依法解决。
+凡报名者均视为接受声明。代他人报名者，被代报名参加者如遭受人身损害，赔偿责任约伴人同样不承担。
+本声明中关于免除领队赔偿责任之约定效力，同样及于同行的副领队.协助.财务。
+启程后，本声明将自动生效并表明你接受本声明，否则，请在启程前退出本次活动。
+任何法律纠纷在出发地所在法院处理。
+
+攻略参考文档
+8264：http://bbs.8264.com/thread-2113100-1-1.html
+附图
+附图三：七娘山地图
+
+附图四：爱联站-杨梅坑
+
+附图五： 轨迹一
+
+附图六： 轨迹二
+
+附图七： 爱联站-地质公园
+
+附图八：轨迹三
+
+附图九：轨迹四
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/deng-shan-zu-dui/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/ni-hao/">
+                        你好
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-10-20</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            这是我的个人博客,正在建设中...
+欢迎你的来访.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/ni-hao/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.github.io/page/14/" class="page-btn btn">上一页</a>
+            
+                
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

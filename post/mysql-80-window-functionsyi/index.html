@@ -1,0 +1,469 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    MySQL 8.0 window functions（一） | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            MySQL 8.0 window functions（一）
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-11-29</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="什么是window-functions">什么是window functions</h1>
+<p>window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。<br>
+通过使用window functions可以同时携带原有结果并且具有聚合后的结果。</p>
+<p>目前，MySQL8.0已经支持开窗函数了。喜大普奔</p>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/window-functions.html">MySQL8.0 - Window Functions</a></p>
+<h1 id="知识点复习">知识点复习</h1>
+<h2 id="group-by是分组函数">group by是分组函数</h2>
+<p>group by则只保留参与分组的字段和聚合函数的结果</p>
+<h2 id="sum等聚合函数">sum()等聚合函数</h2>
+<p>avg()、sum()、min()、max()</p>
+<p>求平均、求和、求最大最小等</p>
+<h2 id="partition-by是分析函数">partition by是分析函数</h2>
+<p>partition by相比较于group by，能够在保留全部数据的基础上，只对其中某些字段做分组排序</p>
+<h1 id="样例数据准备">样例数据准备</h1>
+<p>通过创建一个测试数据表，里面包含员工编号、员工姓名、部门和薪资数据。</p>
+<pre><code>
+CREATE TABLE `t_window_func` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL,
+  `dept` varchar(32) DEFAULT NULL,
+  `salary` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (1, '员工1', '部门1', 10000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (2, '员工2', '部门1', 11000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (3, '员工3', '部门1', 12000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (4, '员工4', '部门2', 13000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (5, '员工5', '部门2', 14000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (6, '员工6', '部门2', 15000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (7, '员工7', '部门3', 16000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (8, '员工8', '部门3', 17000);
+INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (9, '员工9', '部门3', 18000);
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/11/q6mkoi9kbogdkqo18m8148qoc8.png" alt="表数据" loading="lazy"></figure>
+<h1 id="开窗函数与排名函数结合">开窗函数与排名函数结合</h1>
+<p>窗口函数只要有以下几个：<br>
+row_number()，rank()，dense_rank()，NTILE()，PERCENT_RANK()</p>
+<p>下面将每种介绍一个场景进行测试</p>
+<h2 id="row_number">row_number()</h2>
+<p>显示结果集的行号，<strong>当遇到相同数据时，会直接顺序编号</strong>。</p>
+<h3 id="分别统计每个部门薪资排名">分别统计每个部门薪资排名</h3>
+<p>通过对每个部门分区，对结果集进行汇总，展示在<code>salaryRank</code>这一列，在没有开窗函数之前，实现此功能可是不简单。</p>
+<pre><code>select
+name, dept, salary, 
+       row_number() over (partition by dept order by salary desc ) salaryRank
+from t_window_func
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/11/7f8tgcu962hgrp53fjkec0aoa8.png" alt="结果集" loading="lazy"></figure>
+<h3 id="统计每个部门薪资排名最高的前两个人">统计每个部门薪资排名最高的前两个人</h3>
+<pre><code>select *
+from (select name,
+             dept,
+             salary,
+             row_number() over (partition by dept order by salary desc ) salaryRank
+      from t_window_func
+     ) tmp
+where salaryRank &lt;= 2
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/11/0hoie1p7isj9uophfhtsrhjrtb.png" alt="结果集" loading="lazy"></figure>
+<h2 id="rank-dense_rank">rank()、dense_rank()</h2>
+<h3 id="区别">区别</h3>
+<p>rank()用于对结果记录生成序号，dense_rank()和rank()功能相同，当遇到排序字段数据相同时，两者的处理方式不同。</p>
+<ul>
+<li>rank(): 跳跃排序，当第1、2行结果相同时，第1、2行排序为1，<strong>第3行排序为3</strong></li>
+<li>dense_rank(): 不跳跃排序，当第1、2行结果相同时，第1、2行排序为1，<strong>第3行排序为2</strong></li>
+</ul>
+<h3 id="数据准备">数据准备</h3>
+<p>首先往表中插入一条数据，使<code>部门3</code>有两个薪资一样的员工。</p>
+<pre><code>INSERT INTO test_db.t_window_func (id, name, dept, salary) VALUES (10, '员工10', '部门3', 17000);
+</code></pre>
+<h3 id="统计每个部门的排名">统计每个部门的排名</h3>
+<pre><code>select name,
+       dept,
+       rank() over (partition by dept order by salary desc )       salaryRank,
+       dense_rank() over (partition by dept order by salary desc ) salaryDenseRank
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/11/o0fr73l0esjoho8q6jpev0qosf.png" alt="结果集" loading="lazy"></figure>
+<h2 id="ntile">ntile()</h2>
+<p>函数ntile(group_num)主要用于数据分组，将所有记录分成group_num个组，每组序号一样。<br>
+当数据不足以整除时，会把不够除的余数分给第一组。</p>
+<h3 id="普通ntile分组">普通ntile()分组</h3>
+<pre><code>select
+name, dept, ntile(3) over (order by salary desc)
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/11/tu8da9840ej8qoqf6m8gm3i0go.png" alt="结果集" loading="lazy"></figure>
+<h3 id="结合partition-by分区分组">结合partition by分区分组</h3>
+<p>针对部门，进行分区分2组。</p>
+<pre><code>select
+name, dept, ntile(2) over (partition by dept order by salary desc)
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="http://blog.imyzt.top/upload/2020/11/46engtn98cjgdpdrh4ftoflain.png" alt="结果集" loading="lazy"></figure>
+<h2 id="cume_dist">cume_dist()</h2>
+<p>计算某个值在一组有序的数据中累计的分布<br>
+计算方法为：<strong>相对位置/总行数,返回值为(0,1]</strong><br>
+<strong>注意：对于重复值，计算的时候，取重复值的最后一行的位置</strong></p>
+<pre><code>select name,
+       dept,
+       salary,
+       round(cume_dist() over (order by salary ), 2) randSalary
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="http://blog.imyzt.top/upload/2020/11/6tsgjemm7che8pfdhufa10h85r.png" alt="结果集" loading="lazy"></figure>
+<h2 id="percent_rank">percent_rank()</h2>
+<p>和cume_dist() 的不同点在于计算分布结果的方法<br>
+计算方法为：<strong>（相对位置-1）/（总行数-1）</strong><br>
+<strong>注意：对于重复值，计算的时候，取重复值的第一行的位</strong></p>
+<pre><code>select name,
+       dept,
+       salary,
+       round(percent_rank() over (order by salary ), 2) randSalary
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="http://blog.imyzt.top/upload/2020/11/4781raij6qhssrncu929g346aq.png" alt="结果集" loading="lazy"></figure>
+<h1 id="同一个window被多次使用">同一个window被多次使用</h1>
+<pre><code>select name,
+             dept,
+             salary,
+            row_number() over w salaryRowNumber,
+            rank() over w salaryRank,
+            dense_rank() over w salaryDenseRank
+      from t_window_func
+window w as (partition by dept order by salary desc )
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="http://blog.imyzt.top/upload/2020/11/3pqcnolh46hfoo7qo83g6gsvnd.png" alt="结果集" loading="lazy"></figure>
+<h1 id="窗口函数和sum等聚合函数结合">窗口函数和sum()等聚合函数结合</h1>
+<p>下面通过sum()函数演示具体的效果，对于avg()等聚合函数效果均相同。</p>
+<h2 id="sum">sum()</h2>
+<h3 id="分部门求和">分部门求和</h3>
+<pre><code>select id,
+       name,
+       dept,
+       sum(salary) over (partition by dept )
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="http://blog.imyzt.top/upload/2020/11/3o6mfujs1uge5qnngt84n16pdb.png" alt="结果集" loading="lazy"></figure>
+<p>和group by结果类似，只是展示形式不同。group by 结果：</p>
+<pre><code>select id,
+       name,
+       dept,
+       sum(salary)
+from t_window_func
+group by dept;
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="http://blog.imyzt.top/upload/2020/11/sucgkgtr1sj82qdc5e2om28vfj.png" alt="结果集" loading="lazy"></figure>
+<h3 id="分部门阶段性累计求和">分部门阶段性累计求和</h3>
+<p><strong>上述窗口函数当over中加入了order by之后，结果集大不相同。(order by DESC|ASC)也影响结果</strong></p>
+<ul>
+<li>over(order by # desc)</li>
+</ul>
+<pre><code>select id,
+       name,
+       dept,
+       sum(salary) over (partition by dept order by salary desc )
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="http://blog.imyzt.top/upload/2020/11/qve5un7bfagjmpqjl1khue6clj.png" alt="order by desc" loading="lazy"></figure>
+<ul>
+<li>over(order by # asc)</li>
+</ul>
+<pre><code>select id,
+       name,
+       dept,
+       sum(salary) over (partition by dept order by salary asc )
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="http://blog.imyzt.top/upload/2020/11/pbr47c6f50gn8q1ougnrmfnsvm.png" alt="order by desc" loading="lazy"></figure>
+<h3 id="求总和">求总和</h3>
+<p>over() 中不包含 partition by 和 order by 时，对所有结果集进行求和。</p>
+<pre><code>select id,
+       name,
+       dept,
+       sum(salary) over ()
+from t_window_func;
+</code></pre>
+<figure data-type="image" tabindex="14"><img src="http://blog.imyzt.top/upload/2020/11/2qplonccncg7lq1tfsk8fcjc81.png" alt="结果集" loading="lazy"></figure>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-san-fen-bu-shi-shi-wu-jie-jue-fang-an/">
+                                <h3 class="post-title">
+                                    分布式事务(三) 分布式事务解决方案
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFwindow-functions">什么是window functions</a></li>
+<li><a href="#%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%8D%E4%B9%A0">知识点复习</a>
+<ul>
+<li><a href="#group-by%E6%98%AF%E5%88%86%E7%BB%84%E5%87%BD%E6%95%B0">group by是分组函数</a></li>
+<li><a href="#sum%E7%AD%89%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">sum()等聚合函数</a></li>
+<li><a href="#partition-by%E6%98%AF%E5%88%86%E6%9E%90%E5%87%BD%E6%95%B0">partition by是分析函数</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%B7%E4%BE%8B%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">样例数据准备</a></li>
+<li><a href="#%E5%BC%80%E7%AA%97%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8E%92%E5%90%8D%E5%87%BD%E6%95%B0%E7%BB%93%E5%90%88">开窗函数与排名函数结合</a>
+<ul>
+<li><a href="#row_number">row_number()</a>
+<ul>
+<li><a href="#%E5%88%86%E5%88%AB%E7%BB%9F%E8%AE%A1%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E8%96%AA%E8%B5%84%E6%8E%92%E5%90%8D">分别统计每个部门薪资排名</a></li>
+<li><a href="#%E7%BB%9F%E8%AE%A1%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E8%96%AA%E8%B5%84%E6%8E%92%E5%90%8D%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D%E4%B8%A4%E4%B8%AA%E4%BA%BA">统计每个部门薪资排名最高的前两个人</a></li>
+</ul>
+</li>
+<li><a href="#rank-dense_rank">rank()、dense_rank()</a>
+<ul>
+<li><a href="#%E5%8C%BA%E5%88%AB">区别</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</a></li>
+<li><a href="#%E7%BB%9F%E8%AE%A1%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E7%9A%84%E6%8E%92%E5%90%8D">统计每个部门的排名</a></li>
+</ul>
+</li>
+<li><a href="#ntile">ntile()</a>
+<ul>
+<li><a href="#%E6%99%AE%E9%80%9Antile%E5%88%86%E7%BB%84">普通ntile()分组</a></li>
+<li><a href="#%E7%BB%93%E5%90%88partition-by%E5%88%86%E5%8C%BA%E5%88%86%E7%BB%84">结合partition by分区分组</a></li>
+</ul>
+</li>
+<li><a href="#cume_dist">cume_dist()</a></li>
+<li><a href="#percent_rank">percent_rank()</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8C%E4%B8%80%E4%B8%AAwindow%E8%A2%AB%E5%A4%9A%E6%AC%A1%E4%BD%BF%E7%94%A8">同一个window被多次使用</a></li>
+<li><a href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0%E5%92%8Csum%E7%AD%89%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0%E7%BB%93%E5%90%88">窗口函数和sum()等聚合函数结合</a>
+<ul>
+<li><a href="#sum">sum()</a>
+<ul>
+<li><a href="#%E5%88%86%E9%83%A8%E9%97%A8%E6%B1%82%E5%92%8C">分部门求和</a></li>
+<li><a href="#%E5%88%86%E9%83%A8%E9%97%A8%E9%98%B6%E6%AE%B5%E6%80%A7%E7%B4%AF%E8%AE%A1%E6%B1%82%E5%92%8C">分部门阶段性累计求和</a></li>
+<li><a href="#%E6%B1%82%E6%80%BB%E5%92%8C">求总和</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

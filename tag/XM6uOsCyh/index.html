@@ -1,0 +1,959 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Neo4j | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Neo4j</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">
+                        SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-30</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            官方文档： Spring Data Neo4j
+基于官方文档，基本就能完成基本的接入，Neo4j的版本很乱，如果使用SpringBoot2.+的话，一定要注意Neo4j Server的版本与Driver的匹配关系，否则很容易踩坑。 由于我不是生产使用，直接用官方最新反倒是没遇到此类问题，但网上对于这个问题遇到的很多。
+简单接入
+写了几个单测，看了下流程，得益于SpringBoot-Data的封装，和操作MongoDB、MySQL等关系型数据库基本无异，使用过程很丝滑。
+@Test
+    public void readAll() {
+        List&amp;lt;Person&amp;gt; personList = personRepository.findAll();
+        Assert.isTrue(!personList.isEmpty(), &amp;quot;isEmpty&amp;quot;);
+    }
+
+    @Test
+    public void delById() {
+        personRepository.findById(71L).ifPresent(person -&amp;gt; {
+            System.out.println(&amp;quot;before delete: &amp;quot; + person.getName());
+        });
+        personRepository.deleteById(71L);
+        Person person = personRepository.findById(71L).orElse(null);
+        System.out.println(&amp;quot;after delete: &amp;quot; + person);
+    }
+
+    @Test
+    public void save() {
+        Person person = new Person();
+        person.setName(&amp;quot;人参果树&amp;quot;);
+        personRepository.save(person);
+    }
+
+
+findAll
+
+delById
+删除前：
+
+删除后：
+
+saveOne
+
+
+关系的创建
+对于节点的基本查询，由于其结构类似于结构性，和结构性数据库查询无异，但是对于N4o4j特殊的关系结构，就有一些不一样了。
+
+@Repository
+public interface PersonRepository extends Neo4jRepository&amp;lt;Person, Long&amp;gt; {
+
+    Person findByName(String name);
+
+    /**
+     * 创建人物关系
+     * @param from 源
+     * @param relation 关系
+     * @param to 目标
+     */
+    @Query(&amp;quot;match (n:person {name: $from}),(m:person {name: $to}) &amp;quot; +
+            &amp;quot;create (n)-[:西游人物关系{relation:$relation}]-&amp;gt;(m)&amp;quot;)
+    void createRelation(String from, String relation, String to);
+}
+
+
+@SpringBootTest
+public class PersonRelationShipRepositoryTest {
+    @Resource
+    private PersonRepository personRepository;
+    @Test
+    public void addRelation() {
+        Person personYangjian = personRepository.findByName(&amp;quot;杨戬&amp;quot;);
+        Person person2 = new Person();
+        person2.setName(&amp;quot;玉鼎真人&amp;quot;);
+        PersonRelationShip relationShip = new PersonRelationShip();
+        relationShip.setChild(person2);
+        relationShip.setRelation(&amp;quot;师傅&amp;quot;);
+        personYangjian.getPersonRelationShips().add(relationShip);
+        personRepository.save(personYangjian);
+    }
+    @Test
+    public void addRelation2() {
+        personRepository.createRelation(&amp;quot;玉皇大帝&amp;quot;, &amp;quot;妻子&amp;quot;, &amp;quot;王母娘娘&amp;quot;);
+    }
+}
+
+创建关系第一种方式
+
+创建关系第二种方式
+
+坑
+坑1
+spring-boot-data 3.+的很多注解都改变了，例如：
+
+在老版本中标注节点使用的是@NodeEntity，新版本被替换为@Node(labels = &amp;quot;person&amp;quot;)
+在老版本中，关系的表述是在关系对象中通过@RelationshipEntity、@StartNode、@EndNode来描述，在新版这些都没有了。取而代之的是在源对象中补充属性@Relationship(type = &amp;quot;师傅&amp;quot;, direction = Relationship.Direction.OUTGOING)来描述关系。
+老关系：
+
+@Data
+@RelationshipEntity(type = &amp;quot;xxx&amp;quot;)
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @StartNode
+    private Person parent;
+    @TargetNode
+    private Person child;
+}
+
+新关系：
+@Node(labels = &amp;quot;person&amp;quot;)
+@Data
+public class Person {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Property
+    private String name;
+    @Relationship(type = &amp;quot;师傅&amp;quot;, direction = Relationship.Direction.OUTGOING)
+    private List&amp;lt;PersonRelationShip&amp;gt; personRelationShips;
+}
+@Data
+@RelationshipProperties
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @TargetNode
+    private Person child;
+    @Property
+    private String relation;
+}
+
+坑2
+spring-boot-data 3.+的@Query中想要获取参数，需要使用 $fieldName，而不是 {0} 的方式，如果自己写的时候一定要注意。比如：
+/**
+    * 创建人物关系
+    * @param from 源
+    * @param relation 关系
+    * @param to 目标
+    */
+@Query(&amp;quot;match (n:person {name: $from}),(m:person {name: $to}) &amp;quot; +
+        &amp;quot;create (n)-[:西游人物关系{relation:$relation}]-&amp;gt;(m)&amp;quot;)
+void createRelation(String from, String relation, String to);
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/neo4j-chang-yong-han-shu/">
+                        Neo4j常用函数
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-26</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            字符串函数
+match (n:Lianhuachi) where n.name = &#39;去种田的向凹凸&#39; return n.name,substring(n.name, 0,3)
+
+
+AGGREGATION聚合函数
+和普通SQL一致的含义
+match (n:Lianhuachi) return count(n),max(n.age),min(n.age),avg(n.age),sum(n.age)
+
+
+关系函数
+match (x)-[n:`莲花池人物关系`]-&amp;gt;(y) return id(n),n
+
+
+备份
+Neo4j 官方文档： Backup modes
+➜  bin ./neo4j-admin database dump neo4j --to-path=/tmp
+2024-06-26 15:24:15.414+0000 INFO  [o.n.c.d.DumpCommand] Starting dump of database &#39;neo4j&#39;
+Done: 37 files, 2.993MiB processed.
+2024-06-26 15:24:19.338+0000 INFO  [o.n.c.d.DumpCommand] Dump completed successfully
+
+
+➜  bin ll /tmp/ |grep &amp;quot;neo4j.dump&amp;quot;
+-rw-r--r--  1 imyzt   wheel   305K Jun 26 23:24 neo4j.dump
+
+
+恢复
+Neo4j 官方文档： Restore a database dump
+➜  bin ./neo4j-admin database load --from-path=/tmp/ neo4j --overwrite-destination=true
+Done: 37 files, 2.993MiB processed.
+
+可以看到，数据恢复了过来。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/neo4j-chang-yong-han-shu/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/neo-chang-yong-ming-ling-er/">
+                        Neo常用命令 二
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-26</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-info">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            UNIQUE约束
+避免重复时使用（姓名、身份证不能重复）
+旧版本
+create constraint on (n:Lianhuachi) assert n.name is unique
+
+新版本
+如果再执行上面的语法时报错，说明你使用的是新版本的Neo4j，变更了命令语法。
+create constraint uniq_name for (n:Lianhuachi) require n.name is unique
+
+在加了唯一索引后，可以看到，在添加重复数据时会报错：
+
+删除唯一约束
+drop constraint uniq_name 
+
+可以看到，在删除之后再进行添加，是可以添加进去的。
+create (n:Lianhuachi {name: &amp;quot;我是野农&amp;quot;, &amp;quot;field&amp;quot;: &amp;quot;test&amp;quot;}) return n
+match (n:Lianhuachi {name: &amp;quot;我是野农&amp;quot;&amp;quot;}) return n
+
+
+distinct去重
+和SQL一致，对内容进行去重
+match (n:Lianhuachi) return distinct(n.name)
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/neo-chang-yong-ming-ling-er/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/neo4j-chang-yong-ming-ling/">
+                        Neo4j 常用命令 一
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-05-08</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-success">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            WHERE
+可以类似于SQL的写法来实现，首先通过match将节点查询出来(n,m)，然后通过WHERE将数据
+match (n:Lianhuachi),(m:Lianhuachi) where n.name = &#39;去种田的向凹凸&#39; and m.name = &amp;quot;向云朵&amp;quot;
+return id(n),n.name,id(m),m.name
+
+match (n:Lianhuachi {name: &amp;quot;去种田的向凹凸&amp;quot;}),(m:Lianhuachi {name: &amp;quot;向云朵&amp;quot;})
+return id(n),n.name,id(m),m.name
+
+DELETE-删除节点
+
+删除节点（如果节点存在关系时，是无法删除的）
+
+match (n: Person {name: &amp;quot;xxx&amp;quot;}) delete n
+
+
+删除关系
+
+match (n: Person {name: &amp;quot;小红&amp;quot;})-[r]-&amp;gt;(m: Person {name: &amp;quot;小明&amp;quot;}) delete r
+
+REMOVE-删除属性
+首先，在student和person标签创建1一个节点
+create (n:student:person {name: &amp;quot;张三&amp;quot;, age: 18}) return n
+
+查询节点
+MATCH (n:person) where n.name = &amp;quot;张三&amp;quot; RETURN n LIMIT 25
+
+MATCH (n:student) RETURN n LIMIT 25
+
+删除标签中的节点
+MATCH (n:person) where n.name = &amp;quot;张三&amp;quot; remove n
+删除标签中节点的属性
+删除前，age=18 MATCH (n:student) where n.name = &amp;quot;张三&amp;quot; return n
+
+删除后，age无了 MATCH (n:student) where n.name = &amp;quot;张三&amp;quot; remove n.age return n
+
+修改标签中节点的属性
+修改后，age回来了 MATCH (n:student) where n.name = &amp;quot;张三&amp;quot; set n.age=18 return n
+
+给榜首增加一个属性 match (n:Lianhuachi {name: &amp;quot;我是野农&amp;quot;}) set n.title = &#39;虾米榜榜首&#39; return n
+
+ORDER BY - 排序
+补充测试数据
+create (n:student {name: &amp;quot;张三&amp;quot;, age: 18}),(m:student {name: &amp;quot;李四&amp;quot;, age: 22}) return n,m
+排序
+match (n:student) return id(n), n.name,n.age order by n.age desc 
+
+
+
+id(n)
+n.name
+n.age
+
+
+
+
+120
+&amp;quot;李四&amp;quot;
+22
+
+
+119
+&amp;quot;张三&amp;quot;
+18
+
+
+
+NULL - NULL属性
+查询name属性不为空的节点
+match (n:student) where n.name is not null return n.name,n.label
+
+
+
+n.name
+n.label
+
+
+
+
+&amp;quot;张三&amp;quot;
+null
+
+
+&amp;quot;李四&amp;quot;
+null
+
+
+
+查询sex属性为空的节点
+match (n:student) where n.sex is null return n.name,n.label
+
+
+
+n.name
+n.label
+
+
+
+
+&amp;quot;张三&amp;quot;
+null
+
+
+&amp;quot;李四&amp;quot;
+null
+
+
+
+给张三设置sex属性，注意where在前，set在后，和MySQL等相反
+match (n:student)  where n.name=&#39;张三&#39; set n.sex=&#39;男&#39; return n.name,n.sex,n.age
+查询结果：match (n:student) return n
+
+IN - 查询多个
+查询name等于张三或李四的人：
+match (n:student) where n.name in [&amp;quot;张三&amp;quot;, &amp;quot;李四&amp;quot;] return n
+索引
+官方文档
+旧版本
+
+
+创建索引：
+create index on :节点 (属性)
+
+
+删除索引：
+drop index on :节点(属性)
+
+
+新版本(5或更高版本)
+
+
+创建索引：
+缺省索引名称：
+CREATE INDEX [index_name（可缺省）] FOR (n:person) ON (n.name)
+指定索引名称：
+create index index_test for (n:person) on (n.name)
+Added 1 index, completed after 992 ms.
+
+
+查询所有索引：
+show indexes
+
+
+
+
+
+id
+name
+state
+populationPercent
+type
+entityType
+labelsOrTypes
+properties
+indexProvider
+owningConstraint
+lastRead
+readCount
+
+
+
+
+1
+&amp;quot;index_343aff4e&amp;quot;
+&amp;quot;ONLINE&amp;quot;
+100
+&amp;quot;LOOKUP&amp;quot;
+&amp;quot;NODE&amp;quot;
+null
+null
+&amp;quot;token-lookup-1.0&amp;quot;
+null
+&amp;quot;2024-05-18T13:26:33.878000000Z&amp;quot;
+571
+
+
+3
+&amp;quot;index_a302cc54&amp;quot;
+&amp;quot;ONLINE&amp;quot;
+100
+&amp;quot;RANGE&amp;quot;
+&amp;quot;NODE&amp;quot;
+[&amp;quot;person&amp;quot;]
+[&amp;quot;name&amp;quot;]
+&amp;quot;range-1.0&amp;quot;
+null
+null
+0
+
+
+2
+&amp;quot;index_f7700477&amp;quot;
+&amp;quot;ONLINE&amp;quot;
+100
+&amp;quot;LOOKUP&amp;quot;
+&amp;quot;RELATIONSHIP&amp;quot;
+null
+null
+&amp;quot;token-lookup-1.0&amp;quot;
+null
+&amp;quot;2024-05-10T00:48:00.395000000Z&amp;quot;
+67
+
+
+
+
+删除索引：
+drop index index_a302cc54
+Removed 1 index, completed after 5 ms.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/neo4j-chang-yong-ming-ling/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/">
+                        使用Neo4j建立莲花池人物关系图（核心人物，简版）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-04-22</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-other_3">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            最近关注了沅陵的莲花池，整个村子都是钓鱼佬，人均up主，基本都是沾亲带故的，错综复杂，恰逢正在学习Neo4j，可以借此机会将人物关系通过图谱的方式呈现出来。
+人物标签创建
+首先将人物关系建立出来，利用create来创建效率实在太低了 ，所以决定采用数据导入的方式。
+
+点击查看莲花池人物详情
+
+  去种田的向凹凸  
+  
+    小白兔的胡萝卜甜（冉甜）
+  
+  
+    向云朵
+  
+  
+    我是野农
+  
+  
+    画燕儿
+  
+  
+    向鹿鸣
+  
+  
+    路人阿丙X
+  
+  
+    大明星（冉蜜）
+  
+  
+    向偶然
+  
+  
+    荷塘星星
+  
+  
+    向尘俊
+  
+  
+    向星言
+  
+  
+    多肉葡萄肉多多
+  
+  
+    白叔
+  
+  
+    播音哥
+  
+  
+    三叔
+  
+  
+    丹宝
+  
+  
+    守山人阿亮
+  
+  
+
+导入数据：
+load csv from &amp;quot;file:///莲花池人物.csv&amp;quot; as line 
+create (:Lianhuachi {name: line[0]})
+
+最终效果图：
+MATCH (n:Lianhuachi) RETURN n LIMIT 25
+
+人物关系标签创建
+
+莲花池人物关系（简版）
+  小白兔的胡萝卜甜（冉甜）,丈夫,去种田的向凹凸
+  去种田的向凹凸,妻子,小白兔的胡萝卜甜（冉甜）
+  小白兔的胡萝卜甜（冉甜）,女儿,向云朵
+  去种田的向凹凸,女儿,向云朵
+  画燕儿,丈夫,我是野农
+  我是野农,妻子,画燕儿
+  画燕儿,儿子,向鹿鸣
+  我是野农,儿子,向鹿鸣
+  大明星（冉蜜）,丈夫,路人阿丙X
+  路人阿丙X,妻子,大明星（冉蜜）
+  大明星（冉蜜）,女儿,向偶然
+  路人阿丙X,女儿,向偶然
+  多肉葡萄肉多多,丈夫,荷塘星星
+  荷塘星星,妻子,多肉葡萄肉多多
+  荷塘星星,儿子,向尘俊
+  多肉葡萄肉多多,儿子,向尘俊
+  荷塘星星,女儿,向星言
+  多肉葡萄肉多多,女儿,向星言
+  向星言,亲哥,向尘俊
+  向尘俊,亲妹,向星言
+  荷塘星星,父亲,三叔
+  三叔,儿子,荷塘星星
+  荷塘星星,表哥,守山人阿亮
+  守山人阿亮,表弟,荷塘星星
+  我是野农,亲弟,路人阿丙X
+  路人阿丙X,亲哥,我是野农
+  我是野农,钓友,去种田的向凹凸
+  去种田的向凹凸,钓友,我是野农
+  去种田的向凹凸,同村,荷塘星星
+  我是野农,钓友,荷塘星星
+  荷塘星星,钓友,我是野农
+  去种田的向凹凸,同村,荷塘星星
+
+导入数据：
+load csv from &amp;quot;file:///莲花池人物关系.csv&amp;quot; as line 
+create (n:LianhuachiRelation {from: line[0], relation: line[1], to: line[2]})
+return n.from, n.relation, n.to
+
+最终效果：
+MATCH (n:LianhuachiRelation) RETURN n.from, n.relation, n.to
+
+借助人物关系标签，创建人物关系
+match (f:Lianhuachi),(r:LianhuachiRelation),(t:Lianhuachi) where f.name=r.from and t.name=r.to
+create (f)-[rr:莲花池人物关系 {relation: r.relation}]-&amp;gt;(t)
+return f.name, rr.relation, t.name
+
+最终效果：
+MATCH p=()-[r:莲花池人物关系]-&amp;gt;() RETURN p LIMIT 25
+
+查询人物关系
+match (n:Lianhuachi {name: &amp;quot;向云朵&amp;quot;}),(m:LianhuachiRelation) where m.from=&#39;向云朵&#39;
+    return n.name, m.relation, m.to
+
+
+在现有的基础上，补充人物关系
+match (n:Lianhuachi{name:&amp;quot;大明星（冉蜜）&amp;quot;}),(m:Lianhuachi{name:&amp;quot;小白兔的胡萝卜甜（冉甜）&amp;quot;})
+create (n)-[r:`莲花池人物关系`{relation:&amp;quot;亲姐&amp;quot;}]-&amp;gt;(m)
+
+match (n:Lianhuachi{name:&amp;quot;大明星（冉蜜）&amp;quot;}),(m:Lianhuachi{name:&amp;quot;小白兔的胡萝卜甜（冉甜）&amp;quot;})
+create (m)-[r:`莲花池人物关系`{relation:&amp;quot;亲妹&amp;quot;}]-&amp;gt;(n)
+
+
+删除重建人物关系
+MATCH (n:Lianhuachi {name:&amp;quot;去种田的向凹凸&amp;quot;})-[r:`莲花池人物关系` {relation: &amp;quot;钓友&amp;quot;}]-&amp;gt;(m:Lianhuachi {name:&amp;quot;我是野农&amp;quot;})
+delete r
+MATCH (n:Lianhuachi {name:&amp;quot;我是野农&amp;quot;})-[r:`莲花池人物关系` {relation: &amp;quot;钓友&amp;quot;}]-&amp;gt;(m:Lianhuachi {name:&amp;quot;去种田的向凹凸&amp;quot;})
+delete r
+
+MATCH (n:Lianhuachi {name:&amp;quot;去种田的向凹凸&amp;quot;}),(m:Lianhuachi {name:&amp;quot;我是野农&amp;quot;})
+create (n)-[r2:`莲花池人物关系` {relation: &amp;quot;表哥&amp;quot;}]-&amp;gt;(m)
+create (m)-[r3:`莲花池人物关系` {relation: &amp;quot;表弟&amp;quot;}]-&amp;gt;(n)
+ return r2.relation,r3.relation
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.github.io/post/neo4j-shi-yong/">
+                        Neo4j 使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-04-07</time>
+                    
+                        <a href="https://imyzt.github.io/tag/XM6uOsCyh/" class="post-tag i-tag
+                            i-tag-success">
+            #Neo4j
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+图数据模型：与关系型数据库使用表格存储数据不同，图数据库通过节点（Node）和关系（Relationship）来表示数据和它们之间的联系。
+节点：代表实体，如人、地点、物品等。
+关系：定义节点之间的连接，可以有方向和属性。
+属性：节点和关系的附加信息，如人的姓名、年龄等。
+
+CREATE (person1:Person {name: &#39;Alice&#39;, age: 30})
+CREATE (person2:Person {name: &#39;Bob&#39;, age: 25})
+CREATE (person1)-[:KNOWS]-&amp;gt;(person2)
+
+
+person1/person2：节点
+Person：标签
+name/age：属性
+KNOWS：关系
+
+导入数据
+通过GPT，生成《西游记》的人物关系图和人物名单，案例数据如下：
+
+将文件放置于Neo4j的Home/import目录下，然后执行导入命令：
+load csv from &amp;quot;file:///西游记.csv&amp;quot; as line
+create (:xiyouRelation {from:line[1], relation:line[3],to:line[0]})
+
+load csv from &amp;quot;file:///人物.csv&amp;quot; as line
+create (:person {name:line[0]})
+
+执行match (person) return person，查看数据：
+
+创建人物和关系
+创建人物和关系
+创建人物
+create (:student {name: &#39;小明&#39;}),(:student {name : &#39;小红&#39;}),(:student {name: &#39;小李&#39;})
+创建人物关系，并且返回人物关系
+match (n:student {name: &#39;小明&#39;}),(m:student {name: &#39;小红&#39;})
+create (n)-[r:同学]-&amp;gt;(m) return n.name,type(r),m.name
+
+
+显示人物关系
+MATCH p=()-[r:`同学`]-&amp;gt;() RETURN p LIMIT 25
+
+
+删除标签
+match (n:LianhuachiPerson)
+detach delete n
+
+
+删除关系
+命令：
+match (n)-[r:西游人物关系]-(s) delete r
+结果：
+Deleted 18 relationships, completed after 6 ms.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.github.io/post/neo4j-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.github.io/images/avatar.png?v=1719757133741)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

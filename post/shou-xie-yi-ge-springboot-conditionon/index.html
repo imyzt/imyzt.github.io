@@ -1,0 +1,461 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    手写一个SpringBoot ConditionOn* | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.github.io/favicon.ico?v=1719757133741">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.github.io/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.github.io/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.github.io">
+                <img class="avatar" src="https://imyzt.github.io/images/avatar.png?v=1719757133741" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            手写一个SpringBoot ConditionOn*
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2021-01-02</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="springboot自带的conditional">SpringBoot自带的Conditional</h1>
+<p>打开任意*AutoConfiguration文件，一般都有下面的条件注解，在spring-boot-autoconfigure-1.5.3.RELEASE.jar的org.springframework.boot.autoconfigure.condition包下条件注解如下：</p>
+<ul>
+<li>@ConditionalOnBean：当前容器有指定Bean的条件下。</li>
+<li>@ConditionalOnClass：当前类路径下有指定的类的条件下。</li>
+<li>@ConditionalOnExpression：基于SpEL表达式作为判断条件。</li>
+<li>@ConditionalOnJava：基于JVM版本作为判断条件。</li>
+<li>@ConditionalOnJndi：在JNDI存在的条件下查找指定的位置。</li>
+<li>@ConditionalOnMissingBean：当容器里没有指定Bean的情况下。</li>
+<li>@ConditionalOnMissingClass：当类路径下没有指定的类的条件下。</li>
+<li>@ConditionalOnNotWebApplication：当前项目不是WEB项目的条件下。</li>
+<li>@ConditionalOnProperty：指定属性是否有指定的值。</li>
+<li>@ConditionalOnResource：类路径是否有指定的值。</li>
+<li>@ConditionalOnSingleCandidate：当指定Bean在容器中只有一个，或者虽然有多个但 是指定首选的Bean。</li>
+<li>@ConditionalOnWebApplication：当前项目是WEB项目的条件下。</li>
+</ul>
+<p>这些注解都组合了@Conditional元注解，只是使用了不同的条件（Conditional），Spring 条件注解（@Conditional）我们介绍过根据不同条件创建不同Bean。<br>
+虽然平时使用的多，但是没怎么了解过是怎么实现的，其实就是实现<code>org.springframework.context.annotation.Condition</code>的不同子类做不同的扩展即可。</p>
+<h1 id="手写一个">手写一个</h1>
+<h2 id="注解">注解</h2>
+<p>首先写一个ConditionOnOS注解</p>
+<pre><code>/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 是否是对应OS
+ */
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(OnOSCondition.class)
+public @interface ConditionOnOS {
+
+
+    /**
+     * 系统类型
+     */
+    OSType osType();
+
+
+    public enum OSType {
+        MAC,
+        LINUX,
+        WINDOWS,
+        ;
+    }
+}
+</code></pre>
+<h2 id="处理程序">处理程序</h2>
+<p>然后写一个处理程序</p>
+<pre><code>@Order
+public class OnOSCondition implements ConfigurationCondition {
+
+
+    @Override
+    public ConfigurationPhase getConfigurationPhase() {
+        return ConfigurationPhase.REGISTER_BEAN;
+    }
+
+
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+
+
+        Map&lt;String, Object&gt; attributes = metadata.getAnnotationAttributes(ConditionOnOS.class.getName());
+        ConditionOnOS.OSType osType = (ConditionOnOS.OSType) attributes.get(&quot;osType&quot;);
+
+
+        boolean contains = System.getProperty(&quot;os.name&quot;).toUpperCase().contains(osType.name());
+
+
+        return contains;
+    }
+}
+</code></pre>
+<h2 id="测试程序">测试程序</h2>
+<p>最后写一个启动程序</p>
+<pre><code>package top.imyzt.learning.condition;
+
+
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+
+/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 手写一个ConditionOn*
+ */
+@ComponentScan(&quot;top.imyzt.learning.condition&quot;)
+@Configuration
+public class ConditionOnTest {
+
+
+    public static void main(String[] args) {
+
+
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
+
+
+        annotationConfigApplicationContext.register(ConditionOnTest.class);
+
+
+        annotationConfigApplicationContext.refresh();
+
+
+        HelloWorld helloWorld;
+        try {
+            helloWorld = (HelloWorld) annotationConfigApplicationContext.getBean(&quot;helloWorld&quot;);
+        } catch (NoSuchBeanDefinitionException e) {
+            System.out.println(&quot;helloWorld bean is not exists!&quot;);
+            return;
+        }
+
+
+        helloWorld.say();
+
+
+    }
+
+
+    @Bean
+    @ConditionOnOS(osType = ConditionOnOS.OSType.MAC)
+    public HelloWorld helloWorld() {
+        return new HelloWorld(ConditionOnOS.OSType.MAC.name());
+    }
+
+
+    public class HelloWorld{
+        private String name;
+
+
+        public HelloWorld(String name) {
+            this.name = name;
+        }
+
+
+        public void say() {
+            System.out.println(this.name + &quot; --- say hello!&quot;);
+        }
+    }
+}
+
+</code></pre>
+<h1 id="测试">测试</h1>
+<h2 id="正向">正向</h2>
+<p>我的电脑是Mac，所以我执行后的结果是</p>
+<pre><code>…省略
+15:42:08.868 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'conditionOnTest'
+15:42:08.873 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'helloWorld'
+MAC --- say hello!
+</code></pre>
+<h2 id="反向">反向</h2>
+<p>当将注解的参数修改为 ConditionOnOS.OSType.LINUX 后，结果如下</p>
+<pre><code>15:42:59.405 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'conditionOnTest'
+helloWorld bean is not exists!
+</code></pre>
+<h1 id="讲解">讲解</h1>
+<p>其中自主要的是在注解ConditionOnOS上面的@Conditional(OnOSCondition.class)元注解，它指定了判断的处理程序是OnOSCondition.class。<br>
+其次是OnOSCondition通过实现ConfigurationCondition来重写判断逻辑。</p>
+<h2 id="getconfigurationphase">getConfigurationPhase()</h2>
+<p>getConfigurationPhase()用于提供给Spring告知其构建阶段，有两个：</p>
+<ul>
+<li>PARSE_CONFIGURATION： 一个是Condition应评估@Configuration类，如果此时条件不匹配，@Configuration 则不会添加该类。</li>
+<li>REGISTER_BEAN： 该条件不会阻止@Configuration添加类，在评估条件时，所有@Configurations都将被解析。</li>
+</ul>
+<p>ConfigurationPhase的作用并不是根据条件来判断是否加载这个配置类，<strong>实际ConfigurationPhase控制的是过滤的时</strong>机，是在创建Configuration类的时候过滤还是在创建bean的时候过滤（也可用条件注解的生效阶段来描述）。<br>
+此处@https://blog.csdn.net/xcy1193068639/article/details/81589489</p>
+<pre><code>enum ConfigurationPhase {
+
+
+   /**
+    * The {@link Condition} should be evaluated as a {@code @Configuration}
+    * class is being parsed.
+    * &lt;p&gt;If the condition does not match at this point, the {@code @Configuration}
+    * class will not be added.
+    */
+   PARSE_CONFIGURATION,
+
+
+   /**
+    * The {@link Condition} should be evaluated when adding a regular
+    * (non {@code @Configuration}) bean. The condition will not prevent
+    * {@code @Configuration} classes from being added.
+    * &lt;p&gt;At the time that the condition is evaluated, all {@code @Configuration}
+    * classes will have been parsed.
+    */
+   REGISTER_BEAN
+}
+</code></pre>
+<h2 id="matches">matches()</h2>
+<p>matches()方法用于重写匹配逻辑，此方法根据自己的业务逻辑重写即可。</p>
+<h1 id="后文">后文</h1>
+<p>本篇文章的源代码位置：<a href="https://github.com/imyzt/learning-technology-code/tree/master/source-code/xiaomage-springboot-teach/spring-boot-condition">https://github.com/imyzt/learning-technology-code/tree/master/source-code/xiaomage-springboot-teach/spring-boot-condition</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+                                <h3 class="post-title">
+                                    Java Throwable异常堆栈收集的性能问题
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#springboot%E8%87%AA%E5%B8%A6%E7%9A%84conditional">SpringBoot自带的Conditional</a></li>
+<li><a href="#%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA">手写一个</a>
+<ul>
+<li><a href="#%E6%B3%A8%E8%A7%A3">注解</a></li>
+<li><a href="#%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F">处理程序</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E7%A8%8B%E5%BA%8F">测试程序</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a>
+<ul>
+<li><a href="#%E6%AD%A3%E5%90%91">正向</a></li>
+<li><a href="#%E5%8F%8D%E5%90%91">反向</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%B2%E8%A7%A3">讲解</a>
+<ul>
+<li><a href="#getconfigurationphase">getConfigurationPhase()</a></li>
+<li><a href="#matches">matches()</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E6%96%87">后文</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>
