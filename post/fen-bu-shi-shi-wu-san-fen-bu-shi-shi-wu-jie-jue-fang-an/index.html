@@ -1,0 +1,653 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    分布式事务(三) 分布式事务解决方案 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            分布式事务(三) 分布式事务解决方案
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-09-07</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h3 id="dtp和xa">DTP和XA</h3>
+<p>分布式事务的解决方案之一就是两阶段提交协议（2PC：Two-Phase Commit）</p>
+<p>1994年X/Open组织（现在的Open Group）定义了分布式事务处理的<strong>DTP模型</strong>，该模型包括这样几个角色：</p>
+<ul>
+<li>应用程序（AP）：业务微服务</li>
+<li>事务管理器（TM）：全局事务管理者</li>
+<li>资源管理者（RM）：一般是数据库</li>
+<li>通信资源管理器（CRM）：是TM和RM间的通信中间件</li>
+</ul>
+<p>在该模型中，一个分布式事务（全局事务）可以被拆分成多个本地事务，运行在不同的AP和RM上，每个本地事务的ACID很好实现，但是全局事务必须保证其中包含的每个本地事务都能成功，若有一个失败，则所有其他事务都必须回滚。<br>
+问题是本地事务处理过程中，并不知道其他事务的运行状态，因此就<strong>需要通过CRM来通知各个本地事务，同步事务执行状态</strong>。<br>
+因此各个本地事务的通信必须有一个统一的标准，否则不同数据库之间就无法通信，XA就是X/Open DTP中通信中间件和TM间联系的<strong>接口规范</strong>，定义了用于通知事务开始、提交、终止、回滚等接口，各个数据库厂商都必须实现这些接口。</p>
+<h3 id="2pc两阶段提交">2PC（两阶段提交）</h3>
+<p>参考：<a href="https://zhuanlan.zhihu.com/p/35298019">漫话分布式系统共识协议: 2PC/3PC篇</a></p>
+<p><strong>两阶提交协议</strong>就是根据这一思想衍生出来的，将全局事务拆分为两个阶段来执行。</p>
+<ul>
+<li>阶段一：准备阶段，各个本地事务完成本地事务的准备工作。</li>
+<li>阶段二：执行阶段，各个本地事务根据上一阶段执行结果，进行提交或回滚。<br>
+这个过程中需要一个协调者（coordinator），还有事务的参与者（voter）。</li>
+</ul>
+<h4 id="正常情况">正常情况</h4>
+<figure data-type="image" tabindex="1"><img src="https://pic4.zhimg.com/80/v2-e2f7149a81d9ad3aa46589e25503d688_1440w.jpg" alt="2pc" loading="lazy"></figure>
+<p><strong>投票阶段</strong>：协调组询问各个事务参与者，是否可以执行事务。每个事务参与者执行事务，写入undo和redo log，然后反馈事务执行成功。（agree）<br>
+<strong>提交阶段</strong>：协调组发现每个参与者都可以执行事务（agree），于是向各个事务参与者发出commit指令，各个事务参与者提交事务。</p>
+<h4 id="异常情况">异常情况</h4>
+<figure data-type="image" tabindex="2"><img src="https://pic2.zhimg.com/80/v2-d40abfa365ed84e84e264ba13900f64b_1440w.jpg" alt="2pc" loading="lazy"></figure>
+<p><strong>投票阶段</strong>：协调组询问各个事务参与者，是否可以执行事务。每个事务参与者执行事务，写入undo和redo log，然后反馈事务执行结果，但只要有一个参与者返回的是<code>Disagree</code>，就说明执行失败。<br>
+<strong>提交阶段</strong>：协调组发现每个有一个或多个参与者返回Disagree，认为执行失败，于是向各个事务参与者发出<code>abort</code>指令，各个事务参与者回滚事务。</p>
+<h4 id="缺陷">缺陷</h4>
+<ol>
+<li>
+<p>存在CRM单点故障问题<br>
+协调者挂了之后就不知道别人什么情况。<br>
+<img src="https://pic3.zhimg.com/80/v2-a9e4ef8b9082ffdf76bc426e61ba3ed2_1440w.jpg" alt="2pc" loading="lazy"></p>
+</li>
+<li>
+<p>阻塞问题<br>
+在准备阶段，提交阶段，每个事务参与者都会锁定本地资源，并等待其他事务的执行结果，阻塞时间较长。</p>
+</li>
+</ol>
+<h4 id="总结">总结</h4>
+<ol>
+<li>面对二阶段提交的缺点，后来又演变出来了三阶段提交，但是依旧没有解决阻塞和资源锁定的问题，而且引入了新的微，因此实际场景使用较少。</li>
+<li>2PC拥有稳定成熟的框架支持，可以保证强一致，并且对代码侵入度不高，</li>
+</ol>
+<h4 id="使用场景">使用场景</h4>
+<ul>
+<li>适用于对效率要求不高，一致性要求高的场景</li>
+<li>代码侵入度小，不影响原有代码</li>
+</ul>
+<h3 id="3pc三阶段提交">3PC（三阶段提交）</h3>
+<h2 id="tcc">TCC</h2>
+<p>TCC模式可以解决2PC中资源锁定和阻塞的问题，减少资源锁定时间。</p>
+<h3 id="基本原理">基本原理</h3>
+<p>本质是一种<strong>补偿</strong>的机制，事务运行包括三个方法，</p>
+<ul>
+<li>try：资源的检测和预留</li>
+<li>confirm：执行业务操作提交；要求try成功confirm一定能成功</li>
+<li>cancel：预留资源释放</li>
+</ul>
+<p>执行分两个阶段：</p>
+<ul>
+<li>准备阶段（try）：资源的检测和预留</li>
+<li>执行阶段（confirm/cancel）：根据上一步的结果，判断下面的执行方法。如果上一步所有事务参与者都成功，这里执行confirm，否则执行cancel</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/09/u3n1k3gdrmio1rn77kkmq75mk7.png" alt="tcc" loading="lazy"></figure>
+<p>看似与两阶段提交没有什么区别，其实差距很大。</p>
+<ul>
+<li><strong>try，confirm，cancel都是独立的事务</strong>，不受其他参与者的影响，不会阻塞等待他人。</li>
+<li>try，confirm，cancel由程序员在业务层编写，锁粒度由代码控制。</li>
+</ul>
+<h3 id="实例">实例</h3>
+<p>假如账户A原来有100元，需要从余额扣除30元。如图：<br>
+<img src="http://blog.imyzt.top/upload/2020/09/tmr3m1trf2gphpmjn63s4apc1j.png" alt="tcc" loading="lazy"></p>
+<ul>
+<li>一阶段（Try）：余额检查，并冻结用户部分金额，此阶段执行完毕，事务已提交。
+<ul>
+<li>检查用户余额是否足够，如果足够，冻结部分余额</li>
+<li>在账户表中添加冻结金额字段，值为30，余额不变</li>
+</ul>
+</li>
+<li>二阶段
+<ul>
+<li>提交（Confirm）：真正的扣款，把冻结金额从余额中扣除，冻结金额清空。
+<ul>
+<li>修改冻结金额=0，修改余额为100-30=79</li>
+</ul>
+</li>
+<li>补偿（Cancel）：释放之前冻结的金额，不是回滚
+<ul>
+<li>余额不变，修改账户冻结金额=0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="优势缺点">优势&amp;缺点</h3>
+<h4 id="优势">优势</h4>
+<ul>
+<li>避免资源长期锁定和阻塞等待操作。执行效率高。<br>
+TCC执行的每个阶段都是独立的事务，不需要等待其他事务的结果。如果执行失败，不是执行的回滚而是执行的<strong>补偿</strong>。</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li><strong>代码侵入</strong>：需要人为编写try，confirm，cancel操作，对开发人员要求高</li>
+<li>开发成本高：一个业务需要拆分三个阶段，开发成本高</li>
+<li>安全性考虑：cancel动作如果执行失败，资源就无法释放。需要引入重试，但是引入重试又有可能造成重复执行问题，还需要考虑重试时的幂等问题。</li>
+</ul>
+<h3 id="使用场景-2">使用场景</h3>
+<ul>
+<li>对事务有一定的一致性要求（最终一致性）</li>
+<li>对性能要求较高</li>
+<li>开发人员具备较高的编码能力和幂等处理经验</li>
+</ul>
+<h2 id="可靠消息服务">可靠消息服务</h2>
+<p>源于eBay，设计思想是将远程分布式事务拆分成一系列的本地事务。</p>
+<h3 id="基本原理-2">基本原理</h3>
+<p>事务分为<code>发起者A</code>和<code>参与者BCD</code></p>
+<ul>
+<li>事务<code>发起者A</code>执行本地事务</li>
+<li>事务<code>发起者A</code>通过MQ将需要执行的事务信息发送给<code>事务参与者BCD</code></li>
+<li>事务<code>参与者BCD</code>接收到消息后执行本地事务<br>
+<img src="http://blog.imyzt.top/upload/2020/09/qh87gftgnuiovqhu1aj3thcj8d.png" alt="mq" loading="lazy"></li>
+</ul>
+<p>现实场景（老师给的场景，好像不恰当）：</p>
+<ol>
+<li>你点了一杯奶茶，付完钱。（发起者A完成）</li>
+<li>服务员给了你一个号码牌。（参与者B）</li>
+<li>你凭这张小票，一定能够领到一杯奶茶。（不断问服务员，重试）</li>
+</ol>
+<h3 id="本地消息表">本地消息表</h3>
+<p>为了避免消息发送失败或丢失，消息需要持久化到数据库。实现有简化版本和解耦合版本两种。</p>
+<h4 id="简化版本">简化版本</h4>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/09/p0a94m11pgjahpd5btcceofk5m.png" alt="mq" loading="lazy"></figure>
+<ul>
+<li>事务发起者
+<ol>
+<li>开启本地事务</li>
+<li>执行业务操作</li>
+<li>发送消息到MQ</li>
+<li>保存消息记录到数据库，<strong>记录为已发送</strong></li>
+<li>提交本地事务</li>
+</ol>
+</li>
+<li>事务参与者
+<ol>
+<li>接收消息</li>
+<li>开启本地事务</li>
+<li>执行业务操作</li>
+<li>修改数据库<strong>记录状态为已消费</strong></li>
+<li>提交本地事务</li>
+</ol>
+</li>
+<li>额外的定时任务
+<ul>
+<li>定时扫描数据库中超时未消费的，重新发送</li>
+</ul>
+</li>
+</ul>
+<h3 id="优点缺点">优点&amp;缺点</h3>
+<h4 id="优点">优点</h4>
+<ul>
+<li>与TCC相比，不用写那么多代码。</li>
+</ul>
+<h4 id="缺点-2">缺点</h4>
+<ul>
+<li>数据一致性完全依赖MQ，因此消息服务一定需要可靠。</li>
+<li>需要处理被动业务方的幂等问题。</li>
+<li>被动业务失败不会主动业务回滚，而是重试被动的业务。</li>
+<li><strong>事务业务与消息业务耦合，发起者业务完成后需要写消息表</strong>。</li>
+</ul>
+<h3 id="独立消息服务">独立消息服务</h3>
+<p>通过引入独立的消息服务，完成对消息的持久化、发送、确认、失败重试等行为。<br>
+<img src="http://blog.imyzt.top/upload/2020/09/rg722262raj42ous0564ei5dae.png" alt="mq" loading="lazy"></p>
+<h4 id="rocketmq事务消息">RocketMQ事务消息</h4>
+<p>自带事务消息，可以保证消息的可靠性，原理就是自带了一个本地消息表。</p>
+<p><a href="https://github.com/apache/rocketmq/blob/master/docs/cn/features.md#7-%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF">RocketMQ-事务消息</a></p>
+<h4 id="rabbitmq的消息确认">RabbitMQ的消息确认</h4>
+<p>RabbitMQ确保消息不丢失使用的是ACK确认机制。</p>
+<ul>
+<li>生产者确认机制：确保从生产者 -&gt; MQ不丢失
+<ul>
+<li>生产者发送消息到mq，设置异步监听MQ的ACK</li>
+<li>MQ接收到消息，返回ACK到生产者
+<ol>
+<li>消息到exchange但是route失败，返回失败ACK</li>
+<li>消息route成功，持久化失败，返回失败ACK</li>
+<li>消息route成功，持久化成功，返回成功ACK</li>
+</ol>
+</li>
+<li>生产者提前编写好不同回调的处理方式
+<ol>
+<li>成功，记录日志</li>
+<li>失败，一段时间后重新发送</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>消费者确认机制：确保从MQ -&gt; 消费者正确消费
+<ul>
+<li><strong>消费者开启监听时开启手动ACK模式</strong></li>
+<li>mq将消息发送到消费者后，会等待消费者ACK
+<ol>
+<li>收到消费者ACK才会删除消息</li>
+<li>一直没有收到ACK则一直保存</li>
+<li>消费者断开或异常后，发送给其它消费者（此处需要做好幂等）</li>
+</ol>
+</li>
+<li>消费者处理完消息，提交事务，手动ACK。如果异常，则不会ACK，业务处理失败。等待处理下一条消息。</li>
+</ul>
+</li>
+</ul>
+<h4 id="事务消息优点缺点">事务消息优点&amp;缺点</h4>
+<ul>
+<li>优点
+<ul>
+<li>业务简单，不需要写三个阶段的代码</li>
+<li>多个本地事务，缩短资源锁定时间，性能高</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>代码侵入度高</li>
+<li>一致性依赖MQ的可靠性</li>
+<li><strong>消息发起者可以回滚，参与者无法引起全局事务回滚</strong></li>
+<li>时效性差，完全取决于MQ的消息发送是否及时，消费是否及时。</li>
+</ul>
+</li>
+</ul>
+<p>针对缺点3，无法回滚问题。有人提出可以让事务参与者失败后，利用MQ通知消息服务，由消息服务通知其他参与者回滚，可是这是在利用MQ重新实现了2PC，又是一个轮子。没必要</p>
+<h2 id="seata">Seata</h2>
+<p>官网：<a href="http://seata.io/">http://seata.io/</a></p>
+<p>Seata是阿里开源的框架，支持XA，AT，TCC，SAGA四种模式。</p>
+<h3 id="at模式">AT模式</h3>
+<p>2019年1月份，Seata开源了AT模式。AT模式是一种无侵入的分布式事务解决方案。是对TCC或两阶段提交模型的优化，解决了TCC模式代码侵入，编码复杂等问题。</p>
+<p>在AT模式下，用户只需要关注自己业务的&quot;sql&quot;，用户的业务SQL作为“一阶段”，Seata框架会解析SQL自动生成事务的“二阶段”提交或回滚操作。</p>
+<p>Seata官方文档：<a href="seata.io">seata.io</a></p>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/09/qlv6afj24ohdopkuksaoi920l2.png" alt="at-1" loading="lazy"></figure>
+<p>乍一看和TCC协议很像，都是分两阶段提交。</p>
+<ul>
+<li>一阶段：执行本地事务，并返回执行结果</li>
+<li>二阶段：根据一阶段的结果，决定执行提交或回滚<br>
+但是AT模式底层完全不同，二阶段完全不需要我们编码，框架帮我们实现了。我们写的代码和本地事务代码完全一致，无需手动处理分布式事务。</li>
+</ul>
+<h4 id="一阶段">一阶段</h4>
+<p>一阶段，Seata会拦截<code>业务SQL</code>，首先解析SQL语义，找到<code>业务SQL</code>要更新的业务数据，在业务数据被更新前，将其保存为<code>before image</code>，然后执行<code>业务SQL</code>，更新业务数据，在业务数据执行之后，再将其保存为<code>after image</code>，最后获取全局行锁，<strong>提交事务</strong>。以上所有操作都是在一个本地事务中完成，保证了一阶段的原子性。</p>
+<p><code>before image</code>和<code>after image</code>类似于数据库的undo log和redo log。</p>
+<figure data-type="image" tabindex="6"><img src="http://blog.imyzt.top/upload/2020/09/15j04em37giudou1njfedr92rv.png" alt="at-2" loading="lazy"></figure>
+<h4 id="二阶段提交">二阶段提交</h4>
+<p>二阶段如果是提交的话，因为<code>业务SQL</code>在一阶段已经提交到数据库，所以Seata框架只需要将一阶段保存的快照数据和行锁删掉，完成数据清理即可。</p>
+<h4 id="二阶段回滚">二阶段回滚</h4>
+<p>回滚可直接使用<code>before image</code>还原业务数据，但在还原前首先要检查脏写，对比<code>数据库当前业务数据</code>与<code>after image</code>，如果两份完全一致则没有脏写，可以还原；如果数据不一致，说明出现了脏写，需要人工处理。</p>
+<h4 id="详细架构和流程">详细架构和流程</h4>
+<p>基本概念</p>
+<ul>
+<li>TC（Transaction Coordinator）：事务协调者，维护全局和分支事务的状态，驱动全局事务提交或回滚（TM之间的协调者）</li>
+<li>TM（Transaction Manager）：事务管理器，定义全局事务的范围：开启全局事务，提交或回滚全局事务</li>
+<li>RM（Resource Manager）：资源管理器，管理分支事务处理的资源，与TC交谈以注册分支事务和报告分支事务的状态，并驱动分支事务提交或回滚</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="http://blog.imyzt.top/upload/2020/09/qh04k2e1h2ge6qmqknagdselpf.png" alt="at-3" loading="lazy"></figure>
+<ul>
+<li>TM：业务模块中全局事务的开启者
+<ul>
+<li>向TC开启一个全局事务</li>
+<li>调用其它微服务</li>
+</ul>
+</li>
+<li>RM：业务模块执行者中，包含RM部分，负责向TC汇报事务执行状态
+<ul>
+<li>执行本地事务</li>
+<li>向TC注册分支事务，并提交本地事务执行结果</li>
+</ul>
+</li>
+<li>TM：结束对微服务的调用，通知TC，全局事务执行完毕，一阶段结束</li>
+<li>TC：汇总各个分支事务执行结果，决定分布式事务是提交还是回滚</li>
+<li>TC：通知所有RM提交/回滚资源，二阶段结束</li>
+</ul>
+<h4 id="详细流程">详细流程</h4>
+<ul>
+<li>一阶段
+<ul>
+<li>TM开启全局事务，并向TC声明全局事务，包括全局事务XID信息</li>
+<li>TM所在服务调用其他微服务</li>
+<li>微服务，主要由RM执行
+<ul>
+<li>查询<code>before image</code></li>
+<li>执行本地事务</li>
+<li>查询<code>after image</code></li>
+<li>生成<code>undo log</code>写入数据库</li>
+<li>向TC注册分支事务，并告知事务执行结果</li>
+<li>获取全局锁（防止其他全局事务并发修改当前数据）</li>
+<li>释放本地锁（不影响其他业务对数据的操作）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>二阶段
+<ul>
+<li>TC 统计各个分支事务的执行情况，根据情况做对应的操作
+<ul>
+<li>都成功：通知分支事务，提交事务</li>
+<li>有分支失败：通知执行成功的事务，回滚数据（做补偿）</li>
+</ul>
+</li>
+<li>分支事务RM
+<ul>
+<li>提交事务：直接清空<code>before image</code>和<code>after image</code>信息，释放全局锁</li>
+<li>回滚事务
+<ul>
+<li>校验<code>after image</code>，判断是否有脏写</li>
+<li>如果没有脏写，回滚到<code>before image</code>，清空<code>before image</code>和<code>after image</code></li>
+<li>如果有脏写，需要人工干预</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="优点缺点-2">优点&amp;缺点</h4>
+<ul>
+<li>优点
+<ol>
+<li>一阶段无锁，高性能</li>
+<li>补偿服务易于实现</li>
+</ol>
+</li>
+<li>缺点
+<ol>
+<li>解析，查询和保存undo log的blob字段徒增性能损耗，根据二八定理，80%的业务是不会出现问题，而需要接受这部分写入log的损耗</li>
+<li>不保证隔离性，一阶段完成后仅维护着全局事务锁XID提交了本地事务。</li>
+</ol>
+</li>
+</ul>
+<h4 id="适用场景">适用场景</h4>
+<ul>
+<li>业务流程长，业务逻辑多的地方。</li>
+<li>历史遗留代码无法修改的情况</li>
+</ul>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/fen-bu-shi-shi-wu-er-jie-jue-fen-bu-shi-shi-wu-de-si-lu/">
+                                <h3 class="post-title">
+                                    分布式事务(二) 解决分布式事务的思路
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#dtp%E5%92%8Cxa">DTP和XA</a></li>
+<li><a href="#2pc%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">2PC（两阶段提交）</a>
+<ul>
+<li><a href="#%E6%AD%A3%E5%B8%B8%E6%83%85%E5%86%B5">正常情况</a></li>
+<li><a href="#%E5%BC%82%E5%B8%B8%E6%83%85%E5%86%B5">异常情况</a></li>
+<li><a href="#%E7%BC%BA%E9%99%B7">缺陷</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">使用场景</a></li>
+</ul>
+</li>
+<li><a href="#3pc%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">3PC（三阶段提交）</a></li>
+</ul>
+</li>
+<li><a href="#tcc">TCC</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">基本原理</a></li>
+<li><a href="#%E5%AE%9E%E4%BE%8B">实例</a></li>
+<li><a href="#%E4%BC%98%E5%8A%BF%E7%BC%BA%E7%82%B9">优势&amp;缺点</a>
+<ul>
+<li><a href="#%E4%BC%98%E5%8A%BF">优势</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-2">使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1">可靠消息服务</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86-2">基本原理</a></li>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8">本地消息表</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8C%96%E7%89%88%E6%9C%AC">简化版本</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BC%98%E7%82%B9%E7%BC%BA%E7%82%B9">优点&amp;缺点</a>
+<ul>
+<li><a href="#%E4%BC%98%E7%82%B9">优点</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9-2">缺点</a></li>
+</ul>
+</li>
+<li><a href="#%E7%8B%AC%E7%AB%8B%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1">独立消息服务</a>
+<ul>
+<li><a href="#rocketmq%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF">RocketMQ事务消息</a></li>
+<li><a href="#rabbitmq%E7%9A%84%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4">RabbitMQ的消息确认</a></li>
+<li><a href="#%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF%E4%BC%98%E7%82%B9%E7%BC%BA%E7%82%B9">事务消息优点&amp;缺点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#seata">Seata</a>
+<ul>
+<li><a href="#at%E6%A8%A1%E5%BC%8F">AT模式</a>
+<ul>
+<li><a href="#%E4%B8%80%E9%98%B6%E6%AE%B5">一阶段</a></li>
+<li><a href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">二阶段提交</a></li>
+<li><a href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%E5%9B%9E%E6%BB%9A">二阶段回滚</a></li>
+<li><a href="#%E8%AF%A6%E7%BB%86%E6%9E%B6%E6%9E%84%E5%92%8C%E6%B5%81%E7%A8%8B">详细架构和流程</a></li>
+<li><a href="#%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B">详细流程</a></li>
+<li><a href="#%E4%BC%98%E7%82%B9%E7%BC%BA%E7%82%B9-2">优点&amp;缺点</a></li>
+<li><a href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF">适用场景</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

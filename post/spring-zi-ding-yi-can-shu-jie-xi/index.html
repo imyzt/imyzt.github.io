@@ -1,0 +1,310 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring 自定义参数解析 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Spring 自定义参数解析
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-03-21</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="缘起">缘起</h1>
+<p>我们在使用Spring的时候，通常会直接在 Controller 的 handler（自定义的接口）中填写 <code>HttpServletRequest</code>, <code>HttpServletResponse</code>, <code>Model</code>, <code>HttpSession</code>，并且在方法中使用时对象是可以使用的。<br>
+之前我一直好奇， 这是什么原理。通过这次在学习慕课网的<a href="https://coding.imooc.com/class/chapter/168.html">Java秒杀系统方案优化 高性能高并发实战</a> 时，老师的讲解是我终于不是只会用，不知其如何实现了。</p>
+<h1 id="原理">原理</h1>
+<p>Spring给我们使用者预留了一个接口 <code>HandlerMethodArgumentResolver</code>，通过实现这个接口， 覆盖它的 <code>supportsParameter</code> 和 <code>resolveArgument</code> 方法, 我们就可以将自己想要的对象在方法入参处自动注入了. Spring官方的名称叫做 <strong>自定义参数解析</strong>.</p>
+<p>在学习课程的过程中, 我们很多的方法都需要一个 <code>MiaoshaUser</code> 对象, 下面我们结合实际需求, 通过代码展示的方式一步一步实现这个看起来很酷的功能.</p>
+<h1 id="给我也整一个">给我也整一个</h1>
+<h2 id="第一步">第一步</h2>
+<p>首先我们编写一个 <code>UserArgumentResolver</code> 类, 使其实现 <code>HandlerMethodArgumentResolver</code> 接口. 并且通过 <code>@Component</code> 注解将它标记为Spring管理的Bean</p>
+<pre><code>/**
+ * @author imyzt
+ * @date 2019/3/9 16:53
+ * @description 实现此方法, 将自动对方法入参包含 {@link MiaoshaUser} 的对象的进行注入
+ */
+@Component
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+
+}
+</code></pre>
+<h2 id="第二步">第二步</h2>
+<p>我们需要覆盖它的两个方法</p>
+<pre><code>/**
+ * @author imyzt
+ * @date 2019/3/9 16:53
+ * @description 实现此方法, 将自动对方法入参包含 {@link MiaoshaUser} 的对象的进行注入
+ */
+@Component
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        Class &lt;?&gt; parameterType = parameter.getParameterType();
+        return parameterType == MiaoshaUser.class;
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
+        return UserContext.getUser();
+    }
+}
+</code></pre>
+<h2 id="supportsparameter">supportsParameter()</h2>
+<p><code>supportsParameter()</code> 方法中判断请求参数是否被 <code>HandlerMethodArgumentResolver </code> 支持, 它的判断依据非常多, 具体可以查看 <code>org.springframework.core.MethodParameter</code> 的源代码找到合适自己业务的匹配方法. 我这里通过 <code>getParameterType()</code> 方法获取了参数类型, 只要是参数类型是 <code>MiaoshaUser.class</code> 的就表示我编写的 <code>UserArgumentResolver </code> 解析类支持处理该方法入参. 下面开始下一个具体处理方法.</p>
+<h2 id="resolveargument">resolveArgument(...)</h2>
+<p><code>resolveArgument(...)</code> 方法及自定义参数解析的核心处理方法. Spring通过调用该方法将参数值注入到上面 <code>supportsParameter()</code> 支持的方法入参上面去.<br>
+我这里的处理方法比较简单, 因为我的用户信息在上一步的拦截器中已经保存在 <code>UserContext</code> 用户上下文信息中. 所以只需要 <code>getUser()</code> 即可获取用户信息.</p>
+<p>在这里备注一下, 我们可以通过 <code>webRequest</code> 获取到当前请求的Request和Response信息. 代码如下</p>
+<pre><code>HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>通过学习慕课上面的这个项目, 对于我这种没有接触过互联网项目的人来说, 是一个互联网开发扫盲. 里面的很多东西还是非常不错的. 在学习这个项目的过程中. 写了一些小笔记, 不在于实现, 而是一些思路. 项目地址: <a href="https://github.com/imyzt/imooc_miaosha">github</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/spring-boot-20-wu-fa-zhao-dao-springwebcontext/">
+                                <h3 class="post-title">
+                                    spring boot 2.0+ 无法找到SpringWebContext
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E7%BC%98%E8%B5%B7">缘起</a></li>
+<li><a href="#%E5%8E%9F%E7%90%86">原理</a></li>
+<li><a href="#%E7%BB%99%E6%88%91%E4%B9%9F%E6%95%B4%E4%B8%80%E4%B8%AA">给我也整一个</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AD%A5">第一步</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5">第二步</a></li>
+<li><a href="#supportsparameter">supportsParameter()</a></li>
+<li><a href="#resolveargument">resolveArgument(...)</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

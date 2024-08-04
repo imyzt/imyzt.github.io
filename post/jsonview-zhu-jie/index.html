@@ -1,0 +1,350 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    JsonView注解 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            JsonView注解
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-06-01</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <blockquote>
+<p>通过 <code>@JsonView</code> 注解， 指定对应对象在对应控制器的不同返回内容.</p>
+</blockquote>
+<p>JsonView以接口作为区分组， 不同的接口作为其参数可以针对不同类型进行分类区分.<br>
+我们有一个 User 对象， 它有username和password属性， 然后对应两个控制器userList和getUserInfo， 我想在在userList接口时只返回用户的名称列表， 在getUserInfo时，将用户名和密码一起返回。那么可以通过定义两个接口：UserSimpleView和UserDetailView， UserDetailView继承自UserSimpleView，根据Java的继承关系也不难理解，就是当有simple的时候， 是独立的， 当有detail的时候， 会将simple注解了的参数一并展示，描述的可能不是特别好，可以通过代码得到更好的展示。</p>
+<p>首先，我们在User类中，定义两个接口。分别代表两种展示类别，然后再username字段加上simple接口参数，在password字段加上detail接口参数。</p>
+<pre><code>@Data
+@Accessors(chain = true)
+public class User implements Serializable {
+
+    public interface UserSimpleView {}
+    public interface UserDetailView extends UserSimpleView {}
+
+    @JsonView(UserSimpleView.class)
+    private String username;
+    @JsonView(UserDetailView.class)
+    private String password;
+}
+</code></pre>
+<p>然后再对应的两个控制器，通过 <code>@JsonView</code> 注解，和对应对象的属性绑定起来。<br>
+可以看到，我们在getUserList方法上配置了simple接口，代表着它的参数返回中，只会包括usename字段属性值。<br>
+在getInfo方法上，通过配置detail接口，代表着它的返回值中可以包括 <code>User</code> 对象中的所有使用了 <code>Detail</code> 接口以及其父接口的参数.</p>
+<pre><code>@RestController
+@RequestMapping(&quot;user&quot;)
+public class UserController {
+
+    @GetMapping
+    @JsonView(User.UserSimpleView.class)
+    public List&lt;User&gt; getUserList(UserQueryCondition condition,
+                              @PageableDefault(size = 20, page = 1, sort = &quot;username,asc&quot;) Pageable pageable) {
+
+        System.out.println(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
+        System.out.println(pageable);
+
+        return Collections.singletonList(new User().setUsername(&quot;yzt&quot;).setPassword(&quot;xxx&quot;));
+    }
+
+    @GetMapping(&quot;{id:\\d+}&quot;)
+    @JsonView(User.UserDetailView.class)
+    public User getInfo(@PathVariable String id) {
+
+        System.out.println(id);
+
+        User user = new User();
+        user.setUsername(&quot;tom&quot;).setPassword(&quot;xxx&quot;);
+        return user;
+    }
+}
+</code></pre>
+<p>接下来通过单元测试的返回值，具体的来看一下效果。</p>
+<pre><code>@SpringBootTest
+@RunWith(SpringRunner.class)
+public class UserControllerTest {
+
+    @Autowired
+    private WebApplicationContext wac;
+    private MockMvc mockMvc;
+
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
+
+    @Test
+    public void whenQuerySuccess() throws Exception {
+        String contentAsString = mockMvc.perform(get(&quot;/user&quot;)
+                .param(&quot;username&quot;, &quot;yzt&quot;)
+                .param(&quot;age&quot;, &quot;20&quot;)
+                .param(&quot;ageTo&quot;, &quot;30&quot;)
+                .param(&quot;page&quot;, &quot;2&quot;)
+                .param(&quot;size&quot;, &quot;10&quot;)
+                .param(&quot;sort&quot;, &quot;age,desc&quot;)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(&quot;$.length()&quot;).value(1))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        System.out.println(contentAsString);
+
+    }
+
+
+    @Test
+    public void whenGetInfoSuccess() throws Exception {
+        String content = mockMvc.perform(get(&quot;/user/1&quot;)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;tom&quot;))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        System.out.println(content);
+    }
+}
+</code></pre>
+<p>对应的返回值如下:<br>
+whenQuerySuccess接口返回值， 只看到了username参数。</p>
+<pre><code>top.imyzt.learning.security.demo.dto.UserQueryCondition@67b560fe[
+  username=yzt
+  age=20
+  ageTo=30
+]
+Page request [number: 2, size 10, sort: age: DESC]
+[{&quot;username&quot;:&quot;yzt&quot;}]
+
+</code></pre>
+<p>whenGetInfoSuccess接口返回值，可以看到了password参数。</p>
+<pre><code>{&quot;username&quot;:&quot;tom&quot;,&quot;password&quot;:&quot;xxx&quot;}
+
+</code></pre>
+<p>至此，博客结束了。有多学了一个骚操作。</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/linux-ubuntu-chang-yong-ming-ling-ji/">
+                                <h3 class="post-title">
+                                    Linux Ubuntu 常用命令集
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                                <!-- id-card -->
+                                
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+                                    
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

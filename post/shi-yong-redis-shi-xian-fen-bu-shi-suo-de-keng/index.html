@@ -1,0 +1,440 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    使用Redis实现分布式锁的坑 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            使用Redis实现分布式锁的坑
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-03-04</time>
+                            
+                                <a href="https://imyzt.top/tag/cZVWiX7Fs/" class="post-tag i-tag
+                            i-tag-other_4">
+                            #Redis
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/pOZSPM4n_2/" class="post-tag i-tag
+                            i-tag-info">
+                            #分布式锁
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_2">
+                            #问题解决
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。<br>
+实现分布式锁的方案有很多，既可以直接使用<code>MySQL</code>作为分布式锁（例如<code>xxl-job</code>），也可以利用<code>ZooKeeper</code>、<code>Redis</code>等。<br>
+在基于<code>Spring Cloud</code>的业务系统中，一般都会引入<code>Redis</code>作为分布式缓存中间件，因此更多的人会选择使用<code>Redis</code>来实现分布式锁。本文将介绍使用<code>Redis</code>作为分布式锁时常见的问题和解决方法。</p>
+<h1 id="1-没有使用原子操作指令">1. 没有使用原子操作指令</h1>
+<h2 id="错误写法">错误写法</h2>
+<pre><code class="language-java">    Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue);
+    stringRedisTemplate.expire(lockKey, Duration.ofSeconds(expireTime));
+    if (!tryLock) {
+        return;
+    }
+</code></pre>
+<p>上述操作通常出现在新手阶段，在写入锁对象时，没有考虑到原子性问题。在<code>Redis</code>中有提供<code>SET NX PX</code>指令，支持在设置锁的同时指定过期时间，并且支持原子性判断<code>key</code>是否已存在。</p>
+<p>NX 和 PX 是 Redis 命令中用于设置 key 的两个选项。</p>
+<ul>
+<li>NX: 当指定 NX 选项时，只有在 key 不存在的情况下才会设置 key 的值。如果 key 已经存在，则不进行任何操作。</li>
+<li>PX: PX 选项用于设置 key 的过期时间（以毫秒为单位）。例如，PX 10000 表示在 10 秒后将 key 设置为过期状态。</li>
+</ul>
+<h2 id="正确写法">正确写法：</h2>
+<pre><code class="language-java">Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+</code></pre>
+<h1 id="2-释放了别人的锁">2. 释放了别人的锁</h1>
+<h2 id="错误写法-2">错误写法</h2>
+<pre><code class="language-java">try {
+    Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+    if (!tryLock) {
+        return;
+    }
+
+    // do something
+    } finally {
+    stringRedisTemplate.delete(lockKey);
+    }
+</code></pre>
+<p>在加锁的过程中，没有设定唯一值作为<code>Value</code>存储到Redis中，在释放时，不判断直接对锁进行释放。其二，将获取锁的代码放在了<code>try</code>代码块中。</p>
+<p>在上述代码中存在两个问题：</p>
+<ol>
+<li>不该执行到<code>finlly</code>代码块：A请求获得了锁正在执行业务代码，而B请求没有获得锁，但是因为获取锁的代码在<code>try</code>代码块中，导致<code>finally</code>一定会执行，B请求就会将A请求的锁释放，而如果A请求依旧未执行完毕，此时C请求过来时，<strong>则C请求错误的拿到了锁</strong>。</li>
+<li>不该删除别人的锁：在删除锁时，应该判断自己是否是上锁人，由于多次执行<code>Redis</code>指令不具备原子性，所以一般是交由<code>LUA</code>脚本来实现的。</li>
+</ol>
+<pre><code class="language-lua">if redis.call('get', KEYS[1]) == ARGV[1]
+    then
+        return redis.call('del', KEYS[1])
+    else
+        return 0
+end
+</code></pre>
+<h2 id="正确写法-2">正确写法</h2>
+<ol>
+<li>提前将LUA脚本载入到<code>Redis</code>服务端</li>
+</ol>
+<pre><code class="language-java">script = new DefaultRedisScript&lt;&gt;();
+script.setResultType(Long.class);
+script.setScriptSource(new ResourceScriptSource(new ClassPathResource(&quot;release_lock.lua&quot;)));
+</code></pre>
+<ol start="2">
+<li>获取和释放锁示例</li>
+</ol>
+<pre><code class="language-java">Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, expireTime, TimeUnit.MILLISECONDS);
+if (!tryLock) {
+    return;
+}
+try {
+
+    // do something
+} finally {
+    ArrayList&lt;String&gt; keys = new ArrayList&lt;&gt;();
+    keys.add(context.getLockKey());
+    stringRedisTemplate.execute(this.script, keys, context.getLockValue());
+}
+</code></pre>
+<h1 id="3-事务未提交锁就释放了">3. 事务未提交锁就释放了</h1>
+<h2 id="错误代码">错误代码</h2>
+<pre><code class="language-java">/**
+    * 事务内获取分布式锁
+    */
+@Transactional(rollbackFor = Exception.class)
+public void saveUserWithDistributedLock(String name) {
+
+    String lockKey = &quot;lock_key:&quot; + name;
+    RedisLock.LockContext lockContext = redisLock.tryLock(lockKey, 10000L);
+    if (!lockContext.getTryLock()) {
+        // printLog(&quot;没拿到锁&quot;);
+        return;
+    }
+
+    printLog(&quot;拿到锁了&quot; + lockKey);
+
+    try {
+        this.save(name);
+    } finally {
+        redisLock.release(lockContext);
+        printLog(&quot;释放锁了&quot;);
+    }
+}
+</code></pre>
+<p>MySQL常规情况下是<code>RR</code>的隔离级别，只有等到事务提交数据才对其他事务可见，存在**“读视图”<strong>，在上述的代码中，A请求拿到了锁执行了业务代码，执行到<code>redisLock.release</code>时将锁释放了，但Spring的<code>@Transactional</code>依赖的是AOP，其需要等到方法执行完毕才会提交事务，在这个临界点，B请求可以正常拿到锁，但是A请求的事务还未提交，B请求的</strong>读视图**中还未查询到A请求提交的数据，最终造成了数据的不一致性。</p>
+<h2 id="正确代码">正确代码</h2>
+<p>正确的情况是在另一个方法中获取到锁之后，再调用包含事务的业务代码。此时需要注意SpringAOP在本方法内代理失效的问题，通常需要新建一个Service来处理。</p>
+<h1 id="业务代码执行超过锁过期时间">业务代码执行超过锁过期时间</h1>
+<h2 id="错误代码-2">错误代码</h2>
+<pre><code class="language-java">// Domain-Service
+public void save(String name) {
+
+    String lockKey = &quot;lock_key:&quot; + name;
+    RedisLock.LockContext lockContext = redisLock.tryLock(lockKey, 10000L);
+    if (!lockContext.getTryLock()) {
+        printLog(&quot;没拿到锁&quot;);
+        return;
+    }
+
+    printLog(&quot;拿到锁了&quot; + lockKey);
+    try {
+        userService.save(name);
+    } finally {
+        redisLock.release(lockContext);
+        printLog(&quot;释放锁了&quot;);
+    }
+}
+
+// UserService
+@Transactional(rollbackFor = Exception.class)
+public void save(String name) {
+
+    List&lt;User&gt; users = userRepository.findUsersByName(name);
+    if (CollUtil.isNotEmpty(users)) {
+        printLog(&quot;已经写入, 不再写入&quot; + users);
+        return;
+    }
+
+    // 业务保存模拟执行很慢
+    TimeUnit.SECONDS.sleep(70);
+    
+}
+</code></pre>
+<p>上述代码中，锁对象只有10s的时间，但是业务代码执行却需要70s，A请求虽然拿到了锁，此时后续10秒其他请求均无法获取锁，但是从第11秒开始的请求将可以拿到锁，而此时A请求还未执行完毕，此时开始出现错误的获取锁，最终造成数据的不一致。</p>
+<h2 id="正确写法-3">正确写法</h2>
+<p>参考<code>Redisson</code>的<code>WatchDog</code>机制，另外开辟线程每隔 10s 就给还未执行完毕的 <code>Key</code> 自动续期 30s，保证业务代码能够安全的执行完毕再自行释放锁对象。</p>
+<p>示例代码：</p>
+<pre><code class="language-java">// watch dog
+Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -&gt; {
+    if (!LOCK_CONTEXTS.isEmpty()) {
+        for (LockContext lockContext : LOCK_CONTEXTS) {
+            // 如果执行线程还未释放锁, 续期30s(模拟Redisson)
+            stringRedisTemplate.expire(lockContext.getLockKey(), Duration.ofSeconds(30));
+            Long expire = stringRedisTemplate.getExpire(lockContext.getLockKey());
+            log.info(&quot;WatchDog, expire 30s, lockKey={}, ttl={}&quot;, lockContext.getLockKey(), expire);
+        }
+    }
+        }, 0,
+        // 10秒检测一次
+        10, TimeUnit.SECONDS);
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>分布式锁的错误还有很多，本篇主要是自己在工作过程中遇到的一些坑，着重介绍新手阶段在编写分布式锁时遇到的比较基础的问题，后面有空再进行其他场景的逐个介绍。</p>
+<p>本文参考：<a href="https://juejin.cn/post/7011503283768393736">聊聊redis分布式锁的8大坑</a><br>
+本文代码：<a href="https://github.com/imyzt/learning-technology-code/tree/master/in-action/redis-lua-distributed-lock">redis-lua-distributed-lock</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">
+                                <h3 class="post-title">
+                                    错用HashedWheelTimer导致的OOM问题
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#1-%E6%B2%A1%E6%9C%89%E4%BD%BF%E7%94%A8%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4">1. 没有使用原子操作指令</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%86%99%E6%B3%95">错误写法</a></li>
+<li><a href="#%E6%AD%A3%E7%A1%AE%E5%86%99%E6%B3%95">正确写法：</a></li>
+</ul>
+</li>
+<li><a href="#2-%E9%87%8A%E6%94%BE%E4%BA%86%E5%88%AB%E4%BA%BA%E7%9A%84%E9%94%81">2. 释放了别人的锁</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%86%99%E6%B3%95-2">错误写法</a></li>
+<li><a href="#%E6%AD%A3%E7%A1%AE%E5%86%99%E6%B3%95-2">正确写法</a></li>
+</ul>
+</li>
+<li><a href="#3-%E4%BA%8B%E5%8A%A1%E6%9C%AA%E6%8F%90%E4%BA%A4%E9%94%81%E5%B0%B1%E9%87%8A%E6%94%BE%E4%BA%86">3. 事务未提交锁就释放了</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E4%BB%A3%E7%A0%81">错误代码</a></li>
+<li><a href="#%E6%AD%A3%E7%A1%AE%E4%BB%A3%E7%A0%81">正确代码</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E8%B6%85%E8%BF%87%E9%94%81%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4">业务代码执行超过锁过期时间</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E4%BB%A3%E7%A0%81-2">错误代码</a></li>
+<li><a href="#%E6%AD%A3%E7%A1%AE%E5%86%99%E6%B3%95-3">正确写法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

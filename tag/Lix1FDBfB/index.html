@@ -1,0 +1,457 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java developer | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Java developer</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
+                        Spring 异步初始化
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-05-22</time>
+                    
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-primary">
+            #Spring
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-other_2">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在Spring6.2版本后，支持了异步初始化。
+什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。
+在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。
+模拟初始化Bean耗时
+
+ABean
+
+@Slf4j
+public class TestABean {
+    @SneakyThrows
+    public TestABean() {
+        log.info(&amp;quot;A Bean开始初始化&amp;quot;);
+        TimeUnit.SECONDS.sleep(5);
+        log.info(&amp;quot;A Bean初始化完成&amp;quot;);
+    }
+}
+
+
+BBean
+
+@Slf4j
+public class TestBBean {
+    @SneakyThrows
+    public TestBBean() {
+        log.info(&amp;quot;B Bean开始初始化&amp;quot;);
+        TimeUnit.SECONDS.sleep(6);
+        log.info(&amp;quot;B Bean初始化完成&amp;quot;);
+    }
+}
+
+
+配置类
+
+@Configuration
+public class RegisterConfiguration {
+    @Bean
+    public TestABean testABean() {
+        return new TestABean();
+    }
+    @Bean
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+}
+
+
+启动类
+
+@Slf4j
+@ComponentScan(&amp;quot;top.imyzt.learning.spring.startup&amp;quot;)
+public class Application {
+    public static void main(String[] args) {
+        StopWatch stopWatch = new StopWatch(&amp;quot;Spring启动&amp;quot;);
+        stopWatch.start();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+}
+
+
+启动日志
+
+21:39:33.658 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testABean&#39;
+21:39:33.663 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:39:38.667 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:39:38.669 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testBBean&#39;
+21:39:38.670 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:39:44.673 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch &#39;Spring启动&#39;: 11.555947229 seconds
+------------------------------------------
+Seconds       %       Task name
+------------------------------------------
+11.55594723   100%    
+
+
+小结
+可以看到，在常规情况下，A和B Bean是串行初始化的，整个初始化耗时11.5s。
+
+异步初始化
+在Spring6.2版本中，@Bean注解引入了一个新的属性：bootstrap，默认Bean.Bootstrap.DEFAULT时为串行初始化，当指定为Bean.Bootstrap.BACKGROUND时，Spring会尝试异步初始化该Bean，但是需要配置一个名为bootstrapExecutor的线程池，用作异步初始化时所需的线程。
+只需要将配置类稍作修改，就可以将指定的Bean进行异步初始化：
+@Configuration
+public class RegisterConfiguration {
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestABean testABean() {
+        return new TestABean();
+    }
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+
+    @Bean()
+    public Executor bootstrapExecutor() {
+        return new ThreadPoolExecutor(2, 10, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024));
+    }
+}
+
+然后我们再查看启动效果：
+21:53:49.023 [pool-1-thread-1] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testABean&#39;
+21:53:49.024 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:53:49.025 [pool-1-thread-2] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testBBean&#39;
+21:53:49.026 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:53:54.029 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:53:55.031 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch &#39;Spring启动&#39;: 6.740055683 seconds
+-----------------------------------------
+Seconds       %       Task name
+-----------------------------------------
+6.740055683   100%    
+
+可以看到启动时间从11.5s降为6.7s，效果十分显著，在部分需要依赖外部或已知需要耗时初始化的Bean，可以通过此方法进行优化。“我可以不用，你不能没有”。
+参考
+
+13年过去了，Spring官方竟然真的支持Bean的异步初始化了！
+博客对应代码
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/idea-2023-fei-chang-yong-pei-zhi/">
+                         IDEA 2023 非常用配置
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-01-06</time>
+                    
+                        <a href="https://imyzt.top/tag/uWJlyqIS1/" class="post-tag i-tag
+                            i-tag-success">
+            #IDEA
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-other_3">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+
+配置文件全部使用UTF-8
+Editor-File Encodings，将所有内容均设置为UTF-8。
+Create UTF-8 files 选择 with NO BOM，避免在创建文件前3个字节来标志为UTF-8文件。
+
+
+参数提示
+默认情况下，是没有参数提示的，需要手动开启。
+Editor-General-Code Completion-Parameter Info
+
+
+
+
+注释默认在当前缩进
+默认情况下，自动补全注释是在最前面，可以通过：
+Editor-Code Style-Java(其它语言位置类似)-Code Generation-Comment Code按如下图配置进行处理。
+
+
+
+如果配置的内容，在新项目不生效，则注意此处
+除了字体样式字体大小外，其它的配置IDEA官方认为，每个项目在创建时，可能都需要一些不同的配置，所以有很多内容都是跨项目不生效的（Maven、文件格式等），需要在此处配置（点进去和Settings一模一样，但是对应的是Next Project（新项目）的配置）
+
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/idea-2023-fei-chang-yong-pei-zhi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-kai-fa-gong-ju-tui-jian/">
+                        Java开发工具推荐
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-01-20</time>
+                    
+                        <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-info">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            工具包
+
+Google Guava
+HuTool
+Apache Commons(这玩意估计没人不知道了。)
+
+工具类
+AntPathMatcher
+作用：URL路径匹配
+？匹配一个字符
+*匹配0个或多个字符
+**匹配0个或多个目录
+StopWatch
+作用：方法耗时计算
+该类Spring和Guava都有提供，用法大同小异
+BeanCopier
+作用：拷贝bean
+比Apache和Spring提供的BeanUtils效率好点
+注意点：
+该方法与lombok提供的@Accessors(chain = true)注解冲突，在cglib最底层target调用set方法进行参数设置的时候，判断了set方法返回值是否为void，不为void不会进行赋值操作。
+解决方法有2：
+
+去掉@Accessors(chain = true)
+使用org.springframework.beans.BeanUtils
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-kai-fa-gong-ju-tui-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

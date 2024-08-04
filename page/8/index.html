@@ -1,0 +1,932 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/yapiupload-pei-zhi-ji-shi-yong/">
+                        YapiUpload配置及使用	
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-06-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是YapiUpload
+yapiUpload是为IDEA提供的快速编写 yapi 接口文档的工具，在编写好Spring Controller后，通过一系列配置，可以直接生成接口文档到YAPI上。
+yapiUpload是开源的
+代码仓库在：https://github.com/diwand/YapiIdeaUploadPlugin
+文档在：https://github.com/diwand/YapiIdeaUploadPlugin/wiki
+如何安装及配置
+IDEA安装插件
+插件地址：
+https://plugins.jetbrains.com/plugin/12276-yapiupload
+
+配置yapiUpload
+找到项目文件 .idea/misc.xml，在&amp;lt;project&amp;gt;节点粘贴以下内容。
+  &amp;lt;!--yapi配置--&amp;gt;
+  &amp;lt;component name=&amp;quot;yapi&amp;quot;&amp;gt;
+    &amp;lt;option name=&amp;quot;projectToken&amp;quot;&amp;gt;你的token&amp;lt;/option&amp;gt;
+    &amp;lt;option name=&amp;quot;projectId&amp;quot;&amp;gt;14&amp;lt;/option&amp;gt;
+    &amp;lt;option name=&amp;quot;yapiUrl&amp;quot;&amp;gt;你的yapi地址&amp;lt;/option&amp;gt;
+    &amp;lt;option name=&amp;quot;projectType&amp;quot;&amp;gt;api&amp;lt;/option&amp;gt;
+  &amp;lt;/component&amp;gt;
+
+
+如何使用
+编写一个标准的接口
+yapiUpload支持很多Javadoc注解，可以在官方文档查看。
+
+上传到文档地址
+上传成功
+
+接口列表
+登录yapi上查看即可
+
+接口详情
+修改时，一般是直接覆盖，高版本yapi的api支持修改。不过好像这个工具还不支持。
+
+二次开发
+yapiUpload本身是一个IDEA的插件，可以按照IDEA编码进行二次开发。
+yapi也提供了二次开发api，可以对该插件做升级。https://hellosean1025.github.io/yapi/openapi.html
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/yapiupload-pei-zhi-ji-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/redis-lua-debug/">
+                        Redis LUA debug
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-06-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+调试命令
+redis-cli --ldb --eval loop.lua keysargs1 keysargs2, argv1,argv2
+
+命令解析
+
+--ldb 即开启调试模式
+--eval 指定调试脚本
+keysargs1 keysargs2, argv1,argv2 逗号前是KEYS的参数， 之后是ARGV的参数。
+s 如果，通过 s 执行下一步
+
+loop.lua
+
+local i=0
+while true
+do
+	i=i+1
+	redis.debug(i)
+end
+return &amp;quot;OK&amp;quot;
+
+redis lua 调试工具
+IDE 地址及安装
+
+ZeroBrane Studio Plugin for Redis Lua Scripts
+LUA调试插件地址
+https://github.com/pkulchenko/ZeroBranePackage/blob/master/redis.lua
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/redis-lua-debug/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/redis-lua-ji-ben-shi-yong/">
+                        Redis LUA基本使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-06-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.top/post/redis-lua-ji-ben-shi-yong/" class="post-feature-image" style="background-image:url(https://redis.io/images/redis-white.png) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            EVAL LUA
+redis.call
+
+通过EVAL指令，使用 redis.call 执行LUA脚本，3指定的是，前三个参数是KEYS的，然后后面的是ARGV的。
+LUA索引从1开始。
+
+127.0.0.1:6379&amp;gt; EVAL &amp;quot;return redis.call(’SET&#39;, KEYS[2], ARGV[3])&amp;quot; 3 1 2 3 4 5 6
+127.0.0.1:6379&amp;gt; get 2
+&amp;quot;6&amp;quot;
+
+[1 2 3]是KEYS的
+[4 5 6]是ARGV的
+
+redis.pcall
+
+redis.call 在遇到异常之后，不会继续往后执行。
+redis.pcall 可以捕获异常，如果没处理的话，将继续往后执行。
+
+此处第一条语句报错，第二条语句将不会执行。
+127.0.0.1:6379&amp;gt; EVAL &amp;quot;redis.call(&#39;SETRRRR&#39;, KEYS[1], ARGV[1]); redis.call(&#39;SET&#39;, KEYS[2], ARGV[2])&amp;quot; 2 a b c d e f g
+(error) ERR Error running script (call to f_8a873e7e4125dc92ef97aa5e8b07e22f7d185183): @user_script:1: @user_script: 1: Unknown Redis command called from Lua script
+127.0.0.1:6379&amp;gt; get b
+(nil)
+
+通过redis.pcall命令，对错误进行捕获后，会继续执行第二条语句。
+127.0.0.1:6379&amp;gt; EVAL &amp;quot;redis.pcall(&#39;SETRRRR&#39;, KEYS[1], ARGV[1]); redis.call(&#39;SET&#39;, KEYS[2], ARGV[2])&amp;quot; 2 a b c d e f g
+(nil)
+127.0.0.1:6379&amp;gt; get b
+&amp;quot;d&amp;quot;
+
+SCRIPT
+SCRIPT作用
+在开发过程中，如果LUA脚本比较长，是会有一定的网络开销的。可以事先将LUA脚本缓存到redis服务器上，还可以防止脚本暴露在程序中被篡改。
+
+可以通过 SCRIPT LOAD 指令将LUA脚本缓存到服务端，服务端返回一个RSA加密后的串。
+执行时，通过 EVALSHA 执行 RSA串 即可。
+
+127.0.0.1:6379&amp;gt; SCRIPT LOAD &amp;quot;redis.call(&#39;SET&#39;, KEYS[1], ARGV[1])&amp;quot;
+&amp;quot;fcd2612e1ca113b83fdfbc2a88493d3b231a32ad&amp;quot;
+127.0.0.1:6379&amp;gt; EVALSHA fcd2612e1ca113b83fdfbc2a88493d3b231a32ad 2 a b c d e f g
+(nil)
+127.0.0.1:6379&amp;gt; get a
+&amp;quot;c&amp;quot;
+
+SCRIPT基础指令
+SCRIPT EXISTS 检查是否存在脚本
+127.0.0.1:6379&amp;gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32ad
+1) (integer) 1
+127.0.0.1:6379&amp;gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32adaaa
+1) (integer) 0
+
+SCRIPT FLUSH 清空所有脚本
+127.0.0.1:6379&amp;gt; SCRIPT FLUSH
+OK
+127.0.0.1:6379&amp;gt; SCRIPT EXISTS fcd2612e1ca113b83fdfbc2a88493d3b231a32ad
+1) (integer) 0
+
+SCRIPT KILL 杀死当前正在运行的脚本
+loop.lua
+local i=0
+while true
+do
+	i=i+1
+	redis.debug(i)
+end
+return &amp;quot;OK&amp;quot;
+
+redis-cli --eval loop.lua
+进入锁死状态，开一个新窗口。所有指令都返回Redis服务器处于繁忙状态
+
+
+通过KILL指令干掉当前正在执行的指令。
+127.0.0.1:6379&amp;gt; SCRIPT KILL
+OK
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/redis-lua-ji-ben-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/xian-cheng-chi-dong-tai-guan-li/">
+                        线程池动态管理
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-06-13</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            介绍
+​	看了美团  Java线程池实现原理及其在美团业务中的实践 这篇文章之后，对线程池有了一些新的认识，后面看到了 如何设置线程池参数？美团给出了一个让面试官虎躯一震的回答 四川好男人的一顿骚操作，瞬间又认识的更清晰了一些。就想着能不能做一套这样的线程池管理系统，然后就有了后文。
+​	Web应用系统中，ThreadPoolExecutor一般是由代码硬编码的，core/max/queueSize都是定数，而系统的流量不是一个定数。在峰值期间，线程池无法动态扩容，导致大量请求处理失败进行拒绝策略。本系统主要是做了一个可以动态调参的线程池，依赖ThreadPoolExecutor本身提供的set方法，对运行中的各项基本参数进行动态调控。并且包括监控报警、Web界面、自动扩容策略等。
+设计
+
+实现
+客户端
+配置文件需配置服务端地址
+线程池配置需配置线程池（三种接入方式）
+
+
+接入方式， 提供三种[##feature]
+
+
+启动时，携带应用名上报对应的线程池配置(多实例同时启动， 此接口需要幂等)
+
+
+通过Java定时器，定时上报线程池数据。
+
+
+与服务端维持长连接，60秒一次，服务端线程池配置（web操作）变化时，返回对应发生改变的[线程池名称]。然后客户端请求服务端获取对应线程池新的配置。
+
+
+服务端
+
+
+上报接口
+1.1 配置上报接口(配置带版本号)
+1.1.1 初次上报(数据库无法查询, 即视为初次上报)， 存储初始化参数
+1.1.2 服务端Web发起调参, 自行记录， 无需客户端上报(可优化为客户端上报)
+1.2 工作状态上报接口
+​	1.2.1 定时上报应用每个线程池各项指标
+
+
+发起调参后，接受客户端请求最新线程池参数请求
+
+
+存储上报数据， 负责提供数据展示接口，读取数据
+
+
+feature
+
+接入方式新增, 除了Dynamic，让默认的Spring的task和jdk的executor都支持，只有dynamic支持修改队列大小。
+
+todo-list
+https://github.com/imyzt/dynamic-thread-pool/projects/1
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/xian-cheng-chi-dong-tai-guan-li/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/">
+                        FastJSON继承类反序列化参数
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-05-05</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.top/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" class="post-feature-image" style="background-image:url(https://imyzt.top/post-images/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu.png) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            场景及问题
+做工具封装时，通常会定义一个顶级父类data struct，子类继承之后补充自己独有的属性。该模式在常规使用情况下都是可用的，但是在涉及到序列化后反序列化对象时，就不是那么管用了。
+我们假设有两个对象，class BaseClass 和 class ChildClass
+import lombok.Data;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 超类
+ */
+@Data
+public class BaseClass {
+    private Integer bashInfo;
+}
+
+import lombok.*;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 子类
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@ToString(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChildClass extends BaseClass {
+
+    private String childInfo;
+
+}
+
+我们假设生产端生产消息，通过FastJSON序列化为字符串，然后通过kafka或者其他途径传递到消费端，消费端通过超类BaseClass转换消息，根据不同的子类通过不同的策略去处理。但是在这种情况下，通过超类解析字符串对象回JavaBean对象时，一般只能将超类中拥有的参数转换回来，不能获得子类的属性。示例代码如下：
+
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description test
+ */
+
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) {
+
+        ChildClass one = new ChildClass();
+        one.setBashInfo(122);
+        one.setChildInfo(&amp;quot;childInfo&amp;quot;);
+
+        // 转换为字符串, 便于传输
+        String str = parseStr(one);
+
+        log.info(&amp;quot;str={}&amp;quot;, str);
+
+        // 转换回java bean
+        BaseClass childClass = JSON.parseObject(str, BaseClass.class);
+        log.info(&amp;quot;childClass={}&amp;quot;, childClass);
+    }
+
+    private static String parseStr(BaseClass obj) {
+        return JSON.toJSONString(obj);
+    }
+}
+
+日志打印：
+14:18:09.208 [main] INFO xxx.json.Test - str={&amp;quot;bashInfo&amp;quot;:122,&amp;quot;childInfo&amp;quot;:&amp;quot;childInfo&amp;quot;}
+14:18:09.227 [main] INFO xxx.json.Test - childClass=BaseClass(bashInfo=122)
+
+实现方式
+遇到这种情况，我们可以通过JSON的自省功能，实现在反序列化为JavaBean时，得到完整的子类属性，并且将JavaBean通过多态得到对应的子类对象。具体思路就是在序列化为JSON时，在json字符串中写入对应的类型，在反序列化时，通过JSON字符串中特殊标记的类型属性，按照该类型进行反序列化即可。
+FastJSON具体的实现是在调用 JSON.toJSONString()时，第二个数组参数传入Feature功能SerializerFeature.WriteClassName，完整调用如JSON.toJSONString(obj, SerializerFeature.WriteClassName); 在写入为JSON字符串时，会带有一个特殊的标记@type存储序列化时对应的类型，如下图。
+
+在反序列化时，只需要按照对应的类型进行解析即可。上述代码重新运行后日志如下：
+14:22:24.528 [main] INFO xxx.json.Test - str={&amp;quot;@type&amp;quot;:&amp;quot;xxx.json.ChildClass&amp;quot;,&amp;quot;bashInfo&amp;quot;:122,&amp;quot;childInfo&amp;quot;:&amp;quot;childInfo&amp;quot;}
+14:25:03.631 [main] INFO xxx.json.Test - childClass=ChildClass(super=BaseClass(bashInfo=122), childInfo=childInfo)
+
+注意点
+
+子类必须实现全参构造，或者有用lombok的@ToString(callSuper = true)也行，不然会出现映射父类属性的情况。
+
+OK, 整篇文章就讲了一个Feature，水了一整页。。可以多关注下JSON的其他Feature功能，说不定就是需要的。/狗头
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/yapi-upload-cha-jian-shi-yong/">
+                        yapi upload插件使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-30</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            yapi api
+https://hellosean1025.github.io/yapi/openapi.html
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/yapi-upload-cha-jian-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/beancopier-de-gong-ju-lei/">
+                        BeanCopier的工具类
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。
+但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。
+因此，就有了这个工具类。使用和Spring工具包一样的代码（重载方法甚至比Spring的更丰富），获得更好的效率。实现中通过对BeanCopier对象的一个Map缓存，会使得其效率更高一丢丢。
+至于具体的速度对比，网上有很多的实例，我也不做对比测试了。代码如下，如有欠缺的地方，希望留言指正，不胜感激。
+
+import com.google.common.collect.Maps;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * @author imyzt
+ * @date 2020/01/15
+ * @description bean拷贝缓存工具类
+ * 合理使用, 注意Map大小
+ */
+@UtilityClass
+@Slf4j
+public class BeanCopierUtils {
+
+    private static final Map&amp;lt;String, BeanCopier&amp;gt; BEAN_COPIER_MAP = Maps.newConcurrentMap();
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param target 目标
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &amp;lt;S&amp;gt; 源对象泛型
+     * @param &amp;lt;T&amp;gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, boolean useCache, Converter converter) {
+
+        requireNonNull(source, target);
+        boolean useConverter = Objects.nonNull(converter);
+
+        Class&amp;lt;?&amp;gt; targetClass = target.getClass();
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+        beanCopier.copy(source, target, converter);
+        return target;
+    }
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param targetClass 目标类对象
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &amp;lt;S&amp;gt; 源对象泛型
+     * @param &amp;lt;T&amp;gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, boolean useCache, Converter converter) {
+
+        requireNonNull(source, targetClass);
+        boolean useConverter = Objects.nonNull(converter);
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+
+        T instance;
+        try {
+            instance = targetClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalArgumentException();
+        }
+        beanCopier.copy(source, instance, converter);
+        return instance;
+    }
+
+    private static BeanCopier getBeanCopier(boolean useCache, String key, BeanCopier beanCopier2) {
+        BeanCopier beanCopier;
+        if (useCache) {
+            beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -&amp;gt; beanCopier2);
+        } else {
+            beanCopier = beanCopier2;
+        }
+        return beanCopier;
+    }
+
+    private static &amp;lt;S&amp;gt; void requireNonNull(S source, Object targetClass) {
+        Objects.requireNonNull(source, &amp;quot;源对象不能为空&amp;quot;);
+        Objects.requireNonNull(targetClass, &amp;quot;目标对象不能为空&amp;quot;);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target) {
+        return copy(source, target, true, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass) {
+        return copy(source, targetClass, true, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, boolean useCache) {
+        return copy(source, targetClass, useCache, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, Class&amp;lt;T&amp;gt; targetClass, Converter converter) {
+        return copy(source, targetClass, true, converter);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, boolean useCache) {
+        return copy(source, target, useCache, null);
+    }
+
+    public &amp;lt;S, T&amp;gt; T copy(S source, T target, Converter converter) {
+        return copy(source, target, true, converter);
+    }
+
+    private static &amp;lt;S, T&amp;gt; BeanCopier createBeanCopier(S source, Class&amp;lt;T&amp;gt; target, boolean useConverter) {
+        return BeanCopier.create(source.getClass(), target, useConverter);
+    }
+
+    private static &amp;lt;S, T&amp;gt; String getKey(S source, Class&amp;lt;T&amp;gt; targetClass) {
+        return source.getClass().getName() + &amp;quot;:&amp;quot; + targetClass.getName();
+    }
+}
+
+
+在使用时，有两点需要注意的地方：
+
+target不能使用lombok等工具的链式调用，只有符合标准的set方法，cglib才会调用赋值。
+只会拷贝source，target类型和名称完全一致的属性。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/beancopier-de-gong-ju-lei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mybatis-yu-fa-jiu-cuo/">
+                        Mybatis 语法纠错
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-04-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            mybatis 在type表达式中，如果是内部类，不能通过 Class.InnerClass 指定，需要通过 Class$InnerClass 指定，不然会报ClassNotFound。
+错误堆栈
+Caused by: java.lang.ClassNotFoundException: Cannot find class: Class.InnerClass
+	at org.apache.ibatis.io.ClassLoaderWrapper.classForName(ClassLoaderWrapper.java:200)
+	at org.apache.ibatis.io.ClassLoaderWrapper.classForName(ClassLoaderWrapper.java:89)
+	at org.apache.ibatis.io.Resources.classForName(Resources.java:261)
+	at org.apache.ibatis.type.TypeAliasRegistry.resolveAlias(TypeAliasRegistry.java:116)
+	... 104 common frames omitted
+
+具体的产生原因通过报错信息，发现是org.apache.ibatis.type.TypeAliasRegistry#resolveAlias方法抛出的异常
+
+通过继续往里面走，发现是org.apache.ibatis.io.ClassLoaderWrapper#classForName(java.lang.String, java.lang.ClassLoader[])方法内部使用java.lang.Class#forName加载的类，
+
+而Java的内部类在编译之后，都会以Class$InnerClass的形式进行保存字节码文件，所以说为什么使用 . 会抛出ClassNotFound，因为mybatis最终底层还是使用的Java提供的类加载工具进行累的加载的。
+通过对内部类进行javac 我们可以看到一个类编译之后的状态。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mybatis-yu-fa-jiu-cuo/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-zhi-shi-dian/">
+                        MySQL知识点
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-03-16</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            知识点
+
+innodb不支持全文检索
+between包含左右边界
+3.UPDATE IGNORE 用于在更新多行时，某一行报错不影响其他行
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-zhi-shi-dian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-regexp-shi-yong/">
+                        MySQL REGEXP 使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-03-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。
+在此之前，首先建立对应的数据表，ddl与dml如下：
+create table if not exists test_db.products
+(
+	id int auto_increment
+		primary key,
+	prod_name varchar(20) not null
+);
+
+INSERT INTO test_db.products (id, prod_name) VALUES (1, &#39;JetPack 1000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (2, &#39;JetPack 2000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (3, &#39;1 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (4, &#39;2 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (5, &#39;TNT (1 stick)&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (6, &#39;.5 ton anvil&#39;);
+
+
+常用指令
+由于regexp与LIKE的高度相似性，所以学习时以常用的LIKE的指令作为对比学习，有助于记忆。
+基本字符匹配
+
+全文字匹配
+
+select *
+from products
+where prod_name regexp &#39;1000&#39;;
+
+
+
+模糊匹配
+类似于LIKE语句的 &#39;_&#39;（下划线）单字符匹配。模糊匹配单个字符。
+
+select *
+from products
+where prod_name regexp &#39;.000&#39;;
+
+
+OR 匹配
+select *
+from products
+where prod_name regexp &#39;1000|2000&#39;;
+
+
+匹配几个字符之一
+
+正确用法
+
+select *
+from products
+where prod_name regexp &#39;[123] ton&#39;;
+
+
+
+错误示例
+正则表达式可以用 [] 包含内容或者 | 竖线 表示 或，但如果使用下面的用法，不能获得正确的结果，因为在最后一个&#39;或&#39;时，MySQL会理解成 3 ton。得到不同的结果。
+
+select *
+from products
+where prod_name regexp &#39;1|2|3 ton&#39;;
+
+
+匹配范围
+匹配特殊字符
+匹配字符类
+匹配多个实例
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-regexp-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/7/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/9/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

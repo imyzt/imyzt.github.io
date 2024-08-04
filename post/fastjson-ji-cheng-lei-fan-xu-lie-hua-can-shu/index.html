@@ -1,0 +1,338 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    FastJSON继承类反序列化参数 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            FastJSON继承类反序列化参数
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-05-05</time>
+                            
+                        </div>
+                        
+                            <div class="post-feature-image" style="background-image: url('https://imyzt.top/post-images/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu.png')"></div>
+                            
+                                <div class="post-content">
+                                    <h2 id="场景及问题">场景及问题</h2>
+<p>做工具封装时，通常会定义一个顶级父类data struct，子类继承之后补充自己独有的属性。该模式在常规使用情况下都是可用的，但是在涉及到序列化后反序列化对象时，就不是那么管用了。</p>
+<p>我们假设有两个对象，<code>class BaseClass</code> 和 <code>class ChildClass</code></p>
+<pre><code>import lombok.Data;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 超类
+ */
+@Data
+public class BaseClass {
+    private Integer bashInfo;
+}
+
+import lombok.*;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description 子类
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@ToString(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChildClass extends BaseClass {
+
+    private String childInfo;
+
+}
+</code></pre>
+<p>我们假设生产端生产消息，通过FastJSON序列化为字符串，然后通过kafka或者其他途径传递到消费端，消费端通过超类<code>BaseClass</code>转换消息，根据不同的子类通过不同的策略去处理。但是在这种情况下，通过<strong>超类解析字符串对象回JavaBean对象时</strong>，一般只能将<strong>超类</strong>中拥有的参数转换回来，不能获得子类的属性。示例代码如下：</p>
+<pre><code>
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author imyzt
+ * @date 2020/04/25
+ * @description test
+ */
+
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) {
+
+        ChildClass one = new ChildClass();
+        one.setBashInfo(122);
+        one.setChildInfo(&quot;childInfo&quot;);
+
+        // 转换为字符串, 便于传输
+        String str = parseStr(one);
+
+        log.info(&quot;str={}&quot;, str);
+
+        // 转换回java bean
+        BaseClass childClass = JSON.parseObject(str, BaseClass.class);
+        log.info(&quot;childClass={}&quot;, childClass);
+    }
+
+    private static String parseStr(BaseClass obj) {
+        return JSON.toJSONString(obj);
+    }
+}
+
+日志打印：
+14:18:09.208 [main] INFO xxx.json.Test - str={&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
+14:18:09.227 [main] INFO xxx.json.Test - childClass=BaseClass(bashInfo=122)
+</code></pre>
+<h2 id="实现方式">实现方式</h2>
+<p>遇到这种情况，我们可以通过JSON的<strong>自省</strong>功能，实现在反序列化为JavaBean时，得到完整的子类属性，并且将JavaBean通过多态得到对应的子类对象。具体思路就是在序列化为JSON时，在json字符串中写入对应的类型，在反序列化时，通过JSON字符串中特殊标记的类型属性，按照该类型进行反序列化即可。</p>
+<p>FastJSON具体的实现是在调用 <code>JSON.toJSONString()</code>时，第二个数组参数传入Feature功能<code>SerializerFeature.WriteClassName</code>，完整调用如<code>JSON.toJSONString(obj, SerializerFeature.WriteClassName);</code> 在写入为JSON字符串时，会带有一个特殊的标记<code>@type</code>存储序列化时对应的类型，如下图。<br>
+<img src="http://blog.imyzt.top/upload/2020/04/upm13a7uk2hooofjkrdbe8kdhf.png" alt="请输入图片描述" loading="lazy"><br>
+在反序列化时，只需要按照对应的类型进行解析即可。上述代码重新运行后日志如下：</p>
+<pre><code>14:22:24.528 [main] INFO xxx.json.Test - str={&quot;@type&quot;:&quot;xxx.json.ChildClass&quot;,&quot;bashInfo&quot;:122,&quot;childInfo&quot;:&quot;childInfo&quot;}
+14:25:03.631 [main] INFO xxx.json.Test - childClass=ChildClass(super=BaseClass(bashInfo=122), childInfo=childInfo)
+</code></pre>
+<h2 id="注意点">注意点</h2>
+<ul>
+<li>子类必须实现全参构造，或者有用lombok的<code>@ToString(callSuper = true)</code>也行，不然会出现映射父类属性的情况。</li>
+</ul>
+<p>OK, 整篇文章就讲了一个Feature，水了一整页。。可以多关注下JSON的其他Feature功能，说不定就是需要的。/狗头</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/yapi-upload-cha-jian-shi-yong/">
+                                <h3 class="post-title">
+                                    yapi upload插件使用
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%9C%BA%E6%99%AF%E5%8F%8A%E9%97%AE%E9%A2%98">场景及问题</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">实现方式</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F%E7%82%B9">注意点</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

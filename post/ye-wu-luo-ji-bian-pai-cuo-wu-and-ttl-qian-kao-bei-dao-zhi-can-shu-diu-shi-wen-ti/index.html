@@ -1,0 +1,391 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    业务逻辑编排错误 &amp; TTL浅拷贝导致参数丢失问题 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            业务逻辑编排错误 &amp; TTL浅拷贝导致参数丢失问题
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-03-09</time>
+                            
+                                <a href="https://imyzt.top/tag/_KxCNznKV/" class="post-tag i-tag
+                            i-tag-info">
+                            #ThreadLocal
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-other_1">
+                            #线程池
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-success">
+                            #问题解决
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h2 id="前言">前言</h2>
+<p>在DDD项目中，为了方便参数的传递，通常会使用<code>ThreadLocal</code>来保存一个<code>对象</code>来实现对参数的跨方法传递，避免通过形参的形式传递。在内部项目中，有一个项目使用的是 alibaba开源的 <code>transmittable-thread-local</code>来存储参数，新建了一个上下文对象（<code>AbilityContext.java</code>），使用<code>HashMap</code>来临时存储和获取参数。</p>
+<details>
+<summary>AbilityContext 示例</summary>
+<pre><code class="language-java">public class AbilityContext {
+    private static final ThreadLocal&lt;Map&lt;String, Object&gt;&gt; CONTEXT = new TransmittableThreadLocal&lt;&gt;();
+
+    private AbilityContext() {
+    }
+
+    /**
+     * 初始化上下文
+     */
+    public static void initContext() {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&lt;&gt;(8));
+        } else {
+            CONTEXT.get().clear();
+        }
+    }
+
+    /**
+     * 清除上下文
+     */
+    public static void clearContext() {
+        CONTEXT.remove();
+    }
+
+    public static Map&lt;String, Object&gt; getInnerMap() {
+        return CONTEXT.get();
+    }
+
+    /**
+     * 获取上下文内容
+     */
+    public static &lt;T&gt; T getValue(String key) {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            return null;
+        }
+        return (T) con.get(key);
+    }
+
+    /**
+     * 设置上下文参数
+     */
+    public static void putValue(String key, Object value) {
+        Map&lt;String, Object&gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&lt;&gt;(8));
+            con = CONTEXT.get();
+        }
+        con.put(key, value);
+    }
+}
+</code></pre>
+</details>
+<h2 id="项目情况介绍">项目情况介绍</h2>
+<p>通常来说，DDD项目的基本流程是由<code>interface-&gt;application</code>，中间封装一层来集中处理上下文的初始化和清空动作，如下图：<br>
+<img src="https://imyzt.top/post-images/1709967464622.png" alt="ddd" loading="lazy"></p>
+<p>在正常情况下，上述流程可以正确的完成参数的写入和获取，但是，在项目运行过程中遇到了一个bug，正常写入参数后，偶现性（低频）获取值为NULL，导致程序出错，示例代码如下（隐去业务代码，重新写的伪代码）：</p>
+<ol>
+<li>其中<code>demo()</code>方法为当时复现的方法</li>
+<li><code>demo2()</code>为伪代码，是业务代码中调用了另一个<code>application</code>，假设其逻辑和<code>demo()</code>方法一致的业务代码。</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class AlibabaTtlWrongUsageExampleApplication {
+
+    public static void main(String[] args) {
+        demo(i);
+    }
+
+    private static void demo(int idx) {
+        // 初始化
+        AbilityContext.initContext();
+        // 赋业务值
+        AbilityContext.putValue(&quot;main&quot;, &quot;mainValue&quot;);
+
+        // 这里简化了代码，实际上经过了很多层业务代码调用后才出现了此方法
+        ThreadUtil.execute(() -&gt; {
+            execute-&gt;demo2();
+        });
+
+        // do something
+
+        // 主线程再次获取业务值(偶现为null)
+        String value = AbilityContext.getValue(&quot;main&quot;);
+        if (Objects.isNull(value)) {
+            log.warn(&quot;lastGetNullValue, idx={}&quot;, idx);
+        }
+    }
+}
+</code></pre>
+<p>上述代码运行设置了一个<code>key=main</code>，值为<code>mainValue</code>。在下方<code>AbilityContext.getValue(&quot;main&quot;)</code>偶现获取==NULL。</p>
+<h2 id="展开分析">展开分析</h2>
+<p>当时在分析的开始有推测是业务代码中参数被重新赋值为NULL，但通过对后续业务代码逐行查看，并没有找到重新赋值的逻辑。<br>
+在深入业务代码分析的过程中，发现主流程中有一个异步方法调用（<code>ThreadUtil.execute()</code>），再次调用了另一个<strong>领域服务</strong>（这是不符合DDD规范的！），而<strong>领域服务的入口都会<code>AbilityContext.initContext()</code>的逻辑</strong>，通过这个线索 ，继续展开了深入分析。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1709970122111.png" alt="ddd" loading="lazy"></figure>
+<p>编码者的初衷可能是想到<strong>异步线程已经脱离了当前线程，再次调用 <code>initContext()</code>方法是初始化了一个新的对象上下文</strong>，<strong>但是</strong>由于项目使用的是 <code>alibaba TTL</code>，能够实现跨线程的传递，所以在子线程中依旧能拿到父线程的<code>HashMap</code>。并且<strong>TTL默认是使用的浅拷贝对象</strong>。由于<code>initContext()</code>中，调用了<code>HashMap.clear()</code>方法，<strong>相当于将父线程的<code>HashMap</code>给清空了！</strong>。</p>
+<p>通过比对父子线程的hashCode值确定为同一对象</p>
+<pre><code class="language-java">// 主线程获取hashCode
+final int hashCode = AbilityContext.getInnerMap().hashCode();
+ThreadUtil.execute(() -&gt; {
+    // 子线程对比hashCode
+    log.info(&quot;{}, ThreadUtil hashCode={}&quot;, idx, AbilityContext.getInnerMap().hashCode() == hashCode);
+    // 子线程再次初始化(错误的根源)
+    AbilityContext.initContext();
+    // do something
+});
+14:42:28.198 [pool-1-thread-26] INFO top.imyzt.learning.caseanalysis.ttl.AlibabaTtlWrongUsageExampleApplication -- 25, ThreadUtil hashCode=true
+</code></pre>
+<h2 id="持续分析">持续分析</h2>
+<p>有了上述的线索，基本把问题原因找到了，<strong>但是为什么是偶现的呢</strong>？<br>
+因为使用了异步线程，而线程的调度由操作系统的线程调度算法来决定，并不是一定保证顺序的，所以只要当操作系统优先调度异步线程，那么<code>HashMap</code>就被清空了，如果主线程优先往下走，那么就能够获取到完整的<code>HashMap</code>。</p>
+<h2 id="后记">后记</h2>
+<p>至此，问题分析就告一段落了，整个过程中涉及到 TTL值的父子线程传递、对象浅拷贝、线程的调度，还涉及到了DDD的不规范逻辑编排，整个分析下来花费了一上午的时间，收获还是很大的。</p>
+<ol>
+<li><a href="https://github.com/alibaba/transmittable-thread-local">transmittable-thread-local</a></li>
+<li><a href="https://github.com/alibaba/transmittable-thread-local/issues/111">TransmittableThreadLocal的传递只有浅拷贝吗？</a></li>
+<li><a href="https://redspider.gitbook.io/concurrent/di-yi-pian-ji-chu-pian/3#id-3.2-xian-cheng-de-you-xian-ji">线程的优先级</a></li>
+</ol>
+<p>我将源代码上传了<a href="https://github.com/imyzt/learning-technology-code/tree/master/error-case-analysis/alibaba-ttl-wrong-usage-example">GitHub</a>，如果你想在本地调试运行上述案例，可以下载到本地调试，有问题可以评论区沟通。</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
+                                <h3 class="post-title">
+                                    使用Redis实现分布式锁的坑
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E6%83%85%E5%86%B5%E4%BB%8B%E7%BB%8D">项目情况介绍</a></li>
+<li><a href="#%E5%B1%95%E5%BC%80%E5%88%86%E6%9E%90">展开分析</a></li>
+<li><a href="#%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90">持续分析</a></li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

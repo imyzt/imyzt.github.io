@@ -1,0 +1,483 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    golang分支与循环 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            golang分支与循环
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-08-13</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h2 id="if分支语句">if分支语句</h2>
+<h3 id="普通if">普通if</h3>
+<pre><code>resp, err := http.Get(url)
+if err != nil {
+  log.Fatal(fmt.Sprintf(&quot;请求异常, url: %s&quot;, url))
+} else if {
+} else {
+}
+</code></pre>
+<h3 id="赋值if">赋值if</h3>
+<pre><code>var nameList []string
+if err := json.Unmarshal([]byte(jsonData), &amp;nameList); err != nil {
+  log.Fatal(err)
+}
+</code></pre>
+<h2 id="switch分支语句">switch分支语句</h2>
+<h3 id="普通switch">普通switch</h3>
+<pre><code>func main()  {
+
+	// 普通switch
+	switch 2 {
+	case 1:
+		fmt.Println(1)
+	case 2:
+		fmt.Println(2)
+	case 3, 4, 5:
+		fmt.Println(&quot;3, 4, 5&quot;)
+	default:
+		fmt.Println(&quot;default&quot;)
+	}
+</code></pre>
+<h3 id="判断switch">判断switch</h3>
+<p>很神奇，可以代替多个if条件判断</p>
+<pre><code>// 省略变量, 相当于作用于bool类型
+func main() {
+
+	age := 18
+	switch {
+    // 条件为true是 执行内容
+	case age &gt; 10:
+		fmt.Println(&quot;age &gt; 10&quot;)
+	case age &gt; 8:
+		fmt.Println(&quot;age &gt; 8&quot;)
+	default:
+		fmt.Println(&quot;default&quot;)
+	}
+    }
+}
+
+console
+
+age &gt; 10
+</code></pre>
+<h3 id="赋值switch">赋值switch</h3>
+<pre><code>func main()  {
+
+	switch name := &quot;shenzhen&quot;; name {
+	case &quot;shenzhen&quot;:
+		fmt.Println(&quot;shenzhen&quot;)
+	case &quot;foshan&quot;:
+		fmt.Println(&quot;foshan&quot;)
+	default:
+		fmt.Println(&quot;default&quot;)
+	}
+}
+</code></pre>
+<h3 id="带跳出的switch">带跳出的switch</h3>
+<p>golang的switch case自带一个break<br>
+如果需要向下执行可以使用fallthrough</p>
+<pre><code>func main()  {
+
+	// break 强制跳出, 不执行 &quot;gd3&quot;
+	switch name := &quot;gd&quot;; name {
+	case &quot;gd&quot;:
+		fmt.Println(&quot;gd1&quot;)
+		fmt.Println(&quot;gd2&quot;)
+		break
+		fmt.Println(&quot;gd3&quot;)
+	}
+
+	fmt.Println(&quot;-0----&quot;)
+
+	switch name := &quot;sz&quot;; name {
+	case &quot;sz&quot;:
+		fmt.Println(&quot;深圳1&quot;)
+		fmt.Println(&quot;深圳2&quot;)
+		fmt.Println(&quot;深圳3&quot;)
+		// 执行完 case = &quot;sz&quot;后, 不跳出, 继续执行 case = &quot;gz&quot;
+		fallthrough
+	case &quot;gz&quot;:
+		fmt.Println(&quot;广州&quot;)
+	}
+}
+
+console: 
+
+gd1
+gd2
+-0----
+深圳1
+深圳2
+深圳3
+广州
+</code></pre>
+<h2 id="for循环语句">for循环语句</h2>
+<pre><code>for (init; condition; post) {}
+
+Init: 初始化，只执行一次
+condition: bool类型，
+</code></pre>
+<h3 id="普通for">普通for</h3>
+<pre><code>func main()  {
+
+	for i := 0; i &lt; 5; i ++ {
+		fmt.Println(i)
+	}
+}
+</code></pre>
+<h3 id="外部初始化for">外部初始化for</h3>
+<pre><code>func main() {
+	i := 0
+	for i &lt;= 5 {
+		fmt.Println(i)
+		i ++
+	}
+}
+</code></pre>
+<h3 id="死循环">死循环</h3>
+<pre><code>func main() {
+	for {
+		fmt.Println()
+	}
+}
+</code></pre>
+<h3 id="for循环中的跳转">for循环中的跳转</h3>
+<pre><code>func main() {
+
+	for i := 1; i &lt;= 5; i++ {
+		// 跳出整个循环
+		if i == 4 {
+			break
+		}
+
+		// 跳出当前循环进行下一次循环
+		if i &lt; 3 {
+			continue
+		}
+		fmt.Println(fmt.Sprintf(&quot;i = %v&quot;, i))
+	}
+
+	// 多层循环可通过定义标签跳转, 在for循环中break和goto都可以完成
+	lable:
+	for i := 1; i &lt;= 5; i++ {
+		for j := i; j &lt;= 5; j++ {
+			if i == j {
+				break lable
+			}
+			if j &gt; 3 {
+				goto lable
+			}
+		}
+	}
+}
+</code></pre>
+<h3 id="for循环实现冒泡">for循环实现冒泡</h3>
+<pre><code>升序冒泡
+func main() {
+
+	arr := []int{1, 2, 5, 2, 22, 1}
+	
+	// len(arr) - 1, 对比时, 最后一位必须要对比
+	for i := 0; i &lt; len(arr) - 1; i++ {
+		// j := i + 1, 对比时, 内层for循环无需从第一个开始比对, 即第一个(外层for)和第二个(内层for)比对
+		// len(arr) 对比时, 最后一位参与上一层for循环的对比
+		for j := i + 1; j &lt; len(arr); j++ {
+			if arr[i] &gt; arr[j] {
+				// 如果当前的数字, 大于后面的数字, 就把当前数字往后移
+				arr[i], arr[j] = arr[j], arr[i]
+			}
+		}
+	}
+
+	for _, num := range arr {
+		fmt.Println(num)
+	}
+}
+
+
+console:
+
+1
+1
+2
+2
+5
+22
+</code></pre>
+<h2 id="return跳出语句">return跳出语句</h2>
+<pre><code>func main() {
+
+	returnTest(1)
+}
+
+func returnTest(i uint) {
+
+	if i &gt; 0 {
+		return
+	}
+	fmt.Println(&quot;i &lt;= 0&quot;)
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/spring-huan-jing-xia-shi-jian-zi-fu-chuan-zhuan-huan/">
+                                <h3 class="post-title">
+                                    Spring环境下时间字符串转换
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#if%E5%88%86%E6%94%AF%E8%AF%AD%E5%8F%A5">if分支语句</a>
+<ul>
+<li><a href="#%E6%99%AE%E9%80%9Aif">普通if</a></li>
+<li><a href="#%E8%B5%8B%E5%80%BCif">赋值if</a></li>
+</ul>
+</li>
+<li><a href="#switch%E5%88%86%E6%94%AF%E8%AF%AD%E5%8F%A5">switch分支语句</a>
+<ul>
+<li><a href="#%E6%99%AE%E9%80%9Aswitch">普通switch</a></li>
+<li><a href="#%E5%88%A4%E6%96%ADswitch">判断switch</a></li>
+<li><a href="#%E8%B5%8B%E5%80%BCswitch">赋值switch</a></li>
+<li><a href="#%E5%B8%A6%E8%B7%B3%E5%87%BA%E7%9A%84switch">带跳出的switch</a></li>
+</ul>
+</li>
+<li><a href="#for%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5">for循环语句</a>
+<ul>
+<li><a href="#%E6%99%AE%E9%80%9Afor">普通for</a></li>
+<li><a href="#%E5%A4%96%E9%83%A8%E5%88%9D%E5%A7%8B%E5%8C%96for">外部初始化for</a></li>
+<li><a href="#%E6%AD%BB%E5%BE%AA%E7%8E%AF">死循环</a></li>
+<li><a href="#for%E5%BE%AA%E7%8E%AF%E4%B8%AD%E7%9A%84%E8%B7%B3%E8%BD%AC">for循环中的跳转</a></li>
+<li><a href="#for%E5%BE%AA%E7%8E%AF%E5%AE%9E%E7%8E%B0%E5%86%92%E6%B3%A1">for循环实现冒泡</a></li>
+</ul>
+</li>
+<li><a href="#return%E8%B7%B3%E5%87%BA%E8%AF%AD%E5%8F%A5">return跳出语句</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

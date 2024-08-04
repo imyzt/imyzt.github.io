@@ -1,0 +1,1367 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-8-guide-e3/">
+                        Java 8 Guide E3
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-18</time>
+                    
+                        <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-primary">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+Stream 介绍
+Stream (流) 操作算是对集合的大大增强, 很多之前很复杂需要很多代码量的逻辑在此终结.
+
+一个Collection(集合)可以通过调用 stream() 和 parallelStream() 两个方法获得 stream
+
+
+stream()方法返回一个 顺序流, 所有的操作必须等待上一步的完成.
+parallelStream()方法返回一个 并行流, 操作会更高效, 考虑业务使用不同的流.
+
+
+流的操作分为 中间操作 和 终止操作
+
+
+中间操作: 对流的处理还在进行中, 不会中指当前流. 可以返回一个流进行其他操作. 就像StringBuffer的append()一样
+终止操作: 对流的处理将会终结, 当前流将不能继续使用.
+
+中间操作
+Filter
+Stream&amp;lt;T&amp;gt; filter(Predicate&amp;lt;? super T&amp;gt; predicate);
+
+Filter接收一个 Predicate&amp;lt;? super T&amp;gt; 接口的参数进行过滤操作
+Sorted
+Stream&amp;lt;T&amp;gt; sorted(Comparator&amp;lt;? super T&amp;gt; comparator);  
+Stream&amp;lt;T&amp;gt; sorted();
+
+sorted()方法自然排序. 即调用对象本身的compareTo()方法排序.
+sorted(Comparator&amp;lt;? super T&amp;gt; comparator);  接受一个 Comparator对象进行排序
+Map
+&amp;lt;R&amp;gt; Stream&amp;lt;R&amp;gt; map(Function&amp;lt;? super T, ? extends R&amp;gt; mapper);
+IntStream mapToInt(ToIntFunction&amp;lt;? super T&amp;gt; mapper);
+LongStream mapToLong(ToLongFunction&amp;lt;? super T&amp;gt; mapper);
+DoubleStream mapToDouble(ToDoubleFunction&amp;lt;? super T&amp;gt; mapper);
+&amp;lt;U&amp;gt; Stream&amp;lt;U&amp;gt; mapToObj(IntFunction&amp;lt;? extends U&amp;gt; mapper);
+
+map有上述几个方法, 可以转换为指定的类型, 方法参数都是接受一个 xxxFunction 的转换器.  下面有一个演示.
+list.stream()
+        .filter(s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;))
+        .sorted(String::compareTo)
+        .mapToInt(Integer::valueOf)
+        .mapToObj(String::valueOf)
+        .mapToLong(Long::valueOf);
+
+终止操作
+Match
+boolean anyMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+boolean allMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+boolean noneMatch(Predicate&amp;lt;? super T&amp;gt; predicate);
+
+Match方法有三个, 都接受一个 Predicate 条件来决定返回true or false
+Count
+long count();
+
+count()计算集合大小, 这个方法很简单.
+Reduce
+有了Map, 那肯定是有Reduce, 不过Reduce是一个终止操作. 它接收一个 xxxOperator 的操作函数.
+&amp;lt;U&amp;gt; U reduce(U identity,
+                 BiFunction&amp;lt;U, ? super T, U&amp;gt; accumulator,
+                 BinaryOperator&amp;lt;U&amp;gt; combiner);
+T reduce(T identity, BinaryOperator&amp;lt;T&amp;gt; accumulator);
+Optional&amp;lt;T&amp;gt; reduce(BinaryOperator&amp;lt;T&amp;gt; accumulator);
+
+下面有一个操作的演示.
+list.stream()
+        .sorted((s1, s2) -&amp;gt; s1.compareTo(s2) &amp;gt; 0 ? -1 : 0)
+        .reduce((i, j) -&amp;gt; i + &amp;quot;#&amp;quot; + j)
+        .ifPresent(System.out::println);
+
+System.out.println(&amp;quot;---------------------------&amp;quot;);
+final String join = &amp;quot;#&amp;quot;;
+String joinReduce = list.stream()
+        .reduce(join, (s1, s2) -&amp;gt; s1 + join + s2);
+System.out.println(joinReduce);
+
+所有操作的代码
+public static void main(String[] args) {
+
+    ArrayList &amp;lt;String&amp;gt; list = new ArrayList &amp;lt;&amp;gt;();
+    list.add(&amp;quot;11&amp;quot;);
+    list.add(&amp;quot;12&amp;quot;);
+    list.add(&amp;quot;13&amp;quot;);
+    list.add(&amp;quot;14&amp;quot;);
+
+    Comparator&amp;lt;String&amp;gt; comparator = String::compareTo;
+    Predicate&amp;lt;String&amp;gt; predicate = s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;);
+    IntUnaryOperator intUnaryOperator = i -&amp;gt; i + 1;
+    ToIntFunction&amp;lt;String&amp;gt; toIntFunction = Integer::valueOf;
+    IntConsumer consumer = System.out::println;
+
+    list.stream()
+            .filter(predicate)
+            .sorted(comparator)
+            .mapToInt(toIntFunction)
+            .map(intUnaryOperator)
+            .forEach(consumer);
+
+
+    boolean anyMatch = list.stream()
+            .filter(s -&amp;gt; s.startsWith(&amp;quot;1&amp;quot;))
+            .sorted(String::compareTo)
+            .mapToInt(Integer::valueOf)
+            .mapToObj(String::valueOf)
+            .mapToLong(Long::valueOf)
+            .anyMatch(i -&amp;gt; i &amp;gt; 10);
+    System.out.println(anyMatch);
+
+    long count = list.stream().count();
+    System.out.println(count);
+
+    list.stream()
+            .sorted((s1, s2) -&amp;gt; s1.compareTo(s2) &amp;gt; 0 ? -1 : 0)
+            .reduce((i, j) -&amp;gt; i + &amp;quot;#&amp;quot; + j)
+            .ifPresent(System.out::println);
+
+    System.out.println(&amp;quot;---------------------------&amp;quot;);
+    final String join = &amp;quot;#&amp;quot;;
+    String joinReduce = list.stream()
+            .reduce(join, (s1, s2) -&amp;gt; s1 + join + s2);
+    System.out.println(joinReduce);
+
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-8-guide-e3/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-8-guide-e2/">
+                        Java 8 Guide E2
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                        <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-primary">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+自定义一个函数式接口
+代码展示
+/**
+ * @author imyzt
+ * @date 2019/1/17 18:23
+ * @description 自定义函数式接口
+ */
+public class FunctionInterfaceDemo {
+    public static void main(String[] args) {
+
+        Person&amp;lt;Boolean&amp;gt; person = Objects::nonNull;
+        Boolean aaa = person.say(&amp;quot;aaa&amp;quot;);
+        System.out.println(&amp;quot;传入的信息是否不为空: &amp;quot; + aaa);
+
+        Person&amp;lt;String&amp;gt; person1 = (msg) -&amp;gt; &amp;quot;Hello &amp;quot;+msg;
+        String say = person1.say(&amp;quot;World&amp;quot;);
+        System.out.println(say);
+    }
+}
+
+@FunctionalInterface
+interface Person&amp;lt;T extends Object&amp;gt; {
+    T say(String msg);
+}
+
+讲解
+代 码中定义了一个接口 Person, 接口上使用了 @FunctionalInterface 注解, 接口泛型Object是一个约束, 在这里只是演示. 实际场景中可以写需要被约束的父类.
+使 用的时候, 实例 person 的泛型是 Boolean 布尔类型, 所以在表达式的右边, 也就是具体的实现上我调用了Objects的nonNull方法.  :: 表达式可以直接引用对象的方法.
+实 例 person1 的泛型是 String  字符串类型, 所以在表达式的右边可以定义对 say(String msg)  中msg的操作, 然后调用say()方法时就会执行上述操作.
+结果输出
+传入的信息是否不为空: true
+Hello World
+
+内置函数式接口
+Java8内置了很多函数式接口便于我们使用；
+当然,我们也可以自定义函数式接口通过**@FunctionalInterface**注解声明.
+java.util.function下的接口最多支持到二元运算。有了这些接口，我们就可以省去创建接口的功夫，而直接使用lambda了。
+Nilary 零元，Unary 一元，Binary 二元，Ternary 三元，Quaternary 四元。对于一个算子来说，一个参数，就是一元运算；2个参数就是二元运算。
+Predicate
+
+Predicate是一个布尔类型的函数，该函数只有一个输入参数。
+Predicate接口包含了多种默认方法，用于处理复杂的逻辑动词（and, or，negate）
+摘抄自 http://blog.didispace.com/books/java8-tutorial/ch1.html
+
+Predicate&amp;lt;String&amp;gt; predicate = (a) -&amp;gt; a.startsWith(&amp;quot;a&amp;quot;);
+Predicate&amp;lt;String&amp;gt; predicate2 = Objects::nonNull;
+
+boolean test = predicate.negate().and(predicate2).test(&amp;quot;abc&amp;quot;);
+System.out.println(test);
+
+Consumer
+Consumer 消费target type。参数 T，无返回值（void）。
+Consumer可以理解为一个消费者, 因为他没有返回值, 只接收一个参数, 按照重写的方法执行完成后即完成操作.
+Consumer&amp;lt;String&amp;gt; consumer = System.out::println;
+consumer.accept(&amp;quot;hello world&amp;quot;);
+
+Function
+Function 对target type做转换。参数T，返回R。
+Predicate&amp;lt;String&amp;gt; predicate = s -&amp;gt; null != s &amp;amp;&amp;amp; s.startsWith(v26);
+
+Function&amp;lt;String, String&amp;gt; function = s -&amp;gt; predicate.test(pageInfo) ?
+sdkHttpKit.ipPort().append(s).toString() :
+sdkHttpKit.uri().append(&amp;quot;face/meta/&amp;quot;).append(URLUtil.encode(meta)).toString();
+
+String url = function.apply(pageInfo);
+
+Supplier
+Supplier 供应target，可以理解为target的factory。无参，返回T。
+Supplier 可以理解为工厂类, 通过下面的演示可以看出它能够创建对象.不过我看了别人的博客, 理解为这个方法可以将耗时的操作放进去. 在没有调用get()方法之前, 是不会执行的.可以降低系统运行时间.
+Main.java
+Supplier&amp;lt;People&amp;gt; supplier = People::new;
+// 在需要的时候可以调用get()方法获得一个新的People对象.
+People people = supplier.get();
+people.hello();
+
+输出: hello
+
+People.java
+class People {
+    void hello() {
+        System.out.println(&amp;quot;hello&amp;quot;);
+    }
+}
+
+UnaryOperator
+UnaryOperator 一元运算。继承Function接口。参数T，返回T。
+UnaryOperator 可以理解为对参数T进行处理.
+UnaryOperator&amp;lt;String&amp;gt; unaryOperator = s -&amp;gt; s + &amp;quot;___&amp;quot;;
+System.out.println(unaryOperator.apply(&amp;quot;hello&amp;quot;));
+
+输出: hello___
+
+BinaryOperator
+BinaryOperator 二元运算。参数 T,返回R。
+BinaryOperator为UnaryOperator的二元运算, 它接收两个T参数, 返回的也是T参数, 可以理解对两个参数的条件操作
+BiPredicate&amp;lt;String, String&amp;gt; biPredicate =
+    (s1, s2) -&amp;gt; s1.startsWith(&amp;quot;s1&amp;quot;) &amp;amp;&amp;amp; s2.endsWith(&amp;quot;s2&amp;quot;);
+
+BinaryOperator&amp;lt;String&amp;gt; binaryOperator =
+    // 当条件满足时, 执行三目运算的第一个操作. 否则第二个操作执行.
+    (s1, s2) -&amp;gt; biPredicate.test(s1, s2) ?
+    s2 + &amp;quot;_&amp;quot; + s1 : s1 + &amp;quot;_&amp;quot; + s2;
+        
+System.out.println(binaryOperator.apply(&amp;quot;s1&amp;quot; , &amp;quot;s2&amp;quot;));
+
+输出: s2_s1
+
+Comparator
+这个可以用来做比较. 在上一篇已经有使用过了. 此处添加一点演示代码
+Supplier&amp;lt;People&amp;gt; supplier = People::new;
+
+People people1 = supplier.get();
+people1.setPeopleId(10);
+People people2 = supplier.get();
+people2.setPeopleId(100);
+
+Comparator&amp;lt;People&amp;gt; comparator1 = Comparator.comparing(People::getPeopleId);
+System.out.println(comparator1.compare(people2, people1));
+
+Comparator&amp;lt;People&amp;gt; comparator2 = (p1, p2) -&amp;gt; p1.getPeopleId() &amp;gt; p2.getPeopleId() ? 1 : 0;
+System.out.println(comparator2.compare(people1, people2));
+
+第一个输出: 1  
+第二个输出: 0
+
+Binary
+Consumer、Function、Predicate分别还对应了Bi的函数式接口。
+它们的操作与对应的一元运算也是大同小异, 只是参数多了一个. 就不细讲了
+对应的也就是二元运算函数。分别是
+
+BiConsumer&amp;lt;T, U&amp;gt;  接收T对象和U对象，不返回值
+BiPredicate&amp;lt;T, U&amp;gt; 接收T对象和U对象，返回boolean
+BiFunction&amp;lt;T, U, R&amp;gt; 接收T对象和U对象，返回R对象
+
+总结
+接口一大堆, 我所理解的
+
+
+Consumer, BiConsumer: 消费
+
+
+Predicate, BiPredicate: 条件判断
+
+
+Function, BiFunction, UnaryOperator, BinaryOperator: 参数处理
+
+
+Supplier: 工厂
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-8-guide-e2/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-8-guide-e1/">
+                        Java 8 Guide E1
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                        <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_1">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            文章系学习Java8新特性
+教程地址: Java8简明教程
+在接口中定义默认方法
+
+通过static修饰, 该方法不可被重写.
+通过default修饰, 该方法不仅仅默认实现, 还可以被实现类重写
+
+示例代码
+/**
+ * Created by imyzt on 2019/1/17 10:59
+ * 可以在接口中定义默认方法
+ */
+public interface Formula {
+
+    double calculate(int a);
+
+    default double sqrt(int a) {
+        return Math.sqrt(a);
+    }
+
+    static int abs (int b) {
+        return Math.abs(b);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Formula formula = new Formula() {
+            @Override
+            public double calculate(int a) {
+                return sqrt(a * 1000);
+            }
+        };
+
+        double calculate = formula.calculate(1);
+        System.out.println(calculate);              //31.622776601683793
+
+        double sqrt = formula.sqrt(1000);
+        System.out.println(sqrt);                   //31.622776601683793
+
+        int abs = Formula.abs(1000);
+        System.out.println(abs);                    //1000
+    }
+}
+
+Lambda表达式
+Lambda表达式是java8最大的更新了, 使得一些操作十分简单明了.
+不使用lambda表达式进行集合排序
+List&amp;lt;String&amp;gt; names = Arrays.asList(&amp;quot;peter&amp;quot;, &amp;quot;anna&amp;quot;, &amp;quot;mike&amp;quot;, &amp;quot;xenia&amp;quot;);
+Collections.sort(names, new Comparator &amp;lt;String&amp;gt;() {
+    @Override
+    public int compare(String a, String b) {
+        return b.compareTo(a);
+    }
+});        
+
+使用Lambda表达式进行集合排序
+ Collections.sort(names, (String a, String b) -&amp;gt; {
+     return b.compareTo(a);
+});
+
+
+不过，还可以省去返回值的表述
+
+Collections.sort(names, (String a, String b) -&amp;gt; b.compareTo(a));
+
+
+Lambda可以自动识别类型, 因此我们可以删除掉类型声明
+
+Collections.sort(names, (a, b) -&amp;gt; b.compareTo(a));
+
+
+当然, 也可以将具体动作简化
+
+Collections.sort(names, Comparator.reverseOrder());
+
+
+最后, java8的jdk集合中实现了sort方法, 因此我们可以用最后这句话来实现集合的排序
+
+names.sort(Comparator.reverseOrder());
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-8-guide-e1/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-aop-shi-xian/">
+                        Spring AOP 实现
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-17</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            常用AOP代理形式
+AOP常见有静态代理和动态代理
+静态代理代表为AspectJ；
+动态代理有jdk动态代理， cglib动态代理。
+静态代理
+AspectJ是静态代理的增强， 即编译时生成代理类， 也成为编译时增强。性能较好。 不过由于需要特定的编译器进行处理。
+动态代理
+动态代理是每次运行的时候生成代理AOP代理类，不会修改字节码文件。代理对象创建在内存中。
+由于是在运行的时候生成代理，故性能稍差一点。
+JDK动态代理实例
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * @author imyzt
+ * @date 2019/1/17 9:51
+ * @description JDK动态代理演示
+ */
+public class JdkDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        // 创建需要被代理的实例对象
+        JdkDynamicProxyClass jdkDynamicProxyClass = new JdkDynamicProxyClass();
+
+        JdkDynamicProxyInvocationHandler invocationHandler =
+                new JdkDynamicProxyInvocationHandler(jdkDynamicProxyClass);
+
+        // 增强代理类
+        // Proxy.newProxyInstance();
+        JdkDynamicProxyInterface proxyInstance = (JdkDynamicProxyInterface) Proxy.newProxyInstance(
+                jdkDynamicProxyClass.getClass().getClassLoader(),
+                jdkDynamicProxyClass.getClass().getInterfaces(),
+                invocationHandler);
+
+        // 执行被增强的方法
+        proxyInstance.proxyMethod();
+    }
+
+}
+
+interface JdkDynamicProxyInterface {
+    void proxyMethod();
+}
+
+class JdkDynamicProxyClass implements JdkDynamicProxyInterface {
+
+    @Override
+    public void proxyMethod() {
+        System.out.println(&amp;quot;JDK Dynamic Proxy Method is running&amp;quot;);
+    }
+}
+
+class JdkDynamicProxyInvocationHandler implements InvocationHandler {
+
+    private Object target;
+
+    public JdkDynamicProxyInvocationHandler(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&amp;quot;execute before JDK Dynamic Method = &amp;quot; + name);
+        Object invoke = method.invoke(target, args);
+        System.out.println(&amp;quot;execute after JDK Dynamic Method = &amp;quot; + name);
+
+        return invoke;
+    }
+}
+
+运行结果展示
+
+CGLIB 动态代理
+/**
+ * @author imyzt
+ * @date 2019/1/17 10:05
+ * @description CGLIB 动态代理演示
+ */
+public class CglibDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        CglibDynamicProxy cglibDynamicProxy = new CglibDynamicProxy();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(CglibDynamicClass.class);
+        enhancer.setCallback(cglibDynamicProxy);
+
+        CglibDynamicClass cglibDynamicClass = (CglibDynamicClass) enhancer.create();
+
+        String yyy = cglibDynamicClass.proxyMethod(&amp;quot;yyy&amp;quot;);
+
+        System.out.println(yyy);
+
+
+    }
+}
+class CglibDynamicClass {
+    public String proxyMethod(String message){
+        System.out.println(&amp;quot;hello! you say &amp;quot; + message);
+        return message;
+    }
+}
+class CglibDynamicProxy implements MethodInterceptor {
+
+    @Override
+    public Object intercept(Object proxyClass, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&amp;quot;execute before CGLIB Dynamic Method = &amp;quot; + name);
+        Object invoke = **methodProxy.invokeSuper**(proxyClass, args);
+        System.out.println(&amp;quot;execute after CGLIB Dynamic Method = &amp;quot; + name);
+
+        return invoke;
+    }
+}
+
+运行结果展示
+
+Spring AOP
+
+Spring AOP在使用的时候会判断，如果需要代理的类实现了接口， 则会使用JDK代理，如果没有实现接口， 则使用CGLIB代理。
+
+JDK动态代理通过反射来接收被代理的类，并且要求被代理的类必须实现一个接口。JDK动态代理的核心是InvocationHandler接口和Proxy类。
+如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类（通过修改字节码来实现代理）。
+注意，CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为final，那么它是无法使用CGLIB做动态代理的。
+文章中部分内容转载自掘金-年糕妈妈技术团队
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-aop-shi-xian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/powerdesigner-chang-yong-bei-wang/">
+                        PowerDesigner常用备忘
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-04</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            创建一个实体关系
+File -&amp;gt; New Model -&amp;gt; Model types -&amp;gt; Physical Data Model -&amp;gt; Physical Diagram
+修改code 不随着name一起改变
+Tools -&amp;gt; General Options -&amp;gt; Dialog 取消勾选 Name to Code mirroring
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/powerdesigner-chang-yong-bei-wang/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-shi-xian-dai-ding-shi-xiao-guo-de-cache/">
+                        Java实现带定时效果的Cache
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-12-17</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            原文链接
+CSDN:  https://blog.csdn.net/qq_35030994/article/details/80871279
+修改了以下内容
+
+将定时扫描过期Key的任务使用Spring注解@Scheduled的cron实现
+将Cache改变为支持泛型，调整为单例模式。
+
+Cache源代码
+package cn.anytec.cloud.bus.utils;
+
+import cn.anytec.cloud.bus.service.ScheduledService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Cache缓存
+ * @author imyzt
+ */
+public class Cache&amp;lt;K, V&amp;gt; {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(Cache.class);
+
+    /**
+     * 缓存最大个数
+     */
+    private static final Integer CACHE_MAX_NUMBER = Constant.DEFAULT_CACHE_MAX_NUMBER;
+    /**
+     * 当前缓存个数
+     */
+    private static Integer CURRENT_SIZE = 0;
+    /**
+     * 缓存对象
+     */
+    private final Map&amp;lt;K, CacheObj&amp;lt;V&amp;gt;&amp;gt; CACHE_OBJECT_MAP = new ConcurrentHashMap&amp;lt;&amp;gt;();
+    /**
+     * 这个记录了缓存使用的最后一次的记录，最近使用的在最前面
+     */
+    private final List&amp;lt;K&amp;gt; CACHE_USE_LOG_LIST = new LinkedList&amp;lt;&amp;gt;();
+
+    /**
+     * 默认Key
+     */
+    private final String DEFAULT_VALUE = &amp;quot;DEFAULT_VALUE&amp;quot;;
+
+    private Cache() { }
+    private static Cache cache = new Cache();
+
+    public static Cache defaultCache() {
+        return cache;
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue, long cacheTime) {
+        Long ttlTime = null;
+        if (cacheTime &amp;lt;= 0L) {
+            if (cacheTime == -1L) {
+                ttlTime = -1L;
+            } else {
+                return;
+            }
+        }
+        checkSize();
+        saveCacheUseLog(cacheKey);
+        CURRENT_SIZE = CURRENT_SIZE + 1;
+        if (ttlTime == null) {
+            ttlTime = System.currentTimeMillis() + cacheTime;
+        }
+        CacheObj&amp;lt;V&amp;gt; cacheObj = new CacheObj(cacheValue, ttlTime);
+        CACHE_OBJECT_MAP.put(cacheKey, cacheObj);
+        LOGGER.info(&amp;quot;have set key :&amp;quot; + cacheKey);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, V cacheValue) {
+        set(cacheKey, cacheValue, -1L);
+    }
+
+    /**
+     * 设置缓存
+     */
+    public void set(K cacheKey, long cacheTime) {
+        set(cacheKey, (V) DEFAULT_VALUE, cacheTime);
+    }
+
+    /**
+     * 获取缓存
+     */
+    public Object get(K cacheKey) {
+        if (checkCache(cacheKey)) {
+            saveCacheUseLog(cacheKey);
+            return CACHE_OBJECT_MAP.get(cacheKey).getCacheValue();
+        }
+        return null;
+    }
+
+    /**
+     * 是否包含某一个Key值
+     * @param cacheKey
+     * @return
+     */
+    public  boolean containsKey(K cacheKey) {
+        return checkCache(cacheKey);
+    }
+
+    /**
+     * 删除所有缓存
+     */
+    public void clear() {
+        LOGGER.info(&amp;quot;have clean all key !&amp;quot;);
+        CACHE_OBJECT_MAP.clear();
+        CURRENT_SIZE = 0;
+    }
+
+    /**
+     * 删除某个缓存
+     */
+    public void del(K cacheKey) {
+        Object cacheValue = CACHE_OBJECT_MAP.remove(cacheKey);
+        if (cacheValue != null) {
+            LOGGER.info(&amp;quot;have delete key :&amp;quot; + cacheKey);
+            CURRENT_SIZE = CURRENT_SIZE - 1;
+        }
+    }
+
+    /**
+     * 判断缓存在不在,过没过期
+     */
+    private boolean checkCache(K cacheKey) {
+        CacheObj cacheObj = CACHE_OBJECT_MAP.get(cacheKey);
+        if (cacheObj == null) {
+            return false;
+        }
+        if (cacheObj.getTtlTime() == -1L) {
+            return true;
+        }
+        if (cacheObj.getTtlTime() &amp;lt; System.currentTimeMillis()) {
+            del(cacheKey);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除最近最久未使用的缓存
+     */
+    private void deleteLRU() {
+        LOGGER.info(&amp;quot;delete Least recently used run!&amp;quot;);
+        K cacheKey = CACHE_USE_LOG_LIST.remove(CACHE_USE_LOG_LIST.size() - 1);
+        del(cacheKey);
+    }
+
+    /**
+     * 删除过期的缓存
+     * 禁止手动调用! 由定时任务定时拉起
+     * @see ScheduledService#deleteTimeOut()
+     */
+    public void deleteTimeOut() {
+        LOGGER.info(&amp;quot;delete time out run!&amp;quot;);
+        List&amp;lt;K&amp;gt; deleteKeyList = new LinkedList&amp;lt;&amp;gt;();
+        for(Map.Entry&amp;lt;K, CacheObj&amp;lt;V&amp;gt;&amp;gt; entry : CACHE_OBJECT_MAP.entrySet()) {
+            if (entry.getValue().getTtlTime() &amp;lt; System.currentTimeMillis() &amp;amp;&amp;amp; entry.getValue().getTtlTime() != -1L) {
+                deleteKeyList.add(entry.getKey());
+            }
+        }
+
+        for (K deleteKey : deleteKeyList) {
+            del(deleteKey);
+        }
+        LOGGER.info(&amp;quot;delete cache count is :&amp;quot; + deleteKeyList.size());
+
+    }
+
+    /**
+     * 检查大小
+     * 当当前大小如果已经达到最大大小
+     * 首先删除过期缓存，如果过期缓存删除过后还是达到最大缓存数目
+     * 删除最久未使用缓存
+     */
+    private  void checkSize() {
+        if (CURRENT_SIZE &amp;gt;= CACHE_MAX_NUMBER) {
+            deleteTimeOut();
+        }
+        if (CURRENT_SIZE &amp;gt;= CACHE_MAX_NUMBER) {
+            deleteLRU();
+        }
+    }
+
+    /**
+     * 保存缓存的使用记录
+     */
+    private synchronized void saveCacheUseLog(K cacheKey) {
+        CACHE_USE_LOG_LIST.remove(cacheKey);
+        CACHE_USE_LOG_LIST.add(0, cacheKey);
+    }
+
+    public  void showUtilsInfo() {
+        System.out.println(&amp;quot;cache max count is :&amp;quot; + CACHE_MAX_NUMBER);
+        System.out.println(&amp;quot;cache current count is :&amp;quot; + CURRENT_SIZE);
+        System.out.println(&amp;quot;cache object map is :&amp;quot; + CACHE_OBJECT_MAP.toString());
+        System.out.println(&amp;quot;cache use log list is :&amp;quot; + CACHE_USE_LOG_LIST.toString());
+
+    }
+
+}
+
+class CacheObj&amp;lt;V&amp;gt; {
+    /**
+     * 缓存对象
+     */
+    private V cacheValue;
+    /**
+     * 缓存过期时间
+     */
+    private Long ttlTime;
+
+    CacheObj(V cacheValue, Long ttlTime) {
+        this.cacheValue = cacheValue;
+        this.ttlTime = ttlTime;
+    }
+
+    Object getCacheValue() {
+        return cacheValue;
+    }
+
+    Long getTtlTime() {
+        return ttlTime;
+    }
+
+    @Override
+    public String toString() {
+        return &amp;quot;CacheObj{&amp;quot; +
+                &amp;quot;cacheValue=&amp;quot; + cacheValue +
+                &amp;quot;, ttlTime=&amp;quot; + ttlTime +
+                &#39;}&#39;;
+    }
+}
+
+
+定时任务
+@Component
+public class ScheduledService {
+
+    @Scheduled(cron = &amp;quot;${bus.cache-delete-cycle}&amp;quot;)
+    public void deleteTimeOut() {
+        Cache.defaultCache().deleteTimeOut();
+    }
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-shi-xian-dai-ding-shi-xiao-guo-de-cache/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/ping-bi-bai-jia-hao/">
+                        屏蔽百家号
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-12-08</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+自从百家号发布后，使用百度搜索内容，前几条全部都是百家号的抄袭文章。使用体验非常不爽。
+寻找解决方法
+前段时间看到有人用油猴写了一个自动展开CSDN【阅读全文】的脚本，大有启发，然后用油猴写了几句非常简单的js脚本，结合百度高级搜索的 -() 命令，解决了这个烦恼许久问题。
+代码如下，导入油猴即可使用（非常简单，主要提供了思路，路过大神勿喷）：
+// ==UserScript==
+// @author        imyzt
+// @namespace     http://imyzt.top/28
+// @version       1.0
+// @name          exclude baijiahao
+// @namespace     http://imyzt.top
+// @description   屏蔽百家号
+// @include       https://www.baidu.com/*
+// ==/UserScript==
+
+// 文本框的值
+var wd = document.getElementById(&#39;kw&#39;).value;
+// 当输入框中有值或者 文本框不包含-(baijiahao)字眼时, 执行变更, 然后刷新页面
+if (wd !== &#39;&#39; &amp;amp;&amp;amp; wd.indexOf(&#39;-(baijiahao)&#39;) == -1) {
+    changeValAndReload(wd)
+}
+
+// 监听在文本框加入内容的事件
+$(&#39;#kw&#39;).on(&#39;change&#39;, function() {
+    var value = document.getElementById(&#39;kw&#39;).value;
+    var rep = value.replace(&amp;quot;-(baijiahao)&amp;quot;,&amp;quot;&amp;quot;);
+    changeValAndReload(rep)
+});
+
+// 修改值
+function changeValAndReload(val) {
+    document.getElementById(&#39;kw&#39;).value = val + &#39; -(baijiahao)&#39;;
+    document.getElementById(&#39;su&#39;).click()
+}
+
+
+授人以渔
+油猴的脚本更多就是JavaScript的操作，如果需要学习，可以 点击这里, 前往学习.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/ping-bi-bai-jia-hao/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
+                        记录从Github迁移到Gitlab(非最优解)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-29</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            起因
+公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。
+思路
+1.在公司代码库建立一个新的代码库
+2. 修改本地代码库的git remote地址
+3. 提交代码到新的gitlab代码库
+操作
+
+因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了git upstream地址。
+
+
+
+先在gitlab上面新建主仓库，使用自己的账号fork主仓库代码。
+
+
+本地修改git remote地址。
+
+
+git remote remove origin # 删除远程仓库别名  
+git remote remove upstream # 删除上游仓库别名  
+git remote add origin git@....... # 添加新的仓库地址  
+git remote add upstream git@...... # 添加新的上游仓库地址  
+
+
+
+拉取上游和远程仓库
+git pull origin master # 拉取远程仓库
+git fetch upstream  # fetch源分支的新版本到本地, 也就是更新upstream主仓库的代码.
+git merge upstream/master  # 合并主仓库更新的内容
+
+
+提交本地未提交代码
+
+
+git add . # 提交所有未提交内容到缓存区  
+git commit -m &#39;xxxx&#39; # 为本次提交撰写评论信息&amp;lt;fort clolr=&#39;red&#39;&amp;gt;! 必须&amp;lt;/fort&amp;gt;  
+git push origin master # 提交代码到远程仓库  
+
+
+在gitlab界面提交PR请求.
+
+遇到的问题
+
+在上述第三步操作时，遇到了问题，错误信息如下：
+
+$ git pull upstream   
+remote: HTTP Basic: Access denied   
+fatal: Authentication failed for &#39;git仓库地址&#39;   
+
+错误原因：访问被拒绝，本地最好配置ssh连接，不要使用http拉取。gitlab都有密码的。
+
+在进行git push时遇到的问题，错误信息如下：
+
+$ git push origin master   
+To git仓库地址 
+ ! [rejected]        master -&amp;gt; master (fetch first)  
+error: failed to push some refs to &#39;git仓库地址&#39;   
+hint: Updates were rejected because the remote contains work that you do   
+hint: not have locally. This is usually caused by another repository pushing   
+hint: to the same ref. You may want to first integrate the remote changes   
+hint: (e.g., &#39;git pull ...&#39;) before pushing again.   
+hint: See the &#39;Note about fast-forwards&#39; in &#39;git push --help&#39; for details.   
+
+错误原因：本地代码相对于远程仓库不是最新的代码，需要使用git pull origin xxx  先拉取最新代码
+
+在进行git pull时又遇到了问题.错误信息如下:
+
+$ git pull origin master  
+From git仓库地址  
+ * branch            master     -&amp;gt; FETCH_HEAD    
+fatal: refusing to merge unrelated histories  
+
+错误原因：因为我们是在gitlab新建了一个仓库，然后将本地本身是github的代码提交过去，git提示我们不能将两个完全不相干的仓库合并。
+解决方法就是加上·--allow-unrelated-histories·参数，参数含义是：强制将两个不相干的仓库合并。
+! 此操作风险较大，必须保证gitlab新仓库没有代码，不然合并过程中可能出现冲突
+总结
+至此，迁移仓库的不完美解决方案就算完成了。
+上述只是git操作中的沧海一粟，只有通过不断的学习，才能进步。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-jar-qi-dong-springboot-xian-shang-bao-cuo-filenotfoundexception/">
+                        java -jar 启动Springboot线上报错FileNotFoundException
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-29</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            发现问题
+今天在将项目打包放在线上后，遇到了一个问题，错误堆栈如下：
+java.io.FileNotFoundException: /tmp/tomcat.3411451253170172517.9998/work/Tomcat/localhost/ROOT/upload_95a9f6c4_32ff_4372_a19b_c447216971a3_00000017.tmp (No such file or directory)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.&amp;lt;init&amp;gt;(FileInputStream.java:138)
+	at org.apache.tomcat.util.http.fileupload.disk.DiskFileItem.getInputStream(DiskFileItem.java:194)
+	at org.apache.catalina.core.ApplicationPart.getInputStream(ApplicationPart.java:100)
+	at org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile.getInputStream(StandardMultipartHttpServletRequest.java:250)
+	at cn.anytec.anguan.util.SpringAsyncUtil.analyseDataPersistence(SpringAsyncUtil.java:33)
+	at cn.anytec.anguan.util.SpringAsyncUtil$$FastClassBySpringCGLIB$$9155c306.invoke(&amp;lt;generated&amp;gt;)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:748)
+
+分析问题
+代码逻辑主要是将摄像头传递过来的图片进行保存，在开发机win上面没有问题，并且在Linux线上，第一次报错，第二次不会报错，成功运行。
+寻找解决方案
+问题比较离奇，遂Google寻找解决方案。
+发现已经有大神遇到过此问题，并且给出了完整的解决方案和错误原理分析。
+链接：superlovelei
+解决方案及总结
+虽然大神已经给出了原因，我再次再做一次表述吧。
+在Linux系统中，通过java -jar 运行的项目，会在操作系统的 /tmp/tomcat... 目录下新建一个目录，上传的文件都会先临时存放在此，而由于linux的系统机制，如果超过10天没有操作过此文件目录，会将目录删除，所以如果当前linux主机第一次运行上传相关的程序或者很久（超过10天）没有操作过此临时目录，就会出现报错。
+而通过配置springboot的yml文件，修改server的配置文件，手动指定临时目录（不会被机制删除的路径），此问题就迎刃而解。
+server:
+  tomcat:
+    basedir: /tmp
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-jar-qi-dong-springboot-xian-shang-bao-cuo-filenotfoundexception/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mongodb-xue-xi-bi-ji-ru-men/">
+                        MongoDB学习笔记(入门)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-11-01</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            教程的主要内容
+MongoDB的基础概念，数据库、集合的创建、基础的增删改查、高级查询的聚合管道
+MongoDB是什么？它有什么优势（为什么要用它）？
+MongoDB是什么：
+MongoDB是一款为web应用程序和互联网基础设施设计的数据库管理系统。是NoSQL类型的数据库。同时也是最像关系型数据库的非关系型数据库。
+为什么要用MongoDB：
+
+
+MongoDB提出的是文档、集合的概念，使用BSON（类JSON）作为其数据模型结构，其结构是面向对象的而不是二维表，存储一个用户在MongoDB中是这样子的。
+{
+username: &#39;imyzt&#39;,
+password: &#39;123&#39;
+}
+
+
+使用这样的数据模型，使得MongoDB能在生产环境中提供高读写的能力，吞吐量较于mysql等SQL数据库大大增强。
+
+
+易伸缩，自动故障转移。易伸缩指的是提供了分片能力，能对数据集进行分片，数据的存储压力分摊给多台服务器。自动故障转移是副本集的概念，MongoDB能检测主节点是否存活，当失活时能自动提升从节点为主节点，达到故障转移。
+
+
+数据模型因为是面向对象的，所以可以表示丰富的、有层级的数据结构，比如博客系统中能把“评论”直接嵌入“文章“的文档中，而不必像myqsl一样创建三张表来描述这样的关系。
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mongodb-xue-xi-bi-ji-ru-men/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/14/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/16/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

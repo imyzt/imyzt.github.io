@@ -1,0 +1,702 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    RabbitMQ 实现延迟队列 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            RabbitMQ 实现延迟队列
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-08-29</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="参考文章">参考文章</h1>
+<ul>
+<li>https://www.cnblogs.com/mfrank/p/11260355.html</li>
+<li>https://blog.csdn.net/u014308482/article/details/53036770</li>
+<li>https://blog.csdn.net/u012988901/article/details/88958654</li>
+</ul>
+<h1 id="本文大纲">本文大纲</h1>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2020/08/380dc612ncjaoojm2ta7l64ih8.png" alt="http://blog.imyzt.top/upload/2020/08/380dc612ncjaoojm2ta7l64ih8.png" loading="lazy"></figure>
+<h1 id="什么是延迟队列">什么是延迟队列</h1>
+<p><strong>延迟队列也是队列，队列就意味着元素是有序的。元素出队和入队是有方向的，从一端进，从另一端出。</strong><br>
+延迟队列体现在延迟上面，普通的队列是希望元素能够被更快的消费，而延迟队列是希望元素在指定的时间被消费。所以<strong>延迟队列里面的元素是带有时间属性</strong>的。</p>
+<h1 id="延迟队列的使用场景">延迟队列的使用场景</h1>
+<ul>
+<li>用户订单10分钟内未支付自动取消</li>
+<li>预定会议后，开会前10分钟提醒</li>
+<li>优惠券到期前提醒</li>
+</ul>
+<h1 id="基础知识补充">基础知识补充</h1>
+<h2 id="ttltime-to-live">TTL（Time To Live）</h2>
+<h3 id="什么是ttl">什么是TTL</h3>
+<p><strong>TTL是RabbitMQ中一个消息或者队列的属性，表明一条消息或者该队列中所有消息的最大存活时间，单位是毫秒</strong>。如果一条设置了TTL属性的消息或者一条消息进入设置了TTL属性的队列后，那么这条消息在设置的时间内没有被消费，则会成为“死信”，如果消息配置了TTL后被投递到设置了TTL属性的队列中，则按照较小的那个值设置。</p>
+<h3 id="如何设置ttl">如何设置TTL</h3>
+<p>如果不设置TTL，则消息永远不会过期。<br>
+如果TTL=0，则表示除非此时可以直接投递到该消息的消费者，否则这条消息就会被丢弃。</p>
+<h3 id="创建队列时设置队列的ttl">创建队列时，设置队列的TTL</h3>
+<pre><code>Map&lt;String, Object&gt; args = new HashMap&lt;String, Object&gt;();
+args.put(&quot;x-message-ttl&quot;, 6000);
+channel.queueDeclare(queueName, durable, exclusive, autoDelete, args);
+</code></pre>
+<h3 id="设置每条消息的ttl">设置每条消息的TTL</h3>
+<pre><code>AMQP.BasicProperties.Builder builder = new AMQP.BasicProperties.Builder();
+builder.expiration(&quot;6000&quot;);
+AMQP.BasicProperties properties = builder.build();
+channel.basicPublish(exchangeName, routingKey, mandatory, properties, &quot;msg body&quot;.getBytes());
+</code></pre>
+<h3 id="两种ttl的特性">两种TTL的特性</h3>
+<p>两种设置方式有很大的区别</p>
+<ul>
+<li>如果设置了队列的TTL，那么一旦消息过期，就会被队列丢弃。</li>
+<li>针对每条消息设置TTL，即使消息过期，也不会马上丢弃，因为消息是否过期是在即将投递到消费者之前确定的，如果当前队列有严重的消息积压，则已经过期的消息也许还能存活很长时间。</li>
+</ul>
+<p>上述第2点，RabbitMQ只会检查第一个消息是否过期，消息过期还存活的原因是因为队列是有序消费的，而如果需要判断每条消息是否过期则需要遍历整个队列，性能损耗太大，选择在有序消费到该消息时准备投递前进行消息的判断，空间换时间的方案。</p>
+<h2 id="dlxdead-letter-exchanges">DLX（Dead Letter Exchanges）</h2>
+<h3 id="什么是dlx">什么是DLX</h3>
+<p><strong>DLX的作用就是用来接收死信消息，当一个消息在队列中变成了死信消息后，可以发送到另一个exchange（交换机），这个交换机就是DLX，绑定DLX的队列成为死信队列，当这个队列存在死信消息时，RabbitMQ就会立即将这个消息发布到设置的DLX上去，进而被路由到绑定该DLX的死信队列上。</strong></p>
+<h3 id="什么是死信">什么是死信</h3>
+<ul>
+<li>消息被拒绝 （Basic.Reject/Basic.Nack），并且设置requeue=false</li>
+<li>消息过期（TTL）</li>
+<li>队列达到最大长度</li>
+</ul>
+<h3 id="如何设置dlx">如何设置DLX</h3>
+<p>RabbitMQ的Queue可以配置<code>x-dead-letter-exchange</code> 和 <code>x-dead-letter-routing-key</code>（可选）两个参数，如果队列内出现了dead letter，则按照这两个参数重新路由转发到指定的队列。</p>
+<ul>
+<li>x-dead-letter-exchange：出现dead letter之后将dead letter重新发送到指定exchange</li>
+<li>x-dead-letter-routing-key：出现dead letter之后将dead letter重新按照指定的routing-key发送</li>
+</ul>
+<h2 id="基础知识总结">基础知识总结</h2>
+<p>结合TTL和DLX两个特性，将消息设置了TTL规则之后当消息在队列中变为dead letter时，利用DLX特性将它转发到另一个Exchange或者Routing Key，这个时候绑定这个死信队列的消费者开始消费消息即可实现延时消费的效果。</p>
+<p>生产者生产一条延时消息，根据需要延时时间的不同，<strong>利用不同的routingKey将消息路由到不同的延时队列①</strong>，每个队列都设置了不同的TTL属性，并绑定在同一个死信交换机中，消息过期后，根据routingKey的不同，又会被路由到不同的死信队列中，消费者只需要监听对应的死信队列进行处理即可。</p>
+<p>①：不同消息绑定在不同的队列中很重要，此处使用的是TTL的第一种，为队列设置时长。可以确保队列中消息的过期时间是有序的。因为如果队列中有不同过期时间的消息，会出现消息错乱的情况。比如第一条是10分钟过期，第二条是20秒过期，则必须要等第一条消息有序被消费后（结合TTL过期特性，空间换时间），才能在10分钟20秒后消费到第二条消息。</p>
+<h1 id="实现延迟消息队列">实现延迟消息队列</h1>
+<h2 id="源码">源码</h2>
+<h3 id="配置部分">配置部分</h3>
+<pre><code>/**
+ * 代码: https://www.cnblogs.com/mfrank/p/11260355.html
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 配置文件
+ */
+@Configuration
+public class RabbitMQConfig {
+
+    /**
+     * 延迟交换机
+     */
+    public static final String DELAY_EXCHANGE_NAME = &quot;delay.queue.demo.business.exchange&quot;;
+    /**
+     * 延迟队列名称
+     */
+    private static final String DELAY_QUEUEA_NAME = &quot;delay.queue.demo.business.queuea&quot;;
+    private static final String DELAY_QUEUEB_NAME = &quot;delay.queue.demo.business.queueb&quot;;
+    /**
+     * 延迟队列Routing Key
+     */
+    public static final String DELAY_QUEUEA_ROUTING_KEY = &quot;delay.queue.demo.business.queuea.routingkey&quot;;
+    public static final String DELAY_QUEUEB_ROUTING_KEY = &quot;delay.queue.demo.business.queueb.routingkey&quot;;
+    /**
+     * 死信交换机
+     */
+    private static final String DEAD_LETTER_EXCHANGE = &quot;delay.queue.demo.deadletter.exchange&quot;;
+    /**
+     * 死信队列Routing Key
+     */
+    private static final String DEAD_LETTER_QUEUEA_ROUTING_KEY = &quot;delay.queue.demo.deadletter.delay_10s.routingkey&quot;;
+    private static final String DEAD_LETTER_QUEUEB_ROUTING_KEY = &quot;delay.queue.demo.deadletter.delay_60s.routingkey&quot;;
+    /**
+     * 死信队列名称
+     */
+    public static final String DEAD_LETTER_QUEUEA_NAME = &quot;delay.queue.demo.deadletter.queuea&quot;;
+    public static final String DEAD_LETTER_QUEUEB_NAME = &quot;delay.queue.demo.deadletter.queueb&quot;;
+
+    /**
+     * 首先声明延迟队列, 生产者通过交换机和Routing Key将消息发送到延迟队列上
+     * 然后消息变为死信时, 死信交换机将消息转发到死信队列上, 消费者对死信队列进行监听
+     */
+
+    /**
+     * 声明延迟队列交换机
+     */
+    @Bean
+    public DirectExchange delayExchange() {
+        return new DirectExchange(DELAY_EXCHANGE_NAME);
+    }
+    /**
+     * 声明死信队列交换机
+     */
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(DEAD_LETTER_EXCHANGE);
+    }
+
+    /**
+     * 声明延迟队列A
+     * 延迟10秒
+     * 并绑定到对应的死信交换机
+     */
+    @Bean
+    public Queue delayQueueA() {
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;(3);
+        // x-dead-letter-exchange    这里声明当前队列绑定的死信交换机
+        args.put(&quot;x-dead-letter-exchange&quot;, DEAD_LETTER_EXCHANGE);
+        // x-dead-letter-routing-key  这里声明当前队列的死信路由key
+        args.put(&quot;x-dead-letter-routing-key&quot;, DEAD_LETTER_QUEUEA_ROUTING_KEY);
+        // x-message-ttl  声明队列的TTL
+        args.put(&quot;x-message-ttl&quot;, 10000);
+        return QueueBuilder.durable(DELAY_QUEUEA_NAME).withArguments(args).build();
+    }
+    /**
+     * 声明延迟队列B
+     * 延迟60秒
+     * 并绑定到对应的死信交换机
+     */
+    @Bean
+    public Queue delayQueueB() {
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;(3);
+        // x-dead-letter-exchange    这里声明当前队列绑定的死信交换机
+        args.put(&quot;x-dead-letter-exchange&quot;, DEAD_LETTER_EXCHANGE);
+        // x-dead-letter-routing-key  这里声明当前队列的死信路由key
+        args.put(&quot;x-dead-letter-routing-key&quot;, DEAD_LETTER_QUEUEB_ROUTING_KEY);
+        // x-message-ttl  声明队列的TTL
+        args.put(&quot;x-message-ttl&quot;, 60000);
+        return QueueBuilder.durable(DELAY_QUEUEB_NAME).withArguments(args).build();
+    }
+
+    /**
+     * 声明死信队列A, 用于接收延迟10s的消息
+     */
+    @Bean
+    public Queue deadLetterQueueA() {
+        return new Queue(DEAD_LETTER_QUEUEA_NAME);
+    }
+    /**
+     * 声明死信队列B, 用于接收延迟60s的消息
+     */
+    @Bean
+    public Queue deadLetterQueueB() {
+        return new Queue(DEAD_LETTER_QUEUEB_NAME);
+    }
+
+    /**
+     * 声明延迟队列A与延迟队列交换机绑定关系
+     * Routing Key
+     */
+    @Bean
+    public Binding delayBindingA(@Qualifier(&quot;delayQueueA&quot;) Queue queue,
+                                                                   @Qualifier(&quot;delayExchange&quot;) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(DELAY_QUEUEA_ROUTING_KEY).noargs();
+    }
+    /**
+     * 声明延迟队列B与延迟队列交换机绑定关系
+     * Routing Key
+     */
+    @Bean
+    public Binding delayBindingB(@Qualifier(&quot;delayQueueB&quot;) Queue queue,
+                                                                   @Qualifier(&quot;delayExchange&quot;) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(DELAY_QUEUEB_ROUTING_KEY).noargs();
+    }
+
+    /**
+     * 声明死信队列A与死信队列交换机绑定关系
+     * Routing Key
+     */
+    @Bean
+    public Binding deadBindingA(@Qualifier(&quot;deadLetterQueueA&quot;) Queue queue,
+                                                                   @Qualifier(&quot;deadLetterExchange&quot;) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(DEAD_LETTER_QUEUEA_ROUTING_KEY).noargs();
+    }
+    /**
+     * 声明死信队列B与死信队列交换机绑定关系
+     * Routing Key
+     */
+    @Bean
+    public Binding deadBindingB(@Qualifier(&quot;deadLetterQueueB&quot;) Queue queue,
+                                                                  @Qualifier(&quot;deadLetterExchange&quot;) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(DEAD_LETTER_QUEUEB_ROUTING_KEY).noargs();
+    }
+
+}
+</code></pre>
+<h3 id="生产者部分">生产者部分</h3>
+<pre><code>/**
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 消息生产者
+ */
+@Slf4j
+@RestController
+@RequestMapping(&quot;sender&quot;)
+public class MessageSenderController {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @PostMapping
+    public void sender(String msg, String type) {
+
+        log.info(&quot;当前时间：{},收到请求，msg:{},delayType:{}&quot;, LocalDateTime.now().toString(), msg, type);
+
+        switch (type) {
+            case &quot;DELAY_10S&quot;:
+                rabbitTemplate.convertAndSend(DELAY_EXCHANGE_NAME, DELAY_QUEUEA_ROUTING_KEY, msg);
+                break;
+            case &quot;DELAY_60S&quot;:
+                rabbitTemplate.convertAndSend(DELAY_EXCHANGE_NAME, DELAY_QUEUEB_ROUTING_KEY, msg);
+                break;
+            default:
+                break;
+        }
+    }
+}
+</code></pre>
+<h3 id="消费者部分">消费者部分</h3>
+<pre><code>/**
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 死信队列消费者
+ */
+@Component
+@Slf4j
+public class DeadLetterQueueConsumer {
+
+    @RabbitListener(queues = DEAD_LETTER_QUEUEA_NAME)
+    public void receiveA(Message message, Channel channel) throws IOException {
+        String msg = new String(message.getBody());
+        log.info(&quot;当前时间：{},死信队列A收到消息：{}&quot;, LocalDateTime.now().toString(), msg);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    @RabbitListener(queues = DEAD_LETTER_QUEUEB_NAME)
+    public void receiveB(Message message, Channel channel) throws IOException {
+        String msg = new String(message.getBody());
+        log.info(&quot;当前时间：{},死信队列B收到消息：{}&quot;, LocalDateTime.now().toString(), msg);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+}
+</code></pre>
+<h2 id="两个交换机">两个交换机</h2>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2020/08/pu6dgrcf7kjtuqqahres3bp48v.jpg" alt="http://blog.imyzt.top/upload/2020/08/pu6dgrcf7kjtuqqahres3bp48v.jpg" loading="lazy"></figure>
+<h2 id="四个队列">四个队列</h2>
+<figure data-type="image" tabindex="3"><img src="http://blog.imyzt.top/upload/2020/08/3vtkq5kvviivlrlfvtd7mdtja3.jpg" alt="http://blog.imyzt.top/upload/2020/08/3vtkq5kvviivlrlfvtd7mdtja3.jpg" loading="lazy"></figure>
+<h2 id="延迟效果">延迟效果</h2>
+<figure data-type="image" tabindex="4"><img src="http://blog.imyzt.top/upload/2020/08/0hr7c5k8ochhhrfq0t2lldo29b.jpg" alt="http://blog.imyzt.top/upload/2020/08/0hr7c5k8ochhhrfq0t2lldo29b.jpg" loading="lazy"></figure>
+<h2 id="缺陷">缺陷</h2>
+<p>从上面的效果来看，第一条消息在10秒后变成了死信消息，然后被消费掉。第二条消息在60秒后变成了死信队列，然后被消费掉。目前来看基本功能的延迟队列就算完成了。<br>
+但是有一个问题就是，队列的消息都是有序的失效，如果增加一个新的时间需求，那么有需要增加一个队列处理上面的逻辑，实在是不够优雅。</p>
+<h1 id="延迟队列优化">延迟队列优化</h1>
+<p>通过上面实现的内容，使用RabbitMQ自带的DLX和TTL，实现的结果是无法对灵活过期时间的支持。<br>
+针对这个问题的最终解决方案是使用rabbit提供的一个延迟插件实现。<a href="https://www.rabbitmq.com/community-plugins.html">https://www.rabbitmq.com/community-plugins.html</a>，下载rabbitmq_delayed_message_exchange插件。</p>
+<h2 id="插件的安装">插件的安装</h2>
+<p>进入到RabbitMQ安装目录的bin目录下，执行指令安装插件即可</p>
+<pre><code>rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+</code></pre>
+<h2 id="重新实现延迟功能">重新实现延迟功能</h2>
+<h3 id="配置部分-2">配置部分</h3>
+<pre><code>/**
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 延迟插件实现消息延迟
+ */
+@Configuration
+public class DelayedRabbitMQConfig {
+
+    /**
+     * 延迟队列
+     */
+    public static final String DELAYED_QUEUE_NAME = &quot;delay.queue.demo.delay.queue&quot;;
+    /**
+     * 延迟交换机
+     */
+    public static final String DELAYED_EXCHANGE_NAME = &quot;delay.queue.demo.delay.exchange&quot;;
+    /**
+     * 延迟队列 Routing Key
+     */
+    public static final String DELAYED_ROUTING_KEY = &quot;delay.queue.demo.delay.routingkey&quot;;
+
+
+    /**
+     * 创建延迟队列
+     */
+    @Bean
+    public Queue immediateQueue() {
+        return new Queue(DELAYED_QUEUE_NAME);
+    }
+
+    /**
+     * 创建一个自定义的交换机(插件实现)
+     */
+    @Bean
+    public CustomExchange customExchange() {
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;(1);
+        args.put(&quot;x-delayed-type&quot;, &quot;direct&quot;);
+        return new CustomExchange(DELAYED_EXCHANGE_NAME, &quot;x-delayed-message&quot;, true, false, args);
+    }
+
+    /**
+     * 绑定交换机和队列
+     */
+    @Bean
+    public Binding bindingNotify(@Qualifier(&quot;immediateQueue&quot;) Queue queue,
+                                 @Qualifier(&quot;customExchange&quot;) CustomExchange customExchange) {
+        return BindingBuilder.bind(queue).to(customExchange).with(DELAYED_ROUTING_KEY).noargs();
+    }
+}
+</code></pre>
+<h3 id="生产者部分-2">生产者部分</h3>
+<pre><code>/**
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 消息生产者
+ */
+@Slf4j
+@RestController
+@RequestMapping(&quot;sender&quot;)
+public class MessageSenderController {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    /**
+     * 通过插件实现的延迟消息
+     * @param msg 消息内容
+     * @param delayTime 延迟时间, 毫秒
+     */
+    @PostMapping(&quot;v2&quot;)
+    public void sender(String msg, Integer delayTime) {
+
+        log.info(&quot;当前时间：{},收到请求，msg:{},delayTime:{}&quot;, LocalDateTime.now().toString(), msg, delayTime);
+
+        rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, msg, messagePostProcessor -&gt;{
+            messagePostProcessor.getMessageProperties().setDelay(delayTime);
+            return messagePostProcessor;
+        });
+    }
+}
+</code></pre>
+<h3 id="消费者部分-2">消费者部分</h3>
+<pre><code>/**
+ * @author imyzt
+ * @date 2020/08/29
+ * @description 死信队列消费者
+ */
+@Component
+@Slf4j
+public class DeadLetterQueueConsumer {
+
+    /**
+     * 插件延迟队列
+     * 消费者
+     */
+    @RabbitListener(queues = DELAYED_QUEUE_NAME)
+    public void receiveD(Message message, Channel channel) throws IOException {
+        String msg = new String(message.getBody());
+        log.info(&quot;当前时间：{},延时队列收到消息：{}&quot;, LocalDateTime.now().toString(), msg);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+}
+</code></pre>
+<h3 id="交换机">交换机</h3>
+<figure data-type="image" tabindex="5"><img src="http://blog.imyzt.top/upload/2020/08/7p9h2n83oojuqpn5rt3dmkfc3r.png" alt="http://blog.imyzt.top/upload/2020/08/7p9h2n83oojuqpn5rt3dmkfc3r.png" loading="lazy"></figure>
+<h3 id="队列">队列</h3>
+<figure data-type="image" tabindex="6"><img src="http://blog.imyzt.top/upload/2020/08/05esbd0g36giqrfcltkp3jg0bg.png" alt="http://blog.imyzt.top/upload/2020/08/05esbd0g36giqrfcltkp3jg0bg.png" loading="lazy"></figure>
+<h3 id="效果图">效果图</h3>
+<figure data-type="image" tabindex="7"><img src="http://blog.imyzt.top/upload/2020/08/1m6okllergjoqp3i0imaadojao.png" alt="http://blog.imyzt.top/upload/2020/08/1m6okllergjoqp3i0imaadojao.png" loading="lazy"></figure>
+<h1 id="总结">总结</h1>
+<ol>
+<li>TTL对消息设置过期时间，过期时间是无序的。所以不能用于延迟队列不同过期时间的处理。只能针对队列设置时间，一个队列处理一个时间的需求。</li>
+<li>如果需要可靠性延迟队列，推荐使用插件。</li>
+<li>rabbitmq_delayed_message_exchange插件在RAM节点会有一些问题，这个博主描述了这部分<a href="https://blog.csdn.net/wangming520liwei/article/details/103352440">https://blog.csdn.net/wangming520liwei/article/details/103352440</a></li>
+<li>本文大量参考了“参考文章”中的内容，只是对自己学习延迟队列的内容记载。感谢原作者们。</li>
+<li>本文出现的源代码均在<a href="https://github.com/imyzt/learning-technology-code/tree/master/mq-series/RabbitMQ/delay-queue-simple">github</a>中</li>
+</ol>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/rabbitmq-yan-chi-gong-neng/">
+                                <h3 class="post-title">
+                                    RabbitMQ实现延迟队列
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0">参考文章</a></li>
+<li><a href="#%E6%9C%AC%E6%96%87%E5%A4%A7%E7%BA%B2">本文大纲</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97">什么是延迟队列</a></li>
+<li><a href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">延迟队列的使用场景</a></li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85">基础知识补充</a>
+<ul>
+<li><a href="#ttltime-to-live">TTL（Time To Live）</a>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFttl">什么是TTL</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AEttl">如何设置TTL</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E9%98%9F%E5%88%97%E6%97%B6%E8%AE%BE%E7%BD%AE%E9%98%9F%E5%88%97%E7%9A%84ttl">创建队列时，设置队列的TTL</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E6%AF%8F%E6%9D%A1%E6%B6%88%E6%81%AF%E7%9A%84ttl">设置每条消息的TTL</a></li>
+<li><a href="#%E4%B8%A4%E7%A7%8Dttl%E7%9A%84%E7%89%B9%E6%80%A7">两种TTL的特性</a></li>
+</ul>
+</li>
+<li><a href="#dlxdead-letter-exchanges">DLX（Dead Letter Exchanges）</a>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFdlx">什么是DLX</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%AD%BB%E4%BF%A1">什么是死信</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AEdlx">如何设置DLX</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93">基础知识总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E5%BB%B6%E8%BF%9F%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">实现延迟消息队列</a>
+<ul>
+<li><a href="#%E6%BA%90%E7%A0%81">源码</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86">配置部分</a></li>
+<li><a href="#%E7%94%9F%E4%BA%A7%E8%80%85%E9%83%A8%E5%88%86">生产者部分</a></li>
+<li><a href="#%E6%B6%88%E8%B4%B9%E8%80%85%E9%83%A8%E5%88%86">消费者部分</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%A4%E4%B8%AA%E4%BA%A4%E6%8D%A2%E6%9C%BA">两个交换机</a></li>
+<li><a href="#%E5%9B%9B%E4%B8%AA%E9%98%9F%E5%88%97">四个队列</a></li>
+<li><a href="#%E5%BB%B6%E8%BF%9F%E6%95%88%E6%9E%9C">延迟效果</a></li>
+<li><a href="#%E7%BC%BA%E9%99%B7">缺陷</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E4%BC%98%E5%8C%96">延迟队列优化</a>
+<ul>
+<li><a href="#%E6%8F%92%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85">插件的安装</a></li>
+<li><a href="#%E9%87%8D%E6%96%B0%E5%AE%9E%E7%8E%B0%E5%BB%B6%E8%BF%9F%E5%8A%9F%E8%83%BD">重新实现延迟功能</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E9%83%A8%E5%88%86-2">配置部分</a></li>
+<li><a href="#%E7%94%9F%E4%BA%A7%E8%80%85%E9%83%A8%E5%88%86-2">生产者部分</a></li>
+<li><a href="#%E6%B6%88%E8%B4%B9%E8%80%85%E9%83%A8%E5%88%86-2">消费者部分</a></li>
+<li><a href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA">交换机</a></li>
+<li><a href="#%E9%98%9F%E5%88%97">队列</a></li>
+<li><a href="#%E6%95%88%E6%9E%9C%E5%9B%BE">效果图</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

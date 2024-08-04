@@ -1,0 +1,334 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    redis并发测试工具使用 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            redis并发测试工具使用
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-03-15</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="简单测试">简单测试</h1>
+<p>redis自带了并发测试工具 <code>redis-benchmark</code>, 只需要携带几个简单的参数就可以完成redis的压力测试.</p>
+<h2 id="并发测试">并发测试</h2>
+<pre><code>redis-benchmark.exe -h 127.0.0.1 -p 6379 -c 100 -n 100000
+</code></pre>
+<p>上面的命令意思是使用 100 的并发,发起 10w 次请求</p>
+<h3 id="结果分析">结果分析</h3>
+<pre><code>====== GET ======                           
+  100000 requests completed in 0.98 seconds 
+  100 parallel clients                      
+  3 bytes payload                           
+  keep alive: 1                             
+                                            
+60.40% &lt;= 1 milliseconds                    
+99.66% &lt;= 2 milliseconds                    
+99.88% &lt;= 3 milliseconds                    
+99.99% &lt;= 4 milliseconds                    
+100.00% &lt;= 4 milliseconds                   
+102249.49 requests per second               
+</code></pre>
+<p>比如上面的就是执行了 <code>get</code> 命令, 10w次请求在0.98s 执行完毕. 使用了100个客户端, 每次使用了 3个字节负载<br>
+其中 60.40% 在1ms 执行完毕.....</p>
+<h2 id="大数据测试">大数据测试</h2>
+<pre><code>redis-benchmark.exe -h 127.0.0.1 -p 6379 -q -d 200
+</code></pre>
+<p>上面命令的意思是 一次数据包200字节, 结果做简单输出</p>
+<h3 id="结果分析-2">结果分析</h3>
+<pre><code>PING_INLINE: 104821.80 requests per second
+PING_BULK: 113895.21 requests per second
+SET: 102459.02 requests per second
+GET: 110253.59 requests per second
+INCR: 110011.00 requests per second
+LPUSH: 91996.32 requests per second
+RPUSH: 94786.73 requests per second
+LPOP: 94428.70 requests per second
+RPOP: 93984.96 requests per second
+</code></pre>
+<p>其中 <code>SET: 102459.02 requests per second</code> 表示每秒执行了10w+次请求</p>
+<h2 id="部分命令测试">部分命令测试</h2>
+<pre><code>redis-benchmark.exe -h 127.0.0.1 -p 6379 -t set,get -q -n 100000
+</code></pre>
+<p>上面命令的意思是对 <code>set,get</code> 两个命令做 10w 次请求测试, 结果做简单输出</p>
+<h3 id="结果分析-3">结果分析</h3>
+<pre><code>SET: 97656.24 requests per second
+GET: 108813.92 requests per second
+</code></pre>
+<p>其中 <code>GET: 108813.92 requests per second</code> 表示每秒执行了10w+次 <code>get</code> 操作</p>
+<h2 id="只测试某种命令">只测试某种命令</h2>
+<pre><code>redis-benchmark.exe -h 127.0.0.1 -p 6379 -n 100000 -q script load &quot;redis.call('set','name','yzt')&quot;
+</code></pre>
+<p>上面命令的意思是只测试 <code>set name yzt</code> 这一个命令的速度</p>
+<h3 id="结果分析-4">结果分析</h3>
+<pre><code>script load redis.call('set','name','yzt'): 82644.63 requests per second
+</code></pre>
+<p>结果表示当前命令一秒钟可以完成 8w+ 次操作</p>
+<h1 id="参数详解">参数详解</h1>
+<ul>
+<li>-h, -p： 不解释</li>
+<li>-c： 并发数</li>
+<li>-n： 请求数</li>
+<li>-q： 简单结果输出</li>
+<li>-d 100： 100字节的负载</li>
+<li>-t set：只测试set</li>
+<li>script load：只测试某个脚本</li>
+</ul>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/mysql-cha-xun-biao-suo-you-lie/">
+                                <h3 class="post-title">
+                                    mysql 查询表所有列
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95">简单测试</a>
+<ul>
+<li><a href="#%E5%B9%B6%E5%8F%91%E6%B5%8B%E8%AF%95">并发测试</a>
+<ul>
+<li><a href="#%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90">结果分析</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%B5%8B%E8%AF%95">大数据测试</a>
+<ul>
+<li><a href="#%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90-2">结果分析</a></li>
+</ul>
+</li>
+<li><a href="#%E9%83%A8%E5%88%86%E5%91%BD%E4%BB%A4%E6%B5%8B%E8%AF%95">部分命令测试</a>
+<ul>
+<li><a href="#%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90-3">结果分析</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%AA%E6%B5%8B%E8%AF%95%E6%9F%90%E7%A7%8D%E5%91%BD%E4%BB%A4">只测试某种命令</a>
+<ul>
+<li><a href="#%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90-4">结果分析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3">参数详解</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

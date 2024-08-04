@@ -1,0 +1,1305 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/docker-zhi-ding-rong-qi-ip/">
+                        docker 指定容器IP
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-28</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            docker的网络模式
+docker 总共有四种网络模式, 分别是
+
+host 模式
+bridge 模式
+none 模式
+container 模式
+
+关于docker的网络模式, 在这篇文章中有非常详尽的说明, 就不赘述了. 理解Docker的网络模式
+为什么需要指定容器IP
+实际部署中, 我们需要指定IP, 避免IP混乱
+如何实现指定容器IP
+docker的bridge(docker0)网络, 在docker安装时就已经创建好了, 不支持指定容器IP, 所以我们需要再创建一个docker的bridge网络(bridge1), 为其指定子网, 使其支持指定容器IP, 接下来将通过命令演示的方式创建一个支持指定IP的docker bridge网络.
+创建一个驱动为bridge的网络, 命名为newbridge
+docker network create --driver bridge --subnet 172.16.12.0/16 --gateway 172.16.1.1 newbridge
+
+
+查看刚刚创建的网络
+docker network ls
+
+
+创建容器测试
+docker run -itd -h test --name test --network newbridge --ip 172.16.12.3 ubuntu
+
+验证容器的ip
+
+此命令为查看所有容器ip命令
+
+docker inspect --format=&#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; $(docker ps -aq)
+
+
+可以看到容器的ip已经是刚才我们创建容器时指定的ip了. 大功告成.
+引用说明
+文中操作学习自 Docker 创建容器时指定容器ip
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/docker-zhi-ding-rong-qi-ip/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/wu-sheng-de-zhong-guo/">
+                        无声的中国
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            中国人的性情是总喜欢调和折中的，譬如你说，这屋子太暗，须在这里开一个窗，大家一定不允许的。但如果你主张拆掉屋顶他们就来调和，愿意开窗了。
+——鲁迅 《无声的中国》
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/wu-sheng-de-zhong-guo/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/yuan-zhu-jie/">
+                        元注解
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是元注解
+在java.lang.annotation包下, 提供了四个用来注解注解的元注解, 用于在自定义注解时使用.
+
+@Documented -- 注解是否包含在javaDoc中
+@Retention -- 什么时候用该注解
+@Target -- 注解用在什么地方
+@Inherited -- 是否允许子类继承该注解
+
+@Documented
+一个简单的Annotations注解标记, 标识是否将注解加入到Java文档中.
+@Retention
+
+定义该注解的生命周期
+
+
+RetentionPolicy.SOURCE  在编译阶段丢弃, 注解在编译之后就不会再有任何意义, 不会写入字节码文件. @Override, @SupperssWarnings都属于该生命周期.
+RetentionPolicy.CLASS 在类加载的时候丢弃, 在字节码处理过程中有用, 默认使用该生命周期
+RetentionPolicy.RUNTIME 始终不会丢弃, 运行期也保留该注解, 可以使用反射读取该注解的信息, 自定义注解时常使用该生命周期
+
+@Target
+
+定义该注解用在什么地方, 默认可以用在所有地方
+
+
+ElementType.TYPE -- 用于描述类
+ElementType.METHOD -- 用于描述方法
+ElementType.FIELD -- 用于描述成员变量, 对象, 属性(包括enum)
+ElementType.PACKAGE -- 用于描述包
+ElementType.CONSTRUCTOR -- 用于描述构造函数
+ElementType.LOCAL_VARIABLE -- 用于描述局部变量
+ElementType.PARAMETER -- 用于描述类, 接口(包括注解类型)或enum声明
+
+@Inherited
+@Inherited 元注解是一个标记注解，@Inherited 阐述了某个被标注的类型是被继承的。如果一个使用了@Inherited 修饰的annotation 类型被用于一个class，则这个annotation 将被用于该class 的子类。
+栗子
+@Documented
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Inherited
+@interface AnnotationTest{
+    String value() default &amp;quot;&amp;quot;;
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/yuan-zhu-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+                        前后端分离使用NGINX做服务转发
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。
+nginx配置
+在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 sites-enabled 下面编写配置信息.
+map $http_upgrade $connection_upgrade {  
+	default upgrade;  
+	&#39;&#39; close;  
+}  
+upstream muti_instance_43{
+#	server 192.168.10.62:9999 weight=10;
+	server 192.168.10.62:9999;
+#	server 192.168.10.213:9997 weight=2;
+	keepalive 200;
+}
+
+server {
+	listen 0.0.0.0:10070;
+	sendfile off;
+
+
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+#	resolver 114.114.114.114 223.5.5.5 valid=3600s;
+        resolver_timeout 3s;
+
+	proxy_http_version 1.1;
+	proxy_set_header Connection &amp;quot;&amp;quot;;
+
+	#root /data/securityUI/static/;
+
+
+	location  / { 
+                #add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;
+		#add_header &#39;Access-Control-Allow-Methods&#39; &#39;GET&#39;;
+		#add_header &#39;Access-Control-Allow-Headers&#39; &#39;DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization&#39;;
+		#add_header &#39;Access-Control-Expose-Headers&#39; &#39;Content-Length,Content-Range&#39;;
+		#add_header &#39;Access-Control-Max-Age&#39; 2592000;
+		client_max_body_size    15g;
+		#dav_access user:rw group:rw all:rw;
+		#dav_methods PUT DELETE MKCOL COPY MOVE;
+
+		#create_full_put_path on;
+
+		#autoindex off;
+		#autoindex_exact_size off;
+		#autoindex_localtime on;
+		#charset utf-8;
+		if ($request_uri ~* /.) {
+			proxy_pass http://muti_instance_43;
+			break;
+			#root /data/securityUI/static/;
+                	#index index.html index.htm;
+	
+		}
+		root /data/securityUI/static/;
+                index login.html;
+	}
+
+	location ^~ /static/offlineMap/ {
+		alias /data/securityUI/map/;
+		#proxy_pass http://map_server;
+	}
+
+	location  /static/ {
+
+		client_max_body_size 15g;
+		alias /data/securityUI/static/;
+		allow all;
+
+	}
+	location ^~ /index {
+		alias /data/securityUI/static/;
+		index index.html;
+
+	}
+
+	location ^~ /gee/ {
+		proxy_pass http://muti_instance_43;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection &amp;quot;upgrade&amp;quot;;
+		proxy_http_version 1.1;
+		proxy_set_header        Host            $host;
+		proxy_set_header        X-Real-IP       $remote_addr;
+		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+	}
+}
+
+
+总结
+配置中最关键的点在 location  / {} 节点, 其中的 if 判断, 如果是访问的 ip:port/xxx 带了任何内容, 就会转发到 muti_instance_43 中, 如果没有带内容(即访问的首页), 就会将其转发到配置好了的静态首页面.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/efk-ri-zhi-xi-tong-da-jian/">
+                        EFK日志系统搭建
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是EFK
+这里引用一下 ELK 架构之 Elasticsearch 和 Kibana 安装配置 一文对ELK的介绍，详细内容在文中都有介绍，我主要将其从实体机安装转向在Docker-compose服务编排，EFK与ELK大同小异.
+
+ELK 是三个开源软件的缩写，分别为：Elasticsearch、Logstash 以及 Kibana，它们都是开源软件。不过现在还新增了一个 Beats，它是一个轻量级的日志收集处理工具（Agent），Beats 占用资源少，适合于在各个服务器上搜集日志后传输给 Logstash，官方也推荐此工具，目前由于原本的 ELK Stack 成员中加入了 Beats 工具所以已改名为 Elastic Stack。
+
+ElasticSearch搭建
+ElasticSearch的安装需要替换配置文件的以下几个点
+network.host: 0.0.0.0 #所有地址都能够访问  
+http.port: 9200 #端口  
+http.cors.enabled: true 
+ http.cors.allow-origin: &amp;quot;*&amp;quot;
+
+问题解决
+在配置ElasticSearch时容易出现以下几点错误, 在此讲解以下如何解决:
+
+见图1-[ElasticSearch问题]
+原因：这是在因为系统不支持SecComp，而ES5.2.0默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动。
+解决：在elasticsearch.yml中配置bootstrap.system_call_filter为false，注意要在Memory下面:
+
+bootstrap.memory_lock: false
+bootstrap.system_call_filter: false
+
+
+见图1-[ElasticSearch问题]第二个红框
+出现此问题只需要修改了 宿主机 系统的max_map_count参数即可.
+
+vim /etc/sysctl.conf
+vm.max_map_count=655360
+sysctl -p
+
+
+图1-[ElasticSearch问题]
+Logstash搭建
+Logstash的安装需要替换配置文件的以下几点
+server.port: 5601 
+server.host: &amp;quot;0.0.0.0&amp;quot; 
+elasticsearch.url: &amp;quot;http://elasticsearch:9200&amp;quot;
+
+Kibana搭建
+配置一个filebeat的服务接收端
+input {
+ beats {
+   port =&amp;gt; 10515
+  }
+}
+output {
+    elasticsearch {
+      hosts =&amp;gt; [&amp;quot;127.0.0.1:9200&amp;quot;]
+      # 注释不能被解析,线上删除.此处做讲解
+      # %{[fields][logtype]} 对应filebeat配置文件, 只需在此配置, 写入ElasticSearch的索引就可以主动创建和filebeat相关的索引
+      index =&amp;gt; &amp;quot;%{[fields][logtype]}-%{+YYYY.MM.dd}&amp;quot;
+    }
+}
+
+filebeat搭建
+filebeat作为 日志探测器 需要配置一个日志探测配置文件, 可以是log4j的网络传输, 也可以是系统的某个目录.配置文件下图讲解的非常细致
+
+还需要做如下修改:
+注释掉默认开启的 ElasticSearch
+
+开启默认未开启的 logstash, 指定logstash地址, 指定主机名而非localhost
+
+容器编排
+version: &#39;2&#39;
+
+services: 
+  elasticsearch:  
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    volumes: 
+      - ./es/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/logs:/path/to/logs
+    ports: 
+      - &#39;9200:9200&#39;
+      - &#39;9300:9300&#39;
+    environment:
+      - &amp;quot;bootstrap.memory_lock=true&amp;quot;
+      - &amp;quot;ES_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - efk
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.6.0
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/pattern:/usr/share/logstash/pattern
+    ports:
+      - &amp;quot;5044:5044&amp;quot;
+      - &amp;quot;10515:10515&amp;quot;
+    environment:
+      - &amp;quot;LS_JAVA_OPTS=-Xmx1g -Xms1g&amp;quot;
+    command: logstash -f /usr/share/logstash/config/logstash-sample.conf
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - &amp;quot;5601:5601&amp;quot;
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+
+networks:
+  efk:
+    driver: bridge
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/efk-ri-zhi-xi-tong-da-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/pu-tong-rong-qi-bian-pai/">
+                        普通容器编排
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            介绍
+容器主要包括了三个数据库MongoDB，MySQL，Redis，一个消息中间件RabbitMQ。security程序依赖三个数据库，security-rabbit依赖RabbitMQ，最后forward-nginx依赖于security程序。
+
+
+# 容器编排
+version: &amp;quot;3&amp;quot;
+services:
+  security:
+    image: anytec/security:0.0.1
+    container_name: anytec-security
+    expose:
+      - &amp;quot;9999&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - mysql
+      - mongodb
+      - redis
+      - rabbitmq
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  security-rabbitmq:
+    image: anytec/security-rabbitmq:0.0.1
+    container_name: anytec-security-rabbitmq
+    expose:
+      - &amp;quot;9998&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - rabbitmq
+      - security
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  forward-nginx:
+    image: nginx:latest
+    container_name: anytec-forward-nginx
+    ports:
+      - &amp;quot;10070:10070&amp;quot;
+    networks:
+      - docker-server
+    depends_on:
+      - security
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /anytec/docker-server/forward-nginx/sites-enabled:/etc/nginx/sites-enabled/
+      - /data/securityUI:/data/securityUI
+      - /anytec/docker-server/forward-nginx/conf:/etc/nginx/
+  rabbitmq:
+    image: anytec/rabbitmq:3.6.15
+    container_name: anytec-rabbitmq
+    expose:
+      - &amp;quot;5672&amp;quot;
+    ports:
+      - &amp;quot;15672:15672&amp;quot;
+    networks:
+      - docker-server
+    environment:
+     - RABBITMQ_DEFAULT_USER=admin
+     - RABBITMQ_DEFAULT_PASS=ntech
+     - RABBITMQ_USER admin
+     - ENV RABBITMQ_PASSWORD ntech
+     - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.config
+     - RABBITMQ_ERLANG_COOKIE=CURIOAPPLICATION
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  mongodb:
+    image: mongo:latest
+    container_name: anytec-mongodb
+    expose:
+      - &amp;quot;27017&amp;quot;
+    networks:
+      - docker-server
+    restart: always
+    #environment:
+      #MONGO_INITDB_ROOT_PASSWORD: ntech
+      #MONGO_INITDB_ROOT_USERNAME: root
+    volumes:
+      - /anytec/docker-server/mongodb/data:/data/db
+      - /anytec/docker-server/mongodb/conf/mongodb.conf:/etc/mongodb.conf 
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  redis:
+    image: redis
+    container_name: anytec-redis
+    expose:
+      - &amp;quot;6379&amp;quot;
+    networks:
+      - docker-server
+    volumes:
+      - /anytec/docker-server/redis/data:/data
+      - /anytec/docker-server/redis/conf:/usr/local/etc/redis/
+    command: [&#39;redis-server&#39;, &#39;/usr/local/etc/redis/redis.conf&#39;]
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  mysql:
+    image: anytec/mysql:5.7
+    container_name: anytec-mysql
+    expose:
+     - &amp;quot;3306&amp;quot;
+    networks:
+     - docker-server
+    environment:
+      MYSQL_ROOT_PASSWORD: ntech
+      MYSQL_ROOT_HOST: &#39;%&#39;
+      MYSQL_DATABASE: securitydb
+    volumes:
+      - /anytec/docker-server/mysql/data:/var/lib/mysql
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+networks:
+  docker-server:
+    driver: bridge
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/pu-tong-rong-qi-bian-pai/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/synchronized/">
+                        synchronized
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-02-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            synchronized的两种用法
+
+对象锁
+
+
+包括方法锁(默认锁对象为this当前实例对象)和同步代码块锁(自己指定锁对象)
+
+
+类锁
+
+
+指synchronized修饰 static方法 或指定锁对象为 Class对象
+
+对象锁
+同步代码块
+使用 this 锁定代码块
+public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    @Override
+    public void run() {
+
+        synchronized (this) {
+            System.out.println(&amp;quot;我是lock2, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock2 部分执行结束&amp;quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+最终运行结果
+我是lock2, 我叫Thread-0
+Thread-0, lock2 部分执行结束
+我是lock2, 我叫Thread-1
+Thread-1, lock2 部分执行结束
+finished
+
+使用 自定义锁对象
+public class SynchronizedObjectCodeBlock2 implements Runnable {
+
+    static SynchronizedObjectCodeBlock2 codeBlock2 = new SynchronizedObjectCodeBlock2();
+
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+
+    @Override
+    public void run() {
+
+        synchronized (lock1) {
+            System.out.println(&amp;quot;我是lock1, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock1 部分执行结束&amp;quot;);
+        }
+
+        synchronized (lock2) {
+            System.out.println(&amp;quot;我是lock2, 我叫&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;, lock2 部分执行结束&amp;quot;);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(codeBlock2);
+        Thread thread2 = new Thread(codeBlock2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+运行结果，可以看出来加粗部分， thread-0和thread-1同时执行和同时结束，因为两个线程使用的不是同一把锁。
+我是lock1, 我叫Thread-0
+Thread-0, lock1 部分执行结束
+我是lock2, 我叫Thread-0
+我是lock1, 我叫Thread-1
+Thread-1, lock1 部分执行结束
+Thread-0, lock2 部分执行结束
+我是lock2, 我叫Thread-1
+Thread-1, lock2 部分执行结束
+finished
+方法锁
+代码展示
+public class SynchronizedObjectMethod3 implements Runnable {
+
+    public static void main(String[] args) {
+
+        SynchronizedObjectMethod3 objectMethod3 = new SynchronizedObjectMethod3();
+
+        Thread thread1 = new Thread(objectMethod3);
+        Thread thread2 = new Thread(objectMethod3);
+
+        thread1.start();
+        thread2.start();
+    }
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public synchronized void method() {
+        System.out.println(&amp;quot;对象锁的方法修饰符形式, threadName=&amp;quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+    }
+}
+
+运行结果:
+
+使用synchronized修饰一个成员方法, 该方法会根据实例依次执行.
+对象锁的方法修饰符形式, threadName=Thread-0
+Thread-0运行结束
+对象锁的方法修饰符形式, threadName=Thread-1
+Thread-1运行结束
+
+类锁
+概念:
+
+只有一个Class对象: Java类可能会有很多个实例对象, 但是只有一个Class对象
+本质: 所谓的类锁, 实质上是Class对象的锁而已
+用法和效果: 类锁只能在同一时刻被同一对象拥有
+
+同步一个全局方法
+代码展示
+public class SynchronizedClassStatic4 implements Runnable {
+
+    static SynchronizedClassStatic4 instance1 = new SynchronizedClassStatic4();
+    static SynchronizedClassStatic4 instance2 = new SynchronizedClassStatic4();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    public static synchronized void method() {
+        System.out.println(&amp;quot;我是类锁的第一种形式: static形式, 我叫 &amp;quot; + Thread.currentThread().getName());
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+}
+
+运行结果:
+
+使用synchronized修饰一个全局方法(static修饰), synchronized默认使用类作为锁对象
+我是类锁的第一种形式: static形式, 我叫 Thread-0
+Thread-0运行结束
+我是类锁的第一种形式: static形式, 我叫 Thread-1
+Thread-1运行结束
+finished
+
+类锁同步一个代码块
+代码展示
+public class SynchronizedClassClass5 implements Runnable {
+
+    static SynchronizedClassClass5 instance1 = new SynchronizedClassClass5();
+    static SynchronizedClassClass5 instance2 = new SynchronizedClassClass5();
+
+    @Override
+    public void run() {
+        method();
+    }
+
+    private void method() {
+        synchronized(SynchronizedClassClass5.class) {
+            System.out.println(&amp;quot;类锁的第二种表现形式, synchronized(*.class)的形式, 这是&amp;quot; + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + &amp;quot;运行结束&amp;quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Thread thread1 = new Thread(instance1);
+        Thread thread2 = new Thread(instance2);
+
+        thread1.start();
+        thread2.start();
+
+        while (thread1.isAlive() || thread2.isAlive()) {
+
+        }
+
+        System.out.println(&amp;quot;finished&amp;quot;);
+
+    }
+
+
+}
+
+运行结果:
+
+尽管Thread使用的不同的instance对象, 但是使用了*.class类锁之后, 代码也会按照期望值运行.
+类锁的第二种表现形式, synchronized(.class)的形式, 这是Thread-0
+Thread-0运行结束
+类锁的第二种表现形式, synchronized(.class)的形式, 这是Thread-1
+Thread-1运行结束
+finished
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/synchronized/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/springboot2-bian-xie-zi-ding-yi-autoconfig/">
+                        SpringBoot2 编写自定义AutoConfig
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-31</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是Spring AutoConfig
+
+Spring Boot auto-configuration attempts to automatically configure your Spring application based on the jar dependencies that you have added. For example, if HSQLDB is on your classpath, and you have not manually configured any database connection beans, then Spring Boot auto-configures an in-memory database.
+You need to opt-in to auto-configuration by adding the @EnableAutoConfiguration  or @SpringBootApplication annotations to one of your @Configuration classes.
+引用自: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-auto-configuration.html
+
+怎样编写SpringBoot2 AutoConfig
+使用自动配置HttpClient作为例子.
+编写一个属性配置类
+@ConfigurationProperties(prefix = &amp;quot;spring.httpclient&amp;quot;)
+@Data
+public class HttpClientProperties {
+    private Integer connectTimeOut = 1000;
+    private Integer socketTimeOut = 10000;
+    private String agent = &amp;quot;agent&amp;quot;;
+    private Integer maxConnPerRoute = 10;
+    private Integer maxConnTotal = 50;
+}
+
+@ConfigurationProperties 的 prefix 提示Spring在启动时将配置文件中 spring.httpclient 的与本类属性相对应的属性自动加载进来.
+@Data 是lombok的注解.
+编写自动配置核心类
+@Configuration
+@ConditionalOnClass({HttpClient.class})
+@EnableConfigurationProperties(HttpClientProperties.class)
+public class HttpClientAutoConfiguration {
+
+    private final HttpClientProperties properties;
+
+    public HttpClientAutoConfiguration(HttpClientProperties properties) {
+        this.properties = properties;
+    }
+
+
+    /**
+     * httpclient bean的定义
+     * @return Http Client
+     *
+     * ConditionalOnMissingBean -&amp;gt; 当用户未定义的时候才会创建
+     */
+    @Bean
+    @ConditionalOnMissingBean(HttpClient.class)
+    public HttpClient httpClient() {
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(properties.getConnectTimeOut())
+                .setSocketTimeout(properties.getSocketTimeOut())
+                .build();
+        return HttpClientBuilder.create()
+                .setDefaultRequestConfig(requestConfig)
+                .setUserAgent(properties.getAgent())
+                .setMaxConnPerRoute(properties.getMaxConnPerRoute())
+                .setMaxConnTotal(properties.getMaxConnTotal())
+                // 防止重试
+                .setConnectionReuseStrategy(new NoConnectionReuseStrategy())
+                .build();
+    }
+}
+
+
+@Configuration： 将本类标识为SpringBoot的Java配置类
+@ConditionalOnClass({HttpClient.class})： 只有在HttpClient.class存在时才会加载java config
+@EnableConfigurationProperties(HttpClientProperties.class)：本类加载时注入 HttpClientProperties 属性配置的bean
+httpClient()的@ConditionalOnMissingBean(HttpClient.class)：只有当没有创建HttpClient bean的时候，才会执行 httpClient()方法创建一个HttpClient bean
+
+使Spring感知自动配置类.
+
+在 spring-boot-autoconfigure 的 META-INF/spring.factories 中, 编写了非常多的开源软件的自动配置类. 而如果我们自己编写自动配置类. 有以下几种方式：
+
+方式一
+autoconfig在本项目的 @SpringBootApplication 目录下，不需要其他配置, 可以直接通过 @AutoWired 注入 HttpClient，如：
+···
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class HouseApplicationTests {
+@Autowired
+private HttpClient httpClient;
+
+@Test
+public void contextLoads() throws IOException {
+	String toString = httpClient.execute(new HttpGet(&amp;quot;http://www.imyzt.top&amp;quot;)).getEntity().toString();
+	System.out.println(toString);
+}
+
+}
+···
+方式二
+autoconfig不在本项目的 @SpringBootApplication 目录下，可以有两种方式自动配置：
+
+在本项目的resources下编写 META-INF/spring.factories 文件.
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+top1.imyzt.autoconfig.HttpClientAutoConfiguration
+
+
+[推荐] 编写 @EnableHttpClient
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(HttpClientAutoConfiguration.class)
+public @interface EnableHttpClient {
+}
+
+在启动类上加上注解, 即可开启HttpClient配置.
+总结
+教程是在学习慕课网上的 Java从单体到微服务打造房产销售平台 时学习到的, 在此博客做一个总结, 以便后面复习.
+上述代码在我的 Github 上可以找到.
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/springboot2-bian-xie-zi-ding-yi-autoconfig/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/about/">
+                        关于
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-25</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+欢迎来到我的小站呀，很高兴遇见你！🤝
+
+🏠 关于本站
+该站是我通过Gridea搭建的小站。感谢Gridea
+通过CloudFlare提供的免费服务，加速了本网站的访问，使用Cloudflare加速Github Pages
+👨‍💻 博主是谁
+我叫杨镇涛，是一名Java程序员。
+现阶段本职工作是Java服务端开发, 平时会花一些时间做 Kubernetes 方面的学习研究。
+⛹ 兴趣爱好
+爬山，徒步
+📬 联系我呀
+github.com/imyzt
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/about/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-8-guide-e4/">
+                        Java 8 Guide E4
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-01-21</time>
+                    
+                        <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-banana">
+            #Java_New_Future
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+本篇接着上篇来, 继续学习java8新特性
+Java 8 简明教程
+
+Map
+putIfAbsent
+代码展示
+Map&amp;lt;String, Object&amp;gt; hashMap = new LinkedHashMap&amp;lt;&amp;gt;();
+
+hashMap.put(&amp;quot;val_1&amp;quot;, 1);
+hashMap.put(&amp;quot;val_2&amp;quot;, 2L);
+hashMap.put(&amp;quot;val_3&amp;quot;, null);
+
+
+System.out.println(hashMap);
+
+Object val_1 = hashMap.putIfAbsent(&amp;quot;val_1&amp;quot;, 111);
+System.out.println(val_1);
+Object val_3 = hashMap.putIfAbsent(&amp;quot;val_3&amp;quot;, 3);
+System.out.println(val_3);
+Object val_4 = hashMap.putIfAbsent(&amp;quot;val_4&amp;quot;, 4);
+System.out.println(val_4);
+
+System.out.println(hashMap);
+
+输出: 
+{val_1=1, val_2=2, val_3=null}
+1
+null
+null
+{val_1=1, val_2=2, val_3=3, val_4=4}
+
+对比
+
+在之前如果我们存储一个key时, 需要判断是否存在, 不存在时添加. 我们需要先判断再添加. 在jdk1.8之后, 我们只需要 putIfAbsent(k,v) 方法就可以完成.
+
+if (!hashMap.containsKey(&amp;quot;val_3&amp;quot;)) {
+    hashMap.put(&amp;quot;val_3&amp;quot;, &amp;quot;val_3&amp;quot;);
+}
+
+方法详解
+
+hashMap.putIfAbsent(&amp;quot;val_1&amp;quot;, 111);, 存在key时, 如果 value != null, 不替换, 返回原本存储的 value
+hashMap.putIfAbsent(&amp;quot;val_3&amp;quot;, 3);, 存在key时, 如果 value == null, 替换value, 返回 null
+hashMap.putIfAbsent(&amp;quot;val_4&amp;quot;, 4);, 不存在key时, 直接put进去.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-8-guide-e4/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/13/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/15/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

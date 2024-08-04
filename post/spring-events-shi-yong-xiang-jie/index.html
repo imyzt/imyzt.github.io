@@ -1,0 +1,540 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring Events使用和问题分析 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Spring Events使用和问题分析
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-08-04</time>
+                            
+                                <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-other_1">
+                            #Spring
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式<code>@EventListener</code>的使用方法，以及不常用的<code>@TransactionalEventListener</code>的使用场景和注意事项。</p>
+<h1 id="常规情况">常规情况</h1>
+<p>在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用户发送一个注册成功的短信通知，核心流程是存储用户信息，次要流程是发送短信通知。<br>
+<img src="https://imyzt.top/post-images/1722759866465.png" alt="" loading="lazy"></p>
+<p>由于本文主要是用来介绍SpringEvent的使用，所以另外的方案就不做介绍了，接下来让我们来初始化一个项目来模拟这部分业务代码的实现：</p>
+<p>对于这样一个流程，我们常规的设计方案有以下几种：</p>
+<ol>
+<li>设计一个有界队列线程池，将发送短信流程提交给异步线程执行。</li>
+<li>使用SpringEvent，发布用户注册成功事件，由监听器执行（也可以选择执行线程）。</li>
+<li>使用MQ，由消费者负责执行。（最重，最稳妥的方案）</li>
+</ol>
+<h3 id="entity">Entity</h3>
+<pre><code class="language-java">public class User {
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
+    private String username;
+    private String address;
+}
+</code></pre>
+<h3 id="service">Service</h3>
+<pre><code class="language-java">public interface UserService extends IService&lt;User&gt; {
+    String addUser(String username, String address);
+}
+
+public class UserServiceImpl extends ServiceImpl&lt;UserMapper, User&gt; implements UserService {
+
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&quot;添加用户开始&quot;);
+        super.save(user);
+        log.info(&quot;添加用户成功, 发送事件开始&quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&quot;添加用户成功, 发送事件结束&quot;);
+        return user.getId();
+    }
+}
+</code></pre>
+<h3 id="listener">Listener</h3>
+<pre><code class="language-java">public class UserListener {
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 Normal, user={}&quot;, user.toString());
+    }
+}
+</code></pre>
+<h3 id="controller">Controller</h3>
+<pre><code class="language-java">@RequestMapping(&quot;user&quot;)
+public class UserController {
+    private final UserService userService;
+    @PostMapping(&quot;/add&quot;)
+    public String add(String username, String address) {
+        return userService.addUser(username, address);
+    }
+}
+</code></pre>
+<h3 id="db">DB</h3>
+<p>ORM框架我们使用Mybatis-Plus，数据库我们使用db2作为临时数据库，目前没有数据。<br>
+<img src="https://imyzt.top/post-images/1722760277166.png" alt="" loading="lazy"></p>
+<pre><code class="language-shell">2024-08-04 16:31:45.590  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+JDBC Connection [HikariProxyConnection@1603671607 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820014751548219393(String), yzt(String), shenzhen(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+2024-08-04 16:31:45.705  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:31:45.708  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820014751548219393, username=yzt, address=shenzhen)
+2024-08-04 16:31:45.709  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+</code></pre>
+<h3 id="再次查看数据">再次查看数据</h3>
+<p>select * from user;</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>USERNAME</th>
+<th>ADDRESS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1820014751548219393</td>
+<td>yzt</td>
+<td>shenzhen</td>
+</tr>
+</tbody>
+</table>
+<p>(1 row, 2 ms)</p>
+<h3 id="小结">小结</h3>
+<p>为了更好的呈现执行过程，上面的代码没有添加异步，通过上面的代码日志，可以看到整个过程大概如下图所示<br>
+<img src="https://imyzt.top/post-images/1722760898291.png" alt="" loading="lazy"></p>
+<p>一般我们的业务编码都是使用<code>@EventListener</code>来实现，在正常情况下不会有什么问题。但是在某些特殊场景下，可能会出现预期之外的结果。</p>
+<h1 id="场景2事务异常">场景2，事务异常</h1>
+<p>上面我们演示的更多是业务正常的情况，但通常情况下，添加用户不仅仅只有这么简单的业务，在存储之后，可能还有其他的业务，比如为邀请人结算奖励之类（举例），那么流程长了之后总会有异常的可能，比如我们用<code>address=shanghai</code>来模拟业务异常：</p>
+<pre><code class="language-java">public class UserServiceImpl extends ServiceImpl&lt;UserMapper, User&gt; implements UserService {
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&quot;添加用户开始&quot;);
+        super.save(user);
+        log.info(&quot;添加用户成功, 发送事件开始&quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&quot;添加用户成功, 发送事件结束&quot;);
+        
+        // 模拟异常场景
+        if (address.equals(&quot;shanghai&quot;)) {
+            throw new RuntimeException(&quot;rollback&quot;);
+        }
+        return user.getId();
+    }
+}
+</code></pre>
+<p>再次查看日志</p>
+<pre><code class="language-shell">2024-08-04 16:47:30.838  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+JDBC Connection [HikariProxyConnection@1080868530 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820018715891113985(String), yzt1(String), shanghai(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.839  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820018715891113985, username=yzt1, address=shanghai)
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.842 ERROR 55648 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+</code></pre>
+<p>因为下游的异常，导致事务并没有成功提交，但是前面的事件监听器已经被执行了，此时数据库未正确写入用户，但是短信已经发送出去了，在业务上肯定是不可接受的。<br>
+<strong>当然也可以说</strong>，把注册用户成功事件放到代码的最后面，这当然也是一种方案，但始终无法做到最完美的<strong>一致性</strong>问题，因为用户最终事务提交还是有可能失败（超时、重复写入等）。<br>
+<strong>或者说</strong>，将注册成功事件放到事务注解的外部，在确保事务提交之后，再发送事件，就像之前将的Redis的分布式锁解锁一样 <a href="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/#3-%E4%BA%8B%E5%8A%A1%E6%9C%AA%E6%8F%90%E4%BA%A4%E9%94%81%E5%B0%B1%E9%87%8A%E6%94%BE%E4%BA%86">使用Redis实现分布式锁的坑#3-事务未提交锁就释放了</a>，这种方案固然可以，但体现到业务代码上，就需要再另一个被Spring代理了的bean上来操作，比较麻烦。</p>
+<p>其实Spring是为这种场景提供了解决方案的，那就是<code>@TransactionalEventListener</code>，通过注解的名称就可以看出来，他是为了解决事务问题来提供的注解，它的使用和<code>@EventListener</code>完全一致，只是多了一个参数<code>phase</code>，共有4个选择：</p>
+<ul>
+<li>TransactionPhase.AFTER_COMMIT，事务提交之后</li>
+<li>TransactionPhase.BEFORE_COMMIT，事务提交之前</li>
+<li>TransactionPhase.AFTER_COMPLETION，事务完成之后</li>
+<li>TransactionPhase.AFTER_ROLLBACK，事务回滚之后<br>
+通过名称可以很直观的看到他的作用，接下来我们添加5个事件监听器，分别来看看他们具体的执行时机：</li>
+</ul>
+<pre><code class="language-java">public class UserListener {
+
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 Normal, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void addHandlerAfterCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.BEFORE_COMMIT)
+    public void addHandlerBeforeCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMPLETION)
+    public void addHandlerAfterCompletion(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_ROLLBACK)
+    public void addHandlerAfterRollback(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;添加用户事务执行失败, AFTER_ROLLBACK, user={}&quot;, user.toString());
+    }
+}
+</code></pre>
+<h3 id="执行一次成功的写入看看日志">执行一次成功的写入，看看日志。</h3>
+<pre><code class="language-shell">2024-08-04 17:02:09.069  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+JDBC Connection [HikariProxyConnection@879009595 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820022399454720001(String), yzt1(String), shenzhen(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+</code></pre>
+<h3 id="再执行一次失败的写入看看日志">再执行一次失败的写入，看看日志：</h3>
+<pre><code class="language-shell">2024-08-04 17:09:30.720  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+JDBC Connection [HikariProxyConnection@566058297 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820024251877470209(String), yzt1(String), shanghai(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 添加用户事务执行失败, AFTER_ROLLBACK, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.725 ERROR 56859 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+
+</code></pre>
+<h3 id="执行流程">执行流程</h3>
+<p>通过上面的日志可以看到整个执行过程如下图所示：<br>
+<img src="https://imyzt.top/post-images/1722762788539.png" alt="" loading="lazy"></p>
+<p>由此可知，有了<code>@TransactionalEventListener</code>，我们不用确定事务的提交时机以及是否成功，只需要编写对应的监听器处理器，并指定执行时事务的时机即可在正确的时间点被调用，这一切都是Spring的AOP在帮我们处理。</p>
+<p><code>TransactionalApplicationListenerMethodAdapter</code></p>
+<pre><code class="language-java">public void onApplicationEvent(ApplicationEvent event) {
+    if (TransactionSynchronizationManager.isSynchronizationActive() &amp;&amp;
+            TransactionSynchronizationManager.isActualTransactionActive()) {
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionalApplicationListenerSynchronization&lt;&gt;(event, this, this.callbacks));
+    }
+    else if (this.annotation.fallbackExecution()) {
+        if (this.annotation.phase() == TransactionPhase.AFTER_ROLLBACK &amp;&amp; logger.isWarnEnabled()) {
+            logger.warn(&quot;Processing &quot; + event + &quot; as a fallback execution on AFTER_ROLLBACK phase&quot;);
+        }
+        processEvent(event);
+    }
+    else {
+        // No transactional event execution at all
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;No transaction is active - skipping &quot; + event);
+        }
+    }
+}
+</code></pre>
+<p>如果有事务在进行中，就将其监听器处理器先放到<code>TransactionSynchronizationManager</code>注册一个同步队列，在事务执行到对应的阶段，再回调每个监听了对应阶段的事务处理器。</p>
+<p>在<code>AbstractPlatformTransactionManager#processCommit</code>中</p>
+<pre><code class="language-java">protected final void triggerBeforeCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCommit(status.isReadOnly());
+    }
+}
+protected final void triggerBeforeCompletion(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCompletion();
+    }
+}
+private void triggerAfterCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerAfterCommit();
+    }
+}
+</code></pre>
+<h1 id="小结-2">小结</h1>
+<p>通过本篇文章，我们大致了解了<code>@TransactionalEventListener</code>注解的使用场景和注意事项，也了解了其大概的实现原理，其实SpringEvent的相关源码看起来非常容易，只要稍微看过Spring相关源码，并且对SpringAOP相关逻辑了解的，就可以很容易的看懂，因为他的调用过程没那么多弯弯绕绕，只要看着<code>applicationContext.publishEvent</code>方法一直往下盯，很快就能够看完整个的执行过程。</p>
+<p>本篇博客对应的源码，希望能对你有所帮助：<a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-boot-events">spring-boot-events</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/">
+                                <h3 class="post-title">
+                                    当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%B8%B8%E8%A7%84%E6%83%85%E5%86%B5">常规情况</a><br>
+*
+<ul>
+<li><a href="#entity">Entity</a></li>
+<li><a href="#service">Service</a></li>
+<li><a href="#listener">Listener</a></li>
+<li><a href="#controller">Controller</a></li>
+<li><a href="#db">DB</a></li>
+<li><a href="#%E5%86%8D%E6%AC%A1%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE">再次查看数据</a></li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9C%BA%E6%99%AF2%E4%BA%8B%E5%8A%A1%E5%BC%82%E5%B8%B8">场景2，事务异常</a><br>
+*
+<ul>
+<li><a href="#%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AC%A1%E6%88%90%E5%8A%9F%E7%9A%84%E5%86%99%E5%85%A5%E7%9C%8B%E7%9C%8B%E6%97%A5%E5%BF%97">执行一次成功的写入，看看日志。</a></li>
+<li><a href="#%E5%86%8D%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%86%99%E5%85%A5%E7%9C%8B%E7%9C%8B%E6%97%A5%E5%BF%97">再执行一次失败的写入，看看日志：</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">执行流程</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%BB%93-2">小结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

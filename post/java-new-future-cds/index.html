@@ -1,0 +1,354 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java New Future CDS | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java New Future CDS
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-06-01</time>
+                            
+                                <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-primary">
+                            #Java_New_Future
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-error">
+                            #Java
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>什么是CDS？CDS即 <code>Class-Data Sharing</code>，类数据共享功能，该功能可以减少Java应用程序的启动时间和内存占用。</p>
+<p>类数据共享功能有助于减少多个Java虚拟机之间的启动时间和内存占用，从JDK12开始，默认的CDS归档文件和JDK二进制文件预先打包，我是用的JDK为OpenJDK <code>OpenJDK 64-Bit Server VM Zulu17.42+19-CA (build 17.0.7+7-LTS, mixed mode, sharing)</code>，是支持CDS的。</p>
+<h1 id="使用">使用</h1>
+<h2 id="训练应用程序">训练应用程序</h2>
+<ol>
+<li>首先初始化一个标准的SpringBoot应用，使用 <code>SpringBoot-3.3.0</code> + <code>Java17</code></li>
+</ol>
+<pre><code class="language-shell">├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── top
+│   │   │       └── imyzt
+│   │   │           └── learning
+│   │   │               └── cds
+│   │   │                   └── Java12NewFuturesCdsApplication.java
+</code></pre>
+<pre><code class="language-java">@SpringBootApplication
+public class Java12NewFuturesCdsApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(Java12NewFuturesCdsApplication.class, args);
+    }
+}
+</code></pre>
+<ol start="2">
+<li>将其执行<code>Maven</code>打包成<code>jar</code>文件</li>
+</ol>
+<pre><code>➜  mvn package -DskipTests=true
+</code></pre>
+<ol start="3">
+<li>执行训练命令</li>
+</ol>
+<pre><code class="language-shell">➜  cd target
+➜  target ✗ java -Djarmode=tools -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar extract --destination application  
+➜  cd application
+➜  application ✗ java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+</code></pre>
+<p>训练完成后，<code>application</code>目录下，生成了一系列文件：</p>
+<pre><code class="language-shell">➜  application git:(master) ✗ tree
+.
+├── application.jsa
+├── java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+└── lib
+    ├── jackson-annotations-2.17.1.jar
+    ├── jackson-core-2.17.1.jar
+    ├── jackson-databind-2.17.1.jar
+    ├── jackson-datatype-jdk8-2.17.1.jar
+    ├── jackson-datatype-jsr310-2.17.1.jar
+    ├── jackson-module-parameter-names-2.17.1.jar
+    ├── jakarta.annotation-api-2.1.1.jar
+    ├── jul-to-slf4j-2.0.13.jar
+    ├── log4j-api-2.23.1.jar
+    ├── log4j-to-slf4j-2.23.1.jar
+    ├── logback-classic-1.5.6.jar
+    ├── logback-core-1.5.6.jar
+    ├── micrometer-commons-1.13.0.jar
+    ├── micrometer-observation-1.13.0.jar
+    ├── slf4j-api-2.0.13.jar
+    ├── snakeyaml-2.2.jar
+    ├── spring-aop-6.1.8.jar
+    ├── spring-beans-6.1.8.jar
+    ├── spring-boot-3.3.0.jar
+    ├── spring-boot-autoconfigure-3.3.0.jar
+    ├── spring-boot-jarmode-tools-3.3.0.jar
+    ├── spring-context-6.1.8.jar
+    ├── spring-core-6.1.8.jar
+    ├── spring-expression-6.1.8.jar
+    ├── spring-jcl-6.1.8.jar
+    ├── spring-web-6.1.8.jar
+    ├── spring-webmvc-6.1.8.jar
+    ├── tomcat-embed-core-10.1.24.jar
+    ├── tomcat-embed-el-10.1.24.jar
+    └── tomcat-embed-websocket-10.1.24.jar
+1 directory, 32 files
+</code></pre>
+<ol start="4">
+<li>使用训练的缓存，在启动应用程序时，补充<code>-XX:SharedArchiveFile</code>参数即可。</li>
+</ol>
+<pre><code>➜  application ✗ java -XX:SharedArchiveFile=application.jsa -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+</code></pre>
+<p>启动日志：<br>
+Started Java12NewFuturesCdsApplication in <strong>2.262 seconds</strong> (process running for 2.805)</p>
+<p>对比不使用CDS缓存的启动日志：<br>
+Started Java12NewFuturesCdsApplication in <strong>4.464 seconds</strong> (process running for 5.341)</p>
+<p>可以看出来，尽管只是一个空项目，但是相同配置情况下启动速度都有倍增。</p>
+<h1 id="结语">结语</h1>
+<p>从上面的测试可以看出来，项目的启动速度是有成本的效率增长的，但同时也存在弊端，就是每次应用程序发生变更时，需要冲洗进行jsa文件的训练。</p>
+<p>不管是native-jar还是CDS，都是Java在云原生时代解决应用启动过程慢的探索，在应用的自动扩容领域，还是有不少的应用场景。</p>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/pRzztgb_lnob552QM_3ixA">Spring Boot 3.3.0 新特性| 使用 CDS 优化启动时间</a></li>
+<li><a href="https://www.cnblogs.com/use-D/p/17206585.html">CDS即Class-Data Sharing</a></li>
+</ol>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
+                                <h3 class="post-title">
+                                    Spring 异步初始化
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a>
+<ul>
+<li><a href="#%E8%AE%AD%E7%BB%83%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">训练应用程序</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%93%E8%AF%AD">结语</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

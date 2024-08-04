@@ -1,0 +1,558 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 9 新特性 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 9 新特性
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-12-16</time>
+                            
+                                <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_4">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="主要特性">主要特性</h1>
+<ol>
+<li>接口中支持定义 <code>private</code> 方法</li>
+<li><code>try-with-resource</code> 方式优化</li>
+<li>不可以使用 “_”下划线命名变量</li>
+<li><code>@Deprecated</code> 注解支持指定废弃版本(<code>since</code>), 以及标记未来版本是否删除(<code>forRemoval</code>)</li>
+<li><code>String</code>字符串的变化</li>
+<li>模块化</li>
+<li>jshell</li>
+</ol>
+<h1 id="接口定义private方法">接口定义<code>private</code>方法</h1>
+<pre><code class="language-java">import java.util.concurrent.TimeUnit;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description java 9 在接口中可以定义 private 方法, 只可在本接口中调用
+ */
+public interface InterfaceFuture {
+
+    void foo();
+
+    /**
+     * java 8
+     */
+    default void foo1() throws InterruptedException {
+        sleep();
+    }
+
+    /**
+     * java 8
+     */
+    static void foo2() throws InterruptedException {
+        sleep2();
+    }
+
+    /**
+     * java 9
+     */
+    private void sleep() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+
+    /**
+     * java 9
+     */
+    private static void sleep2() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+}
+
+</code></pre>
+<h1 id="try-with-resource-方式优化"><code>try-with-resource</code> 方式优化</h1>
+<pre><code class="language-java">package top.imyzt.jdk.features.jdk9;
+
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 1. try 代码块简化, 2. 不可以再使用 &quot;_&quot;(下划线)命名变量
+ */
+public class TryWithResource {
+
+    public static void main(String[] args) throws FileNotFoundException {
+
+        // java 8
+        try (FileInputStream fis1 = new FileInputStream(&quot;&quot;);
+             FileOutputStream fos1 = new FileOutputStream(&quot;&quot;)) {
+            fis1.read();
+        } catch (Exception e) {
+
+        }
+
+        // java 9
+        // 可以将变量写到 try 代码块中, 让代码块更简洁
+        FileInputStream fis2 = new FileInputStream(&quot;&quot;);
+        FileOutputStream fos2 = new FileOutputStream(&quot;&quot;);
+        try (fis2; fos2) {
+
+        } catch (Exception e) {
+
+        }
+
+
+        // java 9 运行报错 As of Java 9, '_' is a keyword, and may not be used as an identifier
+        // String _ = &quot;123&quot;;
+
+    }
+
+    /**
+     * `@Deprecated` 注解支持指定废弃版本(since), 以及标记未来是否废弃(forRemoval)
+     */
+    @Deprecated(since = &quot;9&quot;, forRemoval = true)
+    private void test() {
+
+    }
+}
+
+
+</code></pre>
+<h1 id="deprecated-注解升级"><code>@Deprecated</code> 注解升级</h1>
+<p>例如<code>java.lang.Object#finalize</code>方法就在 Java9 中被标记废弃，并且在未来可能会被删除。</p>
+<pre><code class="language-java">@Deprecated(since=&quot;9&quot;, forRemoval=true)
+protected void finalize() throws Throwable { }
+</code></pre>
+<h1 id="string字符串的变化">String字符串的变化</h1>
+<p>在 Java9 之前的版本中，<code>String</code>内部使用<code>char</code>数组存储，对于使用英语的人来说，一个字符用一个<code>byte</code>就能存储，使用<code>char</code>存储字符会<strong>浪费一半的内存空间</strong>，因此在 Java9 中将String内部的<code>char</code>数组改成了<code>byte</code>数组，这样就节省了一半的内存占用。</p>
+<pre><code class="language-java">char c = 'a'; // 2个字节
+byte b = 97; // 1个字节
+</code></pre>
+<p>String中增加了2个成员变量</p>
+<ol>
+<li><code>static final boolean COMPACT_STRINGS;</code>：判断是否压缩，默认为true，如果=false，则不压缩，使用UTF-16编码。</li>
+<li><code>private final byte coder;</code>：用来区分使用的字符编码
+<ul>
+<li>LATIN1，值为0，存储英文</li>
+<li>UTF-16，值为1，存储中文，或夹杂中文的英文（为了区分字符边界，如果英文使用<code>1byte</code>，则不利于字符串的<code>sub</code>等操作，也无法计算长度）</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-java">@Native static final byte LATIN1 = 0;
+@Native static final byte UTF16  = 1;
+
+public int length() {
+    // 如果开启压缩，`coder()=0`，不进行位移，返回value数组长度
+    // 如果开启压缩，`coder()=1`，右移1=除以2，因为中文存储1个字符占用2个byte的空间
+    return value.length &gt;&gt; coder();
+}
+byte coder() {
+    // 如果开启压缩，则`coder=LATIN1=0`，否则`coder=UTF16=1`
+    return COMPACT_STRINGS ? coder : UTF16;
+}
+</code></pre>
+<p><code>byte</code>数组如何存储中文？通过源码 <code>java.lang.StringUTF16#toBytes(char[], int, int)</code> 可以看到，1个中文会被存储到<code>byte</code>数组中的两个元素上 ，即存储一个中文，<code>byte</code>数组长度为2，存储2个中文，<code>byte</code>数组长度为4.</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1702720593239.png" alt="string_" loading="lazy"></figure>
+<p><code>StringUTF16</code> 部分源码截取，高八位和低八位分别存储，占用2个<code>byte</code>数组的空间：</p>
+<pre><code class="language-java">static final int HI_BYTE_SHIFT;
+static final int LO_BYTE_SHIFT;
+static {
+    // CPU架构大小端
+    if (isBigEndian()) {
+        HI_BYTE_SHIFT = 8;
+        LO_BYTE_SHIFT = 0;
+    } else {
+        HI_BYTE_SHIFT = 0;
+        LO_BYTE_SHIFT = 8;
+    }
+}
+@IntrinsicCandidate
+// intrinsic performs no bounds checks
+static void putChar(byte[] val, int index, int c) {
+    assert index &gt;= 0 &amp;&amp; index &lt; length(val) : &quot;Trusted caller missed bounds check&quot;;
+    index &lt;&lt;= 1;
+    val[index++] = (byte)(c &gt;&gt; HI_BYTE_SHIFT);
+    val[index]   = (byte)(c &gt;&gt; LO_BYTE_SHIFT);
+}
+
+@IntrinsicCandidate
+// intrinsic performs no bounds checks
+static char getChar(byte[] val, int index) {
+    assert index &gt;= 0 &amp;&amp; index &lt; length(val) : &quot;Trusted caller missed bounds check&quot;;
+    index &lt;&lt;= 1;
+    return (char)(((val[index++] &amp; 0xff) &lt;&lt; HI_BYTE_SHIFT) |
+                    ((val[index]   &amp; 0xff) &lt;&lt; LO_BYTE_SHIFT));
+}
+</code></pre>
+<h1 id="模块化">模块化</h1>
+<p>Java8 和之前的版本中，主要源代码是放在 <code>rt.jar</code> 中的，但是其中很多包是我们平时不会用到的，比如 <code>java.awt</code> 如果全载入到内存中，会造成一定的浪费。<br>
+所以在 Java9 开始，将 <code>rt.jar</code> 分成了不同的模块，一个模块下可以包含多个包，模块之间存在依赖关系。其中 <code>java.base</code> 为基础模块（包含<code>java.lang</code>,<code>java.util</code>..），不依赖其他模块。<br>
+模块与包类似，只不过一个模块下可以包含多个包。</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/">Java8文档</a><br>
+<img src="https://imyzt.top/post-images/1702722874295.png" alt="Java8文档" loading="lazy"><br>
+<a href="https://docs.oracle.com/javase/9/docs/api/overview-summary.html">Java9文档</a><br>
+<img src="https://imyzt.top/post-images/1702722819500.png" alt="Java9文档" loading="lazy"></p>
+<p><code>.jar</code>包中含有<code>.class</code>文件，配置文件。<br>
+<code>.jmod</code>除了上述文件外，还包含<code>navite library</code>，<code>legal licenses</code>等。<br>
+两者主要区别是<code>.jmod</code>主要用在编译器和链接期，并非运行期，对于开发者来说，运行期任然需要使用jar包。</p>
+<h2 id="模块化的优点">模块化的优点</h2>
+<ul>
+<li>精简JVM运行所需加载的class类，提升加载速度。</li>
+<li>对包更精细的控制，提高安全。</li>
+</ul>
+<h2 id="关键字">关键字</h2>
+<ul>
+<li>exports： 声明导出包，正常可使用，反射可以使用。</li>
+<li>opens：声明导出包，只有反射可以使用，正常编写代码编译无法通过，报错 <code>Package 'package_name' is declared in module 'develop', which does not export it to module 'test'</code></li>
+<li>requires：声明依赖包。</li>
+</ul>
+<h2 id="示例工程">示例工程</h2>
+<ol>
+<li>创建项目</li>
+<li>创建模块 <code>develop</code> 、 <code>test</code></li>
+<li>在模块 <code>develop</code> 下创建 <code>Cat.java</code>, <code>Apple.java</code>，创建 <code>module-info.java</code>，声明 <code>export develop</code></li>
+</ol>
+<pre><code class="language-java">package top.imyzt.learing.jdkfuture.dev1;
+
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Cat
+ */
+public class Cat {
+
+    public void eat() {
+        System.out.println(&quot;吃鱼&quot;);
+    }
+}
+
+package top.imyzt.learing.jdkfuture.dev2;
+
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Apple
+ */
+public class Apple {
+    public Apple() {
+        System.out.println(&quot;Apple Constructor&quot;);
+    }
+}
+
+module develop {
+    // 导出包
+    exports top.imyzt.learing.jdkfuture.dev1;
+    // 导出包, 只能通过反射访问
+    opens top.imyzt.learing.jdkfuture.dev2;
+}
+
+</code></pre>
+<ol start="4">
+<li>在模块 <code>test</code> 下创建 <code>Test.java</code>，创建 <code>module-info.java</code>，声明 <code>requie develop</code></li>
+</ol>
+<pre><code class="language-java">package main.top.imyzt.learing.jdkfuture.test;
+
+
+import top.imyzt.learing.jdkfuture.dev1.Cat;
+// Package 'top.imyzt.learing.jdkfuture.dev2' is declared in module 'develop', which does not export it to module 'test'
+// import top.imyzt.learing.jdkfuture.dev2.Apple;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 描述信息
+ */
+public class Test {
+
+    public static void main(String[] args) throws Exception {
+        Cat cat = new Cat();
+        cat.eat();
+
+        Class&lt;?&gt; clazz = Class.forName(&quot;top.imyzt.learing.jdkfuture.dev2.Apple&quot;);
+        clazz.getDeclaredConstructor().newInstance();
+    }
+}
+
+module test {
+    requires develop;
+}
+
+</code></pre>
+<h3 id="项目结构图">项目结构图</h3>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1702724406658.png" alt="项目结构图" loading="lazy"></figure>
+<h3 id="源代码">源代码</h3>
+<p><a href="https://github.com/imyzt/learning-technology-code/tree/master/framework-in-java/jdk-new-features/jdk9_module">示例项目</a></p>
+<h1 id="jshell">jshell</h1>
+<p>作用不大，主要对于初学者可以学习语法。</p>
+<pre><code class="language-shell">➜  jshell
+|  欢迎使用 JShell -- 版本 21.0.1
+|  要大致了解该版本, 请键入: /help intro
+
+jshell&gt; System.out.println(&quot;hello world&quot;);
+hello world
+
+jshell&gt; int a = 1;
+a ==&gt; 1
+
+jshell&gt; int b = 2;
+b ==&gt; 2
+
+jshell&gt; System.out.println(a+b);
+3
+
+jshell&gt; /exit
+|  再见
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/du-kuo-san-xie-kuo-san/">
+                                <h3 class="post-title">
+                                    读扩散、写扩散
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7">主要特性</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89private%E6%96%B9%E6%B3%95">接口定义<code>private</code>方法</a></li>
+<li><a href="#try-with-resource-%E6%96%B9%E5%BC%8F%E4%BC%98%E5%8C%96"><code>try-with-resource</code> 方式优化</a></li>
+<li><a href="#deprecated-%E6%B3%A8%E8%A7%A3%E5%8D%87%E7%BA%A7"><code>@Deprecated</code> 注解升级</a></li>
+<li><a href="#string%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%8F%98%E5%8C%96">String字符串的变化</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%8C%96">模块化</a>
+<ul>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E4%BC%98%E7%82%B9">模块化的优点</a></li>
+<li><a href="#%E5%85%B3%E9%94%AE%E5%AD%97">关键字</a></li>
+<li><a href="#%E7%A4%BA%E4%BE%8B%E5%B7%A5%E7%A8%8B">示例工程</a>
+<ul>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%9B%BE">项目结构图</a></li>
+<li><a href="#%E6%BA%90%E4%BB%A3%E7%A0%81">源代码</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#jshell">jshell</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

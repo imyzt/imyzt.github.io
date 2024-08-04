@@ -1,0 +1,322 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    MySQL REGEXP 使用 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            MySQL REGEXP 使用
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-03-15</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="前言">前言</h1>
+<p>MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。</p>
+<p>在此之前，首先建立对应的数据表，ddl与dml如下：</p>
+<pre><code>create table if not exists test_db.products
+(
+	id int auto_increment
+		primary key,
+	prod_name varchar(20) not null
+);
+
+INSERT INTO test_db.products (id, prod_name) VALUES (1, 'JetPack 1000');
+INSERT INTO test_db.products (id, prod_name) VALUES (2, 'JetPack 2000');
+INSERT INTO test_db.products (id, prod_name) VALUES (3, '1 ton anvil');
+INSERT INTO test_db.products (id, prod_name) VALUES (4, '2 ton anvil');
+INSERT INTO test_db.products (id, prod_name) VALUES (5, 'TNT (1 stick)');
+INSERT INTO test_db.products (id, prod_name) VALUES (6, '.5 ton anvil');
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="http://imyzt.top/upload/2020/03/tcfrq33pfoi12o2lsjkr76m906.png" alt="请输入图片描述" loading="lazy"></figure>
+<h1 id="常用指令">常用指令</h1>
+<p>由于regexp与LIKE的高度相似性，所以学习时以常用的LIKE的指令作为对比学习，有助于记忆。</p>
+<h2 id="基本字符匹配">基本字符匹配</h2>
+<ol>
+<li>全文字匹配</li>
+</ol>
+<pre><code>select *
+from products
+where prod_name regexp '1000';
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://imyzt.top/upload/2020/03/to3pl4isoehleqolviqulqs4tu.png" alt="请输入图片描述" loading="lazy"></figure>
+<ol start="2">
+<li>模糊匹配<br>
+类似于LIKE语句的 '_'（下划线）单字符匹配。模糊匹配单个字符。</li>
+</ol>
+<pre><code>select *
+from products
+where prod_name regexp '.000';
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="http://imyzt.top/upload/2020/03/0lv9oi93oegtoo3pm936ms8tfa.png" alt="请输入图片描述" loading="lazy"></figure>
+<h2 id="or-匹配">OR 匹配</h2>
+<pre><code>select *
+from products
+where prod_name regexp '1000|2000';
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="http://imyzt.top/upload/2020/03/7eovvhgj8kh5arqfvblopof7qu.png" alt="请输入图片描述" loading="lazy"></figure>
+<h2 id="匹配几个字符之一">匹配几个字符之一</h2>
+<ol>
+<li>正确用法</li>
+</ol>
+<pre><code>select *
+from products
+where prod_name regexp '[123] ton';
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="http://imyzt.top/upload/2020/03/tgh3m7dhtuhogoprg59jagi7ke.png" alt="请输入图片描述" loading="lazy"></figure>
+<ol start="2">
+<li>错误示例<br>
+正则表达式可以用 <code>[]</code> 包含内容或者 <code>|</code> 竖线 表示 <code>或</code>，但如果使用下面的用法，不能获得正确的结果，因为在最后一个'或'时，MySQL会理解成 <code>3 ton</code>。得到不同的结果。</li>
+</ol>
+<pre><code>select *
+from products
+where prod_name regexp '1|2|3 ton';
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="http://imyzt.top/upload/2020/03/vh736s4prohc8q3e1rah515rci.png" alt="请输入图片描述" loading="lazy"></figure>
+<h2 id="匹配范围">匹配范围</h2>
+<h2 id="匹配特殊字符">匹配特殊字符</h2>
+<h2 id="匹配字符类">匹配字符类</h2>
+<h2 id="匹配多个实例">匹配多个实例</h2>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+                                <h3 class="post-title">
+                                    Git 原理详解及实用指南 - merge，add，log
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4">常用指令</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%AD%97%E7%AC%A6%E5%8C%B9%E9%85%8D">基本字符匹配</a></li>
+<li><a href="#or-%E5%8C%B9%E9%85%8D">OR 匹配</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E5%87%A0%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B9%8B%E4%B8%80">匹配几个字符之一</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E8%8C%83%E5%9B%B4">匹配范围</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6">匹配特殊字符</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E5%AD%97%E7%AC%A6%E7%B1%BB">匹配字符类</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E5%A4%9A%E4%B8%AA%E5%AE%9E%E4%BE%8B">匹配多个实例</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

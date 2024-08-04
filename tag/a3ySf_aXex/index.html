@@ -1,0 +1,393 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    AI | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1722764497330">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1722764497330" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        AI</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-ai/">
+                        Spring AI
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-19</time>
+                    
+                        <a href="https://imyzt.top/tag/Q7Z8AksP6/" class="post-tag i-tag
+                            i-tag-">
+            #Alibaba
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/a3ySf_aXex/" class="post-tag i-tag
+                            i-tag-">
+            #AI
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-warning">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+当一开始听说Spring-AI项目时是很懵的，什么？Spring开始训练模型了？不应该啊，Java还能卷模型赛道了吗？...
+打开官网了解了下，才知道原来是缝合怪：
+
+Spring AI is an application framework for AI engineering. Its goal is to apply to the AI domain Spring ecosystem design principles such as portability and modular design and promote using POJOs as the building blocks of an application to the AI domain.
+
+官网地址：https://spring.io/projects/spring-ai
+换言之就是虽然Java不能卷算法，但是我可以提供一套封装来让你们调用模型提供的API服务，众所周知，我的抽象封装能力还是很强的。你看你们现在这么多厂商提供服务，不得需要一个统一的门面来减少接入成本嘛...
+官网列举了目前国外主流的平台：
+Chat Models
+OpenAI
+Azure Open AI
+Amazon Bedrock
+Cohere&#39;s Command
+AI21 Labs&#39; Jurassic-2
+Meta&#39;s LLama 2
+Amazon&#39;s Titan
+Google Vertex AI Palm
+Google Gemini
+HuggingFace - access thousands of models, including those from Meta such as Llama2
+Ollama - run AI models on your local machine
+MistralAI
+Text-to-image Models
+OpenAI with DALL-E
+StabilityAI
+Transcription (audio to text) Models
+OpenAI
+... 数不胜数，更何况还有很多国内大厂开源的模型。
+所以Spring提供了一套统一的封装门面，其他的厂商也可以基于门面来实现自己的Client，比如Alibaba就接入了com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient。
+这就引申出了本博客，记录了下我接入Spring-Ai（OpenAI）、Spring-Ai-Alibaba（TongYi）的过程。
+接入Spring-Ai
+Spring-Ai的接入相对简单，因为最新的start.spring.io已经维护了OpenAI的依赖包，在IDEA使用Spring-Initializr即可完成初始化。
+
+完成Gradle的初始化之后，得到了一个标准的Spring项目，只需要做一个简单的配置:
+spring.application.name=spring-ai-demo
+# 生成结果多样性参数，值在0~2之间，值越大越随机越小越固定，但就算为0也会有随机性
+spring.ai.openai.chat.temperature=0.7
+spring.ai.chat.client.enabled=true
+# 如果你需要代理的话
+spring.ai.openai.base-url=https://api.xty.app
+# 填写自己的key
+spring.ai.openai.api-key=${OPENAI_API_KEY}
+# 填写你需要使用的模型（也可以使用时代码指定）
+spring.ai.openai.chat.options.model=gpt-3.5-turbo
+
+接下来只需要编写一个Java的控制器，来接收HTTP请求，就可以完成对OpenAI的对话。
+/**
+ * @author imyzt
+ * @date 2024/06/19
+ * @description AI 入口
+ */
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+
+    @GetMapping(&amp;quot;/ai/chat&amp;quot;)
+    Map&amp;lt;String, Object&amp;gt; chat(@RequestParam String question) {
+        ChatClient.ChatClientRequest.CallPromptResponseSpec call = chatClient.prompt(new Prompt(question)).call();
+        return Map.of(&amp;quot;question&amp;quot;, question, &amp;quot;answer&amp;quot;, call.chatResponse());
+    }
+}
+
+整体接入还是比较简单的，但是这里踩了一个坑，不知道是我引入的版本比较新还是什么缘故，它的ChatClient Bean 竟然没有自动注册！所以我还手动注册了一个Bean，代码如下：
+@Bean
+public ChatClient chatClient(@Autowired OpenAiChatModel openAiChatModel) {
+    return ChatClient.builder(openAiChatModel).build();
+}
+
+代码
+https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-demo/spring-ai-demo
+Spring-Ai-Alibaba
+OpenAI由于API-KEY的费用蛮高，虽然完成了代码的接入，但是最终我还是没有购买它的API...所以又看了国内的厂商，目前主要是Alibaba完成了Spring-Ai的接入，整体接入其实也很简单，建议首先看一遍官网的例子，接下来可以跟着步骤走一下试试。
+创建项目，引入依赖
+首先完成一个普通SpringBootWeb项目创建，然后引入Alibaba-Ai的依赖
+&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-cloud-starter-alibaba-ai&amp;lt;/artifactId&amp;gt;
+        &amp;lt;exclusions&amp;gt;
+            &amp;lt;exclusion&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-ai-core&amp;lt;/artifactId&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+            &amp;lt;/exclusion&amp;gt;
+        &amp;lt;/exclusions&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;io.springboot.ai&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-ai-core&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;1.0.3&amp;lt;/version&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+
+&amp;lt;/dependencies&amp;gt;
+
+&amp;lt;dependencyManagement&amp;gt;
+    &amp;lt;dependencies&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-cloud-alibaba-dependencies&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;2023.0.1.0&amp;lt;/version&amp;gt;
+            &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+            &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+&amp;lt;/dependencyManagement&amp;gt;
+
+上面的内容，我把无关紧要的依赖去除了，只保留了核心部分，其中有一个关键点是exclusions了spring-ai-core，因为Alibaba引入的版本太老了。改为自己重新引入最新的版本，其他的和官方文档无差别。
+配置
+spring:
+  application:
+    name: spring-ai-alibaba-demo
+  cloud:
+    ai:
+      tongyi:
+        api-key: ${TONGYI_KEY}
+        images:
+         enabled: true
+        chat:
+          enabled: true
+
+编写控制器
+@Slf4j
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+    @Resource
+    private ImageClient imageClient;
+
+    @GetMapping(&amp;quot;/ai/chat&amp;quot;)
+    public String chat(@RequestParam String question) {
+        ChatResponse call = chatClient.call(new Prompt(question));
+        return call.getResult().getOutput().getContent();
+    }
+
+    @GetMapping(&amp;quot;/ai/aigc&amp;quot;)
+    public String aigc(@RequestParam String question) {
+        ImageResponse call = imageClient.call(new ImagePrompt(question));
+        return call.getResult().getOutput().getUrl();
+    }
+}
+
+完成上面的步骤，基本就完成了接入，在postman上面输入地址，就可以进行测试了。因为通义不仅有chat，还可以文生图，所以我完成下演示：
+文生文
+（质量不予置评）
+
+文生图
+
+Spring-Ai-Alibaba还提供了一些示例，在他们的官方Github上，可以参考。
+官方还提供了一个简单的HTML来进行页面展示，也可以自己跑一下看看，最终效果如下：
+
+代码
+https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-alibaba-demo/spring-ai-alibaba-demo
+参考博客
+
+阿里也出手了！Spring CloudAlibaba AI问世了 
+AI框架之Spring AI与Spring Cloud Alibaba AI使用讲解 
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-ai/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1722764497330)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>
