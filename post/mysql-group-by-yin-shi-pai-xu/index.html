@@ -1,0 +1,282 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    MySQL GROUP BY 隐式排序 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            MySQL GROUP BY 隐式排序
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-07-17</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="前言">前言</h1>
+<p>在MySQL的老版本（MySQL5.7及以前）中， <code>GROUP BY xxx</code> 等同于 <code>GROUP BY xxx ORDER BY xxx</code>，在 <code>GROUP BY</code> 的同时，会自带排序的效果。包括也可以手动排序 <code>GROUP BY xxx DESC</code>，等同于 <code>GROUP BY xxx ORDER BY xxx DESC</code>。</p>
+<p>MySQL8.0 版本删除了隐式排序，包括显示排序也报错。在升级到MySQL8.0之后，由于缺少了隐式排序，可能会造成查询结果返回的顺序不稳定，造成结果不满足预期。</p>
+<h1 id="问题现象">问题现象</h1>
+<ol>
+<li>aliyun PolarDB MySQL 版 8.0.1.1.40版本，在DMS查询时，<strong>返回的顺序稳定</strong>。</li>
+<li>在程序JDBC查询时（连接的集群地址），返回的结果多次查询顺序不一致。</li>
+</ol>
+<p>由于我们使用的是PolarDB 8.0+，首先开始怀疑是不是aliyun做了什么操作，查到他们的更新日志：https://help.aliyun.com/zh/polardb/polardb-for-mysql/polardb-for-mysql-8-0-1，发现他们在8.0版本中，将隐式排序的功能又加了回来，那么更进一步证明问题出现在数据库层面了。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1721315576799.png" alt="" loading="lazy"></figure>
+<p>有了上面的分析和更新日志，我们又进行了接下来的几次测试，进一步缩小问题范围，定位问题的根本原因。</p>
+<ol>
+<li>通过MySQL命令行，连接到集群地址，返回的结果多次查询顺序不一致。</li>
+<li>通过MySQL命令行，连接到主节点地址，<strong>返回的顺序稳定</strong>。</li>
+<li>通过MySQL命令行，连接到只读从节点地址，返回的结果多次查询顺序不一致。</li>
+</ol>
+<p>通过咨询aliyun工程师，了解到DMS默认是直连主库的，结合上述三个执行结果来看，似乎问题出现在了从库，当请求从从库执行来看，顺序总是不一致。</p>
+<p>有了上述的结论，通过进一步咨询aliyun的工程师，最终定位到问题是因为其中有台从库开启了并行查询，导致了返回顺序会存在多次查询不一致的问题。</p>
+<p><img src="https://imyzt.top/post-images/1721489241076.jpeg" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1721489235249.jpeg" alt="" loading="lazy"></p>
+<h1 id="总结">总结</h1>
+<p>虽然最终定位到了原因是并行查询导致的问题，但是我还是认为，既然aliyun的版本公告中已经说明了加回了 <code>GROUP BY</code> 隐式排序功能，那么不管是并行查询还是什么原因，就算是在 MySQL Server层进行汇总排序，也需要保证最终结果和预期一致，否则会造成使用方的预期不满足。<br>
+其次，对于隐式排序肯定不能进行依赖，还是回归到程序上，不论什么情况肯定不能依赖于约定俗成的一些功能，应该强依赖自己写下的指令，比如手动指定 <code>ORDER BY</code>  比事后去分析还是好很多。但整个过程还是学习到不少东西，还是有一定收获的。</p>
+<h1 id="扩展">扩展</h1>
+<h2 id="旧版本为什么会有排序">旧版本为什么会有排序？</h2>
+<p>因为要对数据进行分组的话，本身也会对分组前的数据进行排序，降低数据复杂度，所以原始数据本身就已经有序了。<br>
+其次，如果是 <code>GROUP BY</code> 的一个索引字段，那么索引字段本身是 B+ Trree，本身也是有序的，且平时 <code>GROUP BY</code>的字段大概率是有索引的（否则效率太低了），所以绝大部分情况下，旧版本的 <code>GROUP BY</code> 就为我们保留了排序。</p>
+<h2 id="为什么要删除隐式排序">为什么要删除隐式排序？</h2>
+<p>会造成预期外的结果，比如没有明确指定</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">
+                                <h3 class="post-title">
+                                    SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E7%8E%B0%E8%B1%A1">问题现象</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E6%89%A9%E5%B1%95">扩展</a>
+<ul>
+<li><a href="#%E6%97%A7%E7%89%88%E6%9C%AC%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E6%8E%92%E5%BA%8F">旧版本为什么会有排序？</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%A0%E9%99%A4%E9%9A%90%E5%BC%8F%E6%8E%92%E5%BA%8F">为什么要删除隐式排序？</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

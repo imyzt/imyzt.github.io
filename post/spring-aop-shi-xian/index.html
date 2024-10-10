@@ -1,0 +1,383 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring AOP 实现 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Spring AOP 实现
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-01-17</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="常用aop代理形式">常用AOP代理形式</h1>
+<p>AOP常见有静态代理和动态代理<br>
+静态代理代表为AspectJ；<br>
+动态代理有jdk动态代理， cglib动态代理。</p>
+<h1 id="静态代理">静态代理</h1>
+<p>AspectJ是静态代理的增强， 即编译时生成代理类， 也成为编译时增强。性能较好。 不过由于需要特定的编译器进行处理。</p>
+<h1 id="动态代理">动态代理</h1>
+<p>动态代理是每次运行的时候生成代理AOP代理类，不会修改字节码文件。代理对象创建在内存中。<br>
+由于是在运行的时候生成代理，故性能稍差一点。</p>
+<h1 id="jdk动态代理实例">JDK动态代理实例</h1>
+<pre><code>import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * @author imyzt
+ * @date 2019/1/17 9:51
+ * @description JDK动态代理演示
+ */
+public class JdkDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        // 创建需要被代理的实例对象
+        JdkDynamicProxyClass jdkDynamicProxyClass = new JdkDynamicProxyClass();
+
+        JdkDynamicProxyInvocationHandler invocationHandler =
+                new JdkDynamicProxyInvocationHandler(jdkDynamicProxyClass);
+
+        // 增强代理类
+        // Proxy.newProxyInstance();
+        JdkDynamicProxyInterface proxyInstance = (JdkDynamicProxyInterface) Proxy.newProxyInstance(
+                jdkDynamicProxyClass.getClass().getClassLoader(),
+                jdkDynamicProxyClass.getClass().getInterfaces(),
+                invocationHandler);
+
+        // 执行被增强的方法
+        proxyInstance.proxyMethod();
+    }
+
+}
+
+interface JdkDynamicProxyInterface {
+    void proxyMethod();
+}
+
+class JdkDynamicProxyClass implements JdkDynamicProxyInterface {
+
+    @Override
+    public void proxyMethod() {
+        System.out.println(&quot;JDK Dynamic Proxy Method is running&quot;);
+    }
+}
+
+class JdkDynamicProxyInvocationHandler implements InvocationHandler {
+
+    private Object target;
+
+    public JdkDynamicProxyInvocationHandler(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&quot;execute before JDK Dynamic Method = &quot; + name);
+        Object invoke = method.invoke(target, args);
+        System.out.println(&quot;execute after JDK Dynamic Method = &quot; + name);
+
+        return invoke;
+    }
+}
+</code></pre>
+<p>运行结果展示<br>
+<img src="http://blog.imyzt.top/upload/2019/01/snshnohgkuidrpn93pkdtlpeji.jpg" alt="JDK动态代理" loading="lazy"></p>
+<h1 id="cglib-动态代理">CGLIB 动态代理</h1>
+<pre><code>/**
+ * @author imyzt
+ * @date 2019/1/17 10:05
+ * @description CGLIB 动态代理演示
+ */
+public class CglibDynamicProxyDemo {
+
+    public static void main(String[] args) {
+
+        CglibDynamicProxy cglibDynamicProxy = new CglibDynamicProxy();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(CglibDynamicClass.class);
+        enhancer.setCallback(cglibDynamicProxy);
+
+        CglibDynamicClass cglibDynamicClass = (CglibDynamicClass) enhancer.create();
+
+        String yyy = cglibDynamicClass.proxyMethod(&quot;yyy&quot;);
+
+        System.out.println(yyy);
+
+
+    }
+}
+class CglibDynamicClass {
+    public String proxyMethod(String message){
+        System.out.println(&quot;hello! you say &quot; + message);
+        return message;
+    }
+}
+class CglibDynamicProxy implements MethodInterceptor {
+
+    @Override
+    public Object intercept(Object proxyClass, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+
+        String name = method.getName();
+
+        System.out.println(&quot;execute before CGLIB Dynamic Method = &quot; + name);
+        Object invoke = **methodProxy.invokeSuper**(proxyClass, args);
+        System.out.println(&quot;execute after CGLIB Dynamic Method = &quot; + name);
+
+        return invoke;
+    }
+}
+</code></pre>
+<p>运行结果展示<br>
+<img src="http://blog.imyzt.top/upload/2019/01/5g7aind0nsj9noqhbc3c69qd48.jpg" alt="请输入图片描述" loading="lazy"></p>
+<h1 id="spring-aop">Spring AOP</h1>
+<blockquote>
+<p>Spring AOP在使用的时候会判断，如果需要代理的类实现了接口， 则会使用JDK代理，如果没有实现接口， 则使用CGLIB代理。</p>
+</blockquote>
+<p><strong>JDK动态代理通过反射来接收被代理的类</strong>，并且要求被代理的类必须实现一个接口。JDK动态代理的核心是InvocationHandler接口和Proxy类。<br>
+如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类（通过修改字节码来实现代理）。<br>
+注意，<strong>CGLIB是通过继承的方式做的动态代理</strong>，因此如果某个类被标记为final，那么它是无法使用CGLIB做动态代理的。</p>
+<p>文章中部分内容转载自掘金-<a href="https://juejin.im/post/5c3e9c37f265da61263862f1">年糕妈妈技术团队</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/powerdesigner-chang-yong-bei-wang/">
+                                <h3 class="post-title">
+                                    PowerDesigner常用备忘
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%B8%B8%E7%94%A8aop%E4%BB%A3%E7%90%86%E5%BD%A2%E5%BC%8F">常用AOP代理形式</a></li>
+<li><a href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86">静态代理</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">动态代理</a></li>
+<li><a href="#jdk%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%AE%9E%E4%BE%8B">JDK动态代理实例</a></li>
+<li><a href="#cglib-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">CGLIB 动态代理</a></li>
+<li><a href="#spring-aop">Spring AOP</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

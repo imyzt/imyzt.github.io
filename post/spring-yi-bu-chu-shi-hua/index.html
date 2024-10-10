@@ -1,0 +1,377 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring 异步初始化 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Spring 异步初始化
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-05-22</time>
+                            
+                                <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-primary">
+                            #Spring
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-primary">
+                            #Java developer
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>在Spring6.2版本后，支持了异步初始化。<br>
+什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。<br>
+在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。</p>
+<h1 id="模拟初始化bean耗时">模拟初始化Bean耗时</h1>
+<ol>
+<li>ABean</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class TestABean {
+    @SneakyThrows
+    public TestABean() {
+        log.info(&quot;A Bean开始初始化&quot;);
+        TimeUnit.SECONDS.sleep(5);
+        log.info(&quot;A Bean初始化完成&quot;);
+    }
+}
+</code></pre>
+<ol start="2">
+<li>BBean</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+public class TestBBean {
+    @SneakyThrows
+    public TestBBean() {
+        log.info(&quot;B Bean开始初始化&quot;);
+        TimeUnit.SECONDS.sleep(6);
+        log.info(&quot;B Bean初始化完成&quot;);
+    }
+}
+</code></pre>
+<ol start="3">
+<li>配置类</li>
+</ol>
+<pre><code class="language-java">@Configuration
+public class RegisterConfiguration {
+    @Bean
+    public TestABean testABean() {
+        return new TestABean();
+    }
+    @Bean
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+}
+</code></pre>
+<ol start="4">
+<li>启动类</li>
+</ol>
+<pre><code class="language-java">@Slf4j
+@ComponentScan(&quot;top.imyzt.learning.spring.startup&quot;)
+public class Application {
+    public static void main(String[] args) {
+        StopWatch stopWatch = new StopWatch(&quot;Spring启动&quot;);
+        stopWatch.start();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+}
+</code></pre>
+<ol start="5">
+<li>启动日志</li>
+</ol>
+<pre><code class="language-log">21:39:33.658 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testABean'
+21:39:33.663 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:39:38.667 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:39:38.669 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testBBean'
+21:39:38.670 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:39:44.673 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch 'Spring启动': 11.555947229 seconds
+------------------------------------------
+Seconds       %       Task name
+------------------------------------------
+11.55594723   100%    
+</code></pre>
+<ol start="6">
+<li>小结<br>
+可以看到，在常规情况下，A和B Bean是串行初始化的，整个初始化耗时11.5s。</li>
+</ol>
+<h1 id="异步初始化">异步初始化</h1>
+<p>在Spring6.2版本中，<code>@Bean</code>注解引入了一个新的属性：<code>bootstrap</code>，默认<code>Bean.Bootstrap.DEFAULT</code>时为串行初始化，当指定为<code>Bean.Bootstrap.BACKGROUND</code>时，Spring会尝试异步初始化该Bean，但是需要配置一个名为<code>bootstrapExecutor</code>的线程池，用作异步初始化时所需的线程。<br>
+只需要将配置类稍作修改，就可以将指定的Bean进行异步初始化：</p>
+<pre><code class="language-java">@Configuration
+public class RegisterConfiguration {
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestABean testABean() {
+        return new TestABean();
+    }
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+
+    @Bean()
+    public Executor bootstrapExecutor() {
+        return new ThreadPoolExecutor(2, 10, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&lt;&gt;(1024));
+    }
+}
+</code></pre>
+<p>然后我们再查看启动效果：</p>
+<pre><code class="language-log">21:53:49.023 [pool-1-thread-1] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testABean'
+21:53:49.024 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:53:49.025 [pool-1-thread-2] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'testBBean'
+21:53:49.026 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:53:54.029 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:53:55.031 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch 'Spring启动': 6.740055683 seconds
+-----------------------------------------
+Seconds       %       Task name
+-----------------------------------------
+6.740055683   100%    
+</code></pre>
+<p>可以看到启动时间从11.5s降为6.7s，效果十分显著，在部分需要依赖外部或已知需要耗时初始化的Bean，可以通过此方法进行优化。“我可以不用，你不能没有”。</p>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/FVHURjv5QZ3oYW4n8-kpLw">13年过去了，Spring官方竟然真的支持Bean的异步初始化了！</a></li>
+<li><a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-async-startup">博客对应代码</a></li>
+</ol>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
+                                <h3 class="post-title">
+                                    非静态内部类持有外部类的引用
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E6%A8%A1%E6%8B%9F%E5%88%9D%E5%A7%8B%E5%8C%96bean%E8%80%97%E6%97%B6">模拟初始化Bean耗时</a></li>
+<li><a href="#%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96">异步初始化</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

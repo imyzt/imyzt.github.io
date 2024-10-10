@@ -1,0 +1,349 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-07-27</time>
+                            
+                                <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-primary">
+                            #问题解决
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/_LPtQMqgT/" class="post-tag i-tag
+                            i-tag-other_2">
+                            #数据库
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="前言">前言</h1>
+<p>事情的起因还要从 <code>Transaction rolled back because it has been marked as rollback-only] with root cause</code> 说起，公司的一个业务，Kafka Consumer消费了来自上游的消息处理并写入数据，整个逻辑很复杂，由最外层的方法注解 <code>@Transactional(rollbackFor = Exception.class)</code> 来保证整个过程数据的一致性，但其中有一个业务不需要事务保证，所以<strong>前人</strong>写了一个 <code>try catch</code> 来防止子业务流异常阻断全局事务的提交。简化后大概类似于这样：</p>
+<pre><code class="language-java">@Service
+public class ServiceA {
+
+    @Resource
+    private ServiceB serviceB;
+    @Resource
+    private CompanyService companyService;
+
+    /**
+     * 模拟消费外部的消息, 调用者A
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void test(String username) {
+        // 1. 首先保存自己的数据, 模拟业务操作
+        Company company = new Company();
+        company.setName(&quot;家里蹲&quot;);
+        company.setAddress(&quot;localhost&quot;);
+        companyService.save(company);
+
+        // 2. 然后调用Spring的代理方法B
+        serviceB.doBusiness(username);
+    }
+}
+
+@Service
+public class ServiceB {
+
+    @Resource
+    private UserService userService;
+
+    @Transactional(rollbackFor = Exception.class)
+    public void doBusiness(String username) {
+        // 3. 这里还有一系列事务操作, 但和这次问题无关, 就不放这里干扰了
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setAddress(&quot;shenzhen&quot;);
+            // 4. 罪魁祸首的代码, 此处前人为了不干扰主逻辑, catch了异常
+            // 为了达到&quot;以为的&quot;异常不干扰外部事务
+            userService.saveBatch(Collections.singletonList(user));
+        } catch (DuplicateKeyException e) {
+            // 5. 此处有日志 log.error(&quot;xxx业务异常&quot;, e)
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>上面的代码看起来平平无奇，按照“常规”理解，<strong>代码块4</strong>位置的流程异常，不会干扰<strong>代码块1、3</strong>处的事务提交，达到编写者的目的。</p>
+<p>但如果是这么简单，我也不会有这次问题的排查过程，也不会有这篇笔记了...</p>
+<h1 id="现象">现象</h1>
+<p>我们从日志监控注意到，<strong>代码块5</strong>有频繁的异常，并且<strong>代码块1、3</strong>的数据最终并未写入成功，通过MySQL追踪事务发现，1、3处的语句执行后，均被<code>rollback</code>了。<br>
+这就引出了前言中的问题分析来了，在没有确认问题出现在<strong>代码块4</strong>时，还在找哪些地方有异常可能造成回滚，但通过跟踪程序日志发现，1、3处被回滚的数据，基本都发生在代码块5的日志打印出来之后，并且程序中也发现了下面的异常：</p>
+<pre><code class="language-java">
+org.springframework.transaction.UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only
+.......
+</code></pre>
+<p><strong>Transaction rolled back because it has been marked as rollback-only</strong>，说明事务被标记为只能回滚，并且根据行号（上述堆栈未标注业务行号）推断出，是发生代码块2处，调用<code>doBusiness</code>方法发生了回滚。</p>
+<h1 id="分析">分析</h1>
+<p>我们都知道，Spring本身没有事务，只有数据库有事务，Spring提供<code>@Transactional</code>以及事务传播机制，只是利用数据库给我们提供的 <code>begin/commit/rollback</code> 来结合 Spring AOP 实现的<strong>统一事务管理</strong>，通过 <code>PlatformTransactionManager</code> 工具类来实现对事务的管理。（这方面网上优秀的博客太多了，就不细讲了，相信每一个Spring Boy都熟知）</p>
+<p>那么，结合对Spring事务管理器和AOP的理解，我们画一张图来理解上面这个“嵌套事务”的过程。<br>
+<img src="https://imyzt.top/post-images/1722091980572.png" alt="" loading="lazy"></p>
+<p>结合流程图来分析，按“常理”理解的话，<code>catch</code> 了 <code>userService.saveBatch</code>，内部的异常就不会造成外面的回滚，因为异常“被”吞了。</p>
+<p><strong>但实则不然</strong>，Spring事务管理器采用的是 <strong>标记位Savepoint</strong> 方法，只要被事务管理器感知到了异常出现，就会将当前线程的事务标记成为<code>rollbackOnly</code>状态，后面的事务再想提交就不行了。这也就导致了<code>ServiceB.doBusiness</code>方法在“想要”提交事务时，发现了事务已经被标记了，就抛出了<code>UnexpectedRollbackException</code>异常，该异常进一步的造成了<code>ServiceA.test</code>方法的代理类检测到了异常，<code>ServiceA.test</code>的代理类也开始处理回滚，进一步造成了整个 <code>Kafka Consumer</code>的事务造成了回滚。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1722092797622.png" alt="" loading="lazy"></figure>
+<h1 id="源码">源码</h1>
+<p>通过搜索“Transaction rolled back because it has been marked as rollback-only”异常，可以很快定位到异常流程在源码中的位置，<code>org.springframework.transaction.support.AbstractPlatformTransactionManager#processRollback</code><br>
+而通过跟踪该方法的调用方，可以很快定位到<code>org.springframework.transaction.support.AbstractPlatformTransactionManager#commit</code>方法，该方法正印证我们上方的 <code>ServiceB.doBusiness</code>想要 <code>commit</code>的时候，<code>defStatus.isGlobalRollbackOnly()</code>检测到当前事务已经被标记了<code>rollbackOnly</code>(<code>org.springframework.transaction.support.ResourceHolderSupport#rollbackOnly</code>)</p>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1722094564627.png" alt="" loading="lazy"></figure>
+<h1 id="解决">解决</h1>
+<p>其实该问题在分析之初，大家并没有定位到是因为<code>userService.saveBatch()</code>上面有Mybatis-Plus加的<code>@Transactional</code>注解干扰到 <code>catch</code> 异常这么顺利，而是都在怀疑：为什么我catch了，还把我上层的事务给回滚了！后面虽然怀疑到<code>userService.saveBatch()</code>的事务注解了，又觉得 <code>try</code> 里面的事务，不会影响到外层（没有想到标记位rollbackOnly这里），后面又想到是不是可以在<code>ServiceB.doBusiness()</code>上调整事务传播机制为<code>Propagation.REQUIRES_NEW</code>，但其实都是徒劳，因为始终都已经被Mybatis-Plus的<code>@Transactional</code>标记为<code>rollbackOnly</code>了。</p>
+<p>解决方案：</p>
+<ol>
+<li>调用无事务注解的<code>save()</code>方法</li>
+<li>改用<code>Db.saveBatch</code>方法</li>
+<li>改用异步线程（切换了事务管理器）处理 try 中的流程</li>
+</ol>
+<h1 id="后记">后记</h1>
+<p>下面这篇文章，在我们排查问题的过程中，给了很大的帮助，帮我们确定了问题的方向：<br>
+<a href="https://blog.csdn.net/github_38592071/article/details/131950392">告警：MyBatis-Plus中慎用@Transactional注解，坑的差点被开了...</a></p>
+<p>关于是否可以取消<code>saveBatch</code>方法上事务注解的讨论，可以看Mybatis-Plus官方的issue区：<br>
+（3.5.7之后，取消了IService，都使用Mapper方法，彻底解决.......）</p>
+<ol>
+<li><a href="https://github.com/baomidou/mybatis-plus/issues/6333">建议取消数据层的saveBatch等方法的@Transactional注解，交由业务层自行管理 #6333</a></li>
+<li><a href="https://github.com/baomidou/mybatis-plus/issues/5108">saveBatch下的事务问题</a></li>
+</ol>
+<p>我新建了一个工程，用来复现该问题：<br>
+<a href="https://github.com/imyzt/learning-technology-code/tree/master/error-case-analysis/adoptopenjdk-poi-crash-demo">复现定位Spring多层嵌套事务问题</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/mysql-group-by-yin-shi-pai-xu/">
+                                <h3 class="post-title">
+                                    MySQL GROUP BY 隐式排序
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E7%8E%B0%E8%B1%A1">现象</a></li>
+<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
+<li><a href="#%E6%BA%90%E7%A0%81">源码</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3">解决</a></li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

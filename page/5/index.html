@@ -1,0 +1,1479 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+                        通过Spring工具类，父类获取子类泛型（多态泛型传参）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-09-22</time>
+                    
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-primary">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。
+ResolvableType[] generics = ResolvableType.forClass(this.getClass()).getSuperType().getGenerics();
+// generics[0]是第一个泛型
+T o = (T) generalResult.toJavaObject(generics[0].resolve());
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-zi-fu-ji-bu-tong-zhuan-huan-zi-fu-ji-he-pai-xu-gui-ze/">
+                        MySQL字符集不同转换字符集和排序规则
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-09-04</time>
+                    
+                        <a href="https://imyzt.top/tag/uTOj96mue/" class="post-tag i-tag
+                            i-tag-warning">
+            #MySQL
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            -- 转换编码不一致的情况
+cast(ldr.id as char character set utf8)
+CONVERT(CAST(bpr.id AS char) USING utf8)
+--转换排序规则也不一致的情况
+convert(cl.app_id using utf8mb4) collate utf8mb4_unicode_ci
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-zi-fu-ji-bu-tong-zhuan-huan-zi-fu-ji-he-pai-xu-gui-ze/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/">
+                        go 新特性浅析（泛型）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2022-04-12</time>
+                    
+                        <a href="https://imyzt.top/tag/OlQxAV0hi/" class="post-tag i-tag
+                            i-tag-">
+            #Go
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。
+~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。
+T1 | T2 |...： 代表或，类型列表之一。
+Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数).
+Golang的泛型：
+
+1.18才有
+只能用在方法上,无法使用在结构体上
+泛型下边界需要在类型上使用 ~ 表达式
+
+泛型的示例
+type myStr string
+
+type customType interface {
+	float32 | float64 | int | int8 | int32 | int16 | int64 | uint | uint8 | uint32 | uint16 | uint64 | ~string
+}
+
+func min[T customType](a, b T) T {
+	if a &amp;gt; b {
+		return b
+	}
+	return a
+}
+
+func main() {
+
+    // 泛型
+    fmt.Println(min(1, 2))
+    fmt.Println(min(1.1, 2.2))
+    fmt.Println(min(&amp;quot;3&amp;quot;, &amp;quot;2&amp;quot;))
+    
+    // 自定义类型泛型
+    num1 := myStr(&amp;quot;33&amp;quot;)
+    num2 := myStr(&amp;quot;344&amp;quot;)
+    fmt.Println(min(num1, num2))
+    
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/lao-ban-ben-ikbc-c87-winoptionzai-mac-wu-fa-shi-yong-wen-ti-jie-jue-fang-an/">
+                        老版本ikbc c87 win(option)在Mac无法使用问题解决方案
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2022-02-28</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            解决方案
+按住Fn+Del恢复出厂设置，option生效。IDEA跳单词问题解决！
+后记
+配置option与command键盘互换。
+系统偏好设置-键盘-修饰键-配置command与option互换（注意「选择键盘」为USB键盘）。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/lao-ban-ben-ikbc-c87-winoptionzai-mac-wu-fa-shi-yong-wen-ti-jie-jue-fang-an/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-explain-xiang-jie/">
+                        MySQL Explain 详解
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2022-02-27</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            详细讲解每一列的作用，当做字典查看。
+前置知识
+半连接
+子查询物化
+索引合并
+table
+无论查询语句中包含多少张表，最终都会转换为对单表的访问，所以EXPLAIN语句输出的每条记录都对应着对单表的访问方法，也即table列代表着表名。
+普通单表
+mysql&amp;gt; explain select * from s1;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+普通连接查询
+mysql&amp;gt; explain select * from s1 join s2;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra                                 |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL                                  |
+|  1 | SIMPLE      | s2    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | Using join buffer (Block Nested Loop) |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+2 rows in set, 1 warning (0.00 sec)
+
+id
+查询语句中，为每个select分配一个唯一id，当语句中包含多个select时（union、子查询），id的大小表示不同select的查询先后顺序。
+当id相同table不同时（一般出现在连接语句），在前面的表示驱动表，在后面的是被驱动表。
+普通单id
+mysql&amp;gt; explain select * from s1 where key1 = &#39;a&#39;;
++----+-------------+-------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key      | key_len | ref   | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | s1    | NULL       | ref  | idx_key1      | idx_key1 | 303     | const |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+复杂连接语句
+语句中，id相同，s1是驱动表，s2是被驱动表。
+mysql&amp;gt; explain select * from s1 join s2;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra                                 |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL                                  |
+|  1 | SIMPLE      | s2    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | Using join buffer (Block Nested Loop) |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+2 rows in set, 1 warning (0.00 sec)
+
+语句中，id不同，表示MySQL先查询s1，后查询s2。
+mysql&amp;gt; explain select * from s1 where key1 in (select id from s2) or key2 = &#39;b&#39;;
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+| id | select_type | table | partitions | type  | possible_keys | key      | key_len | ref  | rows  | filtered | Extra       |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+|  1 | PRIMARY     | s1    | NULL       | ALL   | idx_key2      | NULL     | NULL    | NULL | 10143 |   100.00 | Using where |
+|  2 | SUBQUERY    | s2    | NULL       | index | PRIMARY       | idx_key2 | 5       | NULL | 10143 |   100.00 | Using index |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+2 rows in set, 2 warnings (0.01 sec)
+
+语句优化（子查询转连接）
+虽然语句属于子查询，理应分配2个id，但是执行计划看出来只有id=1，因为在MySQL优化器将这种明显可以转换为连接查询优化速度的语句改写为连接查询了。
+可以通过后面的show warnings ;语句查看code=1003的优化过程。
+mysql&amp;gt; explain select * from s1 where key1 in (select id from s2 where key1 = &#39;b&#39;);
++----+-------------+-------+------------+------+------------------+----------+---------+-------+-------+----------+----------------------------------------------------+
+| id | select_type | table | partitions | type | possible_keys    | key      | key_len | ref   | rows  | filtered | Extra                                              |
++----+-------------+-------+------------+------+------------------+----------+---------+-------+-------+----------+----------------------------------------------------+
+|  1 | SIMPLE      | s2    | NULL       | ref  | PRIMARY,idx_key1 | idx_key1 | 303     | const |     1 |   100.00 | Using index                                        |
+|  1 | SIMPLE      | s1    | NULL       | ALL  | idx_key1         | NULL     | NULL    | NULL  | 10143 |    10.00 | Using where; Using join buffer (Block Nested Loop) |
++----+-------------+-------+------------+------+------------------+----------+---------+-------+-------+----------+----------------------------------------------------+
+2 rows in set, 3 warnings (0.00 sec)
+
+mysql&amp;gt; show warnings ;
+| Level   | Code | Message
+| Note    | 1003 | select 此处省略一堆查询列节省篇幅 from `xiaohaizi`.`s2` join `xiaohaizi`.`s1` where ((`xiaohaizi`.`s2`.`key1` = &#39;b&#39;) and (`xiaohaizi`.`s1`.`key1` = `xiaohaizi`.`s2`.`id`)) |
+3 rows in set (0.00 sec)
+
+去重临时表
+当语句使用union对结果进行合并时，会使用临时表对结果进行去重。所以生成一个id=null的结果集。
+当使用union all时，因为不需要对结果进行去重，故不会产生NULL记录。
+mysql&amp;gt; explain select * from s1 union select * from s2;
++----+--------------+------------+------------+------+---------------+------+---------+------+-------+----------+-----------------+
+| id | select_type  | table      | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra           |
++----+--------------+------------+------------+------+---------------+------+---------+------+-------+----------+-----------------+
+|  1 | PRIMARY      | s1         | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL            |
+|  2 | UNION        | s2         | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL            |
+| NULL | UNION RESULT | &amp;lt;union1,2&amp;gt; | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  NULL |     NULL | Using temporary |
++----+--------------+------------+------------+------+---------------+------+---------+------+-------+----------+-----------------+
+3 rows in set, 1 warning (0.02 sec)
+
+mysql&amp;gt; mysql&amp;gt; explain select * from s1 union all select * from s2;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+|  1 | PRIMARY     | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
+|  2 | UNION       | s2    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+2 rows in set, 1 warning (0.01 sec)
+
+select_type
+MySQL为每个select关键字代表的小查询都定义了一个名为select_type的属性，只要知道了小查询的select_type属性，也就知道了这个小查询在大查询中的角色。
+SIMPLE
+查询语句中不包含union或者子查询，就是简单的查询就是SIMPLE。
+mysql&amp;gt; explain select * from s1;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql&amp;gt; explain select * from s1 join s2;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra                                 |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL                                  |
+|  1 | SIMPLE      | s2    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | Using join buffer (Block Nested Loop) |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+---------------------------------------+
+2 rows in set, 1 warning (0.01 sec)
+
+PRIMARY
+对于union/union all/或者子查询等大查询来说，是有多个小查询组合而来的，最左边的那个查询就是PRIMARY。
+mysql&amp;gt; explain select * from s1 union all select * from s2;
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows  | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+|  1 | PRIMARY     | s1    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
+|  2 | UNION       | s2    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 10143 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+-------+----------+-------+
+2 rows in set, 1 warning (0.01 sec)
+
+UNION
+对于union/union all/或者子查询等大查询来说，是有多个小查询组合而来的，除最左边的那个查询是PRIMARY外，其余所有小查询都是UNION，执行计划同上。
+UNION RESULT
+MySQL选择使用临时表来完成UNION查询的去重工作，针对此临时表select_type就是UNION RESULT，执行计划同「去重临时表」章节。
+SUBQUERY
+如果包含子查询的语句不能转换为对应的半连接形式，并且该子查询是不相关子查询，而且查询优化器决定采用子查询物化的方案来执行该子查询时，select_type就是SUBQUERY。
+mysql&amp;gt; explain select * from s1 where key1 in (select key2 from s2) or key3 = &#39;b&#39;;
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+| id | select_type | table | partitions | type  | possible_keys | key      | key_len | ref  | rows  | filtered | Extra       |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+|  1 | PRIMARY     | s1    | NULL       | ALL   | idx_key3      | NULL     | NULL    | NULL | 10143 |   100.00 | Using where |
+|  2 | SUBQUERY    | s2    | NULL       | index | idx_key2      | idx_key2 | 5       | NULL | 10143 |   100.00 | Using index |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+2 rows in set, 1 warning (0.01 sec)
+
+DEPENDENT SUBQUERY
+如果包含子查询的查询语句不能转换为对应的半连接形式，并且该子查询被查询优化器转换为相关子查询的形式，则该子查询的第一个select关键字代表的那个查询的select_type就是DEPENDENT SUBQUERY。
+select_type=DEPENDENT SUBQUERY的子查询可能会被执行多次。
+mysql&amp;gt; explain select * from s1 where key1 in (select key2 from s2 where s1.key2 = s2.key2) or key3 = &#39;b&#39;;
++----+--------------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+--------------------------+
+| id | select_type        | table | partitions | type   | possible_keys | key      | key_len | ref               | rows  | filtered | Extra                    |
++----+--------------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+--------------------------+
+|  1 | PRIMARY            | s1    | NULL       | ALL    | idx_key3      | NULL     | NULL    | NULL              | 10143 |   100.00 | Using where              |
+|  2 | DEPENDENT SUBQUERY | s2    | NULL       | eq_ref | idx_key2      | idx_key2 | 5       | xiaohaizi.s1.key2 |     1 |   100.00 | Using where; Using index |
++----+--------------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+--------------------------+
+2 rows in set, 2 warnings (0.01 sec)
+
+DEPENDENT UNION
+在包含union或union all的大查询中，如果各个小查询都依赖外层查询，则除了最左边的小查询select_type=DEPENDENT SUBQUERY外，其余小查询都是DEPENDENT UNION。
+mysql&amp;gt; explain select * from s1 where key1 in (select key2 from s2 union select key3 from s2 union select key1 from s2) or key3 = &#39;b&#39;;
++----+--------------------+--------------+------------+------+---------------+----------+---------+------+-------+----------+--------------------------+
+| id | select_type        | table        | partitions | type | possible_keys | key      | key_len | ref  | rows  | filtered | Extra                    |
++----+--------------------+--------------+------------+------+---------------+----------+---------+------+-------+----------+--------------------------+
+|  1 | PRIMARY            | s1           | NULL       | ALL  | idx_key3      | NULL     | NULL    | NULL | 10143 |   100.00 | Using where              |
+|  2 | DEPENDENT SUBQUERY | s2           | NULL       | ref  | idx_key2      | idx_key2 | 5       | func |     1 |   100.00 | Using where; Using index |
+|  3 | DEPENDENT UNION    | s2           | NULL       | ref  | idx_key3      | idx_key3 | 303     | func |     1 |   100.00 | Using index              |
+|  4 | DEPENDENT UNION    | s2           | NULL       | ref  | idx_key1      | idx_key1 | 303     | func |     1 |   100.00 | Using index              |
+| NULL | UNION RESULT       | &amp;lt;union2,3,4&amp;gt; | NULL       | ALL  | NULL          | NULL     | NULL    | NULL |  NULL |     NULL | Using temporary          |
++----+--------------------+--------------+------------+------+---------------+----------+---------+------+-------+----------+--------------------------+
+5 rows in set, 1 warning (0.01 sec)
+
+DERIVED
+在包含派生表的查询中，如果是以物化派生表的方式执行查询，则派生表对应的子查询的select_type=DERIVED。
+mysql&amp;gt; explain select * from (select key1, count(*) as total from s2  group by key1) t where total &amp;gt; 1;
++----+-------------+------------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+| id | select_type | table      | partitions | type  | possible_keys | key      | key_len | ref  | rows  | filtered | Extra       |
++----+-------------+------------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+|  1 | PRIMARY     | &amp;lt;derived2&amp;gt; | NULL       | ALL   | NULL          | NULL     | NULL    | NULL | 10143 |    33.33 | Using where |
+|  2 | DERIVED     | s2         | NULL       | index | idx_key1      | idx_key1 | 303     | NULL | 10143 |   100.00 | Using index |
++----+-------------+------------+------------+-------+---------------+----------+---------+------+-------+----------+-------------+
+2 rows in set, 1 warning (0.00 sec)
+
+MATERIALIZED
+当查询优化器在执行包含子查询的语句时，选择将子查询物化之后与外层查询进行连接查询，该子查询对应的select_type=MATERIALIZED。
+第三条记录的select_type=MATERIALIZED，说明优化器将子查询先转换为物化表，执行计划的前两条记录的id都=1，说明这两条记录对应的表进行的是连接查询。
+第二条记录的table列的值是，说明该表其实就是执行计划中id为2对应的子查询执行之后产生的物化表，然后再将s1和该物化表进行连接查询。
+mysql&amp;gt; explain select * from s1 where key1 in (select key1 from s2);
++----+--------------+-------------+------------+--------+---------------------+---------------------+---------+-------------------+-------+----------+-------------+
+| id | select_type  | table       | partitions | type   | possible_keys       | key                 | key_len | ref               | rows  | filtered | Extra       |
++----+--------------+-------------+------------+--------+---------------------+---------------------+---------+-------------------+-------+----------+-------------+
+|  1 | SIMPLE       | s1          | NULL       | ALL    | idx_key1            | NULL                | NULL    | NULL              | 10143 |   100.00 | Using where |
+|  1 | SIMPLE       | &amp;lt;subquery2&amp;gt; | NULL       | eq_ref | &amp;lt;auto_distinct_key&amp;gt; | &amp;lt;auto_distinct_key&amp;gt; | 303     | xiaohaizi.s1.key1 |     1 |   100.00 | NULL        |
+|  2 | MATERIALIZED | s2          | NULL       | index  | idx_key1            | idx_key1            | 303     | NULL              | 10143 |   100.00 | Using index |
++----+--------------+-------------+------------+--------+---------------------+---------------------+---------+-------------------+-------+----------+-------------+
+3 rows in set, 1 warning (0.01 sec)
+
+UNCACHEABLE SUBQUERY、UNCACHEABLE UNION
+
+UNCACHEABLE SUBQUERY：对于外层的主表，子查询不可被物化，每次都需要计算（耗时操作）
+UNCACHEABLE UNION：UNION操作中，内层的不可被物化的子查询（类似于UNCACHEABLE SUBQUERY）
+
+partitions
+版本5.7以前，该项是explain partitions显示的选项，5.7以后成为了默认选项。该列显示的为分区表命中的分区情况。非分区表该字段为空（null）。
+type
+表示单表的访问方法，最为核心的字段之一。
+system
+当表只有一条记录且该表的存储引擎为MyISAM、MEMORY时，为SYSTEM。
+const
+根据主键或者唯一二级索引列与常数进行等值匹配时，对单表的访问方法为const。
+eq_ref
+执行连接查询时，如果被驱动表是通过主键或者不允许存储NULL值的唯一二级索引列等值匹配的方式进行访问的（如果该主键或者不允许存储NULL值的唯一二级索引是联合索引，则所有的索引列都必须进行等值比较），则对该被驱动表的访问方法就是eq_ref。
+mysql&amp;gt; explain select * from s1 join s2 where s1.id = s2.id; --通过主键索引访问s2
++----+-------------+-------+------------+--------+---------------+---------+---------+-----------------+-------+----------+-------+
+| id | select_type | table | partitions | type   | possible_keys | key     | key_len | ref             | rows  | filtered | Extra |
++----+-------------+-------+------------+--------+---------------+---------+---------+-----------------+-------+----------+-------+
+|  1 | SIMPLE      | s1    | NULL       | ALL    | PRIMARY       | NULL    | NULL    | NULL            | 10143 |   100.00 | NULL  |
+|  1 | SIMPLE      | s2    | NULL       | eq_ref | PRIMARY       | PRIMARY | 4       | xiaohaizi.s1.id |     1 |   100.00 | NULL  |
++----+-------------+-------+------------+--------+---------------+---------+---------+-----------------+-------+----------+-------+
+2 rows in set, 1 warning (0.00 sec)
+
+mysql&amp;gt; explain select * from s1 join s2 on s1.key2 = s2.key2; --通过唯一二级索引访问s2
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-------------+
+| id | select_type | table | partitions | type   | possible_keys | key      | key_len | ref               | rows  | filtered | Extra       |
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL    | idx_key2      | NULL     | NULL    | NULL              | 10143 |   100.00 | Using where |
+|  1 | SIMPLE      | s2    | NULL       | eq_ref | idx_key2      | idx_key2 | 5       | xiaohaizi.s1.key2 |     1 |   100.00 | NULL        |
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-------------+
+2 rows in set, 1 warning (0.00 sec)
+
+mysql&amp;gt; explain select * from s1 join s2 on s1.key2 = s2.key3; --通过唯一二级索引访问s1，注意这里是s1做被驱动表！！
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-----------------------+
+| id | select_type | table | partitions | type   | possible_keys | key      | key_len | ref               | rows  | filtered | Extra                 |
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-----------------------+
+|  1 | SIMPLE      | s2    | NULL       | ALL    | idx_key3      | NULL     | NULL    | NULL              | 10143 |   100.00 | Using where           |
+|  1 | SIMPLE      | s1    | NULL       | eq_ref | idx_key2      | idx_key2 | 5       | xiaohaizi.s2.key3 |     1 |   100.00 | Using index condition |
++----+-------------+-------+------------+--------+---------------+----------+---------+-------------------+-------+----------+-----------------------+
+2 rows in set, 2 warnings (0.00 sec)
+
+ref
+当通过普通二级索引列与常量进行等值匹配的方式来查询某个表时，对该表的访问方法就可能是ref。
+mysql&amp;gt; explain select * from s1 join s2 on s1.key3 = s2.key3;
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+| id | select_type | table | partitions | type | possible_keys | key      | key_len | ref               | rows  | filtered | Extra       |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+|  1 | SIMPLE      | s2    | NULL       | ALL  | idx_key3      | NULL     | NULL    | NULL              | 10143 |   100.00 | Using where |
+|  1 | SIMPLE      | s1    | NULL       | ref  | idx_key3      | idx_key3 | 303     | xiaohaizi.s2.key3 |     1 |   100.00 | NULL        |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+2 rows in set, 1 warning (0.00 sec)
+
+fulltext
+全文索引。
+ref_or_null
+当对普通二级索引列进行等值匹配且该索引列的值也可以是NULL值时，记为ref_or_null。
+mysql&amp;gt; explain select * from s1 where key1 = &#39;a&#39; or key1 is null;
++----+-------------+-------+------------+-------------+---------------+----------+---------+-------+------+----------+-----------------------+
+| id | select_type | table | partitions | type        | possible_keys | key      | key_len | ref   | rows | filtered | Extra                 |
++----+-------------+-------+------------+-------------+---------------+----------+---------+-------+------+----------+-----------------------+
+|  1 | SIMPLE      | s1    | NULL       | ref_or_null | idx_key1      | idx_key1 | 303     | const |    2 |   100.00 | Using index condition |
++----+-------------+-------+------------+-------------+---------------+----------+---------+-------+------+----------+-----------------------+
+1 row in set, 1 warning (0.01 sec)
+
+index_merge
+一般情况下只会为单个索引生成扫描区间，但当在某些场景下可以使用Intersection、union、sort-union进行索引合并。
+mysql&amp;gt; explain select * from s1 where key1 = &#39;a&#39; or key3 = &#39;b&#39;;
++----+-------------+-------+------------+-------------+-------------------+-------------------+---------+------+------+----------+---------------------------------------------+
+| id | select_type | table | partitions | type        | possible_keys     | key               | key_len | ref  | rows | filtered | Extra                                       |
++----+-------------+-------+------------+-------------+-------------------+-------------------+---------+------+------+----------+---------------------------------------------+
+|  1 | SIMPLE      | s1    | NULL       | index_merge | idx_key1,idx_key3 | idx_key1,idx_key3 | 303,303 | NULL |    2 |   100.00 | Using union(idx_key1,idx_key3); Using where |
++----+-------------+-------+------------+-------------+-------------------+-------------------+---------+------+------+----------+---------------------------------------------+
+1 row in set, 1 warning (0.01 sec)
+
+unique_subquery
+类似于两表连接中被驱动表的eq_ref访问方法。针对一些包含in子查询的查询语句。如果查询优化器决定将in子查询转换为exists子查询，而且子查询在转换后可以使用主键或唯一二级索引进行等值匹配，记为unique_subquery。
+mysql&amp;gt; explain select * from s1 where common_field in (select id「这里主键/唯一二级索引是核心」 from s2 where s1.common_field = s2.common_field ) or key3 = &#39;b&#39;;
++----+--------------------+-------+------------+-----------------+---------------+---------+---------+------+-------+----------+-------------+
+| id | select_type        | table | partitions | type            | possible_keys | key     | key_len | ref  | rows  | filtered | Extra       |
++----+--------------------+-------+------------+-----------------+---------------+---------+---------+------+-------+----------+-------------+
+|  1 | PRIMARY            | s1    | NULL       | ALL             | idx_key3      | NULL    | NULL    | NULL | 10143 |   100.00 | Using where |
+|  2 | DEPENDENT SUBQUERY | s2    | NULL       | unique_subquery | PRIMARY       | PRIMARY | 4       | func |     1 |    10.00 | Using where |
++----+--------------------+-------+------------+-----------------+---------------+---------+---------+------+-------+----------+-------------+
+2 rows in set, 2 warnings (0.01 sec)
+
+index_subquery
+类似于unique_subquery，只不过在访问子查询中的表时使用的是普通的索引。
+mysql&amp;gt; explain select * from s1 where common_field in (select key3「这里是普通索引」 from s2 where s1.common_field = s2.common_field ) or key3 = &#39;b&#39;;
++----+--------------------+-------+------------+----------------+---------------+----------+---------+------+-------+----------+-------------+
+| id | select_type        | table | partitions | type           | possible_keys | key      | key_len | ref  | rows  | filtered | Extra       |
++----+--------------------+-------+------------+----------------+---------------+----------+---------+------+-------+----------+-------------+
+|  1 | PRIMARY            | s1    | NULL       | ALL            | idx_key3      | NULL     | NULL    | NULL | 10143 |   100.00 | Using where |
+|  2 | DEPENDENT SUBQUERY | s2    | NULL       | index_subquery | idx_key3      | idx_key3 | 303     | func |     1 |    10.00 | Using where |
++----+--------------------+-------+------------+----------------+---------------+----------+---------+------+-------+----------+-------------+
+2 rows in set, 2 warnings (0.00 sec)
+
+range
+如果使用索引获取某些单点扫描区间的记录，那么就可能使用到range访问方法。
+mysql&amp;gt; explain select * from s1 where key3 in (&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;abc&#39;);
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+| id | select_type | table | partitions | type  | possible_keys | key      | key_len | ref  | rows | filtered | Extra                 |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+|  1 | SIMPLE      | s1    | NULL       | range | idx_key3      | idx_key3 | 303     | NULL |    4 |   100.00 | Using index condition |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+1 row in set, 1 warning (0.00 sec)
+
+index
+当可以使用索引覆盖，但需要扫描全部的索引记录时，该表的访问方法就是index。
+
+InnoDB特殊的点：当我们需要执行全表扫描，并且需要对主键进行排序时，type列的值也是index。
+
+mysql&amp;gt; explain select key_part2 from s1 where key_part2 = &#39;ab&#39;;
++----+-------------+-------+------------+-------+---------------+--------------+---------+------+-------+----------+--------------------------+
+| id | select_type | table | partitions | type  | possible_keys | key          | key_len | ref  | rows  | filtered | Extra                    |
++----+-------------+-------+------------+-------+---------------+--------------+---------+------+-------+----------+--------------------------+
+|  1 | SIMPLE      | s1    | NULL       | index | idx_key_part  | idx_key_part | 909     | NULL | 10143 |    10.00 | Using where; Using index |
++----+-------------+-------+------------+-------+---------------+--------------+---------+------+-------+----------+--------------------------+
+1 row in set, 1 warning (0.00 sec)
+
+all
+全表扫描。
+possible_keys、key
+
+possible_keys：可能使用的索引。
+key：实际用到的索引。
+
+注意点：
+
+possible_keys当type=index时显示为空，此时key展示的是实际使用的索引。
+possible_keys不是越多越好，越多查询优化器在计算查询成本时花费的时间就越长，尽可能删除用不到的索引。
+
+key_len
+表示索引中使用的字节数，可通过该列计算查询中使用的索引长度。在不损失精确性的情况下，长度越短越好。key_len 显示的值为索引字段的最大可能长度，并非实际使用长度，即key_len是根据表定义计算而得，不是通过表内检索出来的。
+ref
+当访问方法是const、eq_ref、ref、ref_or_null、unique_subquery、index_subquery中的其中一个时，ref列展示的就是与索引列进行等值匹配的东西是什么。
+
+常量，即右侧的值&#39;1&#39;为常量。
+
+mysql&amp;gt; explain select * from s1 where id = &#39;1&#39;;
++----+-------------+-------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+| id | select_type | table | partitions | type  | possible_keys | key     | key_len | ref   | rows | filtered | Extra |
++----+-------------+-------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | s1    | NULL       | const | PRIMARY       | PRIMARY | 4       | const |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+
+某个列，比如下面s2作为被驱动表时，s2的type=ref，ref=xiaohaizi.s1.key1
+
+mysql&amp;gt; explain select * from s1 join s2 on s1.key1 = s2.key1;
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+| id | select_type | table | partitions | type | possible_keys | key      | key_len | ref               | rows  | filtered | Extra       |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | idx_key1      | NULL     | NULL    | NULL              | 12242 |   100.00 | Using where |
+|  1 | SIMPLE      | s2    | NULL       | ref  | idx_key1      | idx_key1 | 303     | xiaohaizi.s1.key1 |     1 |   100.00 | NULL        |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+2 rows in set, 1 warning (0.00 sec)
+
+
+某个函数，比如下面s2作为被驱动表时，s2的type=ref，ref=func表示进行了函数操作。
+
+mysql&amp;gt; explain select * from s1 join s2 on s1.key1 = upper(s2.key1);
++----+-------------+-------+------------+------+---------------+----------+---------+------+-------+----------+-----------------------+
+| id | select_type | table | partitions | type | possible_keys | key      | key_len | ref  | rows  | filtered | Extra                 |
++----+-------------+-------+------------+------+---------------+----------+---------+------+-------+----------+-----------------------+
+|  1 | SIMPLE      | s2    | NULL       | ALL  | NULL          | NULL     | NULL    | NULL | 12558 |   100.00 | NULL                  |
+|  1 | SIMPLE      | s1    | NULL       | ref  | idx_key1      | idx_key1 | 303     | func |     1 |   100.00 | Using index condition |
++----+-------------+-------+------------+------+---------------+----------+---------+------+-------+----------+-----------------------+
+2 rows in set, 1 warning (0.00 sec)
+
+rows
+
+在查询优化器决定使用全表扫描的方式对某个表执行查询时，执行计划的rows列就代表该表的估算行数。
+如果使用索引来执行查询，执行计划的rows列就代表预计扫描的索引记录行数。
+
+mysql&amp;gt; explain select * from s1 where key1 &amp;gt; &#39;z&#39;;
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+| id | select_type | table | partitions | type  | possible_keys | key      | key_len | ref  | rows | filtered | Extra                 |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+|  1 | SIMPLE      | s1    | NULL       | range | idx_key1      | idx_key1 | 303     | NULL |    1 |   100.00 | Using index condition |
++----+-------------+-------+------------+-------+---------------+----------+---------+------+------+----------+-----------------------+
+1 row in set, 1 warning (0.00 sec)
+
+filtered
+计算MySQL驱动表扇出的一种策略。
+
+如果使用全表扫描执行单表查询，那么计算驱动表扇出时需要估计出全部搜索条件的记录到底有多少条。
+如果使用索引来执行单表查询，那么计算驱动表扇出时需要估计出满足形成索引扫描区间的搜索条件外，还满足其他搜索条件的记录有多少条。
+
+在单表查询时没太大意义，在连表查询时对估算执行次数有帮助。
+下表中，s1做驱动表，s2做被驱动表，s1的filtered=10，rows=12242，12242* 10%=1224.2，s2的filtered=100，rows=1，表示还要对被驱动表执行答曰1224次查询。
+mysql&amp;gt; explain select * from s1 join s2 on s1.key1 = s2.key1 where s1.common_field = &#39;a&#39;;
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+| id | select_type | table | partitions | type | possible_keys | key      | key_len | ref               | rows  | filtered | Extra       |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+|  1 | SIMPLE      | s1    | NULL       | ALL  | idx_key1      | NULL     | NULL    | NULL              | 12242 |    10.00 | Using where |
+|  1 | SIMPLE      | s2    | NULL       | ref  | idx_key1      | idx_key1 | 303     | xiaohaizi.s1.key1 |     1 |   100.00 | NULL        |
++----+-------------+-------+------------+------+---------------+----------+---------+-------------------+-------+----------+-------------+
+2 rows in set, 1 warning (0.01 sec)
+
+Extra
+展示额外信息时使用，比较多，此处按照书中描述，只记录常出现的内容。
+No tables used
+当查询语句中没有FROM子句时，会提示。比如SELECT 1之类。
+Impossible WHERE
+查询语句的WHERE子句永远为FALSE时，会提示。比如SELECT * FROM s1 WHERE 1 &amp;lt;&amp;gt; 1。
+No matching min/max row
+当查询列表处有MIN或MAX聚集函数，但是没有记录符合WHERE子句中的搜索条件时，会提示。比如SELECT min(key1) FROM s1 WHERE key1 = &#39;一个不存在的值&#39;。
+Using index
+使用覆盖索引执行查询时，不用回表，会提示。比如SELECT key1 FROM s1 WHERE key1 = &#39;a&#39;。
+Using index condition
+搜索条件中虽然出现了索引列，但却不能充当边界条件来形成扫描区间，也就是说不能用来减少需要扫描的记录数量，会提示。
+比如：SELECT * FROM s1 WHERE key1 &amp;gt; &#39;z&#39; AND key1 LIKE &#39;%a&#39;，其中的key1 &amp;gt; &#39;z&#39;可以用来形成扫描区间，但是key1 LIKE &#39;%a&#39;却不能。
+即索引覆盖（索引下推）达成条件。
+只对于二级索引有效，对于二级索引等值判断不生效（这时Extra=NULL），对于主键索引不生效（直接查数据）。
+Using where
+当某个搜索条件需要在server层进行判断时，在Extra列会提示，比如索引覆盖没有达成的情况。
+SELECT * FROM s1 WHERE key1 = &#39;a&#39; AND common_field = &#39;a&#39;，由于comon_field无法在引擎层判断，只能通过key1形成扫描区间后，在server层判断。
+Using join buffer（Block Nested Loop）
+在连接过程中，当被驱动表不能有效的利用索引加快访问速度时，MySQL会分配一块JoinBuffer内存块来加快查询速度，基于块的嵌套循环算法执行连接查询。
+Using intersect(...)、Using union(...)和Using sort_union(...)
+
+intersect：准备使用Intersection索引合并的方式执行查询，括号中包含需要合并的索引名称。
+union：准备使用union索引合并方式执行查询。
+sort_union：准备使用Sort-Union索引合并的方式执行查询。
+
+zero_limit
+当Limit子句参数为0时，会提示。
+Using filesort
+对结果集中记录进行排序时，使用索引则不会出现，但很多情况无法使用索引进行排序，则会出现filesort。
+Using temporary
+MySQL利用临时表完成去重、排序时。
+比如DISTINCT、GROUP BY、UNION等子句查询过程中如无法使用索引则会提示。
+Start temporary，End temporary
+子查询时，查询优化器会优先尝试将IN子查询转换为半连接。半连接有很多种策略，当选择Duplicate Weedout时，也就是通过建立临时表来为外城查询中的记录进行去重操作时，驱动表查询执行计划的Extra列将显示Start temporary，被驱动表则会显示End temporary。
+LooseScan
+在将IN子查询转换为半连接时，如果采用的是LooseScan执行策略，则驱动表执行计划的Extra列就显示LooseScan提示。
+FirstMatch(table_name)
+在将IN子查询转换为半连接时，如果采用的是FirstMatch执行策略，则被驱动表执行计划的Extra列就显示FirstMatch提示。
+建表和1w条数据
+表
+CREATE TABLE s1 (
+    id INT NOT NULL AUTO_INCREMENT,
+    key1 VARCHAR(100),
+    key2 INT,
+    key3 VARCHAR(100),
+    key_part1 VARCHAR(100),
+    key_part2 VARCHAR(100),
+    key_part3 VARCHAR(100),
+    common_field VARCHAR(100),
+    PRIMARY KEY (id),
+    KEY idx_key1 (key1),
+    UNIQUE KEY idx_key2 (key2),
+    KEY idx_key3 (key3),
+    KEY idx_key_part(key_part1, key_part2, key_part3)
+) Engine=InnoDB CHARSET=utf8;
+
+CREATE TABLE s2 (
+    id INT NOT NULL AUTO_INCREMENT,
+    key1 VARCHAR(100),
+    key2 INT,
+    key3 VARCHAR(100),
+    key_part1 VARCHAR(100),
+    key_part2 VARCHAR(100),
+    key_part3 VARCHAR(100),
+    common_field VARCHAR(100),
+    PRIMARY KEY (id),
+    KEY idx_key1 (key1),
+    UNIQUE KEY idx_key2 (key2),
+    KEY idx_key3 (key3),
+    KEY idx_key_part(key_part1, key_part2, key_part3)
+) Engine=InnoDB CHARSET=utf8;
+
+插入数据
+
+delimiter $
+create procedure insertNData(n int)
+begin
+    declare total int default 0;
+    declare num int default 1;
+    while total &amp;lt;= n
+        do
+            set total = total + 1;
+            set num = num + 1;
+            INSERT INTO xiaohaizi.s1 (id, key1, key2, key3, key_part1, key_part2, key_part3, common_field)
+            VALUES (null, substring(md5(rand()), 1, 10), floor(rand() * 100000000), substring(md5(rand()), 1, 10),
+                    substring(md5(rand()), 1, 10), substring(md5(rand()), 1, 10), substring(md5(rand()), 1, 10),
+                    substring(md5(rand()), 1, 10));
+            INSERT INTO xiaohaizi.s2 (id, key1, key2, key3, key_part1, key_part2, key_part3, common_field)
+            VALUES (null, substring(md5(rand()), 1, 10), floor(rand() * 100000000), substring(md5(rand()), 1, 10),
+                    substring(md5(rand()), 1, 10), substring(md5(rand()), 1, 10), substring(md5(rand()), 1, 10),
+                    substring(md5(rand()), 1, 10));
+        end while;
+    select count(*) from xiaohaizi.s1;
+end $
+
+call insertNData(10000) $
+
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-explain-xiang-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-dan-biao-lian-jie-fang-wen-fang-fa/">
+                        MySQL单表/连接访问方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2022-02-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            const
+通过主键或者唯一二级索引列来定位一条记录的访问方法定义为const（常数级别，代价忽略不计）。
+SELECT * FROM t WHERE id = xx;
+SELECT * FROM t WHERE 唯一索引column = xx;
+
+唯一索引A(列A，列B)
+SELECT * FROM t WHERE 列A = xx AND 列B = xx;
+
+例外：
+
+WHERE 唯一索引column IS NULL，因为唯一索引不限制NULL值数量，所以会扫描出多条记录，否则最多只是ref
+多列唯一索引时，只有多列全匹配才会是const，否则最多只是ref
+
+ref
+采用二级索引来执行查询的方法称为ref。
+SELECT * FROM t WHERE 普通二级索引column = xx;
+SELECT * FROM t WHERE 普通二级索引column IS NULL;
+
+唯一索引A(列A，列B)
+SELECT * FROM t WHERE 列A = xx;
+
+
+ref_or_null
+ref_or_null访问方法只是比ref方法多扫描了一些值为NULL的二级索引记录。
+值为NULL的记录会被放在索引的最左边。
+SELECT * FROM t WHERE 普通二级索引column = xx OR 普通二级索引column IS NULL;
+
+range
+使用索引查询时，对应的扫描区间为若干个单点扫描区间或者范围扫描区间时，访问方法称为range。
+SELECT * FROM t WHERE key1 IN (111,222) OR (key2 &amp;gt; 22 AND key2 &amp;lt;33)
+
+注意：
+
+只有单个扫描区间不能称为range。
+扫描区间为(-∞, +∞)也不能称为range。
+
+index
+由于二级索引比聚簇索引小得多（聚簇索引要存储记录，二级索引只需要存储索引列和主键），而且这个过程不用执行回表操作，所以直接扫描全部的二级索引的访问方法称为index方法。
+联合索引A(key1, key2, key3)
+SELECT key2,key3 FROM t WHERE k1 = xx;
+
+聚簇索引排序
+SELECT * FROM t ORDER BY id;
+
+all
+全表扫描，直接扫描全部的聚簇索引记录。称为all访问方法。
+eq_ref
+在单表中使用主键值或唯一二级索引列的值进行等值查询的方式称为const。
+在连接查询中使用主键值或唯一二级索引列的值进行等值查询的方式称为eq_ref。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-dan-biao-lian-jie-fang-wen-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/go-xin-te-xing-embed/">
+                        Go 新特性 embed
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-12-02</time>
+                    
+                        <a href="https://imyzt.top/tag/OlQxAV0hi/" class="post-tag i-tag
+                            i-tag-info">
+            #Go
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            go 1.16版本开始，支持将静态资源文件打包至二进制文件啦~，在1.16版本之前，开源界提供了很多方案，终于在此版本官方提供了统一的解决方案。具体使用见官方文档：https://pkg.go.dev/embed
+import _ &amp;quot;embed&amp;quot;
+
+//go:embed hello.txt
+var s string
+print(s)
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/go-xin-te-xing-embed/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/duo-ban-ben-bing-fa-kong-zhi-yuan-li-fen-xi-zhi-shu-ju-ke-jian-xing-suan-fa/">
+                        多版本并发控制原理分析之数据可见性算法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-11-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            MySQL InnoDB通过多版本并发控制，对每一行记录都写入3个隐藏字段（TRX_ID、ROLL_POINT、ROW_ID），使可重复读隔离级别下达到事务开启且创建快照后其他任何其他事务的更新均对其不可见，至于其内部具体如何实现的，则通过下面的文章进行记录。
+四种事务隔离界别及解决的问题
+首先需要回顾下MySQL的四种事务隔离级别，以及其为了解决的问题。
+
+
+
+级别
+symbol
+描述
+
+
+
+
+读未提交
+READ-UNCOMMITTED
+存在脏读、不可重复读、幻读的问题
+
+
+读已提交
+READ-COMMITTED
+解决脏读的问题，存在不可重复读、幻读的问题
+
+
+可重复读
+REPEATABLE-READ
+mysql 默认级别，解决脏读、不可重复读的问题，存在幻读的问题。使用 MMVC机制 实现可重复读
+
+
+序列化
+SERIALIZABLE
+解决脏读、不可重复读、幻读，可保证事务安全，但完全串行执行，性能最低
+
+
+
+MySQL的可重复读解决了脏读、不可重复读问题，但通过MVCC并未解决幻读问题，幻读是结合next-key-lock（间隙锁）来实现的。关于此处内容文章mysql 幻读的详解、实例及解决办法讲得不错。
+概念
+TrxId = 当前记录（行数据）最后被修改的事务id
+UpId = 当前活跃最小事务id
+LowLimitId = 下一个即将分配的事务id（当前最大事务Id+1）
+活跃事务列表 = 当前所有开启了事务但未提交的事务。
+
+如果当前记录最后被修改的事务id 小于 最小活跃事务id（当前所有活跃会话开启前事务提交的数据）  或者 当前记录最后被修改的事务id 和 当前事务id 相等（自己在当前事务下更新过该记录的数据）， 则可见
+当前记录最后被修改的事务id 大于等于 下一个即将被分配的事务id（low-limit-id是开启快照读时生成，当low-limit-id小于TRX_ID则说明此数据在当前快照创建后已修改，此数据不可见需要继续通过RollId往上找），则不可见，通过回滚指针继续向上找。
+当前记录最后被修改的事务id 在 活跃事务列表（活跃事务列表是开启快照读时生成，则说明是该事务创建时已经在活跃的事务） 中，则不可见，通过回滚指针继续向上找。
+其他所有情况，都可见
+
+
+前提条件
+基于MySQL 的 可重复读 隔离级别下。
+快照读只有在当前事务第一次执行读取操作（SELECT）后才会生成。
+此时已经固定下来包括：
+
+活跃事务id列表
+最小活跃最小事务id
+下一个即将分配的事务id
+
+但没有固定 当前记录最后被修改的事务id，此字段根据每次查询时当前记录最后被更新的事务来更新（永远读最新的）。
+场景分析
+场景一：创建快照前的更新
+同时开启4个事务，但事务2第一次快照读在事务4提交之后，故事务4的数据修改对于事务2可见。
+结合流程图分析：
+当前记录最后被修改事务id（TRX_ID）=4， upid=1，low-limit-id=5，当前事务id=2，
+活跃事务列表=（1、2、3），不包含4，因为4已提交
+
+TRX_ID &amp;lt; upId = false，TRX_ID = 当前事务id = false
+TRX_ID &amp;gt;= low-limit-id = false
+TRX_ID in 活跃事务列表 = false
+上述条件均不支持，数据可见。
+
+
+场景二：创建快照后开启事务的更新
+开始只开启事务1和2、当事务2执行select之后（生成了快照读），再开启了事务3、4，事务4执行了update语句且进行了提交，事务4的更新对于事务2第二次select来说处于高水位，是不可见的。
+结合流程图分析：
+当前记录最后被修改事务id（TRX_ID）=4， upid=1，low-limit-id=3，当前事务id=2，
+活跃事务列表=（1、2），不包含3、4，因为2的快照读是在第一个select时创建的，那是3、4还未开启事务。
+
+TRX_ID &amp;lt; upId = false，TRX_ID = 当前事务id = false
+TRX_ID &amp;gt;= low-limit-id = true，符合，即不可见（其实就是高水位，是在当前快照之后创建的事务，当然不可见）
+
+
+场景三：创建快照同时开启事务的更新
+同时开启4个事务，事务2初次执行select时已创建快照读，在后续事务4执行了update操作进行了提交，事务4的更新对于事务2第二次select来说处于高水位，是不可见的。
+结合流程图分析：
+当前记录最后被修改事务id（TRX_ID）=4， upid=1，low-limit-id=5，当前事务id=2，
+活跃事务列表=（1、2、3、4）。
+
+TRX_ID &amp;lt; upId = false, TRX_ID = 当前事务id = false
+TRX_ID &amp;gt;= low-limit-id = false
+TRX_ID in 活跃事务列表 = true，即不可见，保证了事务2在两次select时的查询均是一致的，事务4的更新对于事务2来说永远不可见。
+
+
+记录
+本文基于慕课网课程探秘 MySQL 多版本并发控制原理
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/duo-ban-ben-bing-fa-kong-zhi-yuan-li-fen-xi-zhi-shu-ju-ke-jian-xing-suan-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-insert-into-select/">
+                        MySQL INSERT INTO SELECT
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-08-11</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            初始化数据库
+CREATE TABLE `xiaohaizi_second_table` (
+  `c1` int unsigned NOT NULL AUTO_INCREMENT,
+  `c2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `c3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`c1`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT=&#39;学习小孩子-insert-into-select测试&#39;;
+
+查询结果插入数据
+INSERT INTO table_name(c1, c2, c3) SELECT c1, c2, c3 FROM table_name2
+
+查询结果，插入数据， 如果遇到 唯一约束， 则跳过
+INSERT IGNORE INTO table_name(c1, c2, c3) SELECT c1, c2, c3 FROM table_name2
+
+查询结果，插入数据，如果遇到 唯一约束， 则更新
+冲突更新单列：
+假设c1列具有唯一索引，插入数据(1, ‘xx’, ‘yy’)，如果c1列已存在c1=1的数据，则将此列的c2字段更新为’hhh’
+INSERT INTO table_name(c1, c2, c3) VALUES(1, ‘xx’, ‘yy’) ON DUPLICATE KEY UPDATE c2 = ‘hhh&#39;
+
+冲突更新多列：
+假设c1列具有唯一索引，插入数据(1, ‘xx’, ‘yy’)，如果c1列已存在c1=1的数据，则将此列的c2字段更新为待插入行中对应列的数据。
+INSERT INTO table_name ( c1, c2, c3 )
+VALUES
+	( 1, &amp;quot;xx1&amp;quot;, &amp;quot;yy1&amp;quot; ),
+	( 2, &amp;quot;xxx2&amp;quot;, &amp;quot;yyy2&amp;quot; ) 
+	ON DUPLICATE KEY UPDATE c2 =
+VALUES
+	( c2 ),
+	c3 =
+VALUES
+	( c3 );
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-insert-into-select/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
+                        Arthas在项目开发中的应用 - 线上故障定位
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-07-10</time>
+                    
+                        <a href="https://imyzt.top/tag/8NNFU0jVs/" class="post-tag i-tag
+                            i-tag-info">
+            #Arthas
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            介绍
+
+Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。
+Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行问题的定位和诊断。
+Arthas能为我们解决哪些问题
+
+这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？
+我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
+遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？
+线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！
+是否有一个全局视角来查看系统的运行状况？
+有什么办法可以监控到JVM的实时运行状态？
+
+与SkyWalking的区别
+Skywalking是一个可观测性分析平台（Observability Analysis Platform，OAP）和一个应用性能管理（Application Performance Management，APM）系统。
+Quick Start
+
+
+启动本地Java进程 （实例工程，空SpringBoot项目）
+
+
+下载arthas-boot curl -O https://arthas.aliyun.com/arthas-boot.jar，此步骤仅完成基础包下载，大小为139K上下
+
+
+执行命令 java -jar arthas-boot.jar，选择需要attch的Java进程，进入arthas的命令界面
+
+
+
+基本操作（官网入门示例）
+
+
+dashboard
+执行dashboard，将展示当前进程的信息。如图：
+通过此命令可以查看JVM的堆内存情况，以及活跃线程、JVM基本信息等内容。
+
+jad反编译代码
+通过jad指令，反编译class
+
+watch方法执行数据观测（查看函数入参和返回值）
+通过模拟对入参 *2 的程序，反应watch的强大。
+
+通过watch命令，监听方法的一切行为。watch的参数比较多，以下摘抄自官网：
+
+
+
+class-pattern
+类名表达式匹配
+
+
+
+
+method-pattern
+方法名表达式匹配
+
+
+express
+观察表达式
+
+
+condition-express
+条件表达式
+
+
+[b]
+在方法调用之前观察
+
+
+[e]
+在方法异常之后观察
+
+
+[s]
+在方法返回之后观察
+
+
+[f]
+在方法结束之后(正常返回和异常返回)观察
+
+
+[E]
+开启正则表达式匹配，默认为通配符匹配
+
+
+[x:]
+指定输出结果的属性遍历深度，默认为 1
+
+
+
+
+monitor方法执行监控（什么时候执行了）
+
+
+
+参数名称
+参数说明
+
+
+
+
+class-pattern
+类名表达式匹配
+
+
+method-pattern
+方法名表达式匹配
+
+
+condition-express
+条件表达式
+
+
+[E]
+开启正则表达式匹配，默认为通配符匹配
+
+
+[c:]
+统计周期，默认值为120秒
+
+
+[b]
+在方法调用之前计算condition-express
+
+
+
+monitor -c 5 top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+每5秒监听一次，统计耗时、失败率、总次数、成功次数、失败次数等信息
+
+通过表达式过滤不需要的请求方法调用。
+
+trace方法内部调用路径，输出方法路径上的节点耗时（我调用了谁）
+trace top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+因为代价比较高（这属于skywarking的工作范围），trace默认只支持一层的耗时分析。但官网提供了多层trace的方法，具体见：https://arthas.aliyun.com/doc/trace.html
+
+
+stack方法输出当前方法被调用的调用路径（谁调用了我）
+stack top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController getResult -n 3
+
+tt 记录方法请求的信息，方便重做请求和查看结果
+方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测
+watch指令复杂，通过tt记录请求的信息后面可以针对性分析
+
+2. 进阶操作
+热加载代码
+首先声明：在生产环境热更新代码是不很不好的行为。
+但是肯定有它使用的场景。
+涉及到几个命令：
+
+
+jad（反编译指定已加载类的源码）
+
+
+sc（查看JVM已加载的类信息）
+
+
+mc（内存编译器，内存编译.java文件为.class文件）、
+
+
+redefine（加载外部的.class文件，redefine到JVM里）
+
+
+jad反编译代码，vim调整代码逻辑
+jad --source-only top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController &amp;gt; /tmp/IndexController.java
+
+
+
+通过 sc 命令，找到类加载器
+sc -d *IndexController
+
+
+
+通过 mc 内存编译java -&amp;gt; class
+
+
+mc -c 31221be2 /tmp/IndexController.java -d /tmp
+
+通过 redefine 热加载
+
+redefine /tmp/top/imyzt/learning/arthas/arthaswebdemo/web/controller/IndexController.class
+全流程
+
+profiler🔥图
+通过 profiler start/stop 获得一份程序的火焰图
+
+
+火焰图查看工具
+JDK JMC：https://github.com/openjdk/jmc
+JProfiler(付费)： https://www.ej-technologies.com/download/jprofiler/files
+如何读懂火焰图？
+如何读懂火焰图? - 阮一峰的网络日志
+使用arthas+jprofiler做复杂链路分析 · Issue #1416 · alibaba/arthas
+
+进阶使用&amp;amp;命令列表
+
+https://arthas.aliyun.com/doc/advanced-use.html
+https://arthas.aliyun.com/doc/commands.html
+常用使用场景分析和讨论
+同传统方式进行对比，最大的目的是为了解决目前低效的生产环境问题排查方式。
+
+通过watch观察方法入参，是否可以客户反馈使用出了问题，但是又不知道小程序发过来的请求具体是啥？
+通过stack观察，某个方法什么时候被调用了，被谁调用了？
+通过tt记录请求信息，便于重做请求，模拟用户操作？
+通过后台异步任务，观察定时周期出现问题的代码，阿里描述：当线上出现偶发的问题，比如需要watch某个条件，而这个条件一天可能才会出现一次时，异步后台任务就派上用场了，详情请参考这里
+
+以上描述的操作虽然能解决很多问题，但是是否面临着一个更大的问题？
+适合生产环境的实践
+
+Web_Console
+
+在attrch成功之后，直接访问本地3658端口，可以通过web界面操作。
+
+默认情况下，arthas只listen 127.0.0.1，所以如果想从远程连接，则可以使用 --target-ip参数指定listen的IP。
+
+Tunnel Server
+
+下载arthas-tunnel-server，本地java -jar启动，Web界面监听8080端口，WebSocket通信监听7777端口。
+
+java -jar arthas-boot.jar --tunnel-server &#39;ws://127.0.0.1:7777/ws&#39;
+
+可以通过http://127.0.0.1:8080/actuator/arthas访问本地，获得已连接到tunnel-server的arthas-client。密码在启动控制台。
+
+
+通过上面的操作，虽然免去了去生产环境机器直接操作arthas这种不现实的问题，但是在Web界面操作还有一个问题，就是谁给我们绑定执行 java -jar arthas-boot.jar --tunnel-server &#39;ws://127.0.0.1:7777/ws&#39; 这个命令呢.......
+与SpringBoot集成，更适合生产环境的实践
+
+增加Maven依赖
+
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.taobao.arthas&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;arthas-spring-boot-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.5.2&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+
+调整配置文件
+
+server.port=8892
+
+spring.application.name=arthas-demo
+
+# 建议不指定, 会根据 spring.application.name 生成
+#arthas.agent-id=arthas-demo
+arthas.tunnel-server=ws://localhost:7777/ws
+# -1会随机分配端口
+arthas.http-port=-1
+arthas.telnet-port=-1
+
+
+
+查看agentId
+
+
+
+tunnel-server连接后操作
+
+
+
+对性能的影响
+通过spring-boot-starter的方式，在应用启动时，就对进程自动完成了attach，对于性能方面的影响是不大的，下面有两个官方的回复，从原理是解释了这个问题。
+开发团队回复：
+目前arthas-spring-boot-starter方式是长期启动状态，对程序的性能有什么影响吗？ · Issue #1843 · alibaba/arthas
+是否进行过性能评估，attach之后对原进程性能有多大的影响呢 · Issue #44 · alibaba/arthas
+如何记住各种命令
+https://arthas.aliyun.com/doc/idea-plugin.html
+遇到的一些坑
+Pid=1无法Attach
+linux保护机制，jstack无法attach住pid&amp;lt;=5的进程，arthas也无法使用，通用解决方案是使用tini挂载java进程。
+https://github.com/alibaba/arthas/issues/362
+Arthas端口问题
+应用被Arthas-Boot attch之后，包括应用本身的端口，同时还会监听另外两个端口：
+默认情况下，Arthas的Telnet端口是3658，HTTP端口是8563，这个常常让用户迷惑。在新版本里，在3658端口同时支持Telnet/HTTP协议。
+在浏览器里访问 http://localhost:3658/ 也可以访问到Web Console了。
+在后续的版本里，考虑默认只侦听 3658端口，减少用户的配置项。
+当启动tunnel-server后，8080与7777端口也被监听。
+与Skywalking的兼容性问题
+java.lang.ClassFormatError: null、skywalking arthas 兼容使用
+当出现这个错误日志java.lang.ClassFormatError: null,通常情况下都是被其他字节码工具修改过与arthas修改字节码不兼容。
+比如: 使用 skywalking V8.1.0 以下版本 无法trace、watch 被skywalking agent 增强过的类, V8.1.0 以上版本可以兼容使用,更多参考skywalking配置 skywalking compatible with other javaagent bytecode processing。
+JVM版本问题
+启动Arthas的Java版本和启动应用的Java版本要保持一致
+推荐文章
+
+Arthas源码学习-1_慢一拍的coder-CSDN博客
+Arthas Tutorials
+工商银行打造在线诊断平台的探索与实践
+
+Arthas使用到的技术
+Arthas运行原理
+tt命令探究
+
+执行 tt -t top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+下载正在运行的字节码文件 dump top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController
+查看字节码 javap -c -s -v -l xxx.class
+
+
+相关文章：Arthas原理系列(四):字节码插装让一切变得有可能
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/4/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/6/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,554 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 20~21 新特性 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 20~21 新特性
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-12-19</time>
+                            
+                                <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-other_1">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <blockquote>
+<p>Java 20没有发布重要的新特性，本文以Java21版本为主。<br>
+Java 21 是新的LTS版本，其中发布了众多新的特性。</p>
+</blockquote>
+<h1 id="字符串模板预览版">字符串模板（预览版）</h1>
+<h2 id="使用官方的str-fmt">使用官方的STR、FMT</h2>
+<p>支持通过<code>STR</code>、<code>FMT</code>来实现字符串拼接，可以自定义模板处理器组织字符串输出形式。</p>
+<pre><code class="language-java">import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static java.util.FormatProcessor.FMT;
+
+/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 模板字符串
+ */
+public class TemplateString {
+
+    public static void main(String[] args) {
+
+        String str = &quot;world&quot;;
+        String result = STR.&quot;hello \{str}&quot;;
+        System.out.println(result);
+        System.out.println(STR);
+
+        String name = &quot;yzt&quot;;
+        String[] blogAddress = {&quot;imyzt.top&quot;, &quot;blog.imyzt.top&quot;};
+        String text = FMT.&quot;&quot;&quot;
+                My name is \{name}
+                My blog address is \{blogAddress[0].toUpperCase()}, \{blogAddress[1].toLowerCase()}&quot;&quot;&quot;;
+        System.out.println(text);
+
+        System.out.println(STR.&quot;\{Math.random()}&quot;);
+        System.out.println(STR.&quot;\{Integer.MAX_VALUE}&quot;);
+        System.out.println(STR.&quot;\{index++}, \{++index}&quot;);
+
+        //hello world
+        //java.lang.StringTemplate$$Lambda/0x00000001260457f0@33c7353a
+        //My name is yzt
+        //My blog address is IMYZT.TOP, blog.imyzt.top
+        //0.9361799484353136
+        //2147483647
+        //现在的时间是: 2023-12-20
+        //0, 2
+    }
+}
+</code></pre>
+<h2 id="自定义stringtemplate">自定义StringTemplate</h2>
+<pre><code class="language-java">
+import java.util.Iterator;
+
+/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description 自定义StringTemplate
+ */
+public class CustomTemplate {
+
+    public static void main(String[] args) {
+
+        var INTER = StringTemplate.Processor.of((StringTemplate st) -&gt; {
+            StringBuilder sb = new StringBuilder();
+            Iterator&lt;String&gt; fragments = st.fragments().iterator();
+            for (Object value : st.values()) {
+                sb.append(fragments.next());
+                sb.append(value);
+            }
+            sb.append(fragments.next());
+            return sb.toString();
+        });
+
+        String name = &quot;yzt&quot;;
+        int index = 0;
+        String text = INTER.&quot;&quot;&quot;
+                {
+                &quot;name&quot;:\{name},
+                &quot;index&quot;:\{++index}
+                }
+                &quot;&quot;&quot;;
+        System.out.println(text);
+        //{
+        //&quot;name&quot;:yzt,
+        //&quot;index&quot;:1
+        //}
+    }
+}
+</code></pre>
+<h1 id="record-patterns">Record Patterns</h1>
+<p>记录模式更强大了，支持直接在表达式中创建和使用。还支持嵌套</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/19
+ * @description 记录模式
+ */
+public class RecordPatterns {
+
+    public static void main(String[] args) {
+
+        Object p = new Point(1, 2);
+        if (p instanceof Point(int x, int y)) {
+            System.out.println(x + y);
+        }
+
+        Object w = new Window(new Point(1, 2), 3);
+        if (w instanceof Window(Point(int x, int y), int z)) {
+            System.out.println(x + y + z);
+        }
+
+    }
+}
+record Point(int x, int y) {}
+record Window(Point p, int z) {}
+</code></pre>
+<h1 id="scopedvalue">ScopedValue</h1>
+<p><code>ScopedValue</code>是一个隐藏的方法参数，只有方法可以访问<code>ScopedValue</code>，它可以让两个方法传递参数时<strong>无需声明形参</strong>（对于Web项目中传递用户信息是非常场景的操作）</p>
+<h2 id="threadlocal的问题">ThreadLocal的问题</h2>
+<p>通常对于上述场景，都会采用<code>ThreadLocal</code>来解决，但是由于<code>ThreadLocal</code>在设计上的瑕疵，导致一直有以下问题：</p>
+<ol>
+<li>内存泄露，在使用完<code>ThreadLocal</code>之后，若没有调用<code>remove</code>方法，会出现内存泄漏。</li>
+<li>增加开销，在具有继承关系的线程中，子线程需要为父线程中<code>ThreadLocal</code>里面的数据分配内存</li>
+<li>不是不可变对象，在方法中可以随意调用<code>set</code>方法篡改。</li>
+</ol>
+<p>随着虚拟线程的到来，内存泄漏问题不用担心了，因为虚拟线程会很快的终止，此时会自动删除<code>ThreadLocal</code>中的数据，这样就不用调用<code>remove</code>方法了。<br>
+但是虚拟线程的数量是非常多的，假如有上百万个虚拟线程都要拷贝一份<code>ThreadLocal</code>中的变量（问题2），<span style="color: red">内存将会被严重的浪费掉</span>。</p>
+<h2 id="示例">示例</h2>
+<p>示例代码中通过模拟一个“送礼物”的场景，来演示<code>ScopedValue</code>。</p>
+<ol>
+<li>在 <code>giveGift</code> 方法中，将礼物送出，是500元</li>
+<li>在 <code>receiveMiddleMan</code> 方法模拟中间人抽成的场景，抽成后送出仅 200元</li>
+<li>在 <code>receiveGift</code> 方法中 ，对 <code>ScopedValue</code> 进行获取，得到的就是200元</li>
+</ol>
+<p>但整个过程中，中间人 <code>receiveMiddleMan</code> 在送出前后获取到的信息都是 500元，这正是 <code>Scope</code> 的含义，<strong>修改只在本作用域（方法）中生效</strong>。</p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description ScopedValue
+ */
+public class ScopedValueTest {
+
+    private static final ScopedValue&lt;String&gt; GIFT = ScopedValue.newInstance();
+
+    public static void main(String[] args) {
+
+        ScopedValueTest test = new ScopedValueTest();
+        test.giveGift();
+        //中间人开始: 500
+        //收礼物: 200
+        //中间人结束: 500
+    }
+
+    private void giveGift() {
+        ScopedValue.where(GIFT, &quot;500&quot;).run(this::receiveMiddleMan);
+    }
+
+    private void receiveMiddleMan() {
+        System.out.println(STR.&quot;中间人开始: \{GIFT.get()}&quot;);
+        ScopedValue.where(GIFT, &quot;200&quot;).run(this::receiveGift);
+        System.out.println(STR.&quot;中间人结束: \{GIFT.get()}&quot;);
+    }
+
+    private void receiveGift() {
+        System.out.println(STR.&quot;收礼物: \{GIFT.get()}&quot;);
+    }
+}
+
+</code></pre>
+<h1 id="switch-又升级了支持when关键字了">Switch 又升级了，支持when关键字了</h1>
+<p>switch 可谓是升级升级再升级，我还是在用 if/else 啊。<br>
+从12开始，一路升级。</p>
+<ol>
+<li>支持 <code>-&gt;</code> 表达式（Java 12）</li>
+<li>支持返回值（Java 12）</li>
+<li><code>case</code>支持单行写多个条件（Java 12）</li>
+<li>新增<code>yield</code>关键字返回<code>switch</code>的值（Java 12）</li>
+<li>引入模式匹配（Java 15）</li>
+<li>这回又新增了一个<code>when</code>关键字（都快改成SQL了） （Java 21）</li>
+</ol>
+<p><a href="https://developer.aliyun.com/article/1357316">Java switch升级之路</a></p>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/20
+ * @description Switch 又升级了~, 这次支持when关键字了
+ */
+public class SwitchFuture {
+
+    void main() {
+
+        var str = &quot;yes&quot;;
+
+        var result = switch (str) {
+            case null -&gt; &quot;空对象&quot;;
+            case String s
+                    when &quot;yes&quot;.equals(s) -&gt; {
+                System.out.println(&quot;确定&quot;);
+                yield &quot;字符串的Yes&quot;;
+            }
+            case String s
+                    when &quot;no&quot;.equals(s) -&gt; {
+                System.out.println(&quot;取消&quot;);
+                yield &quot;字符串的No&quot;;
+            }
+            default -&gt; &quot;default&quot;;
+        };
+
+        System.out.println(result);
+        //确定
+        //字符串的Yes
+    }
+}
+
+</code></pre>
+<h1 id="简化了main方法注意看上一个章节的main方法">简化了main方法（注意看上一个章节的main方法）</h1>
+<ul>
+<li>Class声明和强制的public访问修饰符是必须的。当用在外部组件定义良好的接口封装代码单元时，它们很有用。但在这个小例子中，它们毫无意义。</li>
+<li>String[]参数主要用于将代码与外部组件（在本例中为操作系统的shell，接收命令传入的参数）连接。它在这里很神秘且无用，尤其是它从未被使用过。</li>
+<li>static修饰符是Java类和对象模型的一部分。对于新手来说，这不仅是神秘的，而且是有害的：要添加更多可以调用和使用的方法或字段，学​​生必须要么将它们全部声明（传播一种既不常见也不是好习惯的用法），或者就要面对是否有static修饰的区别问题，并学习如何实例化对象。</li>
+</ul>
+<h1 id="未命名模式和变量go和我有点像">未命名模式和变量（Go：和我有点像）</h1>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 像golang学习, 支持不使用的变量不命名了
+ */
+public class UnnamedVariable {
+
+    void main() {
+
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        list.add(&quot;first&quot;);
+        list.add(&quot;last&quot;);
+
+        try {
+            System.out.println(STR.&quot;first -&gt; \{list.getFirst()}&quot;);
+            System.out.println(STR.&quot;last -&gt; \{list.getLast()}&quot;);
+            System.out.println(&quot;try&quot;);
+        } catch (Exception _) {
+            System.out.println(&quot;异常了, 但是我没有 Exception&quot;);
+        }
+    }
+}
+</code></pre>
+<h1 id="有序集合">有序集合</h1>
+<h2 id="sequenced-collections">Sequenced Collections</h2>
+<p>Sequenced Collections引入了三个新接口：</p>
+<ul>
+<li>SequencedCollection</li>
+<li>SequencedMap</li>
+<li>SequencedSet<br>
+接口都附带了一些新方法，可以提高操作集合的效率。比如：<code>java.util.SequencedCollection#reversed</code>等等。</li>
+</ul>
+<h2 id="集合补充了获取收尾元素的方法hutool当我不存在">集合补充了获取收尾元素的方法（hutool：当我不存在？）</h2>
+<pre><code class="language-java">List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add(&quot;first&quot;);
+list.add(&quot;last&quot;);
+System.out.println(STR.&quot;first -&gt; \{list.getFirst()}&quot;);
+System.out.println(STR.&quot;last -&gt; \{list.getLast()}&quot;);
+</code></pre>
+<h1 id="加了一些工具类">加了一些工具类</h1>
+<ol>
+<li>StringBuilder中的repeat方法</li>
+<li>补充<code>java.lang.Character#isEmoji</code></li>
+<li>等等</li>
+</ol>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/21
+ * @description 加了些新方法
+ */
+public class SomethingExample {
+
+    void main() {
+
+        System.out.println(STR.&quot;repeat =&gt; \{new StringBuffer().repeat(&quot;*&quot;, 10)}&quot;);
+        //repeat =&gt; **********
+
+        var happy = &quot;你开心吗? 😄&quot;;
+        System.out.println(STR.&quot;isEmoji =&gt; \{happy.codePoints().anyMatch(Character::isEmoji)}&quot;);
+        //isEmoji =&gt; true
+    }
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/java-19-xin-te-xing/">
+                                <h3 class="post-title">
+                                    Java 19 新特性
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF%E9%A2%84%E8%A7%88%E7%89%88">字符串模板（预览版）</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%AE%98%E6%96%B9%E7%9A%84str-fmt">使用官方的STR、FMT</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89stringtemplate">自定义StringTemplate</a></li>
+</ul>
+</li>
+<li><a href="#record-patterns">Record Patterns</a></li>
+<li><a href="#scopedvalue">ScopedValue</a>
+<ul>
+<li><a href="#threadlocal%E7%9A%84%E9%97%AE%E9%A2%98">ThreadLocal的问题</a></li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+</ul>
+</li>
+<li><a href="#switch-%E5%8F%88%E5%8D%87%E7%BA%A7%E4%BA%86%E6%94%AF%E6%8C%81when%E5%85%B3%E9%94%AE%E5%AD%97%E4%BA%86">Switch 又升级了，支持when关键字了</a></li>
+<li><a href="#%E7%AE%80%E5%8C%96%E4%BA%86main%E6%96%B9%E6%B3%95%E6%B3%A8%E6%84%8F%E7%9C%8B%E4%B8%8A%E4%B8%80%E4%B8%AA%E7%AB%A0%E8%8A%82%E7%9A%84main%E6%96%B9%E6%B3%95">简化了main方法（注意看上一个章节的main方法）</a></li>
+<li><a href="#%E6%9C%AA%E5%91%BD%E5%90%8D%E6%A8%A1%E5%BC%8F%E5%92%8C%E5%8F%98%E9%87%8Fgo%E5%92%8C%E6%88%91%E6%9C%89%E7%82%B9%E5%83%8F">未命名模式和变量（Go：和我有点像）</a></li>
+<li><a href="#%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">有序集合</a>
+<ul>
+<li><a href="#sequenced-collections">Sequenced Collections</a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E8%A1%A5%E5%85%85%E4%BA%86%E8%8E%B7%E5%8F%96%E6%94%B6%E5%B0%BE%E5%85%83%E7%B4%A0%E7%9A%84%E6%96%B9%E6%B3%95hutool%E5%BD%93%E6%88%91%E4%B8%8D%E5%AD%98%E5%9C%A8">集合补充了获取收尾元素的方法（hutool：当我不存在？）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8A%A0%E4%BA%86%E4%B8%80%E4%BA%9B%E5%B7%A5%E5%85%B7%E7%B1%BB">加了一些工具类</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

@@ -1,0 +1,830 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-regexp-shi-yong/">
+                        MySQL REGEXP 使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-03-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。
+在此之前，首先建立对应的数据表，ddl与dml如下：
+create table if not exists test_db.products
+(
+	id int auto_increment
+		primary key,
+	prod_name varchar(20) not null
+);
+
+INSERT INTO test_db.products (id, prod_name) VALUES (1, &#39;JetPack 1000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (2, &#39;JetPack 2000&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (3, &#39;1 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (4, &#39;2 ton anvil&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (5, &#39;TNT (1 stick)&#39;);
+INSERT INTO test_db.products (id, prod_name) VALUES (6, &#39;.5 ton anvil&#39;);
+
+
+常用指令
+由于regexp与LIKE的高度相似性，所以学习时以常用的LIKE的指令作为对比学习，有助于记忆。
+基本字符匹配
+
+全文字匹配
+
+select *
+from products
+where prod_name regexp &#39;1000&#39;;
+
+
+
+模糊匹配
+类似于LIKE语句的 &#39;_&#39;（下划线）单字符匹配。模糊匹配单个字符。
+
+select *
+from products
+where prod_name regexp &#39;.000&#39;;
+
+
+OR 匹配
+select *
+from products
+where prod_name regexp &#39;1000|2000&#39;;
+
+
+匹配几个字符之一
+
+正确用法
+
+select *
+from products
+where prod_name regexp &#39;[123] ton&#39;;
+
+
+
+错误示例
+正则表达式可以用 [] 包含内容或者 | 竖线 表示 或，但如果使用下面的用法，不能获得正确的结果，因为在最后一个&#39;或&#39;时，MySQL会理解成 3 ton。得到不同的结果。
+
+select *
+from products
+where prod_name regexp &#39;1|2|3 ton&#39;;
+
+
+匹配范围
+匹配特殊字符
+匹配字符类
+匹配多个实例
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-regexp-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+                        Git 原理详解及实用指南 - merge，add，log
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-02-18</time>
+                    
+                        <a href="https://imyzt.top/tag/Z2IdH6vis/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Git 原理详解及实用指南
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/" class="post-feature-image" style="background-image:url(https://imyzt.top/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            merge
+
+git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。
+从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。
+
+
+图 - git merge 示意图
+特殊情况，如何处理
+放弃合并
+当前处于解决冲突的中间状态， 通过 git merge --abort 取消合并，回到merge之前的状态。
+HEAD领先于当前commit
+即合并之前的commit，这是一个无意义操作，Git什么也不会做。空merge。
+HEAD落后于当前commit（快速前移）
+
+在没有其它分支的情况下，Git会把HEAD指向的branch移动到目标commit。
+当前在HEAD指向master分支，执行 git merge feature1 后的操作如下图所示：
+
+
+图 - 合并领先于HEAD的commit
+
+专有名词 - （快速前移）
+在 git pull 经常出现，比如当前master分支本地没有更新，同事推送了新的commit到远程仓库，那么在执行 git pull 时，目标commit（远程仓库最新commit） 领先于 当前commit（本地commit），HEAD会携带本地master分支快速前移。
+
+
+图 - git pull 实现原理
+add
+git add 添加的是文件改动，而不是文件。
+log
+
+git log -p[--patch] 查看具体到每个commit的改动细节。
+git log --stat 查看每个commit改动的文件。
+git show [commitId] [filePath] 查看当前commit的改动细节（精确到文件）。
+对比
+
+git diff 查看当前工作区与暂存区的区别。
+git diff --staged[--cached] 查看当前暂存区与上一条commit的区别。
+git diff HEAD 查看当前工作区与上一条commit的区别。
+
+
+
+本章命令总结
+
+git merge commit/branch 合并某个提交或分支
+git merge --abort 放弃当前合并
+git add . 添加某个文件改动到git暂存区
+git log 的详细操作 git log
+
+引用声明
+本文内容来自掘金小册-Git 原理详解及实用指南的学习笔记内容，图片等均来自原作者。此处只作为笔记记录。
+请支持原作者
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/">
+                        Git 原理详解及实用指南 - HEAD，branch，push
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-02-17</time>
+                    
+                        <a href="https://imyzt.top/tag/Z2IdH6vis/" class="post-tag i-tag
+                            i-tag-primary">
+            #Git 原理详解及实用指南
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                        <a href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/" class="post-feature-image" style="background-image:url(https://imyzt.top/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch.png) ">
+                        </a>
+                        
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            HEAD
+
+HEAD永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。
+远程分支HEAD永远指向默认分支（master）。
+HEAD是Git中独特的引用，它是唯一的。
+
+Branch
+
+也是一类引用，HEAD除了直接指向commit之外，也可以通过指向branch间接指向commit。
+
+
+ 图 - HEAD通过Branch间接指向Commit   
+
+当HEAD指向branch，发生commit时，HEAD会带着branch一起移动。如下图（HEAD携带feature1一起移动。）
+
+
+ 图 - HEAD移动示意图   
+Push
+
+将当前 branch 提交到远程仓库，并将当前 branch 的所有 commit 也提交到远程分支。
+push时，如果是远程仓库不存在的分支，需要指定名称，git push origin branch_name, 或者通过修改 git config 的 push.default 来指定推送时默认分支。
+push之后上传分支，并不会上传 HEAD, 远程仓库的 HEAD 永远指向默认分支（master）
+
+master
+master是Git中默认的branch，它与其他branch的区别在于：
+
+新建仓库中第一个commit会被master自动指向。
+在git clone时，会自动checkout到master（HEAD指向master分支，间接指向master分支的commit）。
+
+
+ 图 - 克隆远程仓库流程   
+branch的基本操作
+
+创建： git branch 名称，或 git checkout -b 名称
+切换：git checkout 名称
+删除：git branch -d/-D 名称，-D强制删除
+推送：git push [origin branch_name]，将本地分支推送到远程仓库对应分支
+
+本章命令总结
+
+git log 查看提交日志
+git branch branch的基本操作
+git commit 提交代码到本地仓库
+git checkout branch_name 切换分支
+git clone origin_url 克隆远程仓库到本地仓库
+
+总结
+
+git branch、HEAD都是围绕着commit走的；
+git push的本质是将 当前branch 位置的（commit）上传到远程仓库，并将它的commit一并提交。
+HEAD，Branch都是引用，引用的本质就是一个字符串，可以是一个commit的SHA-1码，也可以是一个branch的branch名。
+
+引用声明
+本文内容来自掘金小册-Git 原理详解及实用指南的学习笔记内容，图片等均来自原作者。此处只作为笔记记录。
+请支持原作者
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-kai-fa-gong-ju-tui-jian/">
+                        Java开发工具推荐
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-01-20</time>
+                    
+                        <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-success">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            工具包
+
+Google Guava
+HuTool
+Apache Commons(这玩意估计没人不知道了。)
+
+工具类
+AntPathMatcher
+作用：URL路径匹配
+？匹配一个字符
+*匹配0个或多个字符
+**匹配0个或多个目录
+StopWatch
+作用：方法耗时计算
+该类Spring和Guava都有提供，用法大同小异
+BeanCopier
+作用：拷贝bean
+比Apache和Spring提供的BeanUtils效率好点
+注意点：
+该方法与lombok提供的@Accessors(chain = true)注解冲突，在cglib最底层target调用set方法进行参数设置的时候，判断了set方法返回值是否为void，不为void不会进行赋值操作。
+解决方法有2：
+
+去掉@Accessors(chain = true)
+使用org.springframework.beans.BeanUtils
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-kai-fa-gong-ju-tui-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mybatis-xml-test-yu-fa-bug/">
+                        Mybatis XML test语法bug
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-12-11</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            事出有因
+今天遇到一个mybatis语法的bug，在此记录一下。
+业务是前台有一个跟进状态的筛选按钮，与前台约定的参数是Integer类型的0-4, 标志不同的状态，根据不同的参数做不同的过滤。mybatis的语法如下。
+&amp;lt;if test=&amp;quot;query.followStatus != null and query.followStatus != &#39;&#39;&amp;quot;&amp;gt;
+    &amp;lt;choose&amp;gt;
+        &amp;lt;!--未跟进--&amp;gt;
+        &amp;lt;when test=&amp;quot;query.followStatus == 0&amp;quot;&amp;gt;
+            AND scfu.id IS NULL
+        &amp;lt;/when&amp;gt;
+        &amp;lt;!--未选择意向--&amp;gt;
+        &amp;lt;when test=&amp;quot;query.followStatus == 4&amp;quot;&amp;gt;
+            AND scfu.intention IS NULL AND scfu.id IS NOT NULL
+        &amp;lt;/when&amp;gt;
+        &amp;lt;!--1,2,3的情况--&amp;gt;
+        &amp;lt;otherwise&amp;gt;
+            AND scfu.intention = #{query.followStatus}
+        &amp;lt;/otherwise&amp;gt;
+    &amp;lt;/choose&amp;gt;
+&amp;lt;/if&amp;gt;
+
+今天客户反馈了一个bug，该筛选项在前台选中未跟进时，会出现筛选项无效的情况。也就是第一行 if test 都没有进去，因为进去了的话，最起码什么都不符合的情况都会进入 otherwise ，所以定位到问题出现在外层 if。通过搜索发现有人遇到过相似的问题。
+解决方案
+MyBatis参数为Integer型并赋值为0时判断失误的问题解决
+根据这位博主介绍，mybatis的test语法，在类型为Integer时，如果值为0, 会被识别为 &#39;&#39;(空)， 导致第一个if的后一部分 query.followStatus != &#39;&#39; 不符合。最终没有进入 if 的逻辑。解决方法上面的博主已经给出了，我再此贴一下
+
+通过or进行二次判断
+
+&amp;lt;if test=&amp;quot;status !=null and (status!=&#39;&#39; or status == 0)&amp;quot;&amp;gt;
+    业务逻辑
+&amp;lt;/if&amp;gt;
+
+
+对Integer类型去除 != &#39;&#39; 的判断
+
+后记
+另一个常出现的问题，test语法中，布尔值比较需要用 bool == true 的语法判断，说明：bool（一个布尔值变量）
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mybatis-xml-test-yu-fa-bug/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/springboot-guan-bi-di-zhi-yan-ge-pi-pei/">
+                        SpringBoot 关闭地址严格匹配
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-11-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            问题点
+Spring默认开启了地址的严格匹配，比如 localhost:8080/api/article/{aid} 能正确访问，但是 localhost:8080**/**/api/article/{aid} 就会造成访问404
+解决方案
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/springboot-guan-bi-di-zhi-yan-ge-pi-pei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/idea-cha-jian-lie-biao/">
+                        idea 插件列表
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-11-12</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+.ignore
+AceJump
+P3C
+BaseSupport
+CamelCase
+CodeGlance
+FindBugs-IDEA
+GsonFormat
+IdeaVim
+jrebel-mybatisplus-extension
+Jrebel
+Key Promoter X
+Lombok
+Maven Helper
+MybaticCodeHelperPro
+Nyan Progress Bar
+POJO TO JSON
+RestfulToolKit
+SonarLint
+Translation
+Rainbow Brackets
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/idea-cha-jian-lie-biao/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
+                        使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-08-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。
+一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。  另一种则是水平扩展，是将任务分配到多台计算机上。
+我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus提供的 DynamicTableNameParser  处理器直接在程序中做动态路由。
+由于官方文档在此处描述的并不是特别详细，所以写这篇博客作为记录。
+开发
+分表策略就不在此做说明了，网上已经有非常多不同的处理方式了，在这里主要阐述怎么样使用Mybatis-Plus提供的 ITableNameHandler   接口将不同表的做出不同处理。
+实现 ITableNameHandler 接口
+首先我们需要实现 ITableNameHandler 接口，该接口有两个方法(process, dynamicTableName)，process()方法是做表名SQL处理的，该方法有默认实现，它依赖于dynamicTableName()方法，所以我们需要重写的方法便是dynamicTableName()方法
+dynamicTableName()方法有三个入参，metaObject包括了元数据对象，sql是我们即将要执行的SQL，tableName则是我们执行的SQL表名称。我们需要修改的便是tableName。
+下方我的代码逻辑是从DaysContext上下文对象中拿到事先设置的表名动态规则生成的表后缀，拼接上tableName便是我们需要动态路由的表名称了。
+@Component
+public class MyDynamicTableNameParser implements ITableNameHandler {
+
+    @Override
+    public String dynamicTableName(MetaObject metaObject, String sql, String tableName) {
+
+        DaysContext.Days days = DaysContext.get();
+
+        // 加上分表逻辑后缀
+        return tableName + &amp;quot;_&amp;quot; + days.getTableSuffix();
+    }
+}
+
+将配置注入到Mybatis-Plus配置中
+接下来需要将我们的动态表名处理器 MyDynamicTableNameParser 配置到 PaginationInterceptor 对象中
+@Configuration
+public class MybatisPlusConfig {
+
+    private final MyDynamicTableNameParser myDynamicTableNameParser;
+
+    public MybatisPlusConfig(MyDynamicTableNameParser myDynamicTableNameParser) {
+        this.myDynamicTableNameParser = myDynamicTableNameParser;
+    }
+
+    /**
+     * 分页, 分表插件
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptorMysql() {
+
+        // 分页
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType(&amp;quot;mysql&amp;quot;);
+
+        // 分表
+        dynamicTableNameParser(page);
+
+        return page;
+    }
+
+    /**
+     * 分表
+     */
+    private void dynamicTableNameParser(PaginationInterceptor page) {
+
+        // 为指定表设置动态表名处理器
+        HashMap&amp;lt;String, ITableNameHandler&amp;gt; map = new HashMap&amp;lt;&amp;gt;(2);
+        map.put(&amp;quot;sys_user&amp;quot;, myDynamicTableNameParser);
+        map.put(&amp;quot;sys_logs&amp;quot;, myDynamicTableNameParser);
+
+        // 将需要处理的表添加到动态表名 SQL 解析器
+        DynamicTableNameParser dynamicTableNameParser = new DynamicTableNameParser();
+        dynamicTableNameParser.setTableNameHandlerMap(map);
+
+        // 加入处理器链中
+        List&amp;lt;ISqlParser&amp;gt; iSqlParsers = new ArrayList&amp;lt;&amp;gt;();
+        iSqlParsers.add(dynamicTableNameParser);
+        page.setSqlParserList(iSqlParsers);
+    }
+}
+
+在dynamicTableNameParser()方法中，第一个代码块将需要动态路由的表通过K-V的形式配置我们刚编写的路由处理器对象。
+第二个代码块中将我们添加的表名处理器设置到 Mybatis-Plus的 表名处理器 DynamicTableNameParser 中
+第三个代码块将我们配置的表名处理器添加到Mybatis-Plus的处理器链中
+通过上面的配置，我们就能够根据配置的路由规则，将配置的需要路由的表动态拼接上我们生成的后缀名了。
+总结
+框架做了很好的封装，整个过程还是非常顺利的，也顺利通过了测试。写这篇博客做个记录。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
+                        MySQL 分组查询最新数据
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-07-23</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容
+我开始想到的是使用 group by 分组, 然后 order by 时间字段.  但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到一种方式, 是通过 right join 自己, 然后取内容. 但是也比较复杂, 后来找到了一个方式比较简单, 在此记录备忘.
+其主要逻辑使用了not exists, 然后通过子查询拿到最新数据, 通过 WHERE t1.user_id = t2.user_id  建立关联, 其中user_id即为两表之间的关联字段.
+SELECT
+	user_id,
+	t1.login_time 
+FROM
+	tb_user_login t1 
+WHERE
+	NOT EXISTS ( SELECT 1 FROM tb_user_login t2 WHERE t1.user_id = t2.user_id AND t1.login_time &amp;lt; t2.login_time )
+
+对应的表数据如下:
+
+查询出来的结果如下:
+
+更新
+上面的那种方式有严重的性能问题， 执行一次查询竟然要0.4S， 后来在知乎找到了这篇问题，下面 有挺多方式解决这个问题的。  知乎链接
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/springboot-null-zi-duan-xu-lie-hua-shi-xiu-gai-wei-kong-chuan/">
+                        SpringBoot Null字段序列化时修改为空串
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-07-19</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            SpringBoot jackson 提供了 default-property-inclusion 为空时不序列化等功能，但是没有提供如果属性值为null时，修改为空串的功能，公司项目开发业务正好需要这个功能，琢磨了一下找到了修改 MappingJackson2HttpMessageConverter 改变序列化规则的方法。
+相应的代码如下：
+/**
+ * @author imyzt
+ * @date 2019/07/19
+ * @description 自定义ObjectMapper, 修改序列化规则, 将String null 修改为 String &#39;&#39;
+ */
+@Configuration
+public class JsonObjectMapper extends ObjectMapper {
+
+    public JsonObjectMapper() {
+        super();
+        this.getSerializerProvider().setNullValueSerializer(new JsonSerializer&amp;lt;Object&amp;gt;() {
+            @Override
+            public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                jsonGenerator.writeString(StringUtils.EMPTY);
+            }
+        });
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter objectMapper(){
+        MappingJackson2HttpMessageConverter converter=new MappingJackson2HttpMessageConverter();
+        converter.setObjectMapper(new JsonObjectMapper());
+        return converter;
+    }
+}
+
+主要逻辑就是继承ObjectMapper，构造器重写父类序列化规则，setNullValueSerializer方法设置为null的值的序列化规则。jsonGenerator.writeString(StringUtils.EMPTY); 然后重新创建一个 MappingJackson2HttpMessageConverter ，Jackson序列化时则会按照相关规则序列化。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/springboot-null-zi-duan-xu-lie-hua-shi-xiu-gai-wei-kong-chuan/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/8/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/10/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

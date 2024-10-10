@@ -1,0 +1,341 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    False-Sharing | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            False-Sharing
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-08-21</time>
+                            
+                                <a href="https://imyzt.top/tag/B-w2Ph39V/" class="post-tag i-tag
+                            i-tag-other_4">
+                            #Disruptor
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-">
+                            #Java
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>在阅读VIVO的博客<a href="https://mp.weixin.qq.com/s/YKZ1n5O30nowOrfmjMcmOw">高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用</a>的时候，了解到 <code>Disruptor</code> 高性能的核心原因：</p>
+<ol>
+<li>空间预分配</li>
+<li>避免伪共享</li>
+<li>无锁</li>
+</ol>
+<p>其中 <strong>伪共享</strong> 的概念之前没有了解过，故特地了解学习了下，主要涉及到一些基础的概念：</p>
+<ol>
+<li>CPU的分级缓存机制</li>
+<li>volatile的内存可见性</li>
+<li>Java long类型/Long类型的字节大小</li>
+</ol>
+<p>众所周知，CPU在读取内存中的数据时，并不是读取的直接内存，而是从L1/L2/L3缓存中读取数据，而读取缓存也并非按<code>1字节</code>的读取，而是按照<code>缓存行</code>(通常64字节)一块一块的读取，以此来提高读取效率。</p>
+<p>周所也周知，现代计算机都是多核CPU在运行，线程都会被分配CPU来执行，所以线程内的变量数据是需要读取到CPU Cache中才能够对CPU可见的，为了解决内存在CPU1中修改后CPU2不可见（脏读）的问题，在Java中有设计变量修饰符<code>volatile</code>来修饰变量，以此来实现数据在多个CPU之间不会产生脏读问题，内存在任何一个CPU上发生修改后，在其他CPU上均不可用而丢弃重新从内存中获取。</p>
+<p>当然，也正是因为以上设计，带来了一些预期外的结果（不是问题或bug），如下代码所示：</p>
+<p>对于下面的代码：</p>
+<pre><code class="language-java">public class FalseSharing {
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer pointer1 = new Pointer();
+        long start = System.currentTimeMillis();
+        Thread t1 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer1.x++;
+            }
+        });
+        Thread t2 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer1.y++;
+            }
+        });
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println(&quot;pointer1=&quot; + (System.currentTimeMillis() - start));
+    }
+}
+
+class Pointer {
+    volatile long x;
+    volatile long y;
+}
+</code></pre>
+<p>上述代码在我的电脑上执行，<code>需要3.5秒+</code>，多次执行亦然如此，而我们只需稍作调整，改成如下代码，则只需要<code>0.5秒左右</code>即可执行完毕，这是为何？</p>
+<pre><code class="language-java">public class FalseSharing {
+
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer2 pointer2 = new Pointer2();
+        long start2 = System.currentTimeMillis();
+        Thread t3 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer2.x++;
+            }
+        });
+        Thread t4 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer2.y++;
+            }
+        });
+        t3.start();
+        t4.start();
+        t3.join();
+        t4.join();
+        System.out.println(&quot;pointer2=&quot; + (System.currentTimeMillis() - start2));
+    }
+}
+
+class Pointer2 {
+    volatile long x;
+    // long p1, p2, p3, p4, p5, p6, p7;
+    Long z1, z2; long z3;
+    volatile long y;
+}
+</code></pre>
+<p>以上现象对应的机制，正是因为缓存行的设计。</p>
+<p>在上面的代码中，包含了线程t1/t2（t3和t4等同）两组线程，分别对x和y进行累加操作，看似是两个线程（CPU在分别对两块内存中的变量执行累加），但是因为CPU是以缓存行的方式读取内存，<code>Pointer1</code>中的x和y在内存中时相邻的两块内存，Java的基本数据类型<code>long类型，占用8字节</code>，所以x和y(加起来16字节)被放到同一个缓存行了，当CPU1对x做了修改后，CPU2读取到y时发现，对应<strong>缓存行已经失效</strong>了，所以不得不重新从内存中重新读取数据，从而导致了效率降低。</p>
+<p>而我们下面给出的代码，<code>Pointer2</code>的x和y变量间，被塞了两组变量：</p>
+<ol>
+<li>long p1, p2, p3, p4, p5, p6, p7; --long类型,占用8个字节, 8*7=56</li>
+<li>Long z1, z2; long z3; --包装Long类型,根据计算机不同有所不同,在我电脑上占用24字节, 24+24+8=56<br>
+两组变量任何一组都可以解决伪共享的问题，之所以塞两组变量，都是为了验证缓存行的存在和解决方案。</li>
+</ol>
+<p>方案一直接使用<code>7个基本数据类型</code>，占用了56个字节，加上x变量自身，刚好占用一个完整的缓存行64字节，y只能在另一个缓存行了。<br>
+方案二使用了<code>2组包装数据类型，1组基本数据类型</code>，加起来依旧占用的是56个字节，依旧能将一个缓存行占满，解决缓存行失效问题。</p>
+<p>通过对这块的学习，对基础知识又做了一个巩固，造火箭的知识又增加了。🤡</p>
+<p>博文参考：</p>
+<ol>
+<li>美团：<a href="https://tech.meituan.com/2016/11/18/disruptor.html">高性能队列——Disruptor</a></li>
+<li>VIVO：<a href="https://mp.weixin.qq.com/s/YKZ1n5O30nowOrfmjMcmOw">高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用</a></li>
+</ol>
+<p>实操代码：<a href="https://github.com/imyzt/learning-technology-code/blob/master/framework-in-java/disruptor-demo/src/main/java/top/imyzt/learning/disruptor/FalseSharing.java">FalseSharing</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
+                                <h3 class="post-title">
+                                    Spring Events使用和问题分析
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                                <!-- id-card -->
+                                
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+                                    
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

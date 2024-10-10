@@ -1,0 +1,532 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    TimeingWheel | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        TimeingWheel</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">
+                        错用HashedWheelTimer导致的OOM问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-02-04</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_4">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-error">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/i73r1WX7G/" class="post-tag i-tag
+                            i-tag-other_1">
+            #TimeingWheel
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            事件中心在私有化环境下，只要server一启动过几秒就oom，查看日志是 Failed to create a thread: retVal -1073741830, errno 11。
+异常堆栈：
+Caused by: java.lang.OutOfMemoryError: Failed to create a thread: retVal -1073741830, errno 11   
+    at java.lang.Thread.startImpl(Native Method) 
+    at java.lang.Thread.start(Thread.java:993) 
+    at io.netty.util.HashedWheelTimer.start(HashedWheelTimer.java:366) 
+    at io.netty.util.HashedWheelTimer.newTimeout(HashedWheelTimer.java:447) 
+    at 业务调用代码省略
+
+在标品环境下没有问题，在其他KA客户上也没有问题
+通过对日志的分析，最终发现是事件中心的延迟消息代码存在缺陷，使用了Netty的HashedWheelTimer，但是语法存在问题，理论上应该是new一个HashedWheelTimer来处理所有时间延迟，但是错用程每次new一个新的HashedWheelTimer，HashedWheelTimer内部每次都会new一个新的线程来处理做调度，一个线程占用1MB，最终内存资源被耗尽。
+io.netty.util.HashedWheelTimer#HashedWheelTimer源码：
+public HashedWheelTimer(
+    ThreadFactory threadFactory,
+    long tickDuration, TimeUnit unit, int ticksPerWheel, boolean leakDetection,
+    long maxPendingTimeouts, Executor taskExecutor) {
+
+    checkNotNull(threadFactory, &amp;quot;threadFactory&amp;quot;);
+    checkNotNull(unit, &amp;quot;unit&amp;quot;);
+    checkPositive(tickDuration, &amp;quot;tickDuration&amp;quot;);
+    checkPositive(ticksPerWheel, &amp;quot;ticksPerWheel&amp;quot;);
+    this.taskExecutor = checkNotNull(taskExecutor, &amp;quot;taskExecutor&amp;quot;);
+
+    // Normalize ticksPerWheel to power of two and initialize the wheel.
+    wheel = createWheel(ticksPerWheel);
+    mask = wheel.length - 1;
+
+    // Convert tickDuration to nanos.
+    long duration = unit.toNanos(tickDuration);
+
+    // Prevent overflow.
+    if (duration &amp;gt;= Long.MAX_VALUE / wheel.length) {
+        throw new IllegalArgumentException(String.format(
+                &amp;quot;tickDuration: %d (expected: 0 &amp;lt; tickDuration in nanos &amp;lt; %d&amp;quot;,
+                tickDuration, Long.MAX_VALUE / wheel.length));
+    }
+
+    if (duration &amp;lt; MILLISECOND_NANOS) {
+        logger.warn(&amp;quot;Configured tickDuration {} smaller then {}, using 1ms.&amp;quot;,
+                    tickDuration, MILLISECOND_NANOS);
+        this.tickDuration = MILLISECOND_NANOS;
+    } else {
+        this.tickDuration = duration;
+    }
+
+    // 每次都new一个线程来处理
+    workerThread = threadFactory.newThread(worker);
+
+    leak = leakDetection || !workerThread.isDaemon() ? leakDetector.track(this) : null;
+
+    this.maxPendingTimeouts = maxPendingTimeouts;
+
+    if (INSTANCE_COUNTER.incrementAndGet() &amp;gt; INSTANCE_COUNT_LIMIT &amp;amp;&amp;amp;
+        WARNED_TOO_MANY_INSTANCES.compareAndSet(false, true)) {
+        reportTooManyInstances();
+    }
+}
+
+因为标品和其他KA使用的是阿里云RocketMQ，此客户使用的是自建的开源版RocketMQ，开源RocketMQ是没有自定义时长的延迟消息的，所以我们自己实现了一套时间轮来实现任意时长的延迟消息，当小于60s的延迟消息会丢入我们的时间轮来处理延迟投递，当时此客户的环境中有大量的60s内的延迟消息，导致一启动就会崩溃。
+不过在RocketMQ5.0也支持任意时长了。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+                        Java 实现简单单机时间轮方案
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-13</time>
+                    
+                        <a href="https://imyzt.top/tag/i73r1WX7G/" class="post-tag i-tag
+                            i-tag-other_1">
+            #TimeingWheel
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-info">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。
+package top.imyzt.learning.algorithm.timer;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+/**
+ * 简易单机时间轮
+ * @author imyzt
+ * @date 2023-11-13 22:03
+ */
+public class SingleTimingWheel {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        TimingWheel timingWheel = new TimingWheel(60);
+        TimingWheel timingWheel2 = new TimingWheel(12);
+
+        while (true) {
+            System.out.print(&amp;quot;请输入延时周期: &amp;quot;);
+            Scanner scanner = new Scanner(System.in);
+            String next = scanner.next();
+            if (&amp;quot;exit&amp;quot;.equals(next)) {
+                timingWheel.shutdown();
+                timingWheel2.shutdown();
+                break;
+            }
+
+            String[] splits = next.split(&amp;quot;,&amp;quot;);
+
+            for (String split : splits) {
+                int delayTime = Integer.parseInt(split);
+                System.out.println(&amp;quot;新生产一个任务, 延迟&amp;quot; + delayTime + &amp;quot;秒后执行&amp;quot; + &amp;quot;, 当前时间: &amp;quot; +
+                        LocalDateTime.now() + &amp;quot;, 预计执行时间: &amp;quot; + LocalDateTime.now().plusSeconds(delayTime)
+                );
+                Task task = new Task(() -&amp;gt; Thread.currentThread().getName(), delayTime);
+                timingWheel.addTask(task);
+                timingWheel2.addTask(task);
+            }
+        }
+
+        TimeUnit.SECONDS.sleep(1);
+        System.exit(0);
+    }
+}
+
+class TimingWheel {
+
+    private final ExecutorService EXECUTOR_TASK_POOL;
+    private final ScheduledExecutorService SCHEDULED_TASK_POOL;
+    /**
+     * 时间轮周期
+     */
+    private final int timer;
+
+    /**
+     * 记录每个刻度的任务
+     */
+    private final List&amp;lt;LinkedList&amp;lt;Task&amp;gt;&amp;gt; secondWheel;
+
+    /**
+     * 刻度计数器
+     */
+    private final AtomicInteger secondAtomic;
+
+    /**
+     * 任务队列
+     */
+    private final Queue&amp;lt;Task&amp;gt; taskQueue;
+
+    /**
+     * 运行标记
+     */
+    private boolean flag;
+
+    public TimingWheel(int timer) {
+        this.timer = timer;
+        this.secondWheel = IntStream.range(0, timer).mapToObj(d -&amp;gt; new LinkedList&amp;lt;Task&amp;gt;()).collect(Collectors.toList());
+        this.secondAtomic = new AtomicInteger(0);
+        this.taskQueue = new LinkedBlockingQueue&amp;lt;&amp;gt;();
+        this.EXECUTOR_TASK_POOL = Executors.newSingleThreadExecutor();
+        this.SCHEDULED_TASK_POOL = Executors.newSingleThreadScheduledExecutor();
+        this.flag = true;
+        this.init();
+    }
+
+    public void addTask(Task task) {
+
+        int delayTime = task.getDelayTime();
+        int targetRunSecond = delayTime + secondAtomic.get();
+        int cycle = delayTime / timer;
+        int index = targetRunSecond % timer;
+        task.setCycle(cycle);
+
+        System.out.printf(&amp;quot;任务id: %s, 当前刻度: %s, cycle: %s, 计划执行刻度: %s \n&amp;quot;, task.getTaskId(), secondAtomic.get(), cycle, index);
+
+        LinkedList&amp;lt;Task&amp;gt; tasks = secondWheel.get(index);
+        if (tasks == null) {
+            tasks = new LinkedList&amp;lt;&amp;gt;();
+        }
+        tasks.add(task);
+    }
+
+    public void shutdown() {
+        EXECUTOR_TASK_POOL.shutdown();
+        SCHEDULED_TASK_POOL.shutdown();
+        this.flag = false;
+        System.out.println(&amp;quot;[&amp;quot; + timer + &amp;quot;]shutdown...&amp;quot;);
+    }
+
+    @SneakyThrows
+    private void init () {
+        SCHEDULED_TASK_POOL.scheduleAtFixedRate(() -&amp;gt; {
+            int second = secondAtomic.getAndAdd(1);
+            if (second + 1 == timer) {
+                secondAtomic.set(0);
+            }
+            LinkedList&amp;lt;Task&amp;gt; tasks = secondWheel.get(second);
+            if (tasks != null &amp;amp;&amp;amp; !tasks.isEmpty()) {
+                Iterator&amp;lt;Task&amp;gt; iterator = tasks.iterator();
+                while (iterator.hasNext()) {
+                    Task task = iterator.next();
+
+                    Integer taskCycle = task.getCycle();
+                    if (taskCycle != 0) {
+                        task.setCycle(taskCycle - 1);
+                        System.out.println(task.getTaskId() + &amp;quot;还未到时间, 当前周期&amp;quot; + taskCycle);
+                        continue;
+                    }
+
+                    taskQueue.add(task);
+                    // 从队列中剔除
+                    iterator.remove();
+                }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+
+        EXECUTOR_TASK_POOL.execute(() -&amp;gt; {
+            while (flag) {
+                Task task = taskQueue.poll();
+                if (task != null) {
+                    System.out.println(LocalDateTime.now() + &amp;quot;, [&amp;quot; + timer + &amp;quot;]时间轮调度任务====&amp;gt;&amp;quot; + task);
+                }
+            }
+        });
+    }
+
+}
+
+@Getter
+class Task {
+
+    private final Integer taskId;
+
+    /**
+     * 执行任务
+     */
+    private final Supplier&amp;lt;String&amp;gt; runner;
+
+    /**
+     * 当前第几轮
+     */
+    @Setter
+    private  Integer cycle;
+
+    private final Integer delayTime;
+
+    /**
+     * 创建时间
+     */
+    private final LocalDateTime createdAt;
+
+    /**
+     * 理应执行时间
+     */
+    private final LocalDateTime runnerTime;
+
+    public Task(Supplier&amp;lt;String&amp;gt; runner,  Integer delayTime) {
+        this.taskId = new Random().nextInt() * 10000;
+        this.runner = runner;
+        this.delayTime = delayTime;
+        this.createdAt = LocalDateTime.now();
+        this.runnerTime = this.createdAt.plusSeconds(delayTime);
+    }
+
+    @Override
+    public String toString() {
+        return &amp;quot;Task{&amp;quot; +
+                &amp;quot;taskId=&amp;quot; + taskId +
+                &amp;quot;, runner=&amp;quot; + runner.get() +
+                &amp;quot;, cycle=&amp;quot; + cycle +
+                &amp;quot;, delayTime=&amp;quot; + delayTime +
+                &amp;quot;, createdAt=&amp;quot; + createdAt +
+                &amp;quot;, runnerTime=&amp;quot; + runnerTime +
+                &#39;}&#39;;
+    }
+
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

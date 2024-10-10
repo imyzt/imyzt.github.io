@@ -1,0 +1,289 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    docker 指定容器IP | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            docker 指定容器IP
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-02-28</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="docker的网络模式">docker的网络模式</h1>
+<p>docker 总共有四种网络模式, 分别是</p>
+<ol>
+<li>host 模式</li>
+<li>bridge 模式</li>
+<li>none 模式</li>
+<li>container 模式</li>
+</ol>
+<p>关于docker的网络模式, 在这篇文章中有非常详尽的说明, 就不赘述了. <a href="https://www.cnblogs.com/sammyliu/p/5894191.html">理解Docker的网络模式</a></p>
+<h1 id="为什么需要指定容器ip">为什么需要指定容器IP</h1>
+<p>实际部署中, 我们需要指定IP, 避免IP混乱</p>
+<h1 id="如何实现指定容器ip">如何实现指定容器IP</h1>
+<p>docker的bridge(docker0)网络, 在docker安装时就已经创建好了, 不支持指定容器IP, 所以我们需要再创建一个docker的bridge网络(bridge1), 为其指定子网, 使其支持指定容器IP, 接下来将通过命令演示的方式创建一个支持指定IP的docker bridge网络.</p>
+<h2 id="创建一个驱动为bridge的网络-命名为newbridge">创建一个驱动为bridge的网络, 命名为newbridge</h2>
+<pre><code>docker network create --driver bridge --subnet 172.16.12.0/16 --gateway 172.16.1.1 newbridge
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="http://blog.imyzt.top/upload/2019/02/qj8478qriagtjqrqhi7on1m71u.jpg" alt="创建网络" loading="lazy"></figure>
+<h2 id="查看刚刚创建的网络">查看刚刚创建的网络</h2>
+<pre><code>docker network ls
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://blog.imyzt.top/upload/2019/02/vf0178qo9ojnio23gtuqu7kuvi.jpg" alt="查看" loading="lazy"></figure>
+<h2 id="创建容器测试">创建容器测试</h2>
+<pre><code>docker run -itd -h test --name test --network newbridge --ip 172.16.12.3 ubuntu
+</code></pre>
+<h2 id="验证容器的ip">验证容器的ip</h2>
+<blockquote>
+<p>此命令为查看所有容器ip命令</p>
+</blockquote>
+<pre><code>docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+</code></pre>
+<p><img src="http://blog.imyzt.top/upload/2019/02/s9r8oeavpsgmqr1gvpi2ev2sh4.jpg" alt="验证容器ip" loading="lazy"><br>
+可以看到容器的ip已经是刚才我们创建容器时指定的ip了. 大功告成.</p>
+<h1 id="引用说明">引用说明</h1>
+<p>文中操作学习自 <a href="https://www.jianshu.com/p/b8625ccb5e9c">Docker 创建容器时指定容器ip</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/wu-sheng-de-zhong-guo/">
+                                <h3 class="post-title">
+                                    无声的中国
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#docker%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F">docker的网络模式</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8C%87%E5%AE%9A%E5%AE%B9%E5%99%A8ip">为什么需要指定容器IP</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%8C%87%E5%AE%9A%E5%AE%B9%E5%99%A8ip">如何实现指定容器IP</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%A9%B1%E5%8A%A8%E4%B8%BAbridge%E7%9A%84%E7%BD%91%E7%BB%9C-%E5%91%BD%E5%90%8D%E4%B8%BAnewbridge">创建一个驱动为bridge的网络, 命名为newbridge</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%88%9A%E5%88%9A%E5%88%9B%E5%BB%BA%E7%9A%84%E7%BD%91%E7%BB%9C">查看刚刚创建的网络</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8%E6%B5%8B%E8%AF%95">创建容器测试</a></li>
+<li><a href="#%E9%AA%8C%E8%AF%81%E5%AE%B9%E5%99%A8%E7%9A%84ip">验证容器的ip</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%95%E7%94%A8%E8%AF%B4%E6%98%8E">引用说明</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

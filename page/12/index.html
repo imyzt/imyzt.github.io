@@ -1,0 +1,729 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/da-jian-docker-si-you-cang-ku/">
+                        搭建docker私有仓库
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-12</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+之前就有在公司内网搭建过私有docker仓库，这次接着看这个课程。 将搭建docker仓库的过程记录下来。
+下载镜像
+首选， 我们从 [docker仓库官网][1] 将docker官方提供的私有仓库的镜像找到, 然后通过 pull 命令下载下来。
+在仓库首页搜索 regisrty，第一个就是官方提供的镜像。 找到 tag:2 ，将其复制到命令行界面。
+$ docker pull registry:2
+2: Pulling from library/registry
+c87736221ed0: Pull complete
+1cc8e0bb44df: Pull complete
+54d33bcb37f5: Pull complete
+e8afc091c171: Pull complete
+b4541f6d3db6: Pull complete
+Digest: sha256:3b00e5438ebd8835bcfa7bf5246445a6b57b9a50473e89c02ecc8e575be3ebb5
+Status: Downloaded newer image for registry:2
+
+启动镜像
+完成镜像的下载之后, 肯定是要运行起来, docker官方给我们提供了启动命令. 通过运行下面的命令, 我们就能够看到私有仓库是运行起来了.
+$ docker run -d -p 5000:5000 --restart always --name registry registry:2
+dc8e14fcb2028bd1c354750a4647c139ac62d0662651bd3c974cbfd4667a9577
+
+
+$ docker ps|grep registry
+dc8e14fcb202        registry:2                   &amp;quot;/entrypoint.sh /etc…&amp;quot;   47 seconds ago      Up 47 seconds       0.0.0.0:5000-&amp;gt;5000/tcp   registry
+
+推送镜像
+完成上面的操作，一个基本的本地私有的镜像仓库就算搭建完成了， 我们可以通过推送一个镜像到仓库中来测试是否成功。
+
+首先, 我们查看本地镜像, 找一个较小的alpine版本的jre试一下.
+
+$ docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+user-edge-service     latest              8a4343ae292b        22 minutes ago      472MB
+user-service          latest              5255cb130cfc        22 minutes ago      463MB
+message-service       latest              e8a0aa292277        About an hour ago   932MB
+course-edge-service   latest              93cdb20a805f        5 hours ago         470MB
+course-service        latest              0347264048f7        6 hours ago         468MB
+api-gateway-zuul      latest              66cde019cbaf        6 hours ago         476MB
+python-base           latest              018c9430d5e1        22 hours ago        932MB
+openjdk               8-jre-alpine3.9     ce8477c7d086        2 days ago          84.9MB
+openjdk               8-jre               d55d64383c12        2 weeks ago         443MB
+python                3.6                 2bb3204ab1d1        2 weeks ago         924MB
+registry              2                   f32a97de94e1        5 weeks ago         25.8MB
+
+
+
+通过 docker tag 命令我们将本地的openjdk重新打包成 localhost:5000/openjdk:8-jre-alpine3.9 镜像. 然后查看我们刚才打包的镜像.
+
+$ docker tag openjdk:8-jre-alpine3.9 localhost:5000/openjdk:8-jre-alpine3.9
+
+$ docker images|grep localhost:5000
+localhost:5000/openjdk   8-jre-alpine3.9     ce8477c7d086        2 days ago          84.9MB
+
+
+
+最后, 通过 docker push命令将我们刚才打包的镜像上传至本地仓库.  然后通过 docker pull命令来验证是否上传成功.
+通过最后打印的 Status: Image is up to date  可以看出我们的镜像已经成功上传并且能够成功下载下来了.
+
+$ docker push localhost:5000/openjdk:8-jre-alpine3.9
+The push refers to repository [localhost:5000/openjdk]
+aae5c057d1b6: Pushed
+dee6aef5c2b6: Pushed
+a464c54f93a9: Pushed
+8-jre-alpine3.9: digest: sha256:922d65ba63c3cccb58c0a03e8bdfa86161c60c2aeb33db85d952d99c54f9662b size: 947
+
+$ docker pull localhost:5000/openjdk:8-jre-alpine3.9
+8-jre-alpine3.9: Pulling from openjdk
+Digest: sha256:922d65ba63c3cccb58c0a03e8bdfa86161c60c2aeb33db85d952d99c54f9662b
+Status: Image is up to date for localhost:5000/openjdk:8-jre-alpine3.9
+
+仓库页面
+有了上面的操作，我们这只算是完成了一个最基本的仓库功能。 它还没有页面。 在操作上还不是特别符合私有仓库的易用性。所以开源界有很多对 docker registry 做了界面开发， 其中非常不错的一个就是 VMware的 [harbor][2], 不过目前已经由 [goharbor][3] 组织负责维护了. 可以通过访问前面的链接, 下载 [Harbor offline installer][4] 版本. 下载速度还是非常不错的
+下载完成后对压缩包进行解压. 然后进入harbor的目录修改它的配置文件 harbor.cfg, 将 hostname 修改为你想要配置的地址.其它参数上面都加上了注释, 可以具体去看.
+下图我展示了我的配置.
+![harbor.cfg配置][5]
+安装harbor
+[Warning] 用Linux安装，在安装过程中会踩无数的坑。我再次记录几个。
+首先我们将 docker-compose.yml 文件中的所有 volumes 目录前面都加上 .(当前目录), 防止文件乱窜，然后修改 harbor.cfg 的 secretkey_path=./data（设置当前目录）
+接下来运行目录下面的 install.sh 文件. 你会收到各种错误。。。
+
+错误一
+你可能会收到下面的提示：
+
+OSError: [Errno 1] Operation not permitted: &#39;/data/secretkey&#39;
+
+解决方法是将当前目录下面的 data 目录 chmod 777 data -R.
+
+错误二
+
+[Step 2]: preparing environment ...
+loaded secret from file: ./data/secretkey
+Traceback (most recent call last):
+  File &amp;quot;./prepare&amp;quot;, line 220, in &amp;lt;module&amp;gt;
+    secret_key = get_secret_key(secretkey_path)
+  File &amp;quot;./prepare&amp;quot;, line 85, in get_secret_key
+    secret_key = _get_secret(path, &amp;quot;secretkey&amp;quot;) 
+  File &amp;quot;./prepare&amp;quot;, line 100, in _get_secret
+    mark_file(key_file)
+  File &amp;quot;./prepare&amp;quot;, line 82, in mark_file
+    os.chown(path, uid, gid)
+OSError: [Errno 1] Operation not permitted: &#39;./data/secretkey&#39;
+
+修改了权限之后还报这个错误的话, 用 sudo 运行 install命令, 基本上问题就不打了. 看到下面的信息, 就说明艰难的过程完成了.
+:heavy_check_mark: ----Harbor has been installed and started successfully.----
+
+Now you should be able to visit the admin portal at http://harbor.mooc.com:10001. 
+For more details, please visit https://github.com/goharbor/harbor .
+
+
+查看Harbor界面
+完成上面的步骤, 我们就可以去访问Harbor的界面了. 默认用户名/密码: admin/Harbor12345
+创建用户
+首先, 我们尝试着创建一个用户. 如图:
+![创建用户][6]
+推送镜像
+然后, 我们通过对前面使用的openjdk再次打包, 对内容进行发布.推送到刚创建的harbor仓库中..
+$ docker tag openjdk:8-jre-alpine3.9 harbor.mooc.com:800/micro-service/openjdk:8-jre-alpine3.9
+
+$ docker push harbor.mooc.com:800/micro-service/openjdk:8-jre-alpine3.9
+``
+
+----------
+
+
+  [1]: http://hub.docker.com
+  [2]: https://github.com/goharbor/harbo
+  [3]: https://github.com/goharbor
+  [4]: https://storage.googleapis.com/harbor-releases/release-1.7.0/harbor-offline-installer-v1.7.5.tgz
+  [5]: http://blog.imyzt.top/upload/2019/04/ul8re7m8bmgodr71216uvlelvc.jpg
+  [6]: http://imyzt.top/upload/2019/04/usm33su6nuj6voqufj0l76pkl9.jpg
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/da-jian-docker-si-you-cang-ku/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/win-docker-toolbox-wen-ti/">
+                        win docker toolbox 问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-12</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            今天在学习docker课程的时候, 按照老师的配置, 怎么都不能访问到 api-gateway-zuul上面docker-compose的8080端口. 后来通过网络上搜索, 发现这篇文章的描述, 因为我使用的是 Windows 的 Docker Toolbox, 是在win上面运行了一个linux. 所以不是能够直接 127.0.0.1 访问得到的. 然后通过访问 192.168.99.100 得到了内容
+192.168.99.100的IP是通过docker-machine ip default命令获取的
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/win-docker-toolbox-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/springboot-qi-dong-shu-ju-ku-cuo-wu/">
+                        SpringBoot 启动数据库错误
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-10</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            最近在看慕课网上的Docker+Kubernetes(k8s)微服务容器化实战, 在微服务搭建过程中, 由于老师的一些代码已经过去了一年多了, 很多内容都不适用于现在的版本了, 一路踩坑过来, 今天在redis上面踩了一个坑才走出来, 又踩了另一个MySQL的坑. 在此记录一下解决过程.
+错误详情
+在下方的错误日志, 最后一行SQLErrorCodesFactory抛出了一个异常, 异常的大致意思就是不知道数据库类型. 然后程序就停在这里了. 导致其他的微服务无法调用, 然后超时了.
+  .   ____          _            __ _ _
+ /\\ / ___&#39;_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | &#39;_ | &#39;_| | &#39;_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  &#39;  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.5.3.RELEASE)
+
+2019-04-10 17:22:13.197  INFO 20916 --- [           main] top.imyzt.user.ServiceApplication        : Starting ServiceApplication on DESKTOP-O8GDJEI with PID 20916 (D:\dev\imyzt\micro-service\user-thrift-service\target\classes started by n-tech in D:\dev\imyzt\micro-service)
+2019-04-10 17:22:13.201  INFO 20916 --- [           main] top.imyzt.user.ServiceApplication        : No active profile set, falling back to default profiles: default
+2019-04-10 17:22:13.247  INFO 20916 --- [           main] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@71e9ebae: startup date [Wed Apr 10 17:22:13 CST 2019]; root of context hierarchy
+2019-04-10 17:22:32.354  INFO 20916 --- [       Thread-4] o.s.b.f.xml.XmlBeanDefinitionReader      : Loading XML bean definitions from class path resource [org/springframework/jdbc/support/sql-error-codes.xml]
+2019-04-10 17:22:32.410  INFO 20916 --- [       Thread-4] o.s.jdbc.support.SQLErrorCodesFactory    : SQLErrorCodes loaded: [DB2, Derby, H2, HSQL, Informix, MS-SQL, MySQL, Oracle, PostgreSQL, Sybase, Hana]
+
+
+解决方法
+通过Google, 出现此问题多为数据库字段和SQL或dao中的不一样造成的.
+原解答: http://www.zhimengzhe.com/shujuku/Oracle/30519.html,   如果出现了此类问题, 先在数据库认真排查一下数据库字段是否一致.
+我在排查的过程中是因为我将 TeacherDTO 对应 数据库pe_teacher的 stars 错写成了 starts, 造成了数据库一直报错, 导致整个服务链路抛异常.
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/springboot-qi-dong-shu-ju-ku-cuo-wu/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/lesslesswo-mei-you-shuo-hua-greatergreater/">
+                        《我没有说话》
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-04</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            纳粹杀共产党时，
+我没有出声
+——因为我不是共产党员；
+接着他们迫害犹太人，
+我没有出声
+——因为我不是犹太人；
+然后他们杀工会成员，
+我没有出声
+——因为我不是工会成员；
+后来他们迫害天主教徒，
+我没有出声
+——因为我是新教徒；
+最后当他们开始对付我的时候，
+已经没有人能站出来为我发声了
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/lesslesswo-mei-you-shuo-hua-greatergreater/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/win-chang-yong-ming-ling-ji/">
+                        win 常用命令集
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-03</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+通过端口号找到进程号
+
+
+评论区老哥说win上面没有grep命令, 由于我用的是Cmder是包含grep命令的, 在win上面可以使用findstr用来做内容过滤.
+
+netstat -aon|grep 端口号 
+tasklist.exe | findstr 端口号 
+
+
+通过进程号杀掉进程
+
+taskkill -PID 进程号 -F 
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/win-chang-yong-ming-ling-ji/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/sop/">
+                        SOP
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-03</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            修改 System.out.println() 的输出内容到文件. (改变System.out的标准输出流)
+public class ChangeOut {
+    public static void main(String args[]) {
+        try {
+            System.setOut(new PrintStream(new FileOutputStream(&amp;quot;log.txt&amp;quot;)));
+            System.out.println(&amp;quot;Now the output is redirected!&amp;quot;);
+        } catch(Exception e) {}
+    }
+}
+
+文章来源: 码农每日一题
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/sop/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-jdbc-url/">
+                        MySQL JDBC URL
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-04-01</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            driver package
+MySQL8
+com.mysql.cj.jdbc.Driver
+
+MySQL5
+com.mysql.jdbc.Driver
+
+JDBC URL
+MySQL8
+jdbc:mysql://localhost:3306/test?useSSL=false&amp;amp;serverTimezone=UTC
+
+MySQL5
+jdbc:mysql://localhost:3306/test?user=root&amp;amp;password=&amp;amp;useUnicode=true&amp;amp;characterEncoding=gbk&amp;amp;autoReconnect=true&amp;amp;failOverReadOnly=false
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-jdbc-url/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/wei-fu-wu-kai-fa-wei-fu-wu-rong-qi-hua-shi-zhan-xi-lie-ke-cheng/">
+                        微服务开发(微服务容器化实战系列课程)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-27</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+本课程是 docker+kuberneter微服务容器化实战 系列课程的学习笔记. 用于记录学习过程中遇到的一些问题.
+课程项目架构图
+
+thrift
+微服务开发过程中必定牵扯的就是服务调用, 课程中使用了 thrift 和 dubbo 作服务调用.
+thrift的主要优势就是他是语言无关的, 可以在多语言系统中使用.下面通过课程的讲解, 简单记录一下thrift的使用.
+thrift的安装
+在apache官网下载thrift, 将thrift配置到Path变量中.
+在命令行输入 thrift --version, 如果看到版本信息, 则安装成功.
+thrift的简单使用.
+thrift的使用也非常简单,
+
+首先我们定义好接口.
+
+echo &#39;开始生成&#39;
+
+thrift --gen py -out ../ message.thrift
+
+thrift --gen java -out ../../message-thrift-service-api/src/main/java message.thrift
+
+
+然后通过运行这个脚本, 就可以得到对应的语言版本的工具类.
+
+问题解决
+架构图中的信息服务使用python开发, 由于之前没怎么接触过py, 开发过程中遇到了一些问题.
+
+引入包报错, 需要通过pip安装系统需要的thrift包.
+python -m pip install thrift
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/wei-fu-wu-kai-fa-wei-fu-wu-rong-qi-hua-shi-zhan-xi-lie-ke-cheng/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/postconstruct-predestory/">
+                        @PostConstruct, @PreDestory
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            原文地址:https://www.cnblogs.com/landiljy/p/5764515.html
+@PostConstruct说明
+被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器调用一次，类似于Serclet的init()方法。被@PostConstruct修饰的方法会在构造函数之后，init()方法之前运行。
+@PreDestroy说明
+被@PreDestroy修饰的方法会在服务器卸载Servlet的时候运行，并且只会被服务器调用一次，类似于Servlet的destroy()方法。被@PreDestroy修饰的方法会在destroy()方法之后运行，在Servlet被彻底卸载之前。
+执行顺序: Constructor &amp;gt;&amp;gt; @Autowired &amp;gt;&amp;gt; @PostConstruct
+
+图源地址: https://www.jianshu.com/p/98cf7d8b9ec3
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/postconstruct-predestory/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-autowired-yu-static-method/">
+                        Spring @Autowired与static method
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            原文地址: https://www.cnblogs.com/chenfeng1122/p/6270217.html
+@Autowired注解和静态方法
+一、业务场景
+spring框架应用中有些静态方法需要依赖被容器管理的类，就像这样：
+@Component
+public class Test {
+    
+    @Autowired
+    private static UserService userService;
+    
+    public static void test() {
+        userService.test();
+    }
+}
+
+这样一定会报java.lang.NullPointerException: null异常。
+二、原理剖析
+静态变量、类变量不是对象的属性，而是一个类的属性，所以静态方法是属于类（class）的，普通方法才是属于实体对象（也就是New出来的对象）的，spring注入是在容器中实例化对象，所以不能使用静态方法。
+而使用静态变量、类变量扩大了静态方法的使用范围。静态方法在spring是不推荐使用的，依赖注入的主要目的,是让容器去产生一个对象的实例,然后在整个生命周期中使用他们，同时也让testing工作更加容易。
+一旦你使用静态方法,就不再需要去产生这个类的实例,这会让testing变得更加困难，同时你也不能为一个给定的类，依靠注入方式去产生多个具有不同的依赖环境的实例，这种static field是隐含共享的，并且是一种global全局状态，spring同样不推荐这样去做。
+三、解决方法
+1、将@Autowire加到构造方法上
+@Component
+public class Test {
+    
+    private static UserService userService;
+    
+    @Autowired
+    public Test(UserService userService) {
+        Test.userService = userService;
+    }
+    
+    public static void test() {
+        userService.test();
+    }
+}
+
+2、用@PostConstruct注解
+@Component
+public class Test {
+    
+    private static UserService userService;
+    
+    @Autowired
+    private UserService userService2;
+    
+    @PostConstruct
+    public void beforeInit() {
+        userService = userService2;
+    }
+    
+    public static void test() {
+        userService.test();
+    }
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-autowired-yu-static-method/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/11/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/13/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

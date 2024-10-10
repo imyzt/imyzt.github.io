@@ -1,0 +1,398 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    数据库 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        数据库</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/">
+                        当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-07-27</time>
+                    
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_4">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/_LPtQMqgT/" class="post-tag i-tag
+                            i-tag-error">
+            #数据库
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+事情的起因还要从 Transaction rolled back because it has been marked as rollback-only] with root cause 说起，公司的一个业务，Kafka Consumer消费了来自上游的消息处理并写入数据，整个逻辑很复杂，由最外层的方法注解 @Transactional(rollbackFor = Exception.class) 来保证整个过程数据的一致性，但其中有一个业务不需要事务保证，所以前人写了一个 try catch 来防止子业务流异常阻断全局事务的提交。简化后大概类似于这样：
+@Service
+public class ServiceA {
+
+    @Resource
+    private ServiceB serviceB;
+    @Resource
+    private CompanyService companyService;
+
+    /**
+     * 模拟消费外部的消息, 调用者A
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void test(String username) {
+        // 1. 首先保存自己的数据, 模拟业务操作
+        Company company = new Company();
+        company.setName(&amp;quot;家里蹲&amp;quot;);
+        company.setAddress(&amp;quot;localhost&amp;quot;);
+        companyService.save(company);
+
+        // 2. 然后调用Spring的代理方法B
+        serviceB.doBusiness(username);
+    }
+}
+
+@Service
+public class ServiceB {
+
+    @Resource
+    private UserService userService;
+
+    @Transactional(rollbackFor = Exception.class)
+    public void doBusiness(String username) {
+        // 3. 这里还有一系列事务操作, 但和这次问题无关, 就不放这里干扰了
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setAddress(&amp;quot;shenzhen&amp;quot;);
+            // 4. 罪魁祸首的代码, 此处前人为了不干扰主逻辑, catch了异常
+            // 为了达到&amp;quot;以为的&amp;quot;异常不干扰外部事务
+            userService.saveBatch(Collections.singletonList(user));
+        } catch (DuplicateKeyException e) {
+            // 5. 此处有日志 log.error(&amp;quot;xxx业务异常&amp;quot;, e)
+            e.printStackTrace();
+        }
+    }
+}
+
+上面的代码看起来平平无奇，按照“常规”理解，代码块4位置的流程异常，不会干扰代码块1、3处的事务提交，达到编写者的目的。
+但如果是这么简单，我也不会有这次问题的排查过程，也不会有这篇笔记了...
+现象
+我们从日志监控注意到，代码块5有频繁的异常，并且代码块1、3的数据最终并未写入成功，通过MySQL追踪事务发现，1、3处的语句执行后，均被rollback了。
+这就引出了前言中的问题分析来了，在没有确认问题出现在代码块4时，还在找哪些地方有异常可能造成回滚，但通过跟踪程序日志发现，1、3处被回滚的数据，基本都发生在代码块5的日志打印出来之后，并且程序中也发现了下面的异常：
+
+org.springframework.transaction.UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only
+.......
+
+Transaction rolled back because it has been marked as rollback-only，说明事务被标记为只能回滚，并且根据行号（上述堆栈未标注业务行号）推断出，是发生代码块2处，调用doBusiness方法发生了回滚。
+分析
+我们都知道，Spring本身没有事务，只有数据库有事务，Spring提供@Transactional以及事务传播机制，只是利用数据库给我们提供的 begin/commit/rollback 来结合 Spring AOP 实现的统一事务管理，通过 PlatformTransactionManager 工具类来实现对事务的管理。（这方面网上优秀的博客太多了，就不细讲了，相信每一个Spring Boy都熟知）
+那么，结合对Spring事务管理器和AOP的理解，我们画一张图来理解上面这个“嵌套事务”的过程。
+
+结合流程图来分析，按“常理”理解的话，catch 了 userService.saveBatch，内部的异常就不会造成外面的回滚，因为异常“被”吞了。
+但实则不然，Spring事务管理器采用的是 标记位Savepoint 方法，只要被事务管理器感知到了异常出现，就会将当前线程的事务标记成为rollbackOnly状态，后面的事务再想提交就不行了。这也就导致了ServiceB.doBusiness方法在“想要”提交事务时，发现了事务已经被标记了，就抛出了UnexpectedRollbackException异常，该异常进一步的造成了ServiceA.test方法的代理类检测到了异常，ServiceA.test的代理类也开始处理回滚，进一步造成了整个 Kafka Consumer的事务造成了回滚。
+
+源码
+通过搜索“Transaction rolled back because it has been marked as rollback-only”异常，可以很快定位到异常流程在源码中的位置，org.springframework.transaction.support.AbstractPlatformTransactionManager#processRollback
+而通过跟踪该方法的调用方，可以很快定位到org.springframework.transaction.support.AbstractPlatformTransactionManager#commit方法，该方法正印证我们上方的 ServiceB.doBusiness想要 commit的时候，defStatus.isGlobalRollbackOnly()检测到当前事务已经被标记了rollbackOnly(org.springframework.transaction.support.ResourceHolderSupport#rollbackOnly)
+
+解决
+其实该问题在分析之初，大家并没有定位到是因为userService.saveBatch()上面有Mybatis-Plus加的@Transactional注解干扰到 catch 异常这么顺利，而是都在怀疑：为什么我catch了，还把我上层的事务给回滚了！后面虽然怀疑到userService.saveBatch()的事务注解了，又觉得 try 里面的事务，不会影响到外层（没有想到标记位rollbackOnly这里），后面又想到是不是可以在ServiceB.doBusiness()上调整事务传播机制为Propagation.REQUIRES_NEW，但其实都是徒劳，因为始终都已经被Mybatis-Plus的@Transactional标记为rollbackOnly了。
+解决方案：
+
+调用无事务注解的save()方法
+改用Db.saveBatch方法
+改用异步线程（切换了事务管理器）处理 try 中的流程
+
+后记
+下面这篇文章，在我们排查问题的过程中，给了很大的帮助，帮我们确定了问题的方向：
+告警：MyBatis-Plus中慎用@Transactional注解，坑的差点被开了...
+关于是否可以取消saveBatch方法上事务注解的讨论，可以看Mybatis-Plus官方的issue区：
+（3.5.7之后，取消了IService，都使用Mapper方法，彻底解决.......）
+
+建议取消数据层的saveBatch等方法的@Transactional注解，交由业务层自行管理 #6333
+saveBatch下的事务问题
+
+我新建了一个工程，用来复现该问题：
+复现定位Spring多层嵌套事务问题
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
+                        MySQL SQL语句执行效率分析
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2018-10-29</time>
+                    
+                        <a href="https://imyzt.top/tag/_LPtQMqgT/" class="post-tag i-tag
+                            i-tag-other_2">
+            #数据库
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+今天在掘金看到了一篇关于SQL优化的文章(原文在此)，了解到了Explain工具。本文则是对Explain工具的学习和总结。
+SQL语句性能分析工具Explain
+Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。
+执行以下语句：
+EXPLAIN SELECT * FROM t_options WHERE `name` IS NOT NULL GROUP BY `name`   
+
+得到如下结果：
+
+对于返回信息，主要关注点在如下几个字段：
+
+
+Type
+ALL是全表扫描，效率低；其它的index、range、const、ref、system则是比较好的。
+
+
+Possible_keys
+可能被用到的索引
+
+
+Key
+查询过程中用到的索引，当为null时，表示没有使用索引，通常是不好的。
+
+
+ken_len
+索引字段最大可能使用的长度，也叫索引基数。索引基数越大，表示可能查询的行数越多，查询效率越低。
+
+
+Rows
+MySQL估计的需要扫描的行数，只是估计，越多表示查询的行数越大，自然越慢。
+
+
+Extra
+显示上述信息之外的其它信息，非常重要。其主要有一下返回结果。
+Usingindex
+表明此查询使用了覆盖索引(CoveringIndex)，即通过索引就能返回结果，无需访问表。（覆盖索引是一种非常优秀的索引，其使用见http://blog.csdn.net/hzy38324/article/details/44857721）
+
+
+
+若没显示&amp;quot;Usingindex&amp;quot;表示读取了表数据。
+Usingindex condition
+    可能会使用索引    
+
+Usingwhere    
+
+    表示 MySQL 服务器先读取整行数据，再检查此行是否符合 where 句的条件，符合就留下，不符合便丢弃。效率较慢。
+Usingfilesort    
+
+    表示Mysql会按查询所需的顺序对结果进行排序，这时就会出现 Usingfilesort 。排序自然会增加查询时间，导致效率变慢。解决方法是利用索引进行排序。若查询所需的排序与使用的索引的排序一致，因为索引是已排序的，因此按索引的顺序读取结果返回，此时就不会出现Using filesort。
+
+关于“Using index” 和 “Using index condition”的区别，笔者参考了一下stackoverflow上的一篇文章
+简单的说
+Using index就是一定使用索引，这种索引成为覆盖索引，Using index condition则是在必要的时候才使用索引
+怎样才能让Usingindex condition变成Using index，答案自然是创建一个覆盖索引，同样，笔者将会在之后章节介绍覆盖索引如何创建。
+参考链接： CSDN
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

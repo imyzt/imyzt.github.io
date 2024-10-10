@@ -1,0 +1,356 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    RabbitMQ | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        RabbitMQ</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">
+                        错用HashedWheelTimer导致的OOM问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-02-04</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_4">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_4">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/i73r1WX7G/" class="post-tag i-tag
+                            i-tag-other_2">
+            #TimeingWheel
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            事件中心在私有化环境下，只要server一启动过几秒就oom，查看日志是 Failed to create a thread: retVal -1073741830, errno 11。
+异常堆栈：
+Caused by: java.lang.OutOfMemoryError: Failed to create a thread: retVal -1073741830, errno 11   
+    at java.lang.Thread.startImpl(Native Method) 
+    at java.lang.Thread.start(Thread.java:993) 
+    at io.netty.util.HashedWheelTimer.start(HashedWheelTimer.java:366) 
+    at io.netty.util.HashedWheelTimer.newTimeout(HashedWheelTimer.java:447) 
+    at 业务调用代码省略
+
+在标品环境下没有问题，在其他KA客户上也没有问题
+通过对日志的分析，最终发现是事件中心的延迟消息代码存在缺陷，使用了Netty的HashedWheelTimer，但是语法存在问题，理论上应该是new一个HashedWheelTimer来处理所有时间延迟，但是错用程每次new一个新的HashedWheelTimer，HashedWheelTimer内部每次都会new一个新的线程来处理做调度，一个线程占用1MB，最终内存资源被耗尽。
+io.netty.util.HashedWheelTimer#HashedWheelTimer源码：
+public HashedWheelTimer(
+    ThreadFactory threadFactory,
+    long tickDuration, TimeUnit unit, int ticksPerWheel, boolean leakDetection,
+    long maxPendingTimeouts, Executor taskExecutor) {
+
+    checkNotNull(threadFactory, &amp;quot;threadFactory&amp;quot;);
+    checkNotNull(unit, &amp;quot;unit&amp;quot;);
+    checkPositive(tickDuration, &amp;quot;tickDuration&amp;quot;);
+    checkPositive(ticksPerWheel, &amp;quot;ticksPerWheel&amp;quot;);
+    this.taskExecutor = checkNotNull(taskExecutor, &amp;quot;taskExecutor&amp;quot;);
+
+    // Normalize ticksPerWheel to power of two and initialize the wheel.
+    wheel = createWheel(ticksPerWheel);
+    mask = wheel.length - 1;
+
+    // Convert tickDuration to nanos.
+    long duration = unit.toNanos(tickDuration);
+
+    // Prevent overflow.
+    if (duration &amp;gt;= Long.MAX_VALUE / wheel.length) {
+        throw new IllegalArgumentException(String.format(
+                &amp;quot;tickDuration: %d (expected: 0 &amp;lt; tickDuration in nanos &amp;lt; %d&amp;quot;,
+                tickDuration, Long.MAX_VALUE / wheel.length));
+    }
+
+    if (duration &amp;lt; MILLISECOND_NANOS) {
+        logger.warn(&amp;quot;Configured tickDuration {} smaller then {}, using 1ms.&amp;quot;,
+                    tickDuration, MILLISECOND_NANOS);
+        this.tickDuration = MILLISECOND_NANOS;
+    } else {
+        this.tickDuration = duration;
+    }
+
+    // 每次都new一个线程来处理
+    workerThread = threadFactory.newThread(worker);
+
+    leak = leakDetection || !workerThread.isDaemon() ? leakDetector.track(this) : null;
+
+    this.maxPendingTimeouts = maxPendingTimeouts;
+
+    if (INSTANCE_COUNTER.incrementAndGet() &amp;gt; INSTANCE_COUNT_LIMIT &amp;amp;&amp;amp;
+        WARNED_TOO_MANY_INSTANCES.compareAndSet(false, true)) {
+        reportTooManyInstances();
+    }
+}
+
+因为标品和其他KA使用的是阿里云RocketMQ，此客户使用的是自建的开源版RocketMQ，开源RocketMQ是没有自定义时长的延迟消息的，所以我们自己实现了一套时间轮来实现任意时长的延迟消息，当小于60s的延迟消息会丢入我们的时间轮来处理延迟投递，当时此客户的环境中有大量的60s内的延迟消息，导致一启动就会崩溃。
+不过在RocketMQ5.0也支持任意时长了。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/cuo-yong-hashedwheeltimer-dao-zhi-de-oom-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">
+                        ThreadPoolExecutor “非常用” 方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-29</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_4">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-primary">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-success">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时在使用线程池时，更多关注到的是coreSize、maxSize、blockQueue、RejectedExecutionHandler这些参数，但在线程池监控领域，还需要关注到其他的一些方法。在此处做统一记录和备忘：
+public static void main(String[] args) {
+
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    // 启动所有核心线程(预热)
+    threadPoolExecutor.prestartAllCoreThreads();
+    // 启动一个核心线程
+    threadPoolExecutor.prestartCoreThread();
+
+    // 默认情况下构造器中的keepAliveTime指定的是非核心线程的空闲时间, 通过如下方法, 可以允许核心线程超时
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+
+    // ⭐️ 动态线程池必备方法
+    // 启动后, 设置核心线程数量
+    threadPoolExecutor.setCorePoolSize(3);
+    // 启动后, 设置最大线程数量
+    threadPoolExecutor.setMaximumPoolSize(10);
+    // 已执行完的任务总数
+    threadPoolExecutor.getTaskCount();
+    // 获取工作队列剩余数量
+    threadPoolExecutor.getQueue().remainingCapacity();
+    }
+
+
+后记
+通过上面的代码可知，在运行过程中我们也是可以操作coreSize和maxSize的。那么如何才能实现对Queue的大小进行控制呢？目前开源届常用的是采取RabbitMQ中的VariableLinkedBlockingQueue来实现。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

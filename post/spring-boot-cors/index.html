@@ -1,0 +1,309 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring Boot Cors | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Spring Boot Cors
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-04-16</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="问题的起因">问题的起因</h1>
+<p>今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。<br>
+网上说的重写 <code>addCorsMapping</code>等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题.<br>
+spring提供的跨域, 只是在响应是<code>Controller</code>时生效, 而统一异常拦截器<code>ControllerAdvice</code>是通过AOP处理的. 并且我们在很多时候需要通过自己的拦截器, 过滤器处理内容. 所以spring提供的跨域封装, 并不能很好的解决问题. 最后通过自己编写Filter解决了这个问题. 在此做一个小记录, 以后遇到需要跨域的问题时,直接使用此方法, 比使用spring封装的内容要好很多.</p>
+<p>顺便提一下, 关于跨域时 <code>PUT</code>和<code>DELETE</code>两个复杂请求的参数处理, 由于这两个请求在发起之前都会发起一个  <code>预请求</code>, 具体可以看一下 <a href="https://segmentfault.com/q/1010000007442799">这篇博客</a>, 如果不做处理的话, PUT请求将得不到参数. 具体处理方法也在下面代码区给出.</p>
+<p><strong>更新</strong>:<br>
+是我太年轻, 统一异常拦截器还是没有办法正常的返回, 最后在统一异常拦截器的response上面加上了Origin的设置. 下面展示代码</p>
+<pre><code>@CrossOrigin
+response.setHeader(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);
+</code></pre>
+<h1 id="代码">代码</h1>
+<pre><code>@WebFilter
+public class CorsFilter extends OncePerRequestFilter {
+    private static final String ORIGIN = &quot;Origin&quot;;
+    private static final String HEADERS = &quot;Access-Control-Request-Headers&quot;;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        // 获取请求头中的 'Origin' 信息
+        String origin = request.getHeader(ORIGIN);
+        // 获取请求头中的 'header' 信息
+        String headers = request.getHeader(HEADERS);
+
+        /**
+         * 1.支持任何域名跨域访问
+         * 当 'Access-Control-Allow-Origin' 设置为 '*' 时，不能解决带 Cookie 的跨域
+         */
+        if (!StringUtils.isEmpty(origin)) {
+            response.setHeader(&quot;Access-Control-Allow-Origin&quot;, origin);
+        }
+
+        /**
+         * 2.支持自定义请求头的跨域
+         */
+        if (!StringUtils.isEmpty(headers)) {
+            response.setHeader(&quot;Access-Control-Allow-Headers&quot;, headers);
+        }
+
+        // 3.设置支持带 Cookie 的跨域请求
+        response.setHeader(&quot;Access-Control-Allow-Credentials&quot;, &quot;true&quot;);
+        // 4.设置允许跨域请求的方法形式 'GET'、'DELETE' 等
+        response.setHeader(&quot;Access-Control-Allow-Methods&quot;, &quot;*&quot;);
+        // 5.设置非简单请求的预检命令缓存时间，单位 's'
+        response.setHeader(&quot;Access-Control-Max-Age&quot;, &quot;1728000&quot;);
+
+        if (&quot;OPTIONS&quot;.equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            filterChain.doFilter(request, response);
+        }
+
+    }
+}
+
+
+
+针对PUT请求参数的处理
+@Component
+public class PutFilter extends HttpPutFormContentFilter {
+
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/">
+                                <h3 class="post-title">
+                                    通用的redis序列化
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E9%97%AE%E9%A2%98%E7%9A%84%E8%B5%B7%E5%9B%A0">问题的起因</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81">代码</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

@@ -1,0 +1,1855 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/golang-zhi-xing-shell-bing-shi-shi-da-yin-shell-ri-zhi/">
+                        Golang执行shell并实时打印shell日志
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-06-27</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在网络上找到的，在此代码备忘下
+package util
+
+import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;io&amp;quot;
+	&amp;quot;log&amp;quot;
+	&amp;quot;os/exec&amp;quot;
+	&amp;quot;strings&amp;quot;
+)
+
+func asyncLog(reader io.ReadCloser) error {
+	bucket := make([]byte, 1024)
+	buffer := make([]byte, 100)
+	for {
+		num, err := reader.Read(buffer)
+		if err != nil {
+			if err == io.EOF || strings.Contains(err.Error(), &amp;quot;closed&amp;quot;) {
+				err = nil
+			}
+			return err
+		}
+		if num &amp;gt; 0 {
+			line := &amp;quot;&amp;quot;
+			bucket = append(bucket, buffer[:num]...)
+			tmp := string(bucket)
+			if strings.Contains(tmp, &amp;quot;\n&amp;quot;) {
+				ts := strings.Split(tmp, &amp;quot;\n&amp;quot;)
+				if len(ts) &amp;gt; 1 {
+					line = strings.Join(ts[:len(ts)-1], &amp;quot;\n&amp;quot;)
+					bucket = []byte(ts[len(ts)-1]) //不够整行的以后再处理
+				} else {
+					line = ts[0]
+					bucket = bucket[:0]
+				}
+				fmt.Printf(&amp;quot;%s\n&amp;quot;, line)
+			}
+
+		}
+	}
+	return nil
+}
+
+func Execute(shellPath string) error {
+
+	cmd := exec.Command(&amp;quot;/bin/bash&amp;quot;, &amp;quot;-c&amp;quot;, shellPath)
+
+	stdout, _ := cmd.StdoutPipe()
+	stderr, _ := cmd.StderrPipe()
+
+	if err := cmd.Start(); err != nil {
+		log.Printf(&amp;quot;Error starting command: %s......&amp;quot;, err.Error())
+		return err
+	}
+
+	go asyncLog(stdout)
+	go asyncLog(stderr)
+
+	if err := cmd.Wait(); err != nil {
+		log.Printf(&amp;quot;Error waiting for command execution: %s......&amp;quot;, err.Error())
+		return err
+	}
+
+	return nil
+}
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/golang-zhi-xing-shell-bing-shi-shi-da-yin-shell-ri-zhi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-rong-qi-de-de-refresh/">
+                        Spring容器的的refresh()
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-04-10</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            Spring容器的的refresh()【创建刷新】
+refresh()源码
+public void refresh() throws BeansException, IllegalStateException {
+    synchronized (this.startupShutdownMonitor) {
+        StartupStep contextRefresh = this.applicationStartup.start(&amp;quot;spring.context.refresh&amp;quot;);
+
+        // 刷新前的预处理
+        prepareRefresh();
+
+        // 获取BeanFactory
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // BeanFactory的预处理工作，对BeanFactory进行一些赋值设置
+        prepareBeanFactory(beanFactory);
+
+        try {
+            // BeanFactory准备工作完成后进行的后置处理工作
+            postProcessBeanFactory(beanFactory);
+            
+            StartupStep beanPostProcess = this.applicationStartup.start(&amp;quot;spring.context.beans.post-process&amp;quot;);
+            // 注册BeanFactory的后置处理器，执行BeanFactoryPostProcessor方法
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // 注册Bean的后置处理器，用于拦截Bean的整个创建过程
+            registerBeanPostProcessors(beanFactory);
+            beanPostProcess.end();
+
+            // 初始化MessageSource组件（做国际化功能，消息绑定，消息解析）
+            initMessageSource();
+
+            // 初始化事件派发器
+            initApplicationEventMulticaster();
+
+            // 留给子容器（子类）重写，在刷新上下文时自定义逻辑
+            onRefresh();
+
+            // 将项目中所有的ApplicationListener注册到容器中
+            registerListeners();
+
+            // 初始化所有剩下的单实例bean
+            finishBeanFactoryInitialization(beanFactory);
+
+            // 完成BeanFactory的初始化创建工作，IOC容器就创建完成
+            finishRefresh();
+    }
+}
+
+BeanFactory的创建及预准备工作
+1. prepareRefresh(); 刷新前的预处理
+
+initPropertySources(); 初始化一些属性设置（空），子类可实现后自定义个性化的属性设置方法
+getEnvironment().validateRequiredProperties(); 校验属性的合法等
+this.earlyApplicationEvents = new LinkedHashSet&amp;lt;&amp;gt;(); 保存容器中的一些早期的事件
+
+2. obtainFreshBeanFactory(); 获取BeanFactory
+
+refreshBeanFactory(); 刷新【创建】BeanFactory对象
+
+创建一个bean工厂
+
+
+
+    public GenericApplicationContext() {
+        this.beanFactory = new DefaultListableBeanFactory();
+    }
+
+2. 设置id
+
+
+getBeanFactory(); 返回刚才GenericApplicationContext创建的BeanFactory对象
+将创建的BeanFactory【DefaultListableBeanFactory】返回
+
+3. prepareBeanFactory(beanFactory); BeanFactory的预处理工作，对BeanFactory进行一些赋值设置
+
+设置BeanFactory的类加载器、支持表达式解析器...
+添加部分BeanPostProcessor【ApplicationContextAwareProcessor】
+设置忽略的自动装配的接口EnvironmentAware、EmbeddedValueResolverAware、ResourceLoaderAware、、ApplicationEventPublisherAware、MessageSourceAware、ApplicationContextAware、ApplicationStartupAware
+注册可以解析的自动装配，使我们能够在任何组件中自动注入(@Autowired)。BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext
+添加部分BeanPostProcessor【ApplicationListenerDetector】
+添加编译时的AspectJ
+给BeanFactory注册一些能用的组件
+
+environment ConfigurableEnvironment
+systemProperties Map&amp;lt;String, Object&amp;gt;
+systemEnvironment Map&amp;lt;String, Object&amp;gt;
+applicationStartup ApplicationStartup
+
+
+
+4. postProcessBeanFactory(beanFactory); BeanFactory准备工作完成后进行的后置处理工作
+
+子类可以重写此方法在BeanFactory创建并预准备完成以后做进一步的设置。
+
+BeanFactory后面的流程
+5. invokeBeanFactoryPostProcessors(beanFactory); 注册BeanFactory的后置处理器，执行BeanFactoryPostProcessor方法
+源代码位于：PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors()
+BeanFactoryPostProcessor:
+
+BeanFactory的后置处理器
+在BeanFactory标准初始化之后执行
+拥有两个接口
+
+BeanFactoryPostProcessor
+BeanDefinitionRegistryPostProcessor
+
+
+
+执行BeanFactoryPostProcessor方法
+子接口[BeanDefinitionRegistryPostProcessor]具有最高优先级，其次再执行BeanFactoryPostProcessor的方法
+先执行BeanDefinitionRegistryPostProcessor的方法
+
+获取所有的BeanDefinitionRegistryPostProcessor
+先执行实现了PriorityOrdered优先级接口的BeanDefinitionRegistryPostProcessor
+
+postProcessor.postProcessBeanDefinitionRegistry(registry);
+
+
+再执行实现了Ordered顺序接口的BeanDefinitionRegistryPostProcessor
+
+postProcessor.postProcessBeanDefinitionRegistry(registry);
+
+
+最后执行没有实现任何优先级或顺序接口的BeanDefinitionRegistryPostProcessor
+
+postProcessor.postProcessBeanDefinitionRegistry(registry);
+
+
+
+再执行BeanFactoryPostProcessor的方法
+
+获取所有的BeanFactoryPostProcessor
+先执行实现了PriorityOrdered优先级接口的BeanFactoryPostProcessor
+
+postProcessor.postProcessBeanFactory(beanFactory);
+
+
+再执行实现了Ordered顺序接口的BeanFactoryPostProcessor
+
+postProcessor.postProcessBeanFactory(beanFactory);
+
+
+最后执行没有实现任何优先级或顺序接口的BeanFactoryPostProcessor
+
+postProcessor.postProcessBeanFactory(beanFactory);
+
+
+
+6. registerBeanPostProcessors(beanFactory); 注册Bean的后置处理器，用于拦截Bean的整个创建过程
+源代码位于：PostProcessorRegistrationDelegate#registerBeanPostProcessors()
+不同接口类型的BeanPostProcessor，在Bean创建前后的执行时机是不一样的
+
+BeanPostProcessor
+DestructionAwareBeanPostProcessor
+InstantiationAwareBeanPostProcessor
+SmartInstantiationAwareBeanPostProcessor
+MergedBeanDefinitionPostProcessor【internalPostProcessors】
+
+执行过程
+
+获取所有的BeanPostProcessor；后置处理器都默认可以通过PriorityOrdered、Ordered接口来实现优先级排序
+先注册PriorityOrdered优先级排序接口的BeanPostProcessor
+把每一个BeanPostProcessor都添加到BeanFactory中
+
+private static void registerBeanPostProcessors(
+        ConfigurableListableBeanFactory beanFactory, List&amp;lt;BeanPostProcessor&amp;gt; postProcessors) {
+
+    if (beanFactory instanceof AbstractBeanFactory) {
+        // Bulk addition is more efficient against our CopyOnWriteArrayList there
+        ((AbstractBeanFactory) beanFactory).addBeanPostProcessors(postProcessors);
+    }
+    else {
+        for (BeanPostProcessor postProcessor : postProcessors) {
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
+    }
+}
+
+
+再注册Ordered接口的
+再注册没有实现任何优先级接口的
+最后注册MergedBeanDefinitionPostProcessor【internalPostProcessors】
+最终注册一个ApplicationListenerDetector；再Bean创建完后检查是否是ApplicationListener，如果是则将其注册到上下文中
+applicationContext.addApplicationListener((ApplicationListener&amp;lt;?&amp;gt;) bean);
+
+7. initMessageSource();初始化MessageSource组件（做国际化功能，消息绑定，消息解析）
+MessageSource按照区域，取出国际化配置文件中的某个key的值
+
+getBeanFactory();获取BeanFactory
+判断容器中是否有id=messageSource的组件，类型=MessageSource
+
+如果有，赋值给变量messageSource
+如果没有，自己创建一个DelegatingMessageSource
+
+
+把创建好的MessageSource注册到容器中，后续可依赖注入
+beanFactory.registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.messageSource);
+
+8. initApplicationEventMulticaster();初始化事件派发器
+
+获取BeanFactory
+从BeanFactory中获取ApplicationEventMulticaster的ApplicationEventMulticaster
+将创建的ApplicationEventMulticaster添加到BeanFactory中，后续可依赖注入
+
+9. onRefresh(); 留给子容器（子类）
+
+子类重写这个方法，在容器刷新的时候可以自定义逻辑；
+
+10. registerListeners();将项目中所有的ApplicationListener注册到容器中
+
+从applicationListeners属性中拿到之前步骤中所有的ApplicationListener，注册到事件派发器中
+从容器中拿到所有的ApplicationListener，注册到事件派发器中
+getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
+派发（调用）之前步骤产生的事件
+getApplicationEventMulticaster().multicastEvent(earlyEvent);
+
+11. finishBeanFactoryInitialization(beanFactory); 初始化所有剩下的单实例bean
+11.1 beanFactory.preInstantiateSingletons(); - 初始化剩下的单实例bean
+11.1.1 获取容器中的所有bean，依次进行初始化和创建对象
+List&amp;lt;String&amp;gt; beanNames = new ArrayList&amp;lt;&amp;gt;(this.beanDefinitionNames);
+// Trigger initialization of all non-lazy singleton beans...
+for (String beanName : beanNames) {
+
+11.1.2 获取bean的定义信息RootBeanDefinition
+RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+11.1.3 Bean不是抽象的，是单实例的，不是懒加载的
+!bd.isAbstract() &amp;amp;&amp;amp; bd.isSingleton() &amp;amp;&amp;amp; !bd.isLazyInit()
+11.1.3.1 判断是否是FactoryBean，是否是实现FactoryBean接口的bean
+
+如果是，则利用FactoryBean接口的FactoryBean#getObject获取对象
+如果不是，利用getBean(beanName)创建对象
+0. getBean(beanName) -&amp;gt; 与ApplicationContext#getBean一致
+
+doGetBean(name, null, null, false);
+先获取缓存中保存的单实例bean，如果能获取到，说明之前被创建过。（所有创建过的单实例Bean都会被缓存起来）
+getSingleton(beanName, true);
+private final Map&amp;lt;String, Object&amp;gt; singletonObjects = new ConcurrentHashMap&amp;lt;&amp;gt;(256);
+缓存中获取不到，开始创建对象流程
+标记当前bean已被创建 markBeanAsCreated(beanName);
+获取Bean的定义信息
+RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+【获取当前Bean依赖的其他bean，如果有按照getBean()把依赖的Bean先创建出来】
+
+String[] dependsOn = mbd.getDependsOn();
+    if (dependsOn != null) {
+        for (String dep : dependsOn) {
+            ...
+            registerDependentBean(dep, beanName);
+            getBean(dep);
+            ...
+        }
+    }
+
+
+启动单实例Bean的创建流程 mbd.isSingleton()
+
+getSingleton(String beanName, ObjectFactory&amp;lt;?&amp;gt; singletonFactory)
+createBean(beanName, mbd, args);
+resolveBeforeInstantiation(beanName, mbdToUse); 让BeanPostProcessor先提前拦截返回Bean代理对象
+【InstantiationAwareBeanPostProcessor】: 提前执行
+先触发：Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
+如果有返回值，再触发：processor.postProcessAfterInitialization(result, beanName);
+Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+
+【创建Bean实例】：createBeanInstance(beanName, mbd, args);
+利用工厂方法或者对象的构造器创建出Bean实例
+applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
+调用【MergedBeanDefinitionPostProcessor】的processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);
+【bean属性赋值】populateBean(beanName, mbd, instanceWrapper);
+赋值之前：
+
+拿到InstantiationAwareBeanPostProcessor后置处理器
+执行postProcessAfterInstantiation方法
+拿到InstantiationAwareBeanPostProcessor后置处理器
+执行postProcessPropertyValues方法
+=赋值之前=
+应用bean属性的值，利用setter为属性赋值
+applyPropertyValues(beanName, mbd, bw, pvs);
+
+
+【Bean初始化】initializeBean(beanName, exposedObject, mbd);
+
+【执行Aware接口方法】invokeAwareMethods(beanName, wrappedBean, mbd);执行XXX_Aware接口为Aware属性赋值
+BeanNameAware/BeanClassLoaderAware/BeanFactoryAware
+【执行后置处理器初始化之前】applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+processor.postProcessBeforeInitialization(result, beanName);
+【执行初始化方法】invokeInitMethods(beanName, wrappedBean, mbd);
+
+是否是InitializingBean接口的实现，执行接口规定的初始化方法
+是否有自定义初始化方法 String initMethodName = mbd.getInitMethodName();
+
+
+【执行后置处理器初始化之后的方法】applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+processor.postProcessAfterInitialization(result, beanName); 
+
+
+
+5. 【注册bean的销毁方法】registerDisposableBeanIfNecessary(beanName, bean, mbd); 实现`DisposableBean`接口
+
+
+将创建的bean添加到缓存DefaultSingletonBeanRegistry#addSingleton中
+
+
+
+
+
+12. finishRefresh();完成BeanFactory的初始化创建工作，IOC容器就创建完成
+
+
+clearResourceCaches(); 清除上下文级别的资源缓存
+
+
+initLifecycleProcessor();初始化和生命周期有关的后置处理器：LifecycleProcessor
+
+默认从容器中找是否存在名为lifecycleProcessor的组件[LifecycleProcessor]，如果没有就创建new DefaultLifecycleProcessor();，然后加入到容器中
+自定义实现LifecycleProcessor接口，可以接收到两个回调
+
+void onRefresh(); - 上下文刷新的通知
+void onClose(); - 上下文关闭的通知
+
+
+
+
+
+getLifecycleProcessor().onRefresh(); 拿到刚才获取的生命周期处理器，回调onRefresh()事件
+
+
+publishEvent(new ContextRefreshedEvent(this)); - 发布容器刷新完成事件
+
+
+总结
+
+在Spring启动时，先会保存所有注册进来的Bean定义信息
+
+xml注册
+@Bean、@Component...
+
+
+Spring会在适当的时候创建对应的Bean
+
+用到这个bean的时候，利用getBean创建
+启动时统一创建剩下的所有Bean，finishBeanFactoryInitialization(beanFactory)
+
+
+后置处理器 BeanPostProcessor
+
+每一个Bean创建完成后，都会使用各种后置处理器增强Bean的功能
+
+AutowiredAnnotationBeanPostProcessor: 处理自动注入
+AsyncAnnotationBeanPostProcessor: 处理异步
+AnnotationAwareAspectJAutoProxyCreator: 处理AOP
+
+
+
+
+事件驱动模型
+
+ApplicationListener：事件监听
+AnnotationAwareAspectJAutoProxyCreator：事件派发器
+
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-rong-qi-de-de-refresh/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/gin-can-shu-yan-zheng/">
+                        Gin 参数验证
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-03-08</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            普通验证
+/**
+更多验证规则
+https://pkg.go.dev/gopkg.in/bluesuncorp/validator.v8#section-documentation
+*/
+type Student struct {
+	Name string `form:&amp;quot;name&amp;quot; json:&amp;quot;name&amp;quot; binding:&amp;quot;required&amp;quot;`
+	// binding 逗号分割表示并且, | 分割表示或者(满足一项)
+	Age      int       `form:&amp;quot;age&amp;quot; json:&amp;quot;age&amp;quot; binding:&amp;quot;required,gt=10&amp;quot;`
+	Birthday time.Time `form:&amp;quot;birthday&amp;quot; time_format:&amp;quot;2006-01-02 15:04:05&amp;quot; json:&amp;quot;birthday&amp;quot;`
+}
+
+func main() {
+
+	r := gin.Default()
+	r.POST(&amp;quot;test&amp;quot;, func(context *gin.Context) {
+
+		var student Student
+		// 根据不同的context-type,做不同的映射
+		if err := context.ShouldBind(&amp;amp;student); err != nil {
+			context.String(http.StatusBadRequest, &amp;quot;student bind error %v&amp;quot;, err.Error())
+			return
+		}
+
+		context.JSON(http.StatusOK, student)
+	})
+
+	r.Run()
+
+}
+
+自定义验证
+/**
+更多验证规则
+https://pkg.go.dev/gopkg.in/bluesuncorp/validator.v8#section-documentation
+*/
+type Booking struct {
+	// 时间必须符合bookabledate检查
+	ChinkIn time.Time `form:&amp;quot;checkIn&amp;quot; json:&amp;quot;chink_in&amp;quot; binding:&amp;quot;required,bookabledate&amp;quot; time_format:&amp;quot;2006-01-02&amp;quot;`
+	// 时间必须大于ChinkIn
+	ChinkOut time.Time `form:&amp;quot;checkOut&amp;quot; json:&amp;quot;chink_out&amp;quot; binding:&amp;quot;required,gtfield=ChinkIn&amp;quot; time_format:&amp;quot;2006-01-02&amp;quot;`
+}
+
+func bookableDate(fl validator.FieldLevel) bool {
+
+	if date, ok := fl.Field().Interface().(time.Time); ok {
+		// 大于今天
+		return date.Unix() &amp;gt; time.Now().Unix()
+	}
+	return false
+}
+
+func main() {
+
+	r := gin.Default()
+
+	// 注册验证规则
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		err := v.RegisterValidation(&amp;quot;bookabledate&amp;quot;, bookableDate)
+		if err != nil {
+			for _, e := range err.(validator.ValidationErrors) {
+				fmt.Println(e)
+			}
+		}
+	}
+
+	r.POST(&amp;quot;test&amp;quot;, func(context *gin.Context) {
+
+		var booking Booking
+		// 根据不同的context-type,做不同的映射
+		if err := context.ShouldBind(&amp;amp;booking); err != nil {
+			context.String(http.StatusBadRequest, &amp;quot;booking bind error %v&amp;quot;, err.Error())
+			return
+		}
+
+		context.JSON(http.StatusOK, booking)
+	})
+
+	r.Run()
+}
+
+i18n验证
+package main
+
+import (
+	&amp;quot;github.com/gin-gonic/gin&amp;quot;
+	en2 &amp;quot;github.com/go-playground/locales/en&amp;quot;
+	zh2 &amp;quot;github.com/go-playground/locales/zh&amp;quot;
+	ut &amp;quot;github.com/go-playground/universal-translator&amp;quot;
+	&amp;quot;gopkg.in/go-playground/validator.v9&amp;quot;
+	en_translations &amp;quot;gopkg.in/go-playground/validator.v9/translations/en&amp;quot;
+	zh_translations &amp;quot;gopkg.in/go-playground/validator.v9/translations/zh&amp;quot;
+	&amp;quot;net/http&amp;quot;
+	&amp;quot;time&amp;quot;
+)
+
+/**
+更多验证规则
+https://pkg.go.dev/gopkg.in/bluesuncorp/validator.v8#section-documentation
+*/
+type Student struct {
+	Name string `form:&amp;quot;name&amp;quot; json:&amp;quot;name&amp;quot; validate:&amp;quot;required&amp;quot;`
+	Age      int       `form:&amp;quot;age&amp;quot; json:&amp;quot;age&amp;quot; validate:&amp;quot;required,gt=10&amp;quot;`
+	Birthday time.Time `form:&amp;quot;birthday&amp;quot; time_format:&amp;quot;2006-01-02 15:04:05&amp;quot; json:&amp;quot;birthday&amp;quot;`
+}
+
+var (
+	Uni *ut.UniversalTranslator
+	Validate *validator.Validate
+)
+
+func main() {
+
+	// 初始化验证器
+	initValidator()
+
+	r := gin.Default()
+
+	r.GET(&amp;quot;test&amp;quot;, func(context *gin.Context) {
+
+		// 根据不同语言,加载不同的验证器
+		locale := context.DefaultQuery(&amp;quot;locale&amp;quot;, &amp;quot;zh&amp;quot;)
+		translator, _ := Uni.GetTranslator(locale)
+		switch locale {
+		case &amp;quot;zh&amp;quot;:
+			_ = zh_translations.RegisterDefaultTranslations(Validate, translator)
+		case &amp;quot;en&amp;quot;:
+			_ = en_translations.RegisterDefaultTranslations(Validate, translator)
+		default:
+			_ = zh_translations.RegisterDefaultTranslations(Validate, translator)
+		}
+
+		// 根据不同的context-type,做不同的映射
+		var student Student
+		if err := context.ShouldBind(&amp;amp;student); err != nil {
+			context.String(http.StatusBadRequest, &amp;quot;student bind error %v&amp;quot;, err.Error())
+			context.Abort()
+			return
+		}
+
+		// 验证
+		if valid(context, student, translator) {
+			return
+		}
+
+		context.JSON(http.StatusOK, student)
+	})
+
+	r.Run()
+
+	//➜  github.com curl -X GET &amp;quot;localhost:8080/test?name=xxx&amp;amp;bbb=ddd&amp;amp;locale=zh&amp;amp;age=2&amp;quot;
+	//student validate error [Age必须大于10]%                                                                                                                                                                     ➜  github.com curl -X GET &amp;quot;localhost:8080/test?name=xxx&amp;amp;bbb=ddd&amp;amp;locale=en&amp;amp;age=2&amp;quot;
+	//➜  github.com curl -X GET &amp;quot;localhost:8080/test?name=xxx&amp;amp;bbb=ddd&amp;amp;locale=en&amp;amp;age=2&amp;quot;
+	//student validate error [Age must be greater than 10]%
+
+}
+
+func valid(context *gin.Context, student Student, translator ut.Translator) bool {
+	if err := Validate.Struct(student); err != nil {
+		errors := err.(validator.ValidationErrors)
+		sliceErrors := []string{}
+		for _, e := range errors {
+			sliceErrors = append(sliceErrors, e.Translate(translator))
+		}
+		context.String(http.StatusBadRequest, &amp;quot;student validate error %v&amp;quot;, sliceErrors)
+		context.Abort()
+		return true
+	}
+	return false
+}
+
+func initValidator() {
+	Validate = validator.New()
+	zh := zh2.New()
+	en := en2.New()
+	Uni = ut.New(zh, en)
+}
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/gin-can-shu-yan-zheng/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/gin-ji-ben-zhi-shi/">
+                        Gin基本知识
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-03-07</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            相关代码位置：https://github.com/imyzt/learning-technology-code/tree/master/golang/imooc-gin-study
+httpMethod start
+package main
+
+import &amp;quot;github.com/gin-gonic/gin&amp;quot;
+
+func main() {
+
+	// 简单gin使用
+	r := gin.Default()
+	r.GET(&amp;quot;/get&amp;quot;, func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			&amp;quot;message&amp;quot;: &amp;quot;get&amp;quot;,
+		})
+	})
+	r.POST(&amp;quot;/post&amp;quot;, func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			&amp;quot;message&amp;quot;: &amp;quot;post&amp;quot;,
+		})
+	})
+	r.DELETE(&amp;quot;/delete&amp;quot;, func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			&amp;quot;message&amp;quot;: &amp;quot;delete&amp;quot;,
+		})
+	})
+	r.PUT(&amp;quot;/put&amp;quot;, func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			&amp;quot;message&amp;quot;: &amp;quot;put&amp;quot;,
+		})
+	})
+	// 支持任意请求
+	r.Any(&amp;quot;/any&amp;quot;, func(context *gin.Context) {
+		context.String(200, &amp;quot;any&amp;quot;)
+	})
+
+	r.Run()
+}
+
+
+rest参数
+r.GET(&amp;quot;:name/:id&amp;quot;, func(context *gin.Context) {
+    context.JSON(200, gin.H{
+        &amp;quot;name&amp;quot;: context.Param(&amp;quot;name&amp;quot;),
+        &amp;quot;id&amp;quot;: context.Param(&amp;quot;id&amp;quot;),
+    })
+})
+
+开放静态资源
+// 静态文件夹
+r.Static(&amp;quot;/asserts&amp;quot;, &amp;quot;./asserts&amp;quot;)
+// 静态文件目录
+r.StaticFS(&amp;quot;/static&amp;quot;, http.Dir(&amp;quot;/Users/imyzt/Downloads/&amp;quot;))
+// 静态文件
+r.StaticFile(&amp;quot;/test.html&amp;quot;, &amp;quot;./test.html&amp;quot;)
+
+泛匹配
+r.GET(&amp;quot;/name/*action&amp;quot;, func(context *gin.Context) {
+    context.String(200, &amp;quot;helloWorld&amp;quot;)
+})
+
+获取GET请求参数
+r.GET(&amp;quot;/test&amp;quot;, func(context *gin.Context) {
+    firstName := context.Query(&amp;quot;firstName&amp;quot;)
+    // 默认值
+    lastName := context.DefaultQuery(&amp;quot;lastName&amp;quot;, &amp;quot;defaultLastName&amp;quot;)
+    context.JSON(http.StatusOK, gin.H{
+        &amp;quot;firstName&amp;quot;: firstName,
+        &amp;quot;lastName&amp;quot;:  lastName,
+    })
+})
+
+获取POST form-data请求参数
+r.POST(&amp;quot;/test&amp;quot;, func(context *gin.Context) {
+    firstName := context.PostForm(&amp;quot;firstName&amp;quot;)
+    // 默认值
+    lastName := context.DefaultPostForm(&amp;quot;lastName&amp;quot;, &amp;quot;defaultLastName&amp;quot;)
+    context.JSON(http.StatusOK, gin.H{
+        &amp;quot;firstName&amp;quot;: firstName,
+        &amp;quot;lastName&amp;quot;:  lastName,
+    })
+})
+
+获取POST body请求参数
+r.POST(&amp;quot;/test&amp;quot;, func(context *gin.Context) {
+
+    bodyBytes, err := ioutil.ReadAll(context.Request.Body)
+    if err != nil {
+        context.String(http.StatusBadRequest, err.Error())
+        context.Abort()
+    }
+
+    // 回传, 方便获取参数
+    context.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
+    // 默认值
+    name := context.DefaultPostForm(&amp;quot;name&amp;quot;, &amp;quot;defaultName&amp;quot;)
+    context.String(http.StatusOK, &amp;quot;%s - %s&amp;quot;, name, string(bodyBytes))
+})
+
+CURL输出
+//curl -X POST &amp;quot;localhost:8080/test&amp;quot; -d &#39;name=xxx&amp;amp;bbb=ddd&#39;
+//xxx - name=xxx&amp;amp;bbb=ddd%
+
+GET/POST请求参数映射到struct
+type Student struct {
+	Name string `form:&amp;quot;name&amp;quot; json:&amp;quot;name&amp;quot;`
+	Addr string `form:&amp;quot;addr&amp;quot; json:&amp;quot;addr&amp;quot;`
+	Birthday time.Time `form:&amp;quot;birthday&amp;quot; time_format:&amp;quot;2006-01-02 15:04:05&amp;quot; json:&amp;quot;birthday&amp;quot;`
+}
+func main() {
+
+	r := gin.Default()
+
+	r.POST(&amp;quot;test&amp;quot;, test)
+	r.GET(&amp;quot;test&amp;quot;, test)
+
+	r.Run()
+}
+
+func test(context *gin.Context) {
+
+	var student Student
+	// 根据不同的context-type,做不同的映射
+	if err := context.ShouldBind(&amp;amp;student); err != nil {
+		context.String(http.StatusBadRequest, &amp;quot;student bind error %v&amp;quot;, err.Error())
+		return
+	}
+
+	context.JSON(http.StatusOK, student)
+}
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/gin-ji-ben-zhi-shi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-find-methods-by-annotation/">
+                        Spring Find Methods By Annotation 
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-02-03</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在Spring环境中，查找Bean是非常方便的，但是如果是需要查询方法上的注解进行反射调用或其它，则极其不方便。
+可以使用MethodIntrospector.selectMethods工具方法，通过遍历所有@Component Bean的方式，挨个查找。
+示例代码如下，既能拿到Method对象，又可以拿到注解信息：
+Map&amp;lt;String, Object&amp;gt; beans = applicationContext.getBeansWithAnnotation(Component.class);
+beans.forEach((beanName, handler) -&amp;gt; {
+
+    Map&amp;lt;Method, AnalysisListener&amp;gt; methodAnalysisListenerMap = MethodIntrospector.selectMethods(handler.getClass(),
+            (MethodIntrospector.MetadataLookup&amp;lt;AnalysisListener&amp;gt;) method -&amp;gt; AnnotatedElementUtils.findMergedAnnotation(method, AnalysisListener.class));
+
+});
+
+AnalysisListener.class为自定义注解
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-find-methods-by-annotation/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/redis-lua-ratelimiter/">
+                        Redis LUA RateLimiter
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-01-13</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            参考文章：基于Redis的限流系统的设计
+本文作为总结和回顾
+限流脚本
+首先需要引入的是redis的LUA脚本.
+
+--- 判断source_str 中是否contains pattern_str
+--- @param source_str
+--- @param patter_str
+local function contains(source_str, sub_str)
+    local start_pos, end_pos = string.find(source_str, sub_str);
+    if start_pos == nil then
+        return false;
+    end
+    local source_str_len = string.len(source_str);
+
+    if source_str_len == end_pos then
+        return true
+    elseif string.sub(source_str, end_pos + 1, end_pos + 1) == &amp;quot;,&amp;quot; then
+        return true
+    end
+    return false;
+end
+
+
+--- 获取令牌
+--- 返回码
+--- 0 没有令牌桶配置
+--- -1 表示取令牌失败，也就是桶里没有令牌
+--- 1 表示取令牌成功
+--- @param key 令牌的唯一标识
+--- @param permits  请求令牌数量
+--- @param curr_mill_second 当前毫秒数
+--- @param context 使用令牌的应用标识
+local function acquire(key, permits, curr_mill_second, context)
+    local rate_limit_info = redis.pcall(&amp;quot;HMGET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, &amp;quot;curr_permits&amp;quot;, &amp;quot;max_permits&amp;quot;, &amp;quot;rate&amp;quot;, &amp;quot;apps&amp;quot;)
+    local last_mill_second = rate_limit_info[1]
+    local curr_permits = tonumber(rate_limit_info[2])
+    local max_permits = tonumber(rate_limit_info[3])
+    local rate = rate_limit_info[4]
+    local apps = rate_limit_info[5]
+
+    --- 标识没有配置令牌桶
+    if type(apps) == &#39;boolean&#39; or apps == nil or not contains(apps, context) then
+        return 0
+    end
+
+
+    local local_curr_permits = max_permits;
+
+    --- 第一次, 没有last_mill_second, 所以local_curr_permits = max_permits, 
+    --- 首先设置 redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, curr_mill_second) 将上次更新时间修改为现在
+    --- 然后直接进入到最下面 redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;curr_permits&amp;quot;, local_curr_permits - permits) 用最大速率-自己用的这一次
+    
+    --- 第二次, 有last_mill_second, 走进去if的逻辑
+    --- reverse_permits -&amp;gt; 时间差转换成秒, 然后乘以每秒的速率rage -&amp;gt; 得到每秒需要添加多少个令牌
+    
+    --- 第二次
+
+    --- 令牌桶刚刚创建，上一次获取令牌的毫秒数为空
+    --- 根据和上一次向桶里添加令牌的时间和当前时间差，触发式往桶里添加令牌，并且更新上一次向桶里添加令牌的时间
+    --- 如果向桶里添加的令牌数不足一个，则不更新上一次向桶里添加令牌的时间
+    if (type(last_mill_second) ~= &#39;boolean&#39;  and last_mill_second ~= nil) then
+        --- 当前消耗时间内 -&amp;gt; 需要添加多少个令牌
+        --- 假设curr_mill_second - last_mill_second = 100ms,rate=10, 100ms/1000=0.1s * 10 = 1个
+        --- 假设curr_mill_second - last_mill_second = 1000000ms,rate=10, 1000000ms/1000=1000s * 10 = 1w个 -》 说明很久没有访问了，下面math.min就会丢弃掉多的
+        --- 即刚过去的这一段时间, 需要往桶里面添加1个令牌  
+        local reverse_permits = math.floor(((curr_mill_second - last_mill_second) / 1000) * rate)
+        --- 需要+的 + 当前还剩余的令牌 = 期望当前的令牌数量
+        local expect_curr_permits = reverse_permits + curr_permits;
+        --- 将期望的和最大速率比对, 取小的, 防止超载
+        --- 多于最大速率后的漏（丢弃策略）
+        local_curr_permits = math.min(expect_curr_permits, max_permits);
+
+        --- 大于0表示不是第一次获取令牌，也没有向桶里添加令牌
+        --- 如果当前消耗时间内需要添加令牌, 设置最新的添加时间为当前时间 
+        if (reverse_permits &amp;gt; 0) then
+            redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, curr_mill_second)
+        end
+    else
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, curr_mill_second)
+    end
+
+
+    local result = -1
+    if (local_curr_permits - permits &amp;gt;= 0) then
+        result = 1
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;curr_permits&amp;quot;, local_curr_permits - permits)
+    else
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;curr_permits&amp;quot;, local_curr_permits)
+    end
+
+    return result
+end
+
+
+--- 初始化令牌桶配置
+--- @param key 令牌的唯一标识
+--- @param max_permits 桶大小
+--- @param rate  向桶里添加令牌的速率
+--- @param apps  可以使用令牌桶的应用列表，应用之前用逗号分隔
+local function init(key, max_permits, rate, apps)
+    local rate_limit_info = redis.pcall(&amp;quot;HMGET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, &amp;quot;curr_permits&amp;quot;, &amp;quot;max_permits&amp;quot;, &amp;quot;rate&amp;quot;, &amp;quot;apps&amp;quot;)
+    local org_max_permits = tonumber(rate_limit_info[3])
+    local org_rate = rate_limit_info[4]
+    local org_apps = rate_limit_info[5]
+
+    if (org_max_permits == nil) or (apps ~= org_apps or rate ~= org_rate or max_permits ~= org_max_permits) then
+        redis.pcall(&amp;quot;HMSET&amp;quot;, key, &amp;quot;max_permits&amp;quot;, max_permits, &amp;quot;rate&amp;quot;, rate, &amp;quot;curr_permits&amp;quot;, max_permits, &amp;quot;apps&amp;quot;, apps)
+    end
+    return 1;
+end
+
+
+--- 删除令牌桶
+local function delete(key)
+    redis.pcall(&amp;quot;DEL&amp;quot;, key)
+    return 1;
+end
+
+
+local key = KEYS[1]
+local method = ARGV[1]
+
+if method == &#39;acquire&#39; then
+    return acquire(key, ARGV[2], ARGV[3], ARGV[4])
+elseif method == &#39;init&#39; then
+    return init(key, ARGV[2], ARGV[3], ARGV[4])
+elseif method == &#39;delete&#39; then
+    return delete(key)
+else
+    --ignore
+end
+
+
+
+概览
+
+LUA的下标是从1开始的
+LUA的KEYS是调用方逗号分割前一部分，ARGV是后一部分。
+
+整个脚本包含了4个方法，入口处使用ARGV[1]判断，决定调用哪一个方法
+其核心使用了一个 HASH 来存放策略信息。其中包括：
+
+max_permits -&amp;gt; 每秒最大速率
+rate -&amp;gt; 每秒放入速率
+curr_permits -&amp;gt; 当前速率
+apps -&amp;gt; 应用列表
+last_mill_second -&amp;gt; 上次添加令牌时间
+
+delete
+delete方法最为简单，就是调用DEL删除key即可，相当于删除了访问控制的策略。
+init
+初始化方法即将数据库或其他三方的元数据，加载到redis中，以redis的数据格式 Hash 存储。
+此方法是幂等的，在加入之前会进行判断，如果没有才会添加。
+acquire
+此方法最为核心，是从桶中获取令牌的动作，并且模拟RateLimiter实现了触发式添加，从而提升QPS。
+方法前面内容均为赋值操作和基本判空操作，没什么好说的。
+从local local_curr_permits = max_permits;便开始了触发式添加动作。
+从if (local_curr_permits - permits &amp;gt;= 0) then开始消耗动作。
+--- 获取令牌
+--- 返回码
+--- 0 没有令牌桶配置
+--- -1 表示取令牌失败，也就是桶里没有令牌
+--- 1 表示取令牌成功
+--- @param key 令牌的唯一标识
+--- @param permits  请求令牌数量
+--- @param curr_mill_second 当前毫秒数
+--- @param context 使用令牌的应用标识
+local function acquire(key, permits, curr_mill_second, context)
+    local rate_limit_info = redis.pcall(&amp;quot;HMGET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, &amp;quot;curr_permits&amp;quot;, &amp;quot;max_permits&amp;quot;, &amp;quot;rate&amp;quot;, &amp;quot;apps&amp;quot;)
+    local last_mill_second = rate_limit_info[1]
+    local curr_permits = tonumber(rate_limit_info[2])
+    local max_permits = tonumber(rate_limit_info[3])
+    local rate = rate_limit_info[4]
+    local apps = rate_limit_info[5]
+
+    if type(apps) == &#39;boolean&#39; or apps == nil or not contains(apps, context) then
+        return 0
+    end
+
+    --- 将当前令牌调整为配置的最大速率
+    local local_curr_permits = max_permits;
+
+    --- 此处为触发式添加令牌动作
+    --- 判断是否有上次添加令牌时间, 此处有三种情况:
+    --- 1. 第一次进来, last_mill_second = nil, 直接走进else, 然后消耗令牌
+    --- 2. 第二次进来, 分为两种情况
+    --- 2.1 在第一次后的1秒内访问, 即下方情况1
+    --- 2.2 在第一次后的1秒后访问, 即下方情况2
+    if (type(last_mill_second) ~= &#39;boolean&#39;  and last_mill_second ~= nil) then
+        --- 向下取整(距离上次添加过去多少秒 * rate) = 需要向令牌桶添加的令牌数量
+        --- 假设rate=10, max_permits=10
+        --- 情况1: 距离上次添加过去多少秒 &amp;lt; 1秒 假设=0.2秒 * 10 = 2个令牌
+        --- 情况2: 距离上次添加过去多少秒 &amp;gt; 1秒 假设=10秒 * 10 = 100个令牌
+        local reverse_permits = math.floor(((curr_mill_second - last_mill_second) / 1000) * rate)
+        --- 本次需要添加的令牌 + 剩余的令牌 = 期望令牌数量
+        --- 情况1: 可能出现两种情况
+        --- 情况1.1 reverse_permits = 2, curr_permits &amp;gt;= 9 , 即桶中还只消耗1个或没有消耗, 但是本次需要添加2个, 多了, 下方min函数会将其漏掉
+        --- 情况1.2 reverse_permits = 2, curr_permits &amp;lt; 9 , 即桶中消耗了超过2个, 本次添加2个, 符合
+        --- 情况2: 绝对多了, 下方min函数会将其漏掉
+        local expect_curr_permits = reverse_permits + curr_permits;
+        --- 此处解决上面两种情况, 防止过载(即将多的令牌丢弃的动作)
+        --- 情况1: 期望令牌 &amp;lt; max_permits(10), 设置期望令牌到当前令牌
+        --- 情况2: 期望令牌 &amp;gt; max_permits(10), 设置最大令牌到当前令牌 -&amp;gt; 即很久没有访问后的一次访问动作
+        local_curr_permits = math.min(expect_curr_permits, max_permits);
+
+        --- 如果需要向令牌桶添加的令牌数量 &amp;gt; 0, 就更新上次添加令牌时间
+        if (reverse_permits &amp;gt; 0) then
+            redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, curr_mill_second)
+        end
+    else
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;last_mill_second&amp;quot;, curr_mill_second)
+    end
+
+
+    local result = -1
+    --- 当前令牌 够本次 申请的令牌数量
+    if (local_curr_permits - permits &amp;gt;= 0) then
+        result = 1
+        --- 消耗令牌
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;curr_permits&amp;quot;, local_curr_permits - permits)
+    else
+        --- 上面的if不满足, 即令牌没有了
+        redis.pcall(&amp;quot;HSET&amp;quot;, key, &amp;quot;curr_permits&amp;quot;, local_curr_permits)
+    end
+
+    return result
+end
+
+
+Java客户端编写
+载入脚本
+整个脚本较大，可以事先载入到redis服务器，采用SHA1串访问。
+多个实例创建多份rateLimiterLua也无妨，因为是同一个脚本文件内容，创建出来的sha1串也是一致的。
+@Bean
+public DefaultRedisScript&amp;lt;Long&amp;gt; rateLimiterLua() {
+    DefaultRedisScript&amp;lt;Long&amp;gt; redisScript = new DefaultRedisScript&amp;lt;&amp;gt;();
+    redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(&amp;quot;scripts/rate_limiter.lua&amp;quot;)));
+    redisScript.setResultType(Long.class);
+    return redisScript;
+}
+
+编写Java访问客户端
+
+init() - 初始化访问策略
+acquire() - 获取令牌
+delete() - 删除访问策略
+
+public class RateLimiterClient {
+
+    @Autowired
+    @Qualifier(&amp;quot;longRedisTemplate&amp;quot;)
+    private RedisTemplate&amp;lt;String, Long&amp;gt; longRedisTemplate;
+    @Autowired
+    private RedisTemplate&amp;lt;String, String&amp;gt; redisTemplate;
+
+    @Resource
+    private RedisScript&amp;lt;Long&amp;gt; rateLimiterLua;
+
+    /**
+     * 获取访问令牌
+     * @param context 应用名称
+     * @param key 限制速率key
+     * @param permits 获取令牌数量
+     * @return token
+     */
+    public Token acquireToken(String context, String key, Integer permits) {
+
+        Token token;
+        try {
+            // redis当前时间
+            Long currMillSecond = longRedisTemplate.execute(RedisServerCommands::time);
+            // 获取令牌
+            Long acquire = longRedisTemplate.execute(rateLimiterLua, ImmutableList.of(getKey(key)), RATE_LIMITER_ACQUIRE_METHOD, permits.toString(), currMillSecond, context);
+
+            if (acquire == null) {
+                log.error(&amp;quot;no rate limit config for context = {}&amp;quot;, context);
+                return Token.NO_CONFIG;
+            }
+
+            if (acquire == 1) {
+                token = Token.PASS;
+            } else if (acquire == -1) {
+                token = Token.FUSING;
+            } else {
+                log.error(&amp;quot;no rate limit config for context = {}&amp;quot;, context);
+                token = Token.NO_CONFIG;
+            }
+        } catch (Exception e) {
+            log.error(&amp;quot;get rage limit token for redis error, key = &amp;quot; + key, e);
+            token = Token.ACCESS_REDIS_FAIL;
+        }
+        return token;
+    }
+
+    public void deleteRateLimiter(String key) {
+        redisTemplate.execute(rateLimiterLua, ImmutableList.of(getKey(key)), RATE_LIMITER_DELETE_METHOD);
+    }
+
+    public void initRateLimiter(String code, Integer maxPermits, Integer rate, String apps) {
+        redisTemplate.execute(rateLimiterLua,
+                ImmutableList.of(getKey(code)),
+                RATE_LIMITER_INIT_METHOD,
+                maxPermits.toString(),
+                rate.toString(),
+                apps);
+    }
+    
+    private String getKey(String key) {
+        return RateLimiterConstants.RATE_LIMITER_KEY_PREFIX + key;
+    }
+
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/redis-lua-ratelimiter/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/shou-xie-yi-ge-springboot-conditionon/">
+                        手写一个SpringBoot ConditionOn*
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-01-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            SpringBoot自带的Conditional
+打开任意*AutoConfiguration文件，一般都有下面的条件注解，在spring-boot-autoconfigure-1.5.3.RELEASE.jar的org.springframework.boot.autoconfigure.condition包下条件注解如下：
+
+@ConditionalOnBean：当前容器有指定Bean的条件下。
+@ConditionalOnClass：当前类路径下有指定的类的条件下。
+@ConditionalOnExpression：基于SpEL表达式作为判断条件。
+@ConditionalOnJava：基于JVM版本作为判断条件。
+@ConditionalOnJndi：在JNDI存在的条件下查找指定的位置。
+@ConditionalOnMissingBean：当容器里没有指定Bean的情况下。
+@ConditionalOnMissingClass：当类路径下没有指定的类的条件下。
+@ConditionalOnNotWebApplication：当前项目不是WEB项目的条件下。
+@ConditionalOnProperty：指定属性是否有指定的值。
+@ConditionalOnResource：类路径是否有指定的值。
+@ConditionalOnSingleCandidate：当指定Bean在容器中只有一个，或者虽然有多个但 是指定首选的Bean。
+@ConditionalOnWebApplication：当前项目是WEB项目的条件下。
+
+这些注解都组合了@Conditional元注解，只是使用了不同的条件（Conditional），Spring 条件注解（@Conditional）我们介绍过根据不同条件创建不同Bean。
+虽然平时使用的多，但是没怎么了解过是怎么实现的，其实就是实现org.springframework.context.annotation.Condition的不同子类做不同的扩展即可。
+手写一个
+注解
+首先写一个ConditionOnOS注解
+/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 是否是对应OS
+ */
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(OnOSCondition.class)
+public @interface ConditionOnOS {
+
+
+    /**
+     * 系统类型
+     */
+    OSType osType();
+
+
+    public enum OSType {
+        MAC,
+        LINUX,
+        WINDOWS,
+        ;
+    }
+}
+
+处理程序
+然后写一个处理程序
+@Order
+public class OnOSCondition implements ConfigurationCondition {
+
+
+    @Override
+    public ConfigurationPhase getConfigurationPhase() {
+        return ConfigurationPhase.REGISTER_BEAN;
+    }
+
+
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+
+
+        Map&amp;lt;String, Object&amp;gt; attributes = metadata.getAnnotationAttributes(ConditionOnOS.class.getName());
+        ConditionOnOS.OSType osType = (ConditionOnOS.OSType) attributes.get(&amp;quot;osType&amp;quot;);
+
+
+        boolean contains = System.getProperty(&amp;quot;os.name&amp;quot;).toUpperCase().contains(osType.name());
+
+
+        return contains;
+    }
+}
+
+测试程序
+最后写一个启动程序
+package top.imyzt.learning.condition;
+
+
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+
+/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 手写一个ConditionOn*
+ */
+@ComponentScan(&amp;quot;top.imyzt.learning.condition&amp;quot;)
+@Configuration
+public class ConditionOnTest {
+
+
+    public static void main(String[] args) {
+
+
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
+
+
+        annotationConfigApplicationContext.register(ConditionOnTest.class);
+
+
+        annotationConfigApplicationContext.refresh();
+
+
+        HelloWorld helloWorld;
+        try {
+            helloWorld = (HelloWorld) annotationConfigApplicationContext.getBean(&amp;quot;helloWorld&amp;quot;);
+        } catch (NoSuchBeanDefinitionException e) {
+            System.out.println(&amp;quot;helloWorld bean is not exists!&amp;quot;);
+            return;
+        }
+
+
+        helloWorld.say();
+
+
+    }
+
+
+    @Bean
+    @ConditionOnOS(osType = ConditionOnOS.OSType.MAC)
+    public HelloWorld helloWorld() {
+        return new HelloWorld(ConditionOnOS.OSType.MAC.name());
+    }
+
+
+    public class HelloWorld{
+        private String name;
+
+
+        public HelloWorld(String name) {
+            this.name = name;
+        }
+
+
+        public void say() {
+            System.out.println(this.name + &amp;quot; --- say hello!&amp;quot;);
+        }
+    }
+}
+
+
+测试
+正向
+我的电脑是Mac，所以我执行后的结果是
+…省略
+15:42:08.868 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;conditionOnTest&#39;
+15:42:08.873 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;helloWorld&#39;
+MAC --- say hello!
+
+反向
+当将注解的参数修改为 ConditionOnOS.OSType.LINUX 后，结果如下
+15:42:59.405 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;conditionOnTest&#39;
+helloWorld bean is not exists!
+
+讲解
+其中自主要的是在注解ConditionOnOS上面的@Conditional(OnOSCondition.class)元注解，它指定了判断的处理程序是OnOSCondition.class。
+其次是OnOSCondition通过实现ConfigurationCondition来重写判断逻辑。
+getConfigurationPhase()
+getConfigurationPhase()用于提供给Spring告知其构建阶段，有两个：
+
+PARSE_CONFIGURATION： 一个是Condition应评估@Configuration类，如果此时条件不匹配，@Configuration 则不会添加该类。
+REGISTER_BEAN： 该条件不会阻止@Configuration添加类，在评估条件时，所有@Configurations都将被解析。
+
+ConfigurationPhase的作用并不是根据条件来判断是否加载这个配置类，实际ConfigurationPhase控制的是过滤的时机，是在创建Configuration类的时候过滤还是在创建bean的时候过滤（也可用条件注解的生效阶段来描述）。
+此处@https://blog.csdn.net/xcy1193068639/article/details/81589489
+enum ConfigurationPhase {
+
+
+   /**
+    * The {@link Condition} should be evaluated as a {@code @Configuration}
+    * class is being parsed.
+    * &amp;lt;p&amp;gt;If the condition does not match at this point, the {@code @Configuration}
+    * class will not be added.
+    */
+   PARSE_CONFIGURATION,
+
+
+   /**
+    * The {@link Condition} should be evaluated when adding a regular
+    * (non {@code @Configuration}) bean. The condition will not prevent
+    * {@code @Configuration} classes from being added.
+    * &amp;lt;p&amp;gt;At the time that the condition is evaluated, all {@code @Configuration}
+    * classes will have been parsed.
+    */
+   REGISTER_BEAN
+}
+
+matches()
+matches()方法用于重写匹配逻辑，此方法根据自己的业务逻辑重写即可。
+后文
+本篇文章的源代码位置：https://github.com/imyzt/learning-technology-code/tree/master/source-code/xiaomage-springboot-teach/spring-boot-condition
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/shou-xie-yi-ge-springboot-conditionon/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+                        Java Throwable异常堆栈收集的性能问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-01-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。
+但是使用此方式是具有一定的性能损耗的，因为在基类Throwable 的fillInStackTrace()方法会不断收集各层的调用链路，而SpringMVC又是在外层的Tomcat到DispatcherServlet到应用自定义的各种intercepter层层调用，调用堆栈通常较长。所以多多少少具有一定的性能消耗，下面进行了一个基本测试。
+第一个for循环是为了给JVM预热。
+第二个模拟普通的异常。
+第三个模拟重写了fillInStackTrace()方法的异常。
+/**
+ * @author imyzt
+ * @date 2021/01/02
+ * @description 异常收集测试
+ */
+public class TestMain {
+
+
+    public static void main(String[] args) {
+
+
+        int idx = 1000022;
+
+
+        long t1Start = System.currentTimeMillis();
+        for (int i = 0; i &amp;lt; idx; i++) {
+            Test test = new Test(&amp;quot;aa&amp;quot; + i);
+        }
+        long t1end = System.currentTimeMillis();
+        System.out.println(t1end - t1Start);
+
+
+
+
+        long t2Start = System.currentTimeMillis();
+        for (int i = 0; i &amp;lt; idx; i++) {
+            try {
+                throw new ThrowableTest(&amp;quot;aa&amp;quot; + i);
+            } catch (ThrowableTest throwableTest) {
+            }
+        }
+        long t2end = System.currentTimeMillis();
+        System.out.println(t2end - t2Start);
+
+
+
+
+
+
+        long t3Start = System.currentTimeMillis();
+        for (int i = 0; i &amp;lt; idx; i++) {
+            try {
+                throw new ThrowableTest2(&amp;quot;aa&amp;quot; + i);
+            } catch (ThrowableTest2 throwableTest) {
+
+
+            }
+        }
+        long t3end = System.currentTimeMillis();
+        System.out.println(t3end - t3Start);
+    }
+
+
+
+
+    public static class Test {
+
+
+        private String name;
+
+
+        public Test(String name) {
+            this.name = name;
+        }
+    }
+
+
+    public static class ThrowableTest extends RuntimeException {
+
+
+        private String msg;
+
+
+        public ThrowableTest(String msg) {
+            super(msg);
+            this.msg = msg;
+        }
+    }
+
+
+    public static class ThrowableTest2 extends RuntimeException {
+
+
+        private String msg;
+
+
+        public ThrowableTest2(String msg) {
+            super(msg);
+            this.msg = msg;
+        }
+
+
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+            return this;
+        }
+    }
+}
+
+耗时对比：
+88
+1631
+74
+通过结果可以看出，即使在非Web环境下都有如此巨大的性能差距，web环境下冗长的调用链路差距只会更大，大家可使用web环境下进行测试。
+但是不是说有性能损耗就不用， 也需要结合业务进行权衡，比如可以将类似于参数错误等无需通过调用堆栈判断的、但是出现频率有很高的的异常进行重写基类的fillInStackTrace()方法，使其不收集堆栈，但是此举会使出现异常后无法排查，所以只能使用在无需通过堆栈判断问题的场景下用于提升性能。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-80-gong-yong-biao-biao-da-shi-cte/">
+                        MySQL 8.0 公用表表达式（CTE）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-11-30</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            从版本8.0开始，MySQL简单地引入了公用表表达式功能或CTE。
+用于单词定义多次引用使用。
+语法如下所示，其中需要注意的是
+
+定义后，必须下方接着使用，不然语法错误。
+同一个语句可以定义多个CTE
+
+with 别名 as (SQL语句),
+with 别名2 as (SQL语句)
+SELECT/DELETE/UPDATE/INSERT子句
+
+例子：
+with cte as (select *
+             from t_window_func)
+select dept, count(*)
+from cte
+where salary not in (select salary from cte where salary &amp;lt; 13000)
+group by dept;
+
+以上语句的外层from cte和内层not in中多次引用了cte这个”公用表“
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-80-gong-yong-biao-biao-da-shi-cte/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-80-window-functionser/">
+                        MySQL 8.0 window functions（二）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2020-11-30</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            接上一篇的内容，继续讲一下窗口函数和分析函数结合的使用。
+lag与lead函数是跟偏移量相关的两个分析函数，通过这两个函数可以在一次查询中取出同一字段的前N行的数据(lag)和后N行的数据(lead)作为独立的列,从而更方便地进行进行数据过滤。这种操作可以代替表的自联接，并且LAG和LEAD有更高的效率。
+https://my.oschina.net/u/2338224/blog/3112042
+lag(expression, offset, default_value)
+取出同一字段的前N行的数据。
+语法
+lag(expression, offset, default_value)
+
+expression: 表达式，需要处理的结果列。
+offset: 偏移量，必须&amp;gt;=0，=0时返回当前行自己。&amp;gt;0返回当前行的前几行
+default_value: 默认值，第一行没有值时显示。
+
+示例
+select
+name, dept,
+       salary,
+       lag(salary, 1) over (partition by dept order by salary ) as &#39;上一个人的工资&#39;
+from t_window_func
+
+lag(salary, 1) over (partition by dept order by salary ) 通过对部门分区，对薪资取上一条数据，最后根据薪资正序排序，展示了不同部门每个人自己和上一个人的薪资情况。
+
+从结果集中，我们看到了的是，
+
+首先数据根据partition by dept, 根据部门进行了分区，不同分区不同处理。
+defaultValue展示了默认值
+员工2的上一个人工资=员工1的10000，员工3的上一个人工资=员工2的10000，以此类推
+
+lead(expression, offset, default_value)
+取出同一字段的后N行的数据，语法与lag的相同。
+示例
+select
+name, dept,
+       salary,
+       lead(salary, 1, &#39;defaultValue&#39;) over (partition by dept order by salary ) as &#39;下一个人的工资&#39;
+from t_window_func
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-80-window-functionser/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/5/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/7/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

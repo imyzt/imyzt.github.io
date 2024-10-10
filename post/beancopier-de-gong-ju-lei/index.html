@@ -1,0 +1,376 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    BeanCopier的工具类 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            BeanCopier的工具类
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2020-04-15</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <p>平时对象参数拷贝时，顺手使用的都是<code>Spring</code> 提供的 <code>BeanUtils</code>。究其原因，更多都是因为它方便，好使。</p>
+<p>但是大家都知道cglib的 <code>BeanCopier</code> 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得<code>BeanCopier.create</code>，创建一个BeanCopier对象，麻烦，代码还不好看。</p>
+<p>因此，就有了这个工具类。使用和Spring工具包一样的代码（重载方法甚至比Spring的更丰富），获得更好的效率。实现中通过对<code>BeanCopier</code>对象的一个Map缓存，会使得其效率更高一丢丢。</p>
+<p>至于具体的速度对比，网上有很多的实例，我也不做对比测试了。代码如下，如有欠缺的地方，希望留言指正，不胜感激。</p>
+<pre><code class="language-java">
+import com.google.common.collect.Maps;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * @author imyzt
+ * @date 2020/01/15
+ * @description bean拷贝缓存工具类
+ * 合理使用, 注意Map大小
+ */
+@UtilityClass
+@Slf4j
+public class BeanCopierUtils {
+
+    private static final Map&lt;String, BeanCopier&gt; BEAN_COPIER_MAP = Maps.newConcurrentMap();
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param target 目标
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &lt;S&gt; 源对象泛型
+     * @param &lt;T&gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &lt;S, T&gt; T copy(S source, T target, boolean useCache, Converter converter) {
+
+        requireNonNull(source, target);
+        boolean useConverter = Objects.nonNull(converter);
+
+        Class&lt;?&gt; targetClass = target.getClass();
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+        beanCopier.copy(source, target, converter);
+        return target;
+    }
+
+    /**
+     * 使用BeanCopier拷贝对象属性
+     * 1. target不能使用链式调用 {@link lombok.experimental.Accessors#chain}
+     * 2. 只会拷贝source,target属性类型和名称完全一致的字段
+     * @param source 源
+     * @param targetClass 目标类对象
+     * @param useCache 是否使用缓存
+     * @param converter converter对象
+     * @param &lt;S&gt; 源对象泛型
+     * @param &lt;T&gt; 目标对象泛型
+     * @return 返回target对象
+     */
+    public &lt;S, T&gt; T copy(S source, Class&lt;T&gt; targetClass, boolean useCache, Converter converter) {
+
+        requireNonNull(source, targetClass);
+        boolean useConverter = Objects.nonNull(converter);
+
+        String key = getKey(source, targetClass);
+
+        BeanCopier beanCopier = getBeanCopier(useCache, key, createBeanCopier(source, targetClass, useConverter));
+
+        T instance;
+        try {
+            instance = targetClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalArgumentException();
+        }
+        beanCopier.copy(source, instance, converter);
+        return instance;
+    }
+
+    private static BeanCopier getBeanCopier(boolean useCache, String key, BeanCopier beanCopier2) {
+        BeanCopier beanCopier;
+        if (useCache) {
+            beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -&gt; beanCopier2);
+        } else {
+            beanCopier = beanCopier2;
+        }
+        return beanCopier;
+    }
+
+    private static &lt;S&gt; void requireNonNull(S source, Object targetClass) {
+        Objects.requireNonNull(source, &quot;源对象不能为空&quot;);
+        Objects.requireNonNull(targetClass, &quot;目标对象不能为空&quot;);
+    }
+
+    public &lt;S, T&gt; T copy(S source, T target) {
+        return copy(source, target, true, null);
+    }
+
+    public &lt;S, T&gt; T copy(S source, Class&lt;T&gt; targetClass) {
+        return copy(source, targetClass, true, null);
+    }
+
+    public &lt;S, T&gt; T copy(S source, Class&lt;T&gt; targetClass, boolean useCache) {
+        return copy(source, targetClass, useCache, null);
+    }
+
+    public &lt;S, T&gt; T copy(S source, Class&lt;T&gt; targetClass, Converter converter) {
+        return copy(source, targetClass, true, converter);
+    }
+
+    public &lt;S, T&gt; T copy(S source, T target, boolean useCache) {
+        return copy(source, target, useCache, null);
+    }
+
+    public &lt;S, T&gt; T copy(S source, T target, Converter converter) {
+        return copy(source, target, true, converter);
+    }
+
+    private static &lt;S, T&gt; BeanCopier createBeanCopier(S source, Class&lt;T&gt; target, boolean useConverter) {
+        return BeanCopier.create(source.getClass(), target, useConverter);
+    }
+
+    private static &lt;S, T&gt; String getKey(S source, Class&lt;T&gt; targetClass) {
+        return source.getClass().getName() + &quot;:&quot; + targetClass.getName();
+    }
+}
+
+</code></pre>
+<p>在使用时，有两点需要注意的地方：</p>
+<ol>
+<li>target不能使用lombok等工具的链式调用，只有符合标准的set方法，cglib才会调用赋值。</li>
+<li>只会拷贝source，target类型和名称完全一致的属性。</li>
+</ol>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/mybatis-yu-fa-jiu-cuo/">
+                                <h3 class="post-title">
+                                    Mybatis 语法纠错
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                                <!-- id-card -->
+                                
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+                                    
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

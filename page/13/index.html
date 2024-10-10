@@ -1,0 +1,846 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-zi-ding-yi-can-shu-jie-xi/">
+                        Spring 自定义参数解析
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-21</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            缘起
+我们在使用Spring的时候，通常会直接在 Controller 的 handler（自定义的接口）中填写 HttpServletRequest, HttpServletResponse, Model, HttpSession，并且在方法中使用时对象是可以使用的。
+之前我一直好奇， 这是什么原理。通过这次在学习慕课网的Java秒杀系统方案优化 高性能高并发实战 时，老师的讲解是我终于不是只会用，不知其如何实现了。
+原理
+Spring给我们使用者预留了一个接口 HandlerMethodArgumentResolver，通过实现这个接口， 覆盖它的 supportsParameter 和 resolveArgument 方法, 我们就可以将自己想要的对象在方法入参处自动注入了. Spring官方的名称叫做 自定义参数解析.
+在学习课程的过程中, 我们很多的方法都需要一个 MiaoshaUser 对象, 下面我们结合实际需求, 通过代码展示的方式一步一步实现这个看起来很酷的功能.
+给我也整一个
+第一步
+首先我们编写一个 UserArgumentResolver 类, 使其实现 HandlerMethodArgumentResolver 接口. 并且通过 @Component 注解将它标记为Spring管理的Bean
+/**
+ * @author imyzt
+ * @date 2019/3/9 16:53
+ * @description 实现此方法, 将自动对方法入参包含 {@link MiaoshaUser} 的对象的进行注入
+ */
+@Component
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+
+}
+
+第二步
+我们需要覆盖它的两个方法
+/**
+ * @author imyzt
+ * @date 2019/3/9 16:53
+ * @description 实现此方法, 将自动对方法入参包含 {@link MiaoshaUser} 的对象的进行注入
+ */
+@Component
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        Class &amp;lt;?&amp;gt; parameterType = parameter.getParameterType();
+        return parameterType == MiaoshaUser.class;
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
+        return UserContext.getUser();
+    }
+}
+
+supportsParameter()
+supportsParameter() 方法中判断请求参数是否被 HandlerMethodArgumentResolver  支持, 它的判断依据非常多, 具体可以查看 org.springframework.core.MethodParameter 的源代码找到合适自己业务的匹配方法. 我这里通过 getParameterType() 方法获取了参数类型, 只要是参数类型是 MiaoshaUser.class 的就表示我编写的 UserArgumentResolver  解析类支持处理该方法入参. 下面开始下一个具体处理方法.
+resolveArgument(...)
+resolveArgument(...) 方法及自定义参数解析的核心处理方法. Spring通过调用该方法将参数值注入到上面 supportsParameter() 支持的方法入参上面去.
+我这里的处理方法比较简单, 因为我的用户信息在上一步的拦截器中已经保存在 UserContext 用户上下文信息中. 所以只需要 getUser() 即可获取用户信息.
+在这里备注一下, 我们可以通过 webRequest 获取到当前请求的Request和Response信息. 代码如下
+HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
+
+总结
+通过学习慕课上面的这个项目, 对于我这种没有接触过互联网项目的人来说, 是一个互联网开发扫盲. 里面的很多东西还是非常不错的. 在学习这个项目的过程中. 写了一些小笔记, 不在于实现, 而是一些思路. 项目地址: github
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-zi-ding-yi-can-shu-jie-xi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-boot-20-wu-fa-zhao-dao-springwebcontext/">
+                        spring boot 2.0+ 无法找到SpringWebContext
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-18</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            1.0+版本是有的. 在2.0+版本去除了. 官方issues给出了原因, 是为了优化依赖结构.区分边界.
+可通过 org.thymeleaf.context.WebContext 方法得到同样的结果.
+参考: https://blog.csdn.net/wilsonsong1024/article/details/81535860#2评论
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-boot-20-wu-fa-zhao-dao-springwebcontext/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/redis-bing-fa-ce-shi-gong-ju-shi-yong/">
+                        redis并发测试工具使用
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-15</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            简单测试
+redis自带了并发测试工具 redis-benchmark, 只需要携带几个简单的参数就可以完成redis的压力测试.
+并发测试
+redis-benchmark.exe -h 127.0.0.1 -p 6379 -c 100 -n 100000
+
+上面的命令意思是使用 100 的并发,发起 10w 次请求
+结果分析
+====== GET ======                           
+  100000 requests completed in 0.98 seconds 
+  100 parallel clients                      
+  3 bytes payload                           
+  keep alive: 1                             
+                                            
+60.40% &amp;lt;= 1 milliseconds                    
+99.66% &amp;lt;= 2 milliseconds                    
+99.88% &amp;lt;= 3 milliseconds                    
+99.99% &amp;lt;= 4 milliseconds                    
+100.00% &amp;lt;= 4 milliseconds                   
+102249.49 requests per second               
+
+比如上面的就是执行了 get 命令, 10w次请求在0.98s 执行完毕. 使用了100个客户端, 每次使用了 3个字节负载
+其中 60.40% 在1ms 执行完毕.....
+大数据测试
+redis-benchmark.exe -h 127.0.0.1 -p 6379 -q -d 200
+
+上面命令的意思是 一次数据包200字节, 结果做简单输出
+结果分析
+PING_INLINE: 104821.80 requests per second
+PING_BULK: 113895.21 requests per second
+SET: 102459.02 requests per second
+GET: 110253.59 requests per second
+INCR: 110011.00 requests per second
+LPUSH: 91996.32 requests per second
+RPUSH: 94786.73 requests per second
+LPOP: 94428.70 requests per second
+RPOP: 93984.96 requests per second
+
+其中 SET: 102459.02 requests per second 表示每秒执行了10w+次请求
+部分命令测试
+redis-benchmark.exe -h 127.0.0.1 -p 6379 -t set,get -q -n 100000
+
+上面命令的意思是对 set,get 两个命令做 10w 次请求测试, 结果做简单输出
+结果分析
+SET: 97656.24 requests per second
+GET: 108813.92 requests per second
+
+其中 GET: 108813.92 requests per second 表示每秒执行了10w+次 get 操作
+只测试某种命令
+redis-benchmark.exe -h 127.0.0.1 -p 6379 -n 100000 -q script load &amp;quot;redis.call(&#39;set&#39;,&#39;name&#39;,&#39;yzt&#39;)&amp;quot;
+
+上面命令的意思是只测试 set name yzt 这一个命令的速度
+结果分析
+script load redis.call(&#39;set&#39;,&#39;name&#39;,&#39;yzt&#39;): 82644.63 requests per second
+
+结果表示当前命令一秒钟可以完成 8w+ 次操作
+参数详解
+
+-h, -p： 不解释
+-c： 并发数
+-n： 请求数
+-q： 简单结果输出
+-d 100： 100字节的负载
+-t set：只测试set
+script load：只测试某个脚本
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/redis-bing-fa-ce-shi-gong-ju-shi-yong/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/mysql-cha-xun-biao-suo-you-lie/">
+                        mysql 查询表所有列
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-14</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在有些时候， 我们写 insert into 语句的时候, 需要列出所有的列名, 但是又不想全部手敲, 可以通过下面的SQL语句得到表所有列名,并以逗号分隔.
+SELECT
+	GROUP_CONCAT(COLUMN_NAME SEPARATOR &amp;quot;,&amp;quot;)
+FROM
+	information_schema. COLUMNS
+WHERE
+	TABLE_SCHEMA = &#39;db_name&#39;
+AND TABLE_NAME = &#39;table_name&#39;
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/mysql-cha-xun-biao-suo-you-lie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/linux-shan-chu-wen-jian-pai-chu-xx-wen-jian-rm-fan-xiang-shan-chu/">
+                        Linux 删除文件排除xx文件 (rm反向删除)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-13</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            rm删除除去指定文件的剩余所有文件  (rm 反向删除）
+使用
+使用 ls, grep, rm 三个命令完成本次操作.  假如需要删除 /tmp/下面的所有文件, 排除掉 ab.txt 文件
+n-tech-admin@findface1:~/tmp$ ls
+a  ab  abc  abcd  abc.txt  ab.txt  a.txt
+n-tech-admin@findface1:~/tmp$ rm -rf `ls |grep -v &amp;quot;^ab.txt$&amp;quot;`
+n-tech-admin@findface1:~/tmp$ ls
+ab.txt
+
+解析
+其中 grep 的 -v 支持正则表达式, ^ 开头 $ 结尾 用于唯一匹配, -rf 后面的引号是 ` (Esc下面的按键) , 而不是单引号.
+正则稍加改造就可以指定当前目录下所有包含 ab 字眼的文件或文件夹. 以此类推
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/linux-shan-chu-wen-jian-pai-chu-xx-wen-jian-rm-fan-xiang-shan-chu/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/zhuan-zai-spring-cloud-de-ban-ben/">
+                        [转载] Spring Cloud的版本
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-12</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            https://www.cnblogs.com/xingzc/p/9414208.html
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/zhuan-zai-spring-cloud-de-ban-ben/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-boot-jpa-query/">
+                        Spring boot JPA @Query
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-08</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            今天在写一个很简单的查询语句的时候，因为结果只需要大表中的三四个字段，项目又使用的jpa作为数据框架，所以考虑使用 @Query 注解自定义SQL，然后遇到了一个报错， 始终没有解决。最终在CSDN搜索到一个回答解决了这个小问题.
+在自定义SQL的时候，需要加上 nativeQuery = true 属性，否则JPA将按照默认的  hql 执行我们写的原生SQL。
+错误堆栈：
+2019-03-08 15:36:45.601  INFO 14220 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
+2019-03-08 15:36:45.603  INFO 14220 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-03-08 15:36:45.788  INFO 14220 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-03-08 15:36:45.983  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2019-03-08 15:36:46.112  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2019-03-08 15:36:46.126  INFO 14220 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2019-03-08 15:36:47.085  INFO 14220 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit &#39;default&#39;
+2019-03-08 15:36:47.660  INFO 14220 --- [           main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2019-03-08 15:36:47.722  WARN 14220 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;dataController&#39; defined in file [D:\dev\Ntech\data\target\classes\cn\anytec\data\controller\DataController.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+2019-03-08 15:36:47.724  INFO 14220 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit &#39;default&#39;
+2019-03-08 15:36:47.727  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2019-03-08 15:36:47.735  INFO 14220 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2019-03-08 15:36:47.752  INFO 14220 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2019-03-08 15:36:47.771  INFO 14220 --- [           main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with &#39;debug&#39; enabled.
+2019-03-08 15:36:47.786 ERROR 14220 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;dataController&#39; defined in file [D:\dev\Ntech\data\target\classes\cn\anytec\data\controller\DataController.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:769) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:218) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1325) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1171) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:849) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:877) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.__refresh(AbstractApplicationContext.java:549) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.jrLockAndRefresh(AbstractApplicationContext.java:40002) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:41008) ~[spring-context-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:142) ~[spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1260) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1248) [spring-boot-2.1.3.RELEASE.jar:2.1.3.RELEASE]
+	at cn.anytec.data.DataApplication.main(DataApplication.java:16) [classes/:na]
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;snapServiceImpl&#39;: Unsatisfied dependency expressed through field &#39;personRepository&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:596) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:374) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:592) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1247) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1167) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:857) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:760) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 21 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;personRepository&#39;: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1762) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1247) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1167) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:593) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 35 common frames omitted
+Caused by: java.lang.IllegalArgumentException: Validation failed for query for method public abstract cn.anytec.data.model.entity.TbPerson cn.anytec.data.repository.PersonRepository.findTbPersonBySdkId(java.lang.String)!
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.validateQuery(SimpleJpaQuery.java:93) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.&amp;lt;init&amp;gt;(SimpleJpaQuery.java:63) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryFactory.fromMethodWithQueryString(JpaQueryFactory.java:76) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryFactory.fromQueryAnnotation(JpaQueryFactory.java:56) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$DeclaredQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:139) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$CreateIfNotFoundQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:206) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.query.JpaQueryLookupStrategy$AbstractQueryLookupStrategy.resolveQuery(JpaQueryLookupStrategy.java:79) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lookupQuery(RepositoryFactorySupport.java:566) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lambda$mapMethodsToQuery$1(RepositoryFactorySupport.java:559) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193) ~[na:1.8.0_171]
+	at java.util.Iterator.forEachRemaining(Iterator.java:116) ~[na:1.8.0_171]
+	at java.util.Collections$UnmodifiableCollection$1.forEachRemaining(Collections.java:1049) ~[na:1.8.0_171]
+	at java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1801) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:481) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:471) ~[na:1.8.0_171]
+	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:708) ~[na:1.8.0_171]
+	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:1.8.0_171]
+	at java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:499) ~[na:1.8.0_171]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.mapMethodsToQuery(RepositoryFactorySupport.java:561) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.lambda$new$0(RepositoryFactorySupport.java:551) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at java.util.Optional.map(Optional.java:215) ~[na:1.8.0_171]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.&amp;lt;init&amp;gt;(RepositoryFactorySupport.java:551) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:324) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$5(RepositoryFactoryBeanSupport.java:297) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:211) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.util.Lazy.get(Lazy.java:94) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:300) ~[spring-data-commons-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean.afterPropertiesSet(JpaRepositoryFactoryBean.java:119) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1821) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1758) ~[spring-beans-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	... 45 common frames omitted
+Caused by: java.lang.IllegalArgumentException: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped [select name,gender,group_id as groupId,id_number as idNumber,sdk_id as sdkId from tb_person where sdk_id = ?1]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:138) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:181) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:188) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.createQuery(AbstractSharedSessionContract.java:713) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSessionImpl.createQuery(AbstractSessionImpl.java:23) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_171]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.__invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:45009) ~[na:1.8.0_171]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:45012) ~[na:1.8.0_171]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_171]
+	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:350) ~[spring-orm-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+	at com.sun.proxy.$Proxy101.createQuery(Unknown Source) ~[na:na]
+	at org.springframework.data.jpa.repository.query.SimpleJpaQuery.validateQuery(SimpleJpaQuery.java:87) ~[spring-data-jpa-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	... 74 common frames omitted
+Caused by: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped [select name,gender,group_id as groupId,id_number as idNumber,sdk_id as sdkId from tb_person where sdk_id = ?1]
+	at org.hibernate.hql.internal.ast.QuerySyntaxException.generateQueryException(QuerySyntaxException.java:79) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.QueryException.wrapWithQueryString(QueryException.java:103) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.doCompile(QueryTranslatorImpl.java:219) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.compile(QueryTranslatorImpl.java:143) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.HQLQueryPlan.&amp;lt;init&amp;gt;(HQLQueryPlan.java:119) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.HQLQueryPlan.&amp;lt;init&amp;gt;(HQLQueryPlan.java:80) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.engine.query.spi.QueryPlanCache.getHQLQueryPlan(QueryPlanCache.java:153) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.getQueryPlan(AbstractSharedSessionContract.java:595) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.internal.AbstractSharedSessionContract.createQuery(AbstractSharedSessionContract.java:704) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	... 84 common frames omitted
+Caused by: org.hibernate.hql.internal.ast.QuerySyntaxException: tb_person is not mapped
+	at org.hibernate.hql.internal.ast.util.SessionFactoryHelper.requireClassPersister(SessionFactoryHelper.java:169) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.tree.FromElementFactory.addFromElement(FromElementFactory.java:91) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.tree.FromClause.addFromElement(FromClause.java:79) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.HqlSqlWalker.createFromElement(HqlSqlWalker.java:331) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromElement(HqlSqlBaseWalker.java:3695) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromElementList(HqlSqlBaseWalker.java:3584) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.fromClause(HqlSqlBaseWalker.java:720) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.query(HqlSqlBaseWalker.java:576) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.selectStatement(HqlSqlBaseWalker.java:313) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.antlr.HqlSqlBaseWalker.statement(HqlSqlBaseWalker.java:261) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.analyze(QueryTranslatorImpl.java:271) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.doCompile(QueryTranslatorImpl.java:191) ~[hibernate-core-5.3.7.Final.jar:5.3.7.Final]
+	... 90 common frames omitted
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-boot-jpa-query/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/">
+                        java获取服务器内存数据
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-05</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            导包
+&amp;lt;dependency&amp;gt;
+	&amp;lt;groupId&amp;gt;org.fusesource&amp;lt;/groupId&amp;gt;
+	&amp;lt;artifactId&amp;gt;sigar&amp;lt;/artifactId&amp;gt;
+	&amp;lt;version&amp;gt;1.6.4&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+使用
+
+伪代码
+
+Sigar sigar = new Sigar();
+Mem mem =  sigar.getMem();
+
+//计数单位 K
+Long totalMemory = mem.getTotal() / 1024L;
+Long usedMemory = mem.getUsed() / 1024L;
+Long freeMemory = mem.getFree() / 1024L;
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/python-da-kai-wen-jian/">
+                        python打开文件
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+
+
+mode
+说明
+注意
+
+
+
+
+&#39;r&#39;
+只读
+文件必须存在
+
+
+&#39;w&#39;
+只写
+文件不存在则创建, 存在则清空内容
+
+
+&#39;a&#39;
+追加
+文件不存在则创建
+
+
+&#39;r+&#39; / &#39;w+&#39;
+读写
+
+
+
+&#39;a+&#39;
+追加和读写
+文件必须存在
+
+
+
+rb, wb, ab, rb+, wb+, ab+: 二进制方式打开
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/python-da-kai-wen-jian/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/">
+                        JAVA53个关键字(包含2个保留字)
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2019-03-02</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            访问控制符
+
+
+
+
+public
+protected
+缺省
+private
+
+
+
+
+同类可见
+√
+√
+√
+√
+
+
+同包子类可见
+√
+√
+√
+×
+
+
+同包非子类可见
+√
+√
+√
+×
+
+
+不同包子类可见
+√
+√
+×
+×
+
+
+不同包非子类可见
+√
+×
+×
+×
+
+
+
+类,方法和变量修饰符
+
+abstract
+表名类或者类中的方法时抽象的
+class
+声明类
+extends
+声明继承xx类
+final
+声明类标识不可继承、方法不可重写
+implements
+声明实现xx接口
+interface
+声明接口
+native
+声明本地方法
+new
+创建xx类的实例对象
+static
+表明域或方法是静态的，即该域或方法是属于类的
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/12/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/14/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

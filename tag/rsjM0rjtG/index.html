@@ -1,0 +1,559 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Java</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/false-sharing/">
+                        False-Sharing
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-08-21</time>
+                    
+                        <a href="https://imyzt.top/tag/B-w2Ph39V/" class="post-tag i-tag
+                            i-tag-success">
+            #Disruptor
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在阅读VIVO的博客高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用的时候，了解到 Disruptor 高性能的核心原因：
+
+空间预分配
+避免伪共享
+无锁
+
+其中 伪共享 的概念之前没有了解过，故特地了解学习了下，主要涉及到一些基础的概念：
+
+CPU的分级缓存机制
+volatile的内存可见性
+Java long类型/Long类型的字节大小
+
+众所周知，CPU在读取内存中的数据时，并不是读取的直接内存，而是从L1/L2/L3缓存中读取数据，而读取缓存也并非按1字节的读取，而是按照缓存行(通常64字节)一块一块的读取，以此来提高读取效率。
+周所也周知，现代计算机都是多核CPU在运行，线程都会被分配CPU来执行，所以线程内的变量数据是需要读取到CPU Cache中才能够对CPU可见的，为了解决内存在CPU1中修改后CPU2不可见（脏读）的问题，在Java中有设计变量修饰符volatile来修饰变量，以此来实现数据在多个CPU之间不会产生脏读问题，内存在任何一个CPU上发生修改后，在其他CPU上均不可用而丢弃重新从内存中获取。
+当然，也正是因为以上设计，带来了一些预期外的结果（不是问题或bug），如下代码所示：
+对于下面的代码：
+public class FalseSharing {
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer pointer1 = new Pointer();
+        long start = System.currentTimeMillis();
+        Thread t1 = new Thread(() -&amp;gt; {
+            for(int i = 0; i &amp;lt; num; i++){
+                pointer1.x++;
+            }
+        });
+        Thread t2 = new Thread(() -&amp;gt; {
+            for(int i = 0; i &amp;lt; num; i++){
+                pointer1.y++;
+            }
+        });
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println(&amp;quot;pointer1=&amp;quot; + (System.currentTimeMillis() - start));
+    }
+}
+
+class Pointer {
+    volatile long x;
+    volatile long y;
+}
+
+上述代码在我的电脑上执行，需要3.5秒+，多次执行亦然如此，而我们只需稍作调整，改成如下代码，则只需要0.5秒左右即可执行完毕，这是为何？
+public class FalseSharing {
+
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer2 pointer2 = new Pointer2();
+        long start2 = System.currentTimeMillis();
+        Thread t3 = new Thread(() -&amp;gt; {
+            for(int i = 0; i &amp;lt; num; i++){
+                pointer2.x++;
+            }
+        });
+        Thread t4 = new Thread(() -&amp;gt; {
+            for(int i = 0; i &amp;lt; num; i++){
+                pointer2.y++;
+            }
+        });
+        t3.start();
+        t4.start();
+        t3.join();
+        t4.join();
+        System.out.println(&amp;quot;pointer2=&amp;quot; + (System.currentTimeMillis() - start2));
+    }
+}
+
+class Pointer2 {
+    volatile long x;
+    // long p1, p2, p3, p4, p5, p6, p7;
+    Long z1, z2; long z3;
+    volatile long y;
+}
+
+以上现象对应的机制，正是因为缓存行的设计。
+在上面的代码中，包含了线程t1/t2（t3和t4等同）两组线程，分别对x和y进行累加操作，看似是两个线程（CPU在分别对两块内存中的变量执行累加），但是因为CPU是以缓存行的方式读取内存，Pointer1中的x和y在内存中时相邻的两块内存，Java的基本数据类型long类型，占用8字节，所以x和y(加起来16字节)被放到同一个缓存行了，当CPU1对x做了修改后，CPU2读取到y时发现，对应缓存行已经失效了，所以不得不重新从内存中重新读取数据，从而导致了效率降低。
+而我们下面给出的代码，Pointer2的x和y变量间，被塞了两组变量：
+
+long p1, p2, p3, p4, p5, p6, p7; --long类型,占用8个字节, 8*7=56
+Long z1, z2; long z3; --包装Long类型,根据计算机不同有所不同,在我电脑上占用24字节, 24+24+8=56
+两组变量任何一组都可以解决伪共享的问题，之所以塞两组变量，都是为了验证缓存行的存在和解决方案。
+
+方案一直接使用7个基本数据类型，占用了56个字节，加上x变量自身，刚好占用一个完整的缓存行64字节，y只能在另一个缓存行了。
+方案二使用了2组包装数据类型，1组基本数据类型，加起来依旧占用的是56个字节，依旧能将一个缓存行占满，解决缓存行失效问题。
+通过对这块的学习，对基础知识又做了一个巩固，造火箭的知识又增加了。🤡
+博文参考：
+
+美团：高性能队列——Disruptor
+VIVO：高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用
+
+实操代码：FalseSharing
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/false-sharing/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-new-future-cds/">
+                        Java New Future CDS
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-01</time>
+                    
+                        <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-info">
+            #Java_New_Future
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是CDS？CDS即 Class-Data Sharing，类数据共享功能，该功能可以减少Java应用程序的启动时间和内存占用。
+类数据共享功能有助于减少多个Java虚拟机之间的启动时间和内存占用，从JDK12开始，默认的CDS归档文件和JDK二进制文件预先打包，我是用的JDK为OpenJDK OpenJDK 64-Bit Server VM Zulu17.42+19-CA (build 17.0.7+7-LTS, mixed mode, sharing)，是支持CDS的。
+使用
+训练应用程序
+
+首先初始化一个标准的SpringBoot应用，使用 SpringBoot-3.3.0 + Java17
+
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── top
+│   │   │       └── imyzt
+│   │   │           └── learning
+│   │   │               └── cds
+│   │   │                   └── Java12NewFuturesCdsApplication.java
+
+@SpringBootApplication
+public class Java12NewFuturesCdsApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(Java12NewFuturesCdsApplication.class, args);
+    }
+}
+
+
+将其执行Maven打包成jar文件
+
+➜  mvn package -DskipTests=true
+
+
+执行训练命令
+
+➜  cd target
+➜  target ✗ java -Djarmode=tools -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar extract --destination application  
+➜  cd application
+➜  application ✗ java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+
+训练完成后，application目录下，生成了一系列文件：
+➜  application git:(master) ✗ tree
+.
+├── application.jsa
+├── java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+└── lib
+    ├── jackson-annotations-2.17.1.jar
+    ├── jackson-core-2.17.1.jar
+    ├── jackson-databind-2.17.1.jar
+    ├── jackson-datatype-jdk8-2.17.1.jar
+    ├── jackson-datatype-jsr310-2.17.1.jar
+    ├── jackson-module-parameter-names-2.17.1.jar
+    ├── jakarta.annotation-api-2.1.1.jar
+    ├── jul-to-slf4j-2.0.13.jar
+    ├── log4j-api-2.23.1.jar
+    ├── log4j-to-slf4j-2.23.1.jar
+    ├── logback-classic-1.5.6.jar
+    ├── logback-core-1.5.6.jar
+    ├── micrometer-commons-1.13.0.jar
+    ├── micrometer-observation-1.13.0.jar
+    ├── slf4j-api-2.0.13.jar
+    ├── snakeyaml-2.2.jar
+    ├── spring-aop-6.1.8.jar
+    ├── spring-beans-6.1.8.jar
+    ├── spring-boot-3.3.0.jar
+    ├── spring-boot-autoconfigure-3.3.0.jar
+    ├── spring-boot-jarmode-tools-3.3.0.jar
+    ├── spring-context-6.1.8.jar
+    ├── spring-core-6.1.8.jar
+    ├── spring-expression-6.1.8.jar
+    ├── spring-jcl-6.1.8.jar
+    ├── spring-web-6.1.8.jar
+    ├── spring-webmvc-6.1.8.jar
+    ├── tomcat-embed-core-10.1.24.jar
+    ├── tomcat-embed-el-10.1.24.jar
+    └── tomcat-embed-websocket-10.1.24.jar
+1 directory, 32 files
+
+
+使用训练的缓存，在启动应用程序时，补充-XX:SharedArchiveFile参数即可。
+
+➜  application ✗ java -XX:SharedArchiveFile=application.jsa -jar java12-new-futures-cds-0.0.1-SNAPSHOT.jar
+
+启动日志：
+Started Java12NewFuturesCdsApplication in 2.262 seconds (process running for 2.805)
+对比不使用CDS缓存的启动日志：
+Started Java12NewFuturesCdsApplication in 4.464 seconds (process running for 5.341)
+可以看出来，尽管只是一个空项目，但是相同配置情况下启动速度都有倍增。
+结语
+从上面的测试可以看出来，项目的启动速度是有成本的效率增长的，但同时也存在弊端，就是每次应用程序发生变更时，需要冲洗进行jsa文件的训练。
+不管是native-jar还是CDS，都是Java在云原生时代解决应用启动过程慢的探索，在应用的自动扩容领域，还是有不少的应用场景。
+参考
+
+Spring Boot 3.3.0 新特性| 使用 CDS 优化启动时间
+CDS即Class-Data Sharing
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-new-future-cds/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">
+                        ThreadPoolExecutor “非常用” 方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-29</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_4">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-warning">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时在使用线程池时，更多关注到的是coreSize、maxSize、blockQueue、RejectedExecutionHandler这些参数，但在线程池监控领域，还需要关注到其他的一些方法。在此处做统一记录和备忘：
+public static void main(String[] args) {
+
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    // 启动所有核心线程(预热)
+    threadPoolExecutor.prestartAllCoreThreads();
+    // 启动一个核心线程
+    threadPoolExecutor.prestartCoreThread();
+
+    // 默认情况下构造器中的keepAliveTime指定的是非核心线程的空闲时间, 通过如下方法, 可以允许核心线程超时
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+
+    // ⭐️ 动态线程池必备方法
+    // 启动后, 设置核心线程数量
+    threadPoolExecutor.setCorePoolSize(3);
+    // 启动后, 设置最大线程数量
+    threadPoolExecutor.setMaximumPoolSize(10);
+    // 已执行完的任务总数
+    threadPoolExecutor.getTaskCount();
+    // 获取工作队列剩余数量
+    threadPoolExecutor.getQueue().remainingCapacity();
+    }
+
+
+后记
+通过上面的代码可知，在运行过程中我们也是可以操作coreSize和maxSize的。那么如何才能实现对Queue的大小进行控制呢？目前开源届常用的是采取RabbitMQ中的VariableLinkedBlockingQueue来实现。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/hash-chong-tu-jie-jue-fang-fa/">
+                        Hash冲突解决方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-27</time>
+                    
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-success">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是hash冲突？
+
+hash冲突就是在操作哈希表（散列表）的时候，不同的key值经过hash函数（散列算法）之后得到相同的hash值，那么一个位置没法放置两份value，这种情况就是hash冲突。
+
+Hash冲突常用解决方法
+开放地址法（open addressing）
+简单来说就是通过计算出来冲突的hash值进行再次的运算，直到得到可用的地址，主要有以下3种：
+
+线性探测再散列：发生冲突时，顺序查看哈希表下一单元是否可用，直到找到可用的单元
+二次探测再散列：发生冲突时，以冲突的位置为中心向左右探测是否有可用单元
+伪随机探测再散列：通过一组伪随机数列计算得到对应的单位位置
+
+单独链表法
+就是在哈希表中，针对相同的hash值使用链表的方式来存放
+再Hash
+提供多个hash函数，冲突时使用其他的hash函数再次运算
+建立公共溢出区
+建立一个溢出表，hash冲突的时候放入溢出表
+Java中HashMap如何解决冲突
+其实，Java中的HashMap采用的hash冲突解决方案就是单独链表法，也就是在hash表节点使用链表存储hash值相同的值
+不过需要知道的是JDK8之后，如果链表长度超过8将会将链表转化为红黑树以便提高在hash冲突严重情况下的查询效率，也能够避免一定的hash碰撞攻击。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/hash-chong-tu-jie-jue-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

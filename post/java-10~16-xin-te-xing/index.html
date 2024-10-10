@@ -1,0 +1,901 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Java 10~16 新特性 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            Java 10~16 新特性
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-12-16</time>
+                            
+                                <a href="https://imyzt.top/tag/d0y-MXsof/" class="post-tag i-tag
+                            i-tag-success">
+                            #Java_New_Future
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="主要特性">主要特性</h1>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>特性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java 10</td>
+<td>1. <code>var</code>声明局部变量</td>
+</tr>
+<tr>
+<td>Java 11 （<strong>LTS</strong>）</td>
+<td>1. 字符串补充工具方法 <br/> 2. lambda 类型推断</td>
+</tr>
+<tr>
+<td>Java 12</td>
+<td>1. switch 箭头表达式</td>
+</tr>
+<tr>
+<td>Java 13</td>
+<td>1. switch 支持返回值，增加yield关键字<br/> 2. 多行字符串</td>
+</tr>
+<tr>
+<td>Java 14</td>
+<td>1. instanceof优化<br/> 2. NPE优化<br/>  3. record类型</td>
+</tr>
+<tr>
+<td>Java 15</td>
+<td>1. scale密封类</td>
+</tr>
+<tr>
+<td>Java 16</td>
+<td>1. 包装类构造方法警告<br/> 2. DateTimeFormatter增加匹配方式<br/> 3. InvocationHandler新增方法</td>
+</tr>
+</tbody>
+</table>
+<h1 id="java-10">Java 10</h1>
+<h2 id="var-声明局部变量"><code>var</code> 声明局部变量</h2>
+<pre><code>/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description Var
+ */
+public class VarDemo {
+    public static void main(String[] args) {
+        var str = &quot;hello world&quot;;
+        var num = 10;
+
+        System.out.println(str);
+        System.out.println(num);
+    }
+}
+</code></pre>
+<h1 id="java-11">Java 11</h1>
+<h2 id="字符串补充工具方法-lambda-类型推断">字符串补充工具方法, lambda 类型推断</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description String 补充工具方法
+ */
+public class StrUtil {
+
+    public static void main(String[] args) {
+        //Unicode空白字符
+        char c = '\u2000';
+        String str = c + &quot;abc&quot; + c;
+        // 去除普通空白字符
+        System.out.println(str.trim());
+        // 去除Unicode空白字符
+        System.out.println(str.strip());
+        // 去除前面的空白字符
+        System.out.println(str.stripLeading());
+        // 去除后面的空白字符
+        System.out.println(str.stripTrailing());
+        // abc 
+        //abc
+        //abc 
+        // abc
+
+        // 判空
+        System.out.println(&quot; &quot;.isBlank());
+        // 支持直接定义常量使用format
+        System.out.println(&quot;%s_%s&quot;.formatted(&quot;a&quot;, &quot;b&quot;));
+        // 重复字符串
+        System.out.println(&quot;abc&quot;.repeat(3));
+        //true
+        //a_b
+        //abcabcabc
+
+        // lambda 类型推断
+        // java11前
+        MyFunc s1 = (String a, Integer b) -&gt; a + b;
+        MyFunc s2 = (a, b) -&gt; a + b;
+        // java11后, 支持类型推断(作用不大)
+        MyFunc s3 = (var a, var b) -&gt; a + b;
+    }
+}
+
+@FunctionalInterface
+interface MyFunc {
+    String foo(String a, Integer b);
+}
+</code></pre>
+<h1 id="java-12">Java 12</h1>
+<h2 id="switch-箭头表达式">switch 箭头表达式</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description switch
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        int month = LocalDate.now().getMonthValue();
+
+        // java12 前 switch
+        switch (month) {
+            case 3:
+            case 4:
+            case 5:
+                System.out.println(&quot;spring&quot;);
+                break;
+            case 6:
+            case 7:
+            case 8:
+                System.out.println(&quot;summer&quot;);
+                break;
+            case 9:
+            case 10:
+            case 11:
+                System.out.println(&quot;fall&quot;);
+                break;
+            case 12:
+            case 1:
+            case 2:
+                System.out.println(&quot;winter&quot;);
+                break;
+            default:
+                System.out.println(&quot;err&quot;);
+        }
+
+        // java12 之后的switch
+        switch (month) {
+            case 3,4,5 -&gt; System.out.println(&quot;spring&quot;);
+            case 6,7,8 -&gt; System.out.println(&quot;summer&quot;);
+            case 9,10,11 -&gt; System.out.println(&quot;fall&quot;);
+            case 12,1,2 -&gt; System.out.println(&quot;winter&quot;);
+            default -&gt; System.out.println(&quot;err&quot;);
+
+        }
+    }
+}
+</code></pre>
+<h1 id="java-13">Java 13</h1>
+<h2 id="switch-箭头表达式支持返回值多行字符串增加yield关键字作为switch多行时的返回值">switch 箭头表达式支持返回值，多行字符串，增加yield关键字作为switch多行时的返回值</h2>
+<pre><code class="language-java">import java.time.LocalDate;
+
+/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description switch 返回值
+ */
+public class SwitchFuture {
+
+    public static void main(String[] args) {
+
+        int month = LocalDate.now().getMonthValue();
+        // java13 之后的switch
+        String str = switch (month) {
+            case 3, 4, 5 -&gt; &quot;spring&quot;;
+            case 6, 7, 8 -&gt; &quot;summer&quot;;
+            case 9, 10, 11 -&gt; &quot;fall&quot;;
+            case 12, 1, 2 -&gt; &quot;winter&quot;;
+            default -&gt; {
+                System.out.println(&quot;err&quot;);
+                yield &quot;err&quot;;
+            }
+        };
+        System.out.println(str);
+        // winter
+
+        String strline = &quot;&quot;&quot;
+                第一行
+                第二行
+                第三行&quot;&quot;&quot;;
+        System.out.println(strline);
+        //第一行
+        //第二行
+        //第三行
+    }
+}
+</code></pre>
+<h1 id="java-14">Java 14</h1>
+<h2 id="instanceof-优化">instanceof 优化</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description instanceof 优化
+ */
+public class InstanceofFuture {
+
+    public static void main(String[] args) {
+
+        // Java 14之前
+        Object o = &quot;str&quot;;
+        if (o instanceof String) {
+            String str = (String) o;
+            System.out.println(str);
+        }
+
+        // Java 14之后
+        if (o instanceof String str) {
+            System.out.println(str);
+        }
+    }
+}
+</code></pre>
+<h2 id="npe优化在链式调用时-如果有空指针-可以明确是哪个变量空指针">NPE优化，在链式调用时, 如果有空指针, 可以明确是哪个变量空指针</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description 友好的NPE提示
+ */
+public class NpeFuture {
+
+    public static void main(String[] args) {
+        C c = new C();
+        // 在链式调用时, 如果有空指针, 可以明确是哪个变量空指针
+        String name = c.b.a.name;
+        System.out.println(name);
+        // Cannot read field &quot;a&quot; because &quot;c.b&quot; is null
+    }
+}
+class A {
+    public String name;
+}
+
+class B {
+    public A a;
+}
+
+class C {
+    public B b;
+}
+</code></pre>
+<h2 id="record模式">record模式</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description record模式
+ */
+public class RecordFuture {
+
+    public static void main(String[] args) {
+        Student student = new Student(&quot;yzt&quot;, 25);
+        System.out.println(student);
+        // Student[name=yzt, age=25]
+
+        student.study();
+        // good good study!
+    }
+}
+
+record Student(String name, Integer age) {
+    public void study() {
+        System.out.println(&quot;good good study!&quot;);
+    }
+}
+
+</code></pre>
+<h1 id="java-15">Java 15</h1>
+<h2 id="scale密封类">scale密封类</h2>
+<ol>
+<li>需要使用<code>sealed</code>声明, 使用<code>permits</code>指定</li>
+<li>继承密封类，必须指定自己为final(Dog)，或选择继续将自己指定为密封类(Cat)</li>
+</ol>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/16
+ * @description scale, permits
+ */
+public class ScaleFuture {
+}
+
+/**
+ * 只希望Dog和Cat能继承, 需要使用sealed声明, 使用permits指定
+ */
+sealed class Animal permits Dog, Cat {
+    
+}
+
+/**
+ * 继承密封类,必须指定自己为final(Dog), 或继续将自己指定为密封类(Cat)
+ */
+final class Dog extends Animal {
+    
+}
+
+/**
+ * 将自己指定为密封类, 并且通过permits指定只有Cat2能够继承
+ */
+sealed class Cat extends Animal permits Cat2 {
+    
+}
+
+final class Cat2 extends Cat {
+    
+}
+</code></pre>
+<h1 id="java-16">Java 16</h1>
+<h2 id="包装类型的构造方法被标记过期">包装类型的构造方法被标记过期</h2>
+<pre><code class="language-java">/**
+ * @author imyzt
+ * @date 2023/12/17
+ * @description Integer
+ */
+public class IntegerFuture {
+
+    public static void main(String[] args) {
+        // 'Integer(int)' is deprecated and marked for removal
+        Integer i = new Integer(2);
+        System.out.println(i);
+
+        // 不建议这样编写,因为数字在常量池中, 会和其他毫不相干的地方使用同一个锁对象
+        synchronized (i) {
+            System.out.println(1);
+        }
+
+        // time format
+        // All letters 'A' to 'Z' and 'a' to 'z' are reserved as pattern letters. The following pattern letters are defined:
+        System.out.println(DateTimeFormatter.ofPattern(&quot;B&quot;).format(LocalDateTime.now()));
+
+        //2
+        //1
+        //凌晨
+    }
+}
+</code></pre>
+<h2 id="datetimeformatter">DateTimeFormatter</h2>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html">官方文档</a></p>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Meaning</th>
+<th>Presentation</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G</td>
+<td>era</td>
+<td>text</td>
+<td>AD; Anno Domini; A</td>
+</tr>
+<tr>
+<td>u</td>
+<td>year</td>
+<td>year</td>
+<td>2004; 04</td>
+</tr>
+<tr>
+<td>y</td>
+<td>year-of-era</td>
+<td>year</td>
+<td>2004; 04</td>
+</tr>
+<tr>
+<td>D</td>
+<td>day-of-year</td>
+<td>number</td>
+<td>189</td>
+</tr>
+<tr>
+<td>M/L</td>
+<td>month-of-year</td>
+<td>number/text</td>
+<td>7; 07; Jul; July; J</td>
+</tr>
+<tr>
+<td>d</td>
+<td>day-of-month</td>
+<td>number</td>
+<td>10</td>
+</tr>
+<tr>
+<td>g</td>
+<td>modified-julian-day</td>
+<td>number</td>
+<td>2451334</td>
+</tr>
+<tr>
+<td>Q/q</td>
+<td>quarter-of-year</td>
+<td>number/text</td>
+<td>3; 03; Q3; 3rd quarter</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>week-based-year</td>
+<td>year</td>
+<td>1996; 96</td>
+</tr>
+<tr>
+<td>w</td>
+<td>week-of-week-based-year</td>
+<td>number</td>
+<td>27</td>
+</tr>
+<tr>
+<td>W</td>
+<td>week-of-month</td>
+<td>number</td>
+<td>4</td>
+</tr>
+<tr>
+<td>E</td>
+<td>day-of-week</td>
+<td>text</td>
+<td>Tue; Tuesday; T</td>
+</tr>
+<tr>
+<td>e/c</td>
+<td>localized day-of-week</td>
+<td>number/text</td>
+<td>2; 02; Tue; Tuesday; T</td>
+</tr>
+<tr>
+<td>F</td>
+<td>day-of-week-in-month</td>
+<td>number</td>
+<td>3</td>
+</tr>
+<tr>
+<td>a</td>
+<td>am-pm-of-day</td>
+<td>text</td>
+<td>PM</td>
+</tr>
+<tr>
+<td>B</td>
+<td>period-of-day</td>
+<td>text</td>
+<td>in the morning</td>
+</tr>
+<tr>
+<td>h</td>
+<td>clock-hour-of-am-pm (1-12)</td>
+<td>number</td>
+<td>12</td>
+</tr>
+<tr>
+<td>K</td>
+<td>hour-of-am-pm (0-11)</td>
+<td>number</td>
+<td>0</td>
+</tr>
+<tr>
+<td>k</td>
+<td>clock-hour-of-day (1-24)</td>
+<td>number</td>
+<td>24</td>
+</tr>
+<tr>
+<td>H</td>
+<td>hour-of-day (0-23)</td>
+<td>number</td>
+<td>0</td>
+</tr>
+<tr>
+<td>m</td>
+<td>minute-of-hour</td>
+<td>number</td>
+<td>30</td>
+</tr>
+<tr>
+<td>s</td>
+<td>second-of-minute</td>
+<td>number</td>
+<td>55</td>
+</tr>
+<tr>
+<td>S</td>
+<td>fraction-of-second</td>
+<td>fraction</td>
+<td>978</td>
+</tr>
+<tr>
+<td>A</td>
+<td>milli-of-day</td>
+<td>number</td>
+<td>1234</td>
+</tr>
+<tr>
+<td>n</td>
+<td>nano-of-second</td>
+<td>number</td>
+<td>987654321</td>
+</tr>
+<tr>
+<td>N</td>
+<td>nano-of-day</td>
+<td>number</td>
+<td>1234000000</td>
+</tr>
+<tr>
+<td>V</td>
+<td>time-zone ID</td>
+<td>zone-id</td>
+<td>America/Los_Angeles; Z; -08:30</td>
+</tr>
+<tr>
+<td>v</td>
+<td>generic time-zone name</td>
+<td>zone-name</td>
+<td>Pacific Time; PT</td>
+</tr>
+<tr>
+<td>z</td>
+<td>time-zone name</td>
+<td>zone-name</td>
+<td>Pacific Standard Time; PST</td>
+</tr>
+<tr>
+<td>O</td>
+<td>localized zone-offset</td>
+<td>offset-O</td>
+<td>GMT+8; GMT+08:00; UTC-08:00</td>
+</tr>
+<tr>
+<td>X</td>
+<td>zone-offset 'Z' for zero</td>
+<td>offset-X</td>
+<td>Z; -08; -0830; -08:30; -083015; -08:30:15</td>
+</tr>
+<tr>
+<td>x</td>
+<td>zone-offset</td>
+<td>offset-x</td>
+<td>+0000; -08; -0830; -08:30; -083015; -08:30:15</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>zone-offset</td>
+<td>offset-Z</td>
+<td>+0000; -0800; -08:00</td>
+</tr>
+<tr>
+<td>p</td>
+<td>pad next</td>
+<td>pad modifier</td>
+<td>1</td>
+</tr>
+<tr>
+<td>'</td>
+<td>escape for text</td>
+<td>delimiter</td>
+<td></td>
+</tr>
+<tr>
+<td>''</td>
+<td>single quote</td>
+<td>literal</td>
+<td>'</td>
+</tr>
+<tr>
+<td>[</td>
+<td>optional section start</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>]</td>
+<td>optional section end</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#</td>
+<td>reserved for future use</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>{</td>
+<td>reserved for future use</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>}</td>
+<td>reserved for future use</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="invocationhandler新增方法">InvocationHandler新增方法</h2>
+<p>该接口补充了新方法 <code>java.lang.reflect.InvocationHandler#invokeDefault</code>，可以调用父接口中的<code>default</code>方法。</p>
+<pre><code class="language-java">@CallerSensitive
+public static Object invokeDefault(Object proxy, Method method, Object... args)
+        throws Throwable {
+    Objects.requireNonNull(proxy);
+    Objects.requireNonNull(method);
+    return Proxy.invokeDefault(proxy, method, args, Reflection.getCallerClass());
+}
+</code></pre>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/java-9-xin-te-xing/">
+                                <h3 class="post-title">
+                                    Java 9 新特性
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7">主要特性</a></li>
+<li><a href="#java-10">Java 10</a>
+<ul>
+<li><a href="#var-%E5%A3%B0%E6%98%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><code>var</code> 声明局部变量</a></li>
+</ul>
+</li>
+<li><a href="#java-11">Java 11</a>
+<ul>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A5%E5%85%85%E5%B7%A5%E5%85%B7%E6%96%B9%E6%B3%95-lambda-%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD">字符串补充工具方法, lambda 类型推断</a></li>
+</ul>
+</li>
+<li><a href="#java-12">Java 12</a>
+<ul>
+<li><a href="#switch-%E7%AE%AD%E5%A4%B4%E8%A1%A8%E8%BE%BE%E5%BC%8F">switch 箭头表达式</a></li>
+</ul>
+</li>
+<li><a href="#java-13">Java 13</a>
+<ul>
+<li><a href="#switch-%E7%AE%AD%E5%A4%B4%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%94%AF%E6%8C%81%E8%BF%94%E5%9B%9E%E5%80%BC%E5%A4%9A%E8%A1%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A2%9E%E5%8A%A0yield%E5%85%B3%E9%94%AE%E5%AD%97%E4%BD%9C%E4%B8%BAswitch%E5%A4%9A%E8%A1%8C%E6%97%B6%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC">switch 箭头表达式支持返回值，多行字符串，增加yield关键字作为switch多行时的返回值</a></li>
+</ul>
+</li>
+<li><a href="#java-14">Java 14</a>
+<ul>
+<li><a href="#instanceof-%E4%BC%98%E5%8C%96">instanceof 优化</a></li>
+<li><a href="#npe%E4%BC%98%E5%8C%96%E5%9C%A8%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E6%97%B6-%E5%A6%82%E6%9E%9C%E6%9C%89%E7%A9%BA%E6%8C%87%E9%92%88-%E5%8F%AF%E4%BB%A5%E6%98%8E%E7%A1%AE%E6%98%AF%E5%93%AA%E4%B8%AA%E5%8F%98%E9%87%8F%E7%A9%BA%E6%8C%87%E9%92%88">NPE优化，在链式调用时, 如果有空指针, 可以明确是哪个变量空指针</a></li>
+<li><a href="#record%E6%A8%A1%E5%BC%8F">record模式</a></li>
+</ul>
+</li>
+<li><a href="#java-15">Java 15</a>
+<ul>
+<li><a href="#scale%E5%AF%86%E5%B0%81%E7%B1%BB">scale密封类</a></li>
+</ul>
+</li>
+<li><a href="#java-16">Java 16</a>
+<ul>
+<li><a href="#%E5%8C%85%E8%A3%85%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E8%A2%AB%E6%A0%87%E8%AE%B0%E8%BF%87%E6%9C%9F">包装类型的构造方法被标记过期</a></li>
+<li><a href="#datetimeformatter">DateTimeFormatter</a></li>
+<li><a href="#invocationhandler%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95">InvocationHandler新增方法</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

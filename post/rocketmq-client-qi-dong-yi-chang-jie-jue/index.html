@@ -1,0 +1,294 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    RocketMQ Client 启动异常解决 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            RocketMQ Client 启动异常解决
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2023-11-28</time>
+                            
+                                <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-warning">
+                            #问题解决
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-warning">
+                            #RocketMQ
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h2 id="现象">现象</h2>
+<p><code>rocketmq-common-4.9.3</code> 版本作为客户端消费数据时，从<code>MessageExt.getMsgId()</code>获取消息ID时，会存在一个潜在的依赖冲突问题，最终导致方法执行失败，如下图：<br>
+<img src="https://imyzt.top/post-images/1701179903562.png" alt="" loading="lazy"></p>
+<p>从现象来看，<code>Could not initialize class org.apache.rocketmq.common.message.MessageClientIDSetter</code> 表示 <code>MessageClientIDSetter</code>类为正确被加载，通过搜索类似的资料找到了以下文章：</p>
+<ol>
+<li><a href="https://github.com/apache/rocketmq/issues/6264">Client dependency conflict, cause NoClassDefFoundError. Require for shaded client</a></li>
+<li><a href="https://blog.51cto.com/u_15127641/2875028">记一次RocketMQ消息消费异常</a></li>
+</ol>
+<p>从51cto的文章来看，基本可以分析出是<code>MessageClientIDSetter</code>的静态代码块在执行时异常导致类加载器加载类失败。</p>
+<pre><code class="language-java">static {
+        byte[] ip;
+        try {
+            // 执行异常，导致`MessageClientIDSetter`未成功被类加载器加载
+            ip = UtilAll.getIP();
+        } catch (Exception e) {
+            ip = createFakeIP();
+        }
+        LEN = ip.length + 2 + 4 + 4 + 2;
+        ByteBuffer tempBuffer = ByteBuffer.allocate(ip.length + 2 + 4);
+        tempBuffer.put(ip);
+        tempBuffer.putShort((short) UtilAll.getPid());
+        tempBuffer.putInt(MessageClientIDSetter.class.getClassLoader().hashCode());
+        FIX_STRING = UtilAll.bytes2string(tempBuffer.array()).toCharArray();
+        setStartTime(System.currentTimeMillis());
+        COUNTER = new AtomicInteger(0);
+    }
+</code></pre>
+<h2 id="分析">分析</h2>
+<p>从上面的博客中已经可以得到结论是依赖冲突造成的，但问题是部分服务会出现，大多数服务不会出现，<strong>通过往深层次分析得出结论</strong>：<br>
+<code>rocketmq-acl</code> <code>rocketmq-client</code> 均依赖于 <code>commons-validator-1.7</code> 版本，而项目中如果有类似于 <code>aliyun-log-appender</code> 老版本的依赖，会传递依赖于旧版本的 <code> commons-validator</code> ，如下图所示：<br>
+<img src="https://imyzt.top/post-images/1701179052568.png" alt="" loading="lazy"></p>
+<p>Maven在遇到依赖冲突时，首先会采用<strong>就近原则</strong>，上图中第一个传递依赖有<strong>5</strong>个层级，而下一个传递依赖只有<strong>4</strong>个层级，所以就近取到了<strong>错误的1.4.0版本</strong>。</p>
+<p>其它的服务更多是单模块项目，直接依赖于RocketMQ的client代码，而出现问题的服务是一个多模块依赖关系的服务，最终依赖传递了3层，导致依赖链路变长，最终优先依赖了链路更近的由 <code>log-appender</code> 引入进来的 <code>1.4.0</code> 版本。</p>
+<p>相关文章： <a href="https://returnac.cn/pages/JAVA/maven/Maven%E4%BE%9D%E8%B5%96%E5%86%B2%E7%AA%81%E9%81%BF%E5%9D%91%E6%8C%87%E5%8C%97.html#%E4%BE%9D%E8%B5%96%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6">Maven依赖冲突避坑指北</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/hash-chong-tu-jie-jue-fang-fa/">
+                                <h3 class="post-title">
+                                    Hash冲突解决方法
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%8E%B0%E8%B1%A1">现象</a></li>
+<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

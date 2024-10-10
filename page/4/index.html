@@ -1,0 +1,1111 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">
+                        分布式唯一标识设计
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-12-03</time>
+                    
+                        <a href="https://imyzt.top/tag/MnVakDRvV/" class="post-tag i-tag
+                            i-tag-error">
+            #Snowflake
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            当数据库面临分库分表时，无法依赖数据库自增主键来生成业务标识，或业务场景设计时为了防止自增id被外部撞库猜测数据，通常会考虑引入全局唯一标识生成器来解决此类问题。
+介绍
+目前市面上比较常见的基本为Twitter开源的Snowflake及其变种，Snowflake的核心思想是将64bit的二进制数字分为若干部分，每一部分都存储具有特定含义的数据，比如时间戳、机器ID、序列号等，最终生成全局唯一有序ID，标准算法如下图：
+
+
+41位的时间戳部分可以支撑pow(2,41)/1000/60/60/24/365 年，约等于 69 年。
+如果系统部署在多机房，那么 10 位的机器 ID 可以继续划分为 2～3 位的 IDC 标示（可以支撑 4 个或者 8 个 IDC 机房）和 7～8 位的 机器 ID（支持 128-256 台机器）。
+12 位的序列号代表着每个节点每毫秒最多可以生成 4096 的 ID。
+
+部署方式
+雪花ID具有两种使用方式，一种是独立部署一套发号器，外部请求下发，另一种更为常见的做法是直接嵌入到应用内，使用Snowflake工具类直接获取使用，当嵌入到应用内部时，可以考虑将机器ID部分，分散标识到不同业务系统。
+缺点
+时间回拨问题
+Snowflake算法设计很简单和巧妙，性能高效，具有全局唯一性、单调递增性和有业务含义的ID，但是它也有一定缺点，其中最大的缺点就是他依赖于系统的时间戳，一旦时间不准，就有可能生成重复的ID。如果是独立部署的发号器，如果发现系统时间不准，可以直接暂停发号，知道时间准确为止。
+QPS低引起单调重复
+如果发号器的QPS不高，例如每毫秒只能发一个ID，就会造成ID的末尾永远是1，如果在分库分表系统中使用ID作为分区间，就会造成库表分配的不均匀。
+如何解决：
+
+时间戳不记录毫秒而是记录秒，这样在一个时间区间内可以多发几个号，避免出现分库分表时数据分配不均。
+生成的序列号的起始号可以做一下随机，这一秒是21，下一秒可以是30，这样也会保证均衡。
+
+参考
+
+发号器：如何保证分库分表后 ID 的全局唯一性？
+万亿级调用系统：微信序列号生成器架构设计及演变
+
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/fen-bu-shi-wei-yi-biao-shi-she-ji/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">
+                        ThreadPoolExecutor “非常用” 方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-29</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-other_3">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-other_2">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时在使用线程池时，更多关注到的是coreSize、maxSize、blockQueue、RejectedExecutionHandler这些参数，但在线程池监控领域，还需要关注到其他的一些方法。在此处做统一记录和备忘：
+public static void main(String[] args) {
+
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    // 启动所有核心线程(预热)
+    threadPoolExecutor.prestartAllCoreThreads();
+    // 启动一个核心线程
+    threadPoolExecutor.prestartCoreThread();
+
+    // 默认情况下构造器中的keepAliveTime指定的是非核心线程的空闲时间, 通过如下方法, 可以允许核心线程超时
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+
+    // ⭐️ 动态线程池必备方法
+    // 启动后, 设置核心线程数量
+    threadPoolExecutor.setCorePoolSize(3);
+    // 启动后, 设置最大线程数量
+    threadPoolExecutor.setMaximumPoolSize(10);
+    // 已执行完的任务总数
+    threadPoolExecutor.getTaskCount();
+    // 获取工作队列剩余数量
+    threadPoolExecutor.getQueue().remainingCapacity();
+    }
+
+
+后记
+通过上面的代码可知，在运行过程中我们也是可以操作coreSize和maxSize的。那么如何才能实现对Queue的大小进行控制呢？目前开源届常用的是采取RabbitMQ中的VariableLinkedBlockingQueue来实现。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/rocketmq-client-qi-dong-yi-chang-jie-jue/">
+                        RocketMQ Client 启动异常解决
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-28</time>
+                    
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_2">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-success">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            现象
+rocketmq-common-4.9.3 版本作为客户端消费数据时，从MessageExt.getMsgId()获取消息ID时，会存在一个潜在的依赖冲突问题，最终导致方法执行失败，如下图：
+
+从现象来看，Could not initialize class org.apache.rocketmq.common.message.MessageClientIDSetter 表示 MessageClientIDSetter类为正确被加载，通过搜索类似的资料找到了以下文章：
+
+Client dependency conflict, cause NoClassDefFoundError. Require for shaded client
+记一次RocketMQ消息消费异常
+
+从51cto的文章来看，基本可以分析出是MessageClientIDSetter的静态代码块在执行时异常导致类加载器加载类失败。
+static {
+        byte[] ip;
+        try {
+            // 执行异常，导致`MessageClientIDSetter`未成功被类加载器加载
+            ip = UtilAll.getIP();
+        } catch (Exception e) {
+            ip = createFakeIP();
+        }
+        LEN = ip.length + 2 + 4 + 4 + 2;
+        ByteBuffer tempBuffer = ByteBuffer.allocate(ip.length + 2 + 4);
+        tempBuffer.put(ip);
+        tempBuffer.putShort((short) UtilAll.getPid());
+        tempBuffer.putInt(MessageClientIDSetter.class.getClassLoader().hashCode());
+        FIX_STRING = UtilAll.bytes2string(tempBuffer.array()).toCharArray();
+        setStartTime(System.currentTimeMillis());
+        COUNTER = new AtomicInteger(0);
+    }
+
+分析
+从上面的博客中已经可以得到结论是依赖冲突造成的，但问题是部分服务会出现，大多数服务不会出现，通过往深层次分析得出结论：
+rocketmq-acl rocketmq-client 均依赖于 commons-validator-1.7 版本，而项目中如果有类似于 aliyun-log-appender 老版本的依赖，会传递依赖于旧版本的  commons-validator ，如下图所示：
+
+Maven在遇到依赖冲突时，首先会采用就近原则，上图中第一个传递依赖有5个层级，而下一个传递依赖只有4个层级，所以就近取到了错误的1.4.0版本。
+其它的服务更多是单模块项目，直接依赖于RocketMQ的client代码，而出现问题的服务是一个多模块依赖关系的服务，最终依赖传递了3层，导致依赖链路变长，最终优先依赖了链路更近的由 log-appender 引入进来的 1.4.0 版本。
+相关文章： Maven依赖冲突避坑指北
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/rocketmq-client-qi-dong-yi-chang-jie-jue/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/hash-chong-tu-jie-jue-fang-fa/">
+                        Hash冲突解决方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-27</time>
+                    
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-other_1">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            什么是hash冲突？
+
+hash冲突就是在操作哈希表（散列表）的时候，不同的key值经过hash函数（散列算法）之后得到相同的hash值，那么一个位置没法放置两份value，这种情况就是hash冲突。
+
+Hash冲突常用解决方法
+开放地址法（open addressing）
+简单来说就是通过计算出来冲突的hash值进行再次的运算，直到得到可用的地址，主要有以下3种：
+
+线性探测再散列：发生冲突时，顺序查看哈希表下一单元是否可用，直到找到可用的单元
+二次探测再散列：发生冲突时，以冲突的位置为中心向左右探测是否有可用单元
+伪随机探测再散列：通过一组伪随机数列计算得到对应的单位位置
+
+单独链表法
+就是在哈希表中，针对相同的hash值使用链表的方式来存放
+再Hash
+提供多个hash函数，冲突时使用其他的hash函数再次运算
+建立公共溢出区
+建立一个溢出表，hash冲突的时候放入溢出表
+Java中HashMap如何解决冲突
+其实，Java中的HashMap采用的hash冲突解决方案就是单独链表法，也就是在hash表节点使用链表存储hash值相同的值
+不过需要知道的是JDK8之后，如果链表长度超过8将会将链表转化为红黑树以便提高在hash冲突严重情况下的查询效率，也能够避免一定的hash碰撞攻击。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/hash-chong-tu-jie-jue-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/chrome-guan-bi-di-zhi-lan-sou-suo-li-shi/">
+                        Chrome关闭地址栏搜索历史
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-26</time>
+                    
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+
+Chrome flag
+chrome://flags/
+
+
+搜索
+
+
+Omnibox Zero Prefix Suggestion Prefetching on NTP
+Enables prefetching of the zero prefix suggestions for eligible users on the New Tab page. – Mac, Windows, Linux, ChromeOS, Android, Fuchsia, Lacros
+#omnibox-zero-suggest-prefetching
+
+
+
+DISABLE
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/chrome-guan-bi-di-zhi-lan-sou-suo-li-shi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">
+                        Spring中使用到的设计模式
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-21</time>
+                    
+                        <a href="https://imyzt.top/tag/hheaoxZjL/" class="post-tag i-tag
+                            i-tag-other_1">
+            #设计模式
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            设计模式的基本原则：
+
+开闭原则
+单一职责原则
+里氏替换原则
+依赖倒置原则
+
+Spring中用到的模式：
+
+HandlerAdapter，适配器模式
+BeanFactory，简单工厂模式
+FactoryBean，工厂方法模式
+Controller的单例模式，也可以是原型模式
+Service@Transactional，代理模式
+@EventListener，观察者模式
+JdbcTemplate，RestTemplate，模板方法模式
+TransactionAwareCacheDecorator，装饰器模式
+AopProxy，策略模式
+
+其他在业务中常用的模式：
+业务中涉及的模式：
+策略模式：
+
+不同数据的不同处理结果
+
+观察者模式：
+
+事件监听和分发（不同处理类型）
+
+门面模式：
+
+不同活动的不同参数，统一门面，采用Jackson的类型映射子类
+
+状态模式：
+
+支付的不同状态，通过事件和状态流转
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
+                        RocketMQ消息存储过程
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-15</time>
+                    
+                        <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-info">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            
+讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。
+
+前言
+首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中：
+
+
+abort：该文件在Broker启动后自动创建，正常关闭自动消息，如果没有启动Broker的情况下看到此文件表示上次Broker是非正常关闭的
+checkpoint：存储着commitlog,consumequeue,index文件的最后刷盘时间
+commitlog：存放commitlog文件，消息就是存储在其中
+consumerqueue：存放consumequeue文件，队列就是存放在其中
+index：存放消息索引文件，支持根据key查询的依据
+lock：运行期间使用到的全局资源锁
+
+消息存储
+如何保证高性能读写
+传统的IO读写方式，存在多次上下文切换和多次数据的拷贝，在并发极高的MQ场景下，会严重影响读写效率。所以为了减少内核态&amp;lt;=&amp;gt;用户态切换，减少数据拷贝次数，引入了零拷贝技术。
+
+零拷贝
+零拷贝是一种思想，指的是CPU不需要先将数据从某处内存复制到另一个特定区域，实现零拷贝的方式有以下几种方式：
+
+mmap()
+sendfile()
+
+mmap()
+mmap(memory map) 是一种内存映射方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对应关系。
+对应上图中内核缓冲区-&amp;gt;用户缓冲区-&amp;gt;Socket缓冲区的过程直接变成了内核缓冲区-(CPU拷贝)-&amp;gt;Socket缓冲区，减少了一次拷贝所需的时间。
+但整个过程中，上下文切换依旧是4次，相比于传统IO没有提升，切换过程：
+
+当用户发起mmap调用的时候会发生上下文切换1，进行内存映射；
+然后数据被拷贝到内核缓冲区，mmap返回，发生上下文切换2；
+随后用户调用write，发生上下文切换3；
+将内核缓冲区的数据拷贝到Socket缓冲区，write返回，发生上下文切换4。
+
+
+FileChannel fileChannel = 
+new RandomAccessFile(&amp;quot;mmap_test.txt&amp;quot;, &amp;quot;rw&amp;quot;).getChannel(); 
+MappedByteBuffer mappedByteBuffer = 
+fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, fileChannel.size());
+
+sendfile()
+sendfile()和mmap()一样可以减少一次CPU拷贝，但它可以减少2次上下文切换，切换过程：
+
+用户发起sendfile()调用时会发生切换1，之后数据通过DMA拷贝到内核缓冲区
+之后再将内核缓冲区的数据CPU拷贝到Socket缓冲区，最后拷贝到网卡，sendfile()返回，发生切换2。
+
+
+//调用transferTo方法向目标数据传输 
+FileChannel channel = FileChannel.open(Paths.get(&amp;quot;./test.txt&amp;quot;),
+ StandardOpenOption.WRITE, StandardOpenOption.CREATE); 
+
+channel.transferTo(position, len, target);
+
+commitlog（mappedFile）
+目录与文件
+
+真正存储消息，一个Broker只有一个commitlog目录，所有Topic的消息都存放于此。
+
+mappedFile大小1G，文件名由20位十进制数组成，表示当前文件的第一条消息的起始位置偏移量。
+
+第一个文件名一定是20位0构成，第一条消息的偏移量commitlog offset为0.
+当第一个文件放满时，会自动生成第二个文件继续存放消息，假设第一个1073741820字节（1G=1073741824字节），最后只剩4字节不够存放下一条数据。则下一个文件名为00000000001073741824
+
+消息单元
+
+consumequeue
+存储topic消息在commitlog的位置索引。
+为了提高效率，会为每个topic在~/store/consumequeue中创建一个目录{TopicId}/{QueueId}，consumequeue文件是commitlog的索引文件，可以根据consumequeue定位到具体的消息在commitlog中的位置。
+consumequeue文件名也是由20位数字组成，表示当前文件的第一个索引条目的起始位置偏移量，与mappedFile文件不同的是，其后续的文件名也是固定的，因为consumequeue文件大小是固定不变的。
+每个consumequeue文件可以包含30w个索引条目，其中包含：
+
+消息在mappedFile文件中的偏移量commitlog offset
+消息长度
+消息Tag的hashcode值
+这三个属性占用20个字节，所以每个文件的大小是固定的30w * 20字节
+
+
+
+对文件的读写
+
+消息写入
+一条消息进入到Broker后经历了以下几个过程才最终被持久化：
+
+Broker根据queueId，获取到该消息对应索引条目要在consumequeue目录中的写入偏移量，即QueueOffset
+将queueId、queueOffset等数据，与消息一起封装为消息单元
+将消息单元写入到commitlog
+形成消息索引条目
+将消息索引条目分发到相应的consumequeue
+
+消息拉取
+当Consumer来拉取消息时会经历以下几个步骤：
+
+Consumer获取到其要消费消息所在Queue的消费偏移量offset，计算出其要消费消息的消费offset
+
+
+消费offset即消费进度，consumer对某个queue的消费offset，即消费到了该queue的第几条消息
+消息offset = 消费offset + 1
+
+
+Consumer向Broker发送拉取请求，其中会包含其要拉取消息的Queue、消息offset及消息Tag
+Broker计算在该consumequeue中的queueOffset
+
+
+queueOffset = 消息offset * 20字节
+
+
+从该queueOffset处开始向后查找第一个指定Tag的索引条目
+解析该索引条目的前8个字节，即可定位到该消息在commitlog中的commitlog offset
+从对应commitlog offset中读取消息单元，并发送给Consumer
+
+刷盘机制
+RocketMQ消息写入到Commitlog文件中时并不是直接写入到文件，而是先写到PageCache中，也就是前面IO图中的内核缓冲区，所以RocketMQ也和MySQL等类似的log刷盘机制
+异步刷盘
+写入到PageCache后直接返回生产者消息存储成功，另外的后台线程在将消息刷到磁盘。其提供了2套刷盘机制：
+
+固定时间，默认每隔0.5s会刷一次【默认方式】
+每存一次会通知刷盘，但不会等待结果，同时如果0.5s没有收到通知，也会主动刷盘。
+
+同步刷盘
+同步刷盘机制很好理解，即每次一定等写入成功磁盘才会返回生产者写入成功，此方式可靠性更高，但会一定程度上影响系统吞吐量。
+后记
+本文参考：
+https://juejin.cn/post/7186880907582636069
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+                        Java 实现简单单机时间轮方案
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-13</time>
+                    
+                        <a href="https://imyzt.top/tag/i73r1WX7G/" class="post-tag i-tag
+                            i-tag-banana">
+            #TimeingWheel
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-other_3">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。
+package top.imyzt.learning.algorithm.timer;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+/**
+ * 简易单机时间轮
+ * @author imyzt
+ * @date 2023-11-13 22:03
+ */
+public class SingleTimingWheel {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        TimingWheel timingWheel = new TimingWheel(60);
+        TimingWheel timingWheel2 = new TimingWheel(12);
+
+        while (true) {
+            System.out.print(&amp;quot;请输入延时周期: &amp;quot;);
+            Scanner scanner = new Scanner(System.in);
+            String next = scanner.next();
+            if (&amp;quot;exit&amp;quot;.equals(next)) {
+                timingWheel.shutdown();
+                timingWheel2.shutdown();
+                break;
+            }
+
+            String[] splits = next.split(&amp;quot;,&amp;quot;);
+
+            for (String split : splits) {
+                int delayTime = Integer.parseInt(split);
+                System.out.println(&amp;quot;新生产一个任务, 延迟&amp;quot; + delayTime + &amp;quot;秒后执行&amp;quot; + &amp;quot;, 当前时间: &amp;quot; +
+                        LocalDateTime.now() + &amp;quot;, 预计执行时间: &amp;quot; + LocalDateTime.now().plusSeconds(delayTime)
+                );
+                Task task = new Task(() -&amp;gt; Thread.currentThread().getName(), delayTime);
+                timingWheel.addTask(task);
+                timingWheel2.addTask(task);
+            }
+        }
+
+        TimeUnit.SECONDS.sleep(1);
+        System.exit(0);
+    }
+}
+
+class TimingWheel {
+
+    private final ExecutorService EXECUTOR_TASK_POOL;
+    private final ScheduledExecutorService SCHEDULED_TASK_POOL;
+    /**
+     * 时间轮周期
+     */
+    private final int timer;
+
+    /**
+     * 记录每个刻度的任务
+     */
+    private final List&amp;lt;LinkedList&amp;lt;Task&amp;gt;&amp;gt; secondWheel;
+
+    /**
+     * 刻度计数器
+     */
+    private final AtomicInteger secondAtomic;
+
+    /**
+     * 任务队列
+     */
+    private final Queue&amp;lt;Task&amp;gt; taskQueue;
+
+    /**
+     * 运行标记
+     */
+    private boolean flag;
+
+    public TimingWheel(int timer) {
+        this.timer = timer;
+        this.secondWheel = IntStream.range(0, timer).mapToObj(d -&amp;gt; new LinkedList&amp;lt;Task&amp;gt;()).collect(Collectors.toList());
+        this.secondAtomic = new AtomicInteger(0);
+        this.taskQueue = new LinkedBlockingQueue&amp;lt;&amp;gt;();
+        this.EXECUTOR_TASK_POOL = Executors.newSingleThreadExecutor();
+        this.SCHEDULED_TASK_POOL = Executors.newSingleThreadScheduledExecutor();
+        this.flag = true;
+        this.init();
+    }
+
+    public void addTask(Task task) {
+
+        int delayTime = task.getDelayTime();
+        int targetRunSecond = delayTime + secondAtomic.get();
+        int cycle = delayTime / timer;
+        int index = targetRunSecond % timer;
+        task.setCycle(cycle);
+
+        System.out.printf(&amp;quot;任务id: %s, 当前刻度: %s, cycle: %s, 计划执行刻度: %s \n&amp;quot;, task.getTaskId(), secondAtomic.get(), cycle, index);
+
+        LinkedList&amp;lt;Task&amp;gt; tasks = secondWheel.get(index);
+        if (tasks == null) {
+            tasks = new LinkedList&amp;lt;&amp;gt;();
+        }
+        tasks.add(task);
+    }
+
+    public void shutdown() {
+        EXECUTOR_TASK_POOL.shutdown();
+        SCHEDULED_TASK_POOL.shutdown();
+        this.flag = false;
+        System.out.println(&amp;quot;[&amp;quot; + timer + &amp;quot;]shutdown...&amp;quot;);
+    }
+
+    @SneakyThrows
+    private void init () {
+        SCHEDULED_TASK_POOL.scheduleAtFixedRate(() -&amp;gt; {
+            int second = secondAtomic.getAndAdd(1);
+            if (second + 1 == timer) {
+                secondAtomic.set(0);
+            }
+            LinkedList&amp;lt;Task&amp;gt; tasks = secondWheel.get(second);
+            if (tasks != null &amp;amp;&amp;amp; !tasks.isEmpty()) {
+                Iterator&amp;lt;Task&amp;gt; iterator = tasks.iterator();
+                while (iterator.hasNext()) {
+                    Task task = iterator.next();
+
+                    Integer taskCycle = task.getCycle();
+                    if (taskCycle != 0) {
+                        task.setCycle(taskCycle - 1);
+                        System.out.println(task.getTaskId() + &amp;quot;还未到时间, 当前周期&amp;quot; + taskCycle);
+                        continue;
+                    }
+
+                    taskQueue.add(task);
+                    // 从队列中剔除
+                    iterator.remove();
+                }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+
+        EXECUTOR_TASK_POOL.execute(() -&amp;gt; {
+            while (flag) {
+                Task task = taskQueue.poll();
+                if (task != null) {
+                    System.out.println(LocalDateTime.now() + &amp;quot;, [&amp;quot; + timer + &amp;quot;]时间轮调度任务====&amp;gt;&amp;quot; + task);
+                }
+            }
+        });
+    }
+
+}
+
+@Getter
+class Task {
+
+    private final Integer taskId;
+
+    /**
+     * 执行任务
+     */
+    private final Supplier&amp;lt;String&amp;gt; runner;
+
+    /**
+     * 当前第几轮
+     */
+    @Setter
+    private  Integer cycle;
+
+    private final Integer delayTime;
+
+    /**
+     * 创建时间
+     */
+    private final LocalDateTime createdAt;
+
+    /**
+     * 理应执行时间
+     */
+    private final LocalDateTime runnerTime;
+
+    public Task(Supplier&amp;lt;String&amp;gt; runner,  Integer delayTime) {
+        this.taskId = new Random().nextInt() * 10000;
+        this.runner = runner;
+        this.delayTime = delayTime;
+        this.createdAt = LocalDateTime.now();
+        this.runnerTime = this.createdAt.plusSeconds(delayTime);
+    }
+
+    @Override
+    public String toString() {
+        return &amp;quot;Task{&amp;quot; +
+                &amp;quot;taskId=&amp;quot; + taskId +
+                &amp;quot;, runner=&amp;quot; + runner.get() +
+                &amp;quot;, cycle=&amp;quot; + cycle +
+                &amp;quot;, delayTime=&amp;quot; + delayTime +
+                &amp;quot;, createdAt=&amp;quot; + createdAt +
+                &amp;quot;, runnerTime=&amp;quot; + runnerTime +
+                &#39;}&#39;;
+    }
+
+}
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
+                        RocketMQ消息生产基本流程
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-12</time>
+                    
+                        <a href="https://imyzt.top/tag/YdtQW2aVg/" class="post-tag i-tag
+                            i-tag-">
+            #RocketMQ
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。
+核心概念
+
+NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部署的，多个NameServer之间互不通信。
+Broker：用于存储消息，在启动时会向NameServer注册自己的地址信息，启动后每30s向NameServer心跳报告健康状态；Broker实例可以有多个，相同的BrokerName为一组Broker，每个Broker组只保存一部分信息。
+Topic：消息的主题，一个Topic的消息可以分布在不同的Broker组下。
+Queue：一个Topic可以有很多Queue，默认一个Topic在同一个Broker组下是4个，如果一个Topic在2个Broker组中，则有可能是8个Queue。一个Queue只能被一个Consumer消费，一个Consumer可以同时消费多个Queue。
+Producer：消息的生产者、可以成组出现（Producer Group）。
+Consumer：消息的消费者，可以成组出现（Consumer Group）。
+
+NameServer
+
+NameServer是Broker和Topic路由的注册中心，支持Broker的动态注册与发现。
+主要包含2个功能：
+
+
+
+Broker管理：接受Broker集群的注册信息并且保存下来作为消息路由信息的基本数据，提供心跳监测机制，检查Broker是否还存活。
+
+
+
+路由信息管理：每个NameServer都保存着Broker集群的整个路由信息和用于客户端查询的队列信息，Producer和Consumer可以通过NameServer获得整个Broker集群的路由信息，从而进行消息的投递和消费。
+
+
+注册流程：
+NameServer每个节点之间是不通信的，每个Broker在启动时，会给所有NameServer注册自己的信息，每30秒心跳上报自己的信息（BrokerId、Broker地址、名称、所属集群名称等信息），NameServer收到后会更新Broker的最新存活时间。
+优缺点：
+优点：NameServer集群搭建简单，随意启动即可（因为互不通信）
+缺点：简单增加节点无效，Broker无法感知新NameServer不会向他注册信息和心跳。
+路由剔除：
+NameServer定时任务每10秒扫描一次Broker列表，当Broker最新心跳时间戳距离当前时间超过120秒，则将Broker从列表中剔除。
+运维方案：
+当需要升级RocketMQ集群时，可以依次将每个节点对外关闭读写权限。
+
+Producer发送到Broker会收到无权读写而切换另一个Broker投递消息。
+超过120秒不心跳，NameServer会自动将此Broker下线。
+Producer每30秒会从NameServer拉取Broker信息，当NameServer记录为下线后此Broker也不会再有Producer进行消息投递。然后再关闭升级此Broker即可。
+
+路由发现：
+当Topic路由信息变化时，NameServer不会推送而是等客户端每30秒拉取一次最新的路由信息。
+
+客户端（Producer）NameServer选择策略：
+
+首先采用随机策略, 然后采用轮询策略
+
+生成一个随机数，从配置的NameServer集群地址中根据数量取模然后连接，如果连接失败会切换为轮询逐个连接其他节点。
+扩展：zk client如何选择zk server?
+经过两次Shuffle，然后选择第一台ZK Server。
+将配置文件中的zk server地址进行第一次shuffle，然后随机选择一个，这个选择出的一般都是hostname，然后获取到该hostname对应的所有IP，再对这些ip进行第二次shuffle。
+Broker
+
+Broker充当着消息中转角色，负责存储消息、转发消息。
+Broker在RocketMQ系统中负责接收并存储从生产者发送来的消息。同时为消费者的拉取请求做准备。
+Broker同时存储着消息相关的元数据，包括消费者组消费进度偏移offset、主题、队列等。
+
+
+一个Topic存储在不同的Broker中，按Queue轮询存放，一个Queue在Master/Slave中存储多份做主备集群。
+Broker节点集群是主从集群，Broker集群是主备集群。
+
+
+Remoting Module: 整个Broker的实体，负责处理来自clients的请求，由以下模块构成。
+Client Manager：客户端管理器，负责接受、解析来自客户端（Producer、Consumer）请求，管理客户端，比如维护Consumer的Topic订阅关系。
+Store Service：存储服务，处理消息存储到物理硬盘和消息查询功能。
+HA Service： 高可用服务，提供Master Broker和Slave Broker之间的数据同步功能。
+Index Service: 索引服务，根据特定的Message Key，对投递到Broker的消息进行索引服务，同时提供根据 Message Key 对消息进行快速查询的功能。
+
+消息的生产和发送
+通过上面的流程，我们知道了NameServer和Broker的交互流程，Producer启动时，只指向了NameServer，并不知道Broker的信息。那么一条消息从Producer生产后，是如何投递到哪个Broker的哪个Queue上面的呢？
+
+针对这种情况，RocketMQ采用了2种Queue选择算法：
+
+轮询算法
+最小投递延迟算法
+
+Producer可以将消息写入到某个Broker中的Queue中，过程如下：
+
+Producer发送消息前，会向获取NameServer获取Topic的路由信息
+NameServer返回该Topic的路由表和Broker列表
+Producer根据代码中指定的Queue选择策略，从Queue列表中选择一个队列
+Producer对消息做处理，比如超过4M会进行压缩
+Producer向选择出的Queue所在的broker发送RPC请求，将消息发送到选择出的Queue中
+
+
+路由表：一个Map，Key为QueueData实例列表，QueueData并不是一个queue对应一个queueData，而是一个Broker中该Topic所有的QueueData对应一个QueueData。即只要涉及到该Topic的Broker，一个Broker对应一个QueueData。
+路由表的key为Topic名称，value则为所有涉及该Topic的brokerName列表。
+路由表(一个Topic分散在哪些Broker上面，方便消费者和生产者连接Queue)：
+Map&amp;lt;TopicName, List&amp;lt;BrokerName&amp;gt;&amp;gt;
+
+
+Broker列表：一个Map，Key为BrokerName，Value为BrokerData，一个Broker对应一个BrokerData实例，一套BrokerName名称相同的Master-Slave小集群对应一个BrokerData
+BrokerData中包含一个Map，key为brokerId，value为该broker对应的地址，brokerId=0表示master
+Broker列表(一个集群中Broker的分布，方便消费者和生产者连接Broker)：
+Map&amp;lt;BrokerName, Map&amp;lt;brokerId, brokerAddress&amp;gt;
+
+对于无序消息的Queue选择算法：
+
+轮询算法
+默认选择方法，保证每个Queue都均匀获得消息
+
+
+问题：当Broker出问题时，此Broker上的Queue投递延迟严重时，会造成producer消息堆积。
+
+
+最小投递延迟算法
+统计每次消息投递的延迟，统计处投递延迟最小的Queue，如果延迟相同则选用轮询算法
+
+
+问题：Queue上的消息分配不均，投递延迟小的Queue会存在大量消息，导致对应Queue的消费者要处理的消息很大。
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/">
+                        FastJSON 序列化反序列化驼峰和下划线互转
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-10-31</time>
+                    
+                        <a href="https://imyzt.top/tag/0GA6N_K8_/" class="post-tag i-tag
+                            i-tag-">
+            #FastJSON
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在部分场景下，只需要简单将外部对象转换为标准JavaBean，而对接的外部是下划线命名时，如果需要一个个写JSONField必然是比较麻烦的，可以通过FastJSON提供的序列化/反序列化配置类来快速实现。
+JSON是下划线，Bean是驼峰时：
+ParserConfig parserConfig = new ParserConfig();
+parserConfig.propertyNamingStrategy = PropertyNamingStrategy.CamelCase;
+BytedanceClueLog bytedanceClueLog = clueJson.toJavaObject(BytedanceClueLog.class, parserConfig, 0);
+
+Bean是驼峰，需要将JSON转为下划线时：
+SerializeConfig serializeConfig = new SerializeConfig();
+serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+return JSON.toJSONString(req, serializeConfig);
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+    <div class="pagination-container">
+        
+            <a href="https://imyzt.top/page/3/" class="page-btn btn">上一页</a>
+            
+                
+                    <a href="https://imyzt.top/page/5/" class="page-btn btn">下一页</a>
+                    
+    </div>
+    
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,516 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Arthas | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Arthas</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
+                        Arthas在项目开发中的应用 - 线上故障定位
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2021-07-10</time>
+                    
+                        <a href="https://imyzt.top/tag/8NNFU0jVs/" class="post-tag i-tag
+                            i-tag-success">
+            #Arthas
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            介绍
+
+Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。
+Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行问题的定位和诊断。
+Arthas能为我们解决哪些问题
+
+这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？
+我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
+遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？
+线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！
+是否有一个全局视角来查看系统的运行状况？
+有什么办法可以监控到JVM的实时运行状态？
+
+与SkyWalking的区别
+Skywalking是一个可观测性分析平台（Observability Analysis Platform，OAP）和一个应用性能管理（Application Performance Management，APM）系统。
+Quick Start
+
+
+启动本地Java进程 （实例工程，空SpringBoot项目）
+
+
+下载arthas-boot curl -O https://arthas.aliyun.com/arthas-boot.jar，此步骤仅完成基础包下载，大小为139K上下
+
+
+执行命令 java -jar arthas-boot.jar，选择需要attch的Java进程，进入arthas的命令界面
+
+
+
+基本操作（官网入门示例）
+
+
+dashboard
+执行dashboard，将展示当前进程的信息。如图：
+通过此命令可以查看JVM的堆内存情况，以及活跃线程、JVM基本信息等内容。
+
+jad反编译代码
+通过jad指令，反编译class
+
+watch方法执行数据观测（查看函数入参和返回值）
+通过模拟对入参 *2 的程序，反应watch的强大。
+
+通过watch命令，监听方法的一切行为。watch的参数比较多，以下摘抄自官网：
+
+
+
+class-pattern
+类名表达式匹配
+
+
+
+
+method-pattern
+方法名表达式匹配
+
+
+express
+观察表达式
+
+
+condition-express
+条件表达式
+
+
+[b]
+在方法调用之前观察
+
+
+[e]
+在方法异常之后观察
+
+
+[s]
+在方法返回之后观察
+
+
+[f]
+在方法结束之后(正常返回和异常返回)观察
+
+
+[E]
+开启正则表达式匹配，默认为通配符匹配
+
+
+[x:]
+指定输出结果的属性遍历深度，默认为 1
+
+
+
+
+monitor方法执行监控（什么时候执行了）
+
+
+
+参数名称
+参数说明
+
+
+
+
+class-pattern
+类名表达式匹配
+
+
+method-pattern
+方法名表达式匹配
+
+
+condition-express
+条件表达式
+
+
+[E]
+开启正则表达式匹配，默认为通配符匹配
+
+
+[c:]
+统计周期，默认值为120秒
+
+
+[b]
+在方法调用之前计算condition-express
+
+
+
+monitor -c 5 top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+每5秒监听一次，统计耗时、失败率、总次数、成功次数、失败次数等信息
+
+通过表达式过滤不需要的请求方法调用。
+
+trace方法内部调用路径，输出方法路径上的节点耗时（我调用了谁）
+trace top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+因为代价比较高（这属于skywarking的工作范围），trace默认只支持一层的耗时分析。但官网提供了多层trace的方法，具体见：https://arthas.aliyun.com/doc/trace.html
+
+
+stack方法输出当前方法被调用的调用路径（谁调用了我）
+stack top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController getResult -n 3
+
+tt 记录方法请求的信息，方便重做请求和查看结果
+方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测
+watch指令复杂，通过tt记录请求的信息后面可以针对性分析
+
+2. 进阶操作
+热加载代码
+首先声明：在生产环境热更新代码是不很不好的行为。
+但是肯定有它使用的场景。
+涉及到几个命令：
+
+
+jad（反编译指定已加载类的源码）
+
+
+sc（查看JVM已加载的类信息）
+
+
+mc（内存编译器，内存编译.java文件为.class文件）、
+
+
+redefine（加载外部的.class文件，redefine到JVM里）
+
+
+jad反编译代码，vim调整代码逻辑
+jad --source-only top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController &amp;gt; /tmp/IndexController.java
+
+
+
+通过 sc 命令，找到类加载器
+sc -d *IndexController
+
+
+
+通过 mc 内存编译java -&amp;gt; class
+
+
+mc -c 31221be2 /tmp/IndexController.java -d /tmp
+
+通过 redefine 热加载
+
+redefine /tmp/top/imyzt/learning/arthas/arthaswebdemo/web/controller/IndexController.class
+全流程
+
+profiler🔥图
+通过 profiler start/stop 获得一份程序的火焰图
+
+
+火焰图查看工具
+JDK JMC：https://github.com/openjdk/jmc
+JProfiler(付费)： https://www.ej-technologies.com/download/jprofiler/files
+如何读懂火焰图？
+如何读懂火焰图? - 阮一峰的网络日志
+使用arthas+jprofiler做复杂链路分析 · Issue #1416 · alibaba/arthas
+
+进阶使用&amp;amp;命令列表
+
+https://arthas.aliyun.com/doc/advanced-use.html
+https://arthas.aliyun.com/doc/commands.html
+常用使用场景分析和讨论
+同传统方式进行对比，最大的目的是为了解决目前低效的生产环境问题排查方式。
+
+通过watch观察方法入参，是否可以客户反馈使用出了问题，但是又不知道小程序发过来的请求具体是啥？
+通过stack观察，某个方法什么时候被调用了，被谁调用了？
+通过tt记录请求信息，便于重做请求，模拟用户操作？
+通过后台异步任务，观察定时周期出现问题的代码，阿里描述：当线上出现偶发的问题，比如需要watch某个条件，而这个条件一天可能才会出现一次时，异步后台任务就派上用场了，详情请参考这里
+
+以上描述的操作虽然能解决很多问题，但是是否面临着一个更大的问题？
+适合生产环境的实践
+
+Web_Console
+
+在attrch成功之后，直接访问本地3658端口，可以通过web界面操作。
+
+默认情况下，arthas只listen 127.0.0.1，所以如果想从远程连接，则可以使用 --target-ip参数指定listen的IP。
+
+Tunnel Server
+
+下载arthas-tunnel-server，本地java -jar启动，Web界面监听8080端口，WebSocket通信监听7777端口。
+
+java -jar arthas-boot.jar --tunnel-server &#39;ws://127.0.0.1:7777/ws&#39;
+
+可以通过http://127.0.0.1:8080/actuator/arthas访问本地，获得已连接到tunnel-server的arthas-client。密码在启动控制台。
+
+
+通过上面的操作，虽然免去了去生产环境机器直接操作arthas这种不现实的问题，但是在Web界面操作还有一个问题，就是谁给我们绑定执行 java -jar arthas-boot.jar --tunnel-server &#39;ws://127.0.0.1:7777/ws&#39; 这个命令呢.......
+与SpringBoot集成，更适合生产环境的实践
+
+增加Maven依赖
+
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.taobao.arthas&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;arthas-spring-boot-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.5.2&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+
+调整配置文件
+
+server.port=8892
+
+spring.application.name=arthas-demo
+
+# 建议不指定, 会根据 spring.application.name 生成
+#arthas.agent-id=arthas-demo
+arthas.tunnel-server=ws://localhost:7777/ws
+# -1会随机分配端口
+arthas.http-port=-1
+arthas.telnet-port=-1
+
+
+
+查看agentId
+
+
+
+tunnel-server连接后操作
+
+
+
+对性能的影响
+通过spring-boot-starter的方式，在应用启动时，就对进程自动完成了attach，对于性能方面的影响是不大的，下面有两个官方的回复，从原理是解释了这个问题。
+开发团队回复：
+目前arthas-spring-boot-starter方式是长期启动状态，对程序的性能有什么影响吗？ · Issue #1843 · alibaba/arthas
+是否进行过性能评估，attach之后对原进程性能有多大的影响呢 · Issue #44 · alibaba/arthas
+如何记住各种命令
+https://arthas.aliyun.com/doc/idea-plugin.html
+遇到的一些坑
+Pid=1无法Attach
+linux保护机制，jstack无法attach住pid&amp;lt;=5的进程，arthas也无法使用，通用解决方案是使用tini挂载java进程。
+https://github.com/alibaba/arthas/issues/362
+Arthas端口问题
+应用被Arthas-Boot attch之后，包括应用本身的端口，同时还会监听另外两个端口：
+默认情况下，Arthas的Telnet端口是3658，HTTP端口是8563，这个常常让用户迷惑。在新版本里，在3658端口同时支持Telnet/HTTP协议。
+在浏览器里访问 http://localhost:3658/ 也可以访问到Web Console了。
+在后续的版本里，考虑默认只侦听 3658端口，减少用户的配置项。
+当启动tunnel-server后，8080与7777端口也被监听。
+与Skywalking的兼容性问题
+java.lang.ClassFormatError: null、skywalking arthas 兼容使用
+当出现这个错误日志java.lang.ClassFormatError: null,通常情况下都是被其他字节码工具修改过与arthas修改字节码不兼容。
+比如: 使用 skywalking V8.1.0 以下版本 无法trace、watch 被skywalking agent 增强过的类, V8.1.0 以上版本可以兼容使用,更多参考skywalking配置 skywalking compatible with other javaagent bytecode processing。
+JVM版本问题
+启动Arthas的Java版本和启动应用的Java版本要保持一致
+推荐文章
+
+Arthas源码学习-1_慢一拍的coder-CSDN博客
+Arthas Tutorials
+工商银行打造在线诊断平台的探索与实践
+
+Arthas使用到的技术
+Arthas运行原理
+tt命令探究
+
+执行 tt -t top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController index
+下载正在运行的字节码文件 dump top.imyzt.learning.arthas.arthaswebdemo.web.controller.IndexController
+查看字节码 javap -c -s -v -l xxx.class
+
+
+相关文章：Arthas原理系列(四):字节码插装让一切变得有可能
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

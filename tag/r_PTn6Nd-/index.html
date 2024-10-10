@@ -1,0 +1,1096 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    Spring | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        Spring</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
+                        Spring Events使用和问题分析
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-08-04</time>
+                    
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。
+常规情况
+在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用户发送一个注册成功的短信通知，核心流程是存储用户信息，次要流程是发送短信通知。
+
+由于本文主要是用来介绍SpringEvent的使用，所以另外的方案就不做介绍了，接下来让我们来初始化一个项目来模拟这部分业务代码的实现：
+对于这样一个流程，我们常规的设计方案有以下几种：
+
+设计一个有界队列线程池，将发送短信流程提交给异步线程执行。
+使用SpringEvent，发布用户注册成功事件，由监听器执行（也可以选择执行线程）。
+使用MQ，由消费者负责执行。（最重，最稳妥的方案）
+
+Entity
+public class User {
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
+    private String username;
+    private String address;
+}
+
+Service
+public interface UserService extends IService&amp;lt;User&amp;gt; {
+    String addUser(String username, String address);
+}
+
+public class UserServiceImpl extends ServiceImpl&amp;lt;UserMapper, User&amp;gt; implements UserService {
+
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&amp;quot;添加用户开始&amp;quot;);
+        super.save(user);
+        log.info(&amp;quot;添加用户成功, 发送事件开始&amp;quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&amp;quot;添加用户成功, 发送事件结束&amp;quot;);
+        return user.getId();
+    }
+}
+
+Listener
+public class UserListener {
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;接收到添加用户事件, 发送短信完成 Normal, user={}&amp;quot;, user.toString());
+    }
+}
+
+Controller
+@RequestMapping(&amp;quot;user&amp;quot;)
+public class UserController {
+    private final UserService userService;
+    @PostMapping(&amp;quot;/add&amp;quot;)
+    public String add(String username, String address) {
+        return userService.addUser(username, address);
+    }
+}
+
+DB
+ORM框架我们使用Mybatis-Plus，数据库我们使用db2作为临时数据库，目前没有数据。
+
+2024-08-04 16:31:45.590  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+JDBC Connection [HikariProxyConnection@1603671607 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&amp;gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&amp;gt; Parameters: 1820014751548219393(String), yzt(String), shenzhen(String)
+&amp;lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+2024-08-04 16:31:45.705  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:31:45.708  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820014751548219393, username=yzt, address=shenzhen)
+2024-08-04 16:31:45.709  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+
+再次查看数据
+select * from user;
+
+
+
+ID
+USERNAME
+ADDRESS
+
+
+
+
+1820014751548219393
+yzt
+shenzhen
+
+
+
+(1 row, 2 ms)
+小结
+为了更好的呈现执行过程，上面的代码没有添加异步，通过上面的代码日志，可以看到整个过程大概如下图所示
+
+一般我们的业务编码都是使用@EventListener来实现，在正常情况下不会有什么问题。但是在某些特殊场景下，可能会出现预期之外的结果。
+场景2，事务异常
+上面我们演示的更多是业务正常的情况，但通常情况下，添加用户不仅仅只有这么简单的业务，在存储之后，可能还有其他的业务，比如为邀请人结算奖励之类（举例），那么流程长了之后总会有异常的可能，比如我们用address=shanghai来模拟业务异常：
+public class UserServiceImpl extends ServiceImpl&amp;lt;UserMapper, User&amp;gt; implements UserService {
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&amp;quot;添加用户开始&amp;quot;);
+        super.save(user);
+        log.info(&amp;quot;添加用户成功, 发送事件开始&amp;quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&amp;quot;添加用户成功, 发送事件结束&amp;quot;);
+        
+        // 模拟异常场景
+        if (address.equals(&amp;quot;shanghai&amp;quot;)) {
+            throw new RuntimeException(&amp;quot;rollback&amp;quot;);
+        }
+        return user.getId();
+    }
+}
+
+再次查看日志
+2024-08-04 16:47:30.838  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+JDBC Connection [HikariProxyConnection@1080868530 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&amp;gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&amp;gt; Parameters: 1820018715891113985(String), yzt1(String), shanghai(String)
+&amp;lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.839  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820018715891113985, username=yzt1, address=shanghai)
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.842 ERROR 55648 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+
+因为下游的异常，导致事务并没有成功提交，但是前面的事件监听器已经被执行了，此时数据库未正确写入用户，但是短信已经发送出去了，在业务上肯定是不可接受的。
+当然也可以说，把注册用户成功事件放到代码的最后面，这当然也是一种方案，但始终无法做到最完美的一致性问题，因为用户最终事务提交还是有可能失败（超时、重复写入等）。
+或者说，将注册成功事件放到事务注解的外部，在确保事务提交之后，再发送事件，就像之前将的Redis的分布式锁解锁一样 使用Redis实现分布式锁的坑#3-事务未提交锁就释放了，这种方案固然可以，但体现到业务代码上，就需要再另一个被Spring代理了的bean上来操作，比较麻烦。
+其实Spring是为这种场景提供了解决方案的，那就是@TransactionalEventListener，通过注解的名称就可以看出来，他是为了解决事务问题来提供的注解，它的使用和@EventListener完全一致，只是多了一个参数phase，共有4个选择：
+
+TransactionPhase.AFTER_COMMIT，事务提交之后
+TransactionPhase.BEFORE_COMMIT，事务提交之前
+TransactionPhase.AFTER_COMPLETION，事务完成之后
+TransactionPhase.AFTER_ROLLBACK，事务回滚之后
+通过名称可以很直观的看到他的作用，接下来我们添加5个事件监听器，分别来看看他们具体的执行时机：
+
+public class UserListener {
+
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;接收到添加用户事件, 发送短信完成 Normal, user={}&amp;quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void addHandlerAfterCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user={}&amp;quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.BEFORE_COMMIT)
+    public void addHandlerBeforeCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user={}&amp;quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMPLETION)
+    public void addHandlerAfterCompletion(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user={}&amp;quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_ROLLBACK)
+    public void addHandlerAfterRollback(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&amp;quot;添加用户事务执行失败, AFTER_ROLLBACK, user={}&amp;quot;, user.toString());
+    }
+}
+
+执行一次成功的写入，看看日志。
+2024-08-04 17:02:09.069  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+JDBC Connection [HikariProxyConnection@879009595 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&amp;gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&amp;gt; Parameters: 1820022399454720001(String), yzt1(String), shenzhen(String)
+&amp;lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+
+再执行一次失败的写入，看看日志：
+2024-08-04 17:09:30.720  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+JDBC Connection [HikariProxyConnection@566058297 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&amp;gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&amp;gt; Parameters: 1820024251877470209(String), yzt1(String), shanghai(String)
+&amp;lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 添加用户事务执行失败, AFTER_ROLLBACK, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.725 ERROR 56859 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+
+
+执行流程
+通过上面的日志可以看到整个执行过程如下图所示：
+
+由此可知，有了@TransactionalEventListener，我们不用确定事务的提交时机以及是否成功，只需要编写对应的监听器处理器，并指定执行时事务的时机即可在正确的时间点被调用，这一切都是Spring的AOP在帮我们处理。
+TransactionalApplicationListenerMethodAdapter
+public void onApplicationEvent(ApplicationEvent event) {
+    if (TransactionSynchronizationManager.isSynchronizationActive() &amp;amp;&amp;amp;
+            TransactionSynchronizationManager.isActualTransactionActive()) {
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionalApplicationListenerSynchronization&amp;lt;&amp;gt;(event, this, this.callbacks));
+    }
+    else if (this.annotation.fallbackExecution()) {
+        if (this.annotation.phase() == TransactionPhase.AFTER_ROLLBACK &amp;amp;&amp;amp; logger.isWarnEnabled()) {
+            logger.warn(&amp;quot;Processing &amp;quot; + event + &amp;quot; as a fallback execution on AFTER_ROLLBACK phase&amp;quot;);
+        }
+        processEvent(event);
+    }
+    else {
+        // No transactional event execution at all
+        if (logger.isDebugEnabled()) {
+            logger.debug(&amp;quot;No transaction is active - skipping &amp;quot; + event);
+        }
+    }
+}
+
+如果有事务在进行中，就将其监听器处理器先放到TransactionSynchronizationManager注册一个同步队列，在事务执行到对应的阶段，再回调每个监听了对应阶段的事务处理器。
+在AbstractPlatformTransactionManager#processCommit中
+protected final void triggerBeforeCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCommit(status.isReadOnly());
+    }
+}
+protected final void triggerBeforeCompletion(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCompletion();
+    }
+}
+private void triggerAfterCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerAfterCommit();
+    }
+}
+
+小结
+通过本篇文章，我们大致了解了@TransactionalEventListener注解的使用场景和注意事项，也了解了其大概的实现原理，其实SpringEvent的相关源码看起来非常容易，只要稍微看过Spring相关源码，并且对SpringAOP相关逻辑了解的，就可以很容易的看懂，因为他的调用过程没那么多弯弯绕绕，只要看着applicationContext.publishEvent方法一直往下盯，很快就能够看完整个的执行过程。
+本篇博客对应的源码，希望能对你有所帮助：spring-boot-events
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-ai/">
+                        Spring AI
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-06-19</time>
+                    
+                        <a href="https://imyzt.top/tag/Q7Z8AksP6/" class="post-tag i-tag
+                            i-tag-other_1">
+            #Alibaba
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/a3ySf_aXex/" class="post-tag i-tag
+                            i-tag-primary">
+            #AI
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+当一开始听说Spring-AI项目时是很懵的，什么？Spring开始训练模型了？不应该啊，Java还能卷模型赛道了吗？...
+打开官网了解了下，才知道原来是缝合怪：
+
+Spring AI is an application framework for AI engineering. Its goal is to apply to the AI domain Spring ecosystem design principles such as portability and modular design and promote using POJOs as the building blocks of an application to the AI domain.
+
+官网地址：https://spring.io/projects/spring-ai
+换言之就是虽然Java不能卷算法，但是我可以提供一套封装来让你们调用模型提供的API服务，众所周知，我的抽象封装能力还是很强的。你看你们现在这么多厂商提供服务，不得需要一个统一的门面来减少接入成本嘛...
+官网列举了目前国外主流的平台：
+Chat Models
+OpenAI
+Azure Open AI
+Amazon Bedrock
+Cohere&#39;s Command
+AI21 Labs&#39; Jurassic-2
+Meta&#39;s LLama 2
+Amazon&#39;s Titan
+Google Vertex AI Palm
+Google Gemini
+HuggingFace - access thousands of models, including those from Meta such as Llama2
+Ollama - run AI models on your local machine
+MistralAI
+Text-to-image Models
+OpenAI with DALL-E
+StabilityAI
+Transcription (audio to text) Models
+OpenAI
+... 数不胜数，更何况还有很多国内大厂开源的模型。
+所以Spring提供了一套统一的封装门面，其他的厂商也可以基于门面来实现自己的Client，比如Alibaba就接入了com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient。
+这就引申出了本博客，记录了下我接入Spring-Ai（OpenAI）、Spring-Ai-Alibaba（TongYi）的过程。
+接入Spring-Ai
+Spring-Ai的接入相对简单，因为最新的start.spring.io已经维护了OpenAI的依赖包，在IDEA使用Spring-Initializr即可完成初始化。
+
+完成Gradle的初始化之后，得到了一个标准的Spring项目，只需要做一个简单的配置:
+spring.application.name=spring-ai-demo
+# 生成结果多样性参数，值在0~2之间，值越大越随机越小越固定，但就算为0也会有随机性
+spring.ai.openai.chat.temperature=0.7
+spring.ai.chat.client.enabled=true
+# 如果你需要代理的话
+spring.ai.openai.base-url=https://api.xty.app
+# 填写自己的key
+spring.ai.openai.api-key=${OPENAI_API_KEY}
+# 填写你需要使用的模型（也可以使用时代码指定）
+spring.ai.openai.chat.options.model=gpt-3.5-turbo
+
+接下来只需要编写一个Java的控制器，来接收HTTP请求，就可以完成对OpenAI的对话。
+/**
+ * @author imyzt
+ * @date 2024/06/19
+ * @description AI 入口
+ */
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+
+    @GetMapping(&amp;quot;/ai/chat&amp;quot;)
+    Map&amp;lt;String, Object&amp;gt; chat(@RequestParam String question) {
+        ChatClient.ChatClientRequest.CallPromptResponseSpec call = chatClient.prompt(new Prompt(question)).call();
+        return Map.of(&amp;quot;question&amp;quot;, question, &amp;quot;answer&amp;quot;, call.chatResponse());
+    }
+}
+
+整体接入还是比较简单的，但是这里踩了一个坑，不知道是我引入的版本比较新还是什么缘故，它的ChatClient Bean 竟然没有自动注册！所以我还手动注册了一个Bean，代码如下：
+@Bean
+public ChatClient chatClient(@Autowired OpenAiChatModel openAiChatModel) {
+    return ChatClient.builder(openAiChatModel).build();
+}
+
+代码
+https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-demo/spring-ai-demo
+Spring-Ai-Alibaba
+OpenAI由于API-KEY的费用蛮高，虽然完成了代码的接入，但是最终我还是没有购买它的API...所以又看了国内的厂商，目前主要是Alibaba完成了Spring-Ai的接入，整体接入其实也很简单，建议首先看一遍官网的例子，接下来可以跟着步骤走一下试试。
+创建项目，引入依赖
+首先完成一个普通SpringBootWeb项目创建，然后引入Alibaba-Ai的依赖
+&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-cloud-starter-alibaba-ai&amp;lt;/artifactId&amp;gt;
+        &amp;lt;exclusions&amp;gt;
+            &amp;lt;exclusion&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-ai-core&amp;lt;/artifactId&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+            &amp;lt;/exclusion&amp;gt;
+        &amp;lt;/exclusions&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;io.springboot.ai&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-ai-core&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;1.0.3&amp;lt;/version&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+
+&amp;lt;/dependencies&amp;gt;
+
+&amp;lt;dependencyManagement&amp;gt;
+    &amp;lt;dependencies&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-cloud-alibaba-dependencies&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;2023.0.1.0&amp;lt;/version&amp;gt;
+            &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+            &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+&amp;lt;/dependencyManagement&amp;gt;
+
+上面的内容，我把无关紧要的依赖去除了，只保留了核心部分，其中有一个关键点是exclusions了spring-ai-core，因为Alibaba引入的版本太老了。改为自己重新引入最新的版本，其他的和官方文档无差别。
+配置
+spring:
+  application:
+    name: spring-ai-alibaba-demo
+  cloud:
+    ai:
+      tongyi:
+        api-key: ${TONGYI_KEY}
+        images:
+         enabled: true
+        chat:
+          enabled: true
+
+编写控制器
+@Slf4j
+@RestController
+@RequestMapping
+public class AiController {
+
+    @Resource
+    private ChatClient chatClient;
+    @Resource
+    private ImageClient imageClient;
+
+    @GetMapping(&amp;quot;/ai/chat&amp;quot;)
+    public String chat(@RequestParam String question) {
+        ChatResponse call = chatClient.call(new Prompt(question));
+        return call.getResult().getOutput().getContent();
+    }
+
+    @GetMapping(&amp;quot;/ai/aigc&amp;quot;)
+    public String aigc(@RequestParam String question) {
+        ImageResponse call = imageClient.call(new ImagePrompt(question));
+        return call.getResult().getOutput().getUrl();
+    }
+}
+
+完成上面的步骤，基本就完成了接入，在postman上面输入地址，就可以进行测试了。因为通义不仅有chat，还可以文生图，所以我完成下演示：
+文生文
+（质量不予置评）
+
+文生图
+
+Spring-Ai-Alibaba还提供了一些示例，在他们的官方Github上，可以参考。
+官方还提供了一个简单的HTML来进行页面展示，也可以自己跑一下看看，最终效果如下：
+
+代码
+https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-ai-alibaba-demo/spring-ai-alibaba-demo
+参考博客
+
+阿里也出手了！Spring CloudAlibaba AI问世了 
+AI框架之Spring AI与Spring Cloud Alibaba AI使用讲解 
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-ai/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
+                        Spring 异步初始化
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-05-22</time>
+                    
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-success">
+            #Spring
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/Lix1FDBfB/" class="post-tag i-tag
+                            i-tag-banana">
+            #Java developer
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在Spring6.2版本后，支持了异步初始化。
+什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。
+在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。
+模拟初始化Bean耗时
+
+ABean
+
+@Slf4j
+public class TestABean {
+    @SneakyThrows
+    public TestABean() {
+        log.info(&amp;quot;A Bean开始初始化&amp;quot;);
+        TimeUnit.SECONDS.sleep(5);
+        log.info(&amp;quot;A Bean初始化完成&amp;quot;);
+    }
+}
+
+
+BBean
+
+@Slf4j
+public class TestBBean {
+    @SneakyThrows
+    public TestBBean() {
+        log.info(&amp;quot;B Bean开始初始化&amp;quot;);
+        TimeUnit.SECONDS.sleep(6);
+        log.info(&amp;quot;B Bean初始化完成&amp;quot;);
+    }
+}
+
+
+配置类
+
+@Configuration
+public class RegisterConfiguration {
+    @Bean
+    public TestABean testABean() {
+        return new TestABean();
+    }
+    @Bean
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+}
+
+
+启动类
+
+@Slf4j
+@ComponentScan(&amp;quot;top.imyzt.learning.spring.startup&amp;quot;)
+public class Application {
+    public static void main(String[] args) {
+        StopWatch stopWatch = new StopWatch(&amp;quot;Spring启动&amp;quot;);
+        stopWatch.start();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+}
+
+
+启动日志
+
+21:39:33.658 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testABean&#39;
+21:39:33.663 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:39:38.667 [main] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:39:38.669 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testBBean&#39;
+21:39:38.670 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:39:44.673 [main] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch &#39;Spring启动&#39;: 11.555947229 seconds
+------------------------------------------
+Seconds       %       Task name
+------------------------------------------
+11.55594723   100%    
+
+
+小结
+可以看到，在常规情况下，A和B Bean是串行初始化的，整个初始化耗时11.5s。
+
+异步初始化
+在Spring6.2版本中，@Bean注解引入了一个新的属性：bootstrap，默认Bean.Bootstrap.DEFAULT时为串行初始化，当指定为Bean.Bootstrap.BACKGROUND时，Spring会尝试异步初始化该Bean，但是需要配置一个名为bootstrapExecutor的线程池，用作异步初始化时所需的线程。
+只需要将配置类稍作修改，就可以将指定的Bean进行异步初始化：
+@Configuration
+public class RegisterConfiguration {
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestABean testABean() {
+        return new TestABean();
+    }
+
+    @Bean(bootstrap = Bean.Bootstrap.BACKGROUND)
+    public TestBBean testBBean() {
+        return new TestBBean();
+    }
+
+    @Bean()
+    public Executor bootstrapExecutor() {
+        return new ThreadPoolExecutor(2, 10, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024));
+    }
+}
+
+然后我们再查看启动效果：
+21:53:49.023 [pool-1-thread-1] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testABean&#39;
+21:53:49.024 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean开始初始化
+21:53:49.025 [pool-1-thread-2] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean &#39;testBBean&#39;
+21:53:49.026 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean开始初始化
+21:53:54.029 [pool-1-thread-1] INFO top.imyzt.learning.spring.startup.core.TestABean - A Bean初始化完成
+21:53:55.031 [pool-1-thread-2] INFO top.imyzt.learning.spring.startup.core.TestBBean - B Bean初始化完成
+StopWatch &#39;Spring启动&#39;: 6.740055683 seconds
+-----------------------------------------
+Seconds       %       Task name
+-----------------------------------------
+6.740055683   100%    
+
+可以看到启动时间从11.5s降为6.7s，效果十分显著，在部分需要依赖外部或已知需要耗时初始化的Bean，可以通过此方法进行优化。“我可以不用，你不能没有”。
+参考
+
+13年过去了，Spring官方竟然真的支持Bean的异步初始化了！
+博客对应代码
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">
+                        CircuitBreak导致ThreadLocal参数丢失问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-01-25</time>
+                    
+                        <a href="https://imyzt.top/tag/_KxCNznKV/" class="post-tag i-tag
+                            i-tag-info">
+            #ThreadLocal
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-warning">
+            #问题解决
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-warning">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            背景
+使用OpenFeign时，通常会实现RequestInterceptor接口来自定义FeignConfiguration，OpenFeign暴露了feign.RequestTemplate信息，给到我们在发送请求前自定义参数信息的扩展点。
+在分布式系统中，通常会将本服务的信息（UserInfo、RequestId）透传至下游服务，从而实现分布式链路追踪等功能，对于像用户信息等，在Web系统中通常使用 ThreadLocal 来存储信息，在自定义的FeignConfiguration中获取ThreadLocal再塞入到feign.RequestTemplate中，实现向下游服务的传递，示例：
+public class FeignConfiguration implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String userId = SubjectContext.get().getUserId();
+        if (null != attributes) {
+            HttpServletRequest request = attributes.getRequest();
+            template.header(&amp;quot;token&amp;quot;, request.getHeader(&amp;quot;TOKEN&amp;quot;));
+            template.header(&amp;quot;userId&amp;quot;, userId);
+        }
+    }
+}
+
+简单的Context示例：
+public class SubjectContext {
+    protected static ThreadLocal&amp;lt;UserInfo&amp;gt; subjectContext = new ThreadLocal();
+    public static void remove() {
+        subjectContext.remove();
+    }
+    public static void set(UserInfo uerInfo) {
+        subjectContext.set(uerInfo);
+    }
+    public static UserInfo get() {
+        return (UserInfo)subjectContext.get();
+    }
+}
+
+出现错误
+上述代码在常规情况下，是能够按照预期执行的。
+但是最近项目引入了CircuitBreaker作为服务熔断的断路器之后，上述代码在执行到SubjectContext.get()时，会抛出空指针，拿不到用户信息。
+通过分析CircuitBreaker的源码，最终定位到代码出现在Resilience4JCircuitBreaker内部，在Resilience4JCircuitBreaker中有一个public &amp;lt;T&amp;gt; T run(Supplier&amp;lt;T&amp;gt; toRun, Function&amp;lt;Throwable, T&amp;gt; fallback)方法，方法入参的toRun就是封装过的我们定义的Feign接口，其包装过程在FeignCircuitBreakerInvocationHandler#asSupplier代码中，如下：
+private Supplier&amp;lt;Object&amp;gt; asSupplier(final Method method, final Object[] args) {
+    final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+    return () -&amp;gt; {
+        try {
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            // 执行我们的真正方法
+            return dispatch.get(method).invoke(args);
+        }
+        catch (RuntimeException throwable) {
+            throw throwable;
+        }
+        catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    };
+}
+
+Spring Cloud CircuitBreaker Resilience4j 提供了两种实现：
+
+使用 Semaphores 的 SemaphoreBulkhead。
+一个 FixedThreadPoolBulkhead，它使用一个有界队列和一个固定的线程池。
+
+默认情况下，Spring Cloud CircuitBreaker Resilience4j 使用 FixedThreadPoolBulkhead。要修改默认行为以使用 SemaphoreBulkhead，请将属性 spring.cloud.circuitbreaker.resilience4j.enableSemaphoreDefaultBulkhead 设为 true。
+正是由于上述原因，默认将我们的FeignConfiguration提交给了线程池，由于我们使用的是ThreadLocal导致线程本地变量没有向子线程传递，在执行FeignConfiguration时子线程无法拿到Context信息，最终导致程序的报错。
+解决办法
+通过分析源码我们发现，执行任务的线程池Resilience4JCircuitBreaker#executorService是由外部传递过来进行初始化的，调用方在Resilience4JCircuitBreakerFactory#create(java.lang.String, java.lang.String, java.util.concurrent.ExecutorService)
+在Resilience4JCircuitBreakerFactory中发现，是由本实例在create方法被调用时传入的本类的成员变量，即：
+
+private ExecutorService executorService = Executors.newCachedThreadPool();
+private ConcurrentHashMap&amp;lt;String, ExecutorService&amp;gt; executorServices = new ConcurrentHashMap&amp;lt;&amp;gt;();
+
+
+而我们在没有定义自定义Feign Group时，默认使用的就是executorService，在本类中有一个Resilience4JCircuitBreakerFactory#configureExecutorService方法专门保留了外部传入自定义线程池的扩展，我们可以自己实现创建一个支持传递Context到子线程的线程池，即可将参数向下传递，比如像这样：
+@Configurable
+@AllArgsConstructor
+public class CircuitBreakerConfiguration implements ApplicationRunner {
+
+    private final Resilience4JCircuitBreakerFactory factory;
+    
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        ContextThreadPoolExecutor contextThreadPoolExecutor = 
+                new ContextThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024));
+
+        // **change ThreadPoolExecutor**
+        factory.configureExecutorService(contextThreadPoolExecutor);
+    }
+    
+    public static class ContextThreadPoolExecutor extends ThreadPoolExecutor {
+
+        public ContextThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        public void execute(Runnable command) {
+            super.execute(wrap(command));
+        }
+
+        private static Runnable wrap(Runnable runnable) {
+            **SubjectContext context = SubjectContext.getContext();**
+            return () -&amp;gt; {
+                // 将参数向下传递
+                **SubjectContext.setContext(context);**
+                try {
+                    runnable.run();
+                } finally {
+                    **SubjectContext.clear();**
+                }
+            };
+        }
+    }
+}
+
+后记
+上述的方案只解决了没有自定义Group的情况，官方在自定义Group的情况下是没有保留扩展位的，所以给官方提了一个MR并且已成功合并到主分支，如下：
+Customizable groupExecutorService #180
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/circuitbreak-dao-zhi-threadlocal-can-shu-diu-shi-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">
+                        Spring中使用到的设计模式
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-21</time>
+                    
+                        <a href="https://imyzt.top/tag/hheaoxZjL/" class="post-tag i-tag
+                            i-tag-primary">
+            #设计模式
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-other_4">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            设计模式的基本原则：
+
+开闭原则
+单一职责原则
+里氏替换原则
+依赖倒置原则
+
+Spring中用到的模式：
+
+HandlerAdapter，适配器模式
+BeanFactory，简单工厂模式
+FactoryBean，工厂方法模式
+Controller的单例模式，也可以是原型模式
+Service@Transactional，代理模式
+@EventListener，观察者模式
+JdbcTemplate，RestTemplate，模板方法模式
+TransactionAwareCacheDecorator，装饰器模式
+AopProxy，策略模式
+
+其他在业务中常用的模式：
+业务中涉及的模式：
+策略模式：
+
+不同数据的不同处理结果
+
+观察者模式：
+
+事件监听和分发（不同处理类型）
+
+门面模式：
+
+不同活动的不同参数，统一门面，采用Jackson的类型映射子类
+
+状态模式：
+
+支付的不同状态，通过事件和状态流转
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+                        通过Spring工具类，父类获取子类泛型（多态泛型传参）
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-09-22</time>
+                    
+                        <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-error">
+            #Spring
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。
+ResolvableType[] generics = ResolvableType.forClass(this.getClass()).getSuperType().getGenerics();
+// generics[0]是第一个泛型
+T o = (T) generalResult.toJavaObject(generics[0].resolve());
+
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>

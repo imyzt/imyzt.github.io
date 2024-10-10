@@ -1,0 +1,364 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    SpringBoot2 编写自定义AutoConfig | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            SpringBoot2 编写自定义AutoConfig
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2019-01-31</time>
+                            
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="什么是spring-autoconfig">什么是Spring AutoConfig</h1>
+<blockquote>
+<p>Spring Boot auto-configuration attempts to automatically configure your Spring application based on the jar dependencies that you have added. For example, if HSQLDB is on your classpath, and you have not manually configured any database connection beans, then Spring Boot auto-configures an in-memory database.<br>
+You need to opt-in to auto-configuration by adding the <code>@EnableAutoConfiguration </code> or <code>@SpringBootApplication</code> annotations to one of your <code>@Configuration</code> classes.<br>
+引用自: <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-auto-configuration.html">https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-auto-configuration.html</a></p>
+</blockquote>
+<h1 id="怎样编写springboot2-autoconfig">怎样编写SpringBoot2 AutoConfig</h1>
+<p>使用自动配置<code>HttpClient</code>作为例子.</p>
+<h2 id="编写一个属性配置类">编写一个属性配置类</h2>
+<pre><code>@ConfigurationProperties(prefix = &quot;spring.httpclient&quot;)
+@Data
+public class HttpClientProperties {
+    private Integer connectTimeOut = 1000;
+    private Integer socketTimeOut = 10000;
+    private String agent = &quot;agent&quot;;
+    private Integer maxConnPerRoute = 10;
+    private Integer maxConnTotal = 50;
+}
+</code></pre>
+<p><code>@ConfigurationProperties</code> 的 <code>prefix</code> 提示Spring在启动时将配置文件中 <code>spring.httpclient</code> 的与本类属性相对应的属性自动加载进来.<br>
+<code>@Data</code> 是lombok的注解.</p>
+<h2 id="编写自动配置核心类">编写自动配置核心类</h2>
+<pre><code>@Configuration
+@ConditionalOnClass({HttpClient.class})
+@EnableConfigurationProperties(HttpClientProperties.class)
+public class HttpClientAutoConfiguration {
+
+    private final HttpClientProperties properties;
+
+    public HttpClientAutoConfiguration(HttpClientProperties properties) {
+        this.properties = properties;
+    }
+
+
+    /**
+     * httpclient bean的定义
+     * @return Http Client
+     *
+     * ConditionalOnMissingBean -&gt; 当用户未定义的时候才会创建
+     */
+    @Bean
+    @ConditionalOnMissingBean(HttpClient.class)
+    public HttpClient httpClient() {
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(properties.getConnectTimeOut())
+                .setSocketTimeout(properties.getSocketTimeOut())
+                .build();
+        return HttpClientBuilder.create()
+                .setDefaultRequestConfig(requestConfig)
+                .setUserAgent(properties.getAgent())
+                .setMaxConnPerRoute(properties.getMaxConnPerRoute())
+                .setMaxConnTotal(properties.getMaxConnTotal())
+                // 防止重试
+                .setConnectionReuseStrategy(new NoConnectionReuseStrategy())
+                .build();
+    }
+}
+</code></pre>
+<ul>
+<li>@Configuration： 将本类标识为SpringBoot的Java配置类</li>
+<li>@ConditionalOnClass({HttpClient.class})： 只有在HttpClient.class存在时才会加载java config</li>
+<li>@EnableConfigurationProperties(HttpClientProperties.class)：本类加载时注入 <code>HttpClientProperties</code> 属性配置的bean</li>
+<li>httpClient()的@ConditionalOnMissingBean(HttpClient.class)：只有当没有创建HttpClient bean的时候，才会执行 httpClient()方法创建一个HttpClient bean</li>
+</ul>
+<h1 id="使spring感知自动配置类">使Spring感知自动配置类.</h1>
+<blockquote>
+<p>在 <code>spring-boot-autoconfigure</code> 的 <code>META-INF/spring.factories</code> 中, 编写了非常多的开源软件的自动配置类. 而如果我们自己编写自动配置类. 有以下几种方式：</p>
+</blockquote>
+<h2 id="方式一">方式一</h2>
+<p>autoconfig在本项目的 <code>@SpringBootApplication</code> 目录下，不需要其他配置, 可以直接通过 <code>@AutoWired</code> 注入 <code>HttpClient</code>，如：<br>
+···<br>
+@RunWith(SpringRunner.class)<br>
+@SpringBootTest<br>
+public class HouseApplicationTests {</p>
+<pre><code>@Autowired
+private HttpClient httpClient;
+
+@Test
+public void contextLoads() throws IOException {
+	String toString = httpClient.execute(new HttpGet(&quot;http://www.imyzt.top&quot;)).getEntity().toString();
+	System.out.println(toString);
+}
+</code></pre>
+<p>}<br>
+···</p>
+<h2 id="方式二">方式二</h2>
+<p>autoconfig不在本项目的 <code>@SpringBootApplication</code> 目录下，可以有两种方式自动配置：</p>
+<ol>
+<li>在本项目的resources下编写 <code>META-INF/spring.factories</code> 文件.</li>
+</ol>
+<pre><code>org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+top1.imyzt.autoconfig.HttpClientAutoConfiguration
+</code></pre>
+<ol start="2">
+<li>[推荐] 编写 <code>@EnableHttpClient</code></li>
+</ol>
+<pre><code>@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(HttpClientAutoConfiguration.class)
+public @interface EnableHttpClient {
+}
+</code></pre>
+<p>在启动类上加上注解, 即可开启HttpClient配置.</p>
+<h1 id="总结">总结</h1>
+<p>教程是在学习慕课网上的 <a href="https://coding.imooc.com/class/174.html">Java从单体到微服务打造房产销售平台</a> 时学习到的, 在此博客做一个总结, 以便后面复习.</p>
+<p>上述代码在我的 <a href="https://github.com/imyzt/houses">Github</a> 上可以找到.</p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/about/">
+                                <h3 class="post-title">
+                                    关于
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFspring-autoconfig">什么是Spring AutoConfig</a></li>
+<li><a href="#%E6%80%8E%E6%A0%B7%E7%BC%96%E5%86%99springboot2-autoconfig">怎样编写SpringBoot2 AutoConfig</a>
+<ul>
+<li><a href="#%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%B1%9E%E6%80%A7%E9%85%8D%E7%BD%AE%E7%B1%BB">编写一个属性配置类</a></li>
+<li><a href="#%E7%BC%96%E5%86%99%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%A0%B8%E5%BF%83%E7%B1%BB">编写自动配置核心类</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BFspring%E6%84%9F%E7%9F%A5%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%B1%BB">使Spring感知自动配置类.</a>
+<ul>
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80">方式一</a></li>
+<li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C">方式二</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

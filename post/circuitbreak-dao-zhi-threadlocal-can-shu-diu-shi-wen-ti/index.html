@@ -1,0 +1,374 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    CircuitBreak导致ThreadLocal参数丢失问题 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+            
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                
+
+                    
+                            
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>                        
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-detail main-container">
+                <!-- left -->
+                <div id="content" class="main-container-left">
+                    <article class="post i-card">
+                        <h2 class="post-title">
+                            CircuitBreak导致ThreadLocal参数丢失问题
+                        </h2>
+                        <div class="post-info">
+                            <time class="post-time">2024-01-25</time>
+                            
+                                <a href="https://imyzt.top/tag/_KxCNznKV/" class="post-tag i-tag
+                            i-tag-other_3">
+                            #ThreadLocal
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-">
+                            #问题解决
+                        </a>
+                                
+                                <a href="https://imyzt.top/tag/r_PTn6Nd-/" class="post-tag i-tag
+                            i-tag-">
+                            #Spring
+                        </a>
+                                
+                        </div>
+                        
+                                <div class="post-content">
+                                    <h1 id="背景">背景</h1>
+<p>使用<code>OpenFeign</code>时，通常会实现<code>RequestInterceptor</code>接口来自定义<code>FeignConfiguration</code>，<code>OpenFeign</code>暴露了<code>feign.RequestTemplate</code>信息，给到我们在发送请求前自定义参数信息的扩展点。</p>
+<p>在分布式系统中，通常会将本服务的信息（<code>UserInfo</code>、<code>RequestId</code>）透传至下游服务，从而实现分布式链路追踪等功能，对于像用户信息等，在Web系统中通常使用 <code>ThreadLocal</code> 来存储信息，在自定义的<code>FeignConfiguration</code>中获取<code>ThreadLocal</code>再塞入到<code>feign.RequestTemplate</code>中，实现向下游服务的传递，示例：</p>
+<pre><code class="language-java">public class FeignConfiguration implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String userId = SubjectContext.get().getUserId();
+        if (null != attributes) {
+            HttpServletRequest request = attributes.getRequest();
+            template.header(&quot;token&quot;, request.getHeader(&quot;TOKEN&quot;));
+            template.header(&quot;userId&quot;, userId);
+        }
+    }
+}
+</code></pre>
+<p>简单的Context示例：</p>
+<pre><code class="language-java">public class SubjectContext {
+    protected static ThreadLocal&lt;UserInfo&gt; subjectContext = new ThreadLocal();
+    public static void remove() {
+        subjectContext.remove();
+    }
+    public static void set(UserInfo uerInfo) {
+        subjectContext.set(uerInfo);
+    }
+    public static UserInfo get() {
+        return (UserInfo)subjectContext.get();
+    }
+}
+</code></pre>
+<h1 id="出现错误">出现错误</h1>
+<p>上述代码在常规情况下，是能够按照预期执行的。</p>
+<p>但是最近项目引入了<code>CircuitBreaker</code>作为服务熔断的断路器之后，上述代码在执行到<code>SubjectContext.get()</code>时，会抛出空指针，拿不到用户信息。</p>
+<p>通过分析<code>CircuitBreaker</code>的源码，最终定位到代码出现在<code>Resilience4JCircuitBreaker</code>内部，在<code>Resilience4JCircuitBreaker</code>中有一个<code>public &lt;T&gt; T run(Supplier&lt;T&gt; toRun, Function&lt;Throwable, T&gt; fallback)</code>方法，方法入参的<code>toRun</code>就是封装过的我们定义的Feign接口，其包装过程在<code>FeignCircuitBreakerInvocationHandler#asSupplier</code>代码中，如下：</p>
+<pre><code class="language-java">private Supplier&lt;Object&gt; asSupplier(final Method method, final Object[] args) {
+    final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+    return () -&gt; {
+        try {
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            // 执行我们的真正方法
+            return dispatch.get(method).invoke(args);
+        }
+        catch (RuntimeException throwable) {
+            throw throwable;
+        }
+        catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    };
+}
+</code></pre>
+<p>Spring Cloud CircuitBreaker Resilience4j 提供了两种实现：</p>
+<ol>
+<li>使用 Semaphores 的 SemaphoreBulkhead。</li>
+<li>一个 FixedThreadPoolBulkhead，它使用一个有界队列和一个固定的线程池。</li>
+</ol>
+<p>默认情况下，Spring Cloud CircuitBreaker Resilience4j 使用 <code>FixedThreadPoolBulkhead</code>。要修改默认行为以使用 <code>SemaphoreBulkhead</code>，请将属性 <code>spring.cloud.circuitbreaker.resilience4j.enableSemaphoreDefaultBulkhead</code> 设为 <code>true</code>。</p>
+<p>正是由于上述原因，默认将我们的FeignConfiguration提交给了线程池，由于我们使用的是<code>ThreadLocal</code>导致<strong>线程本地变量</strong>没有向子线程传递，在执行FeignConfiguration时子线程无法拿到<code>Context</code>信息，最终导致程序的报错。</p>
+<h1 id="解决办法">解决办法</h1>
+<p>通过分析源码我们发现，执行任务的线程池<code>Resilience4JCircuitBreaker#executorService</code>是由外部传递过来进行初始化的，调用方在<code>Resilience4JCircuitBreakerFactory#create(java.lang.String, java.lang.String, java.util.concurrent.ExecutorService)</code></p>
+<p>在<code>Resilience4JCircuitBreakerFactory</code>中发现，是由本实例在<code>create</code>方法被调用时传入的本类的成员变量，即：</p>
+<ul>
+<li><code>private ExecutorService executorService = Executors.newCachedThreadPool();</code></li>
+<li><code>private ConcurrentHashMap&lt;String, ExecutorService&gt; executorServices = new ConcurrentHashMap&lt;&gt;();</code></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1706198428487.png" alt="" loading="lazy"></figure>
+<p>而我们在没有定义自定义Feign Group时，默认使用的就是<code>executorService</code>，在本类中有一个<code>Resilience4JCircuitBreakerFactory#configureExecutorService</code>方法专门保留了外部传入自定义线程池的扩展，我们可以自己实现创建一个支持传递<code>Context</code>到子线程的线程池，即可将参数向下传递，比如像这样：</p>
+<pre><code class="language-java">@Configurable
+@AllArgsConstructor
+public class CircuitBreakerConfiguration implements ApplicationRunner {
+
+    private final Resilience4JCircuitBreakerFactory factory;
+    
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        ContextThreadPoolExecutor contextThreadPoolExecutor = 
+                new ContextThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&lt;&gt;(1024));
+
+        // **change ThreadPoolExecutor**
+        factory.configureExecutorService(contextThreadPoolExecutor);
+    }
+    
+    public static class ContextThreadPoolExecutor extends ThreadPoolExecutor {
+
+        public ContextThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        public void execute(Runnable command) {
+            super.execute(wrap(command));
+        }
+
+        private static Runnable wrap(Runnable runnable) {
+            **SubjectContext context = SubjectContext.getContext();**
+            return () -&gt; {
+                // 将参数向下传递
+                **SubjectContext.setContext(context);**
+                try {
+                    runnable.run();
+                } finally {
+                    **SubjectContext.clear();**
+                }
+            };
+        }
+    }
+}
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>上述的方案只解决了没有自定义Group的情况，官方在自定义Group的情况下是没有保留扩展位的，所以给官方提了一个MR并且已成功合并到主分支，如下：<br>
+<a href="https://github.com/spring-cloud/spring-cloud-circuitbreaker/pull/181">Customizable groupExecutorService #180</a></p>
+
+                                </div>
+                    </article>
+                    <!--  -->
+                    
+                        <div class="next-post">
+                            <div class="next">下一篇</div>
+                            <a href="https://imyzt.top/post/idea-chang-yong-cha-jian/">
+                                <h3 class="post-title">
+                                    IDEA 常用插件
+                                </h3>
+                            </a>
+                        </div>
+                        
+                            <div id="disqus_thread"></div>
+                            <div id="gitalk-container"></div>
+                </div>
+                <!-- middle -->
+                <div class="main-container-middle"></div>
+                <!-- right -->
+                <div id="sidebar" class="main-container-right">
+                    
+                        <!-- toc -->
+                        
+    <div class="toc-card i-card ">
+        <div class="toc-title i-card-title">目录</div>
+        <div class="toc-content">
+            <ul class="markdownIt-TOC">
+<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="#%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF">出现错误</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">解决办法</a></li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+
+        </div>
+        <script>
+            function locateCatelogList() {
+                /*获取文章目录集合,可通过:header过滤器*/
+                var alis = $('.post-content :header');
+                /*获取侧边栏目录列表集合**/
+                var sidebar_alis = $('.markdownIt-TOC a');
+                /*获取滚动条到顶部的距离*/
+                var scroll_height = $(window).scrollTop();
+                for (var i = 0; i < alis.length; i++) {
+                    /*获取锚点集合中的元素分别到顶点的距离*/
+                    var a_height = $(alis[i]).offset().top;
+                    if (a_height < scroll_height) {
+                        /*高亮显示*/
+                        sidebar_alis.removeClass('on');
+                        $(sidebar_alis[i]).addClass('on');
+                    }
+                }
+            }
+            $(function() {
+                /*绑定滚动事件 */
+                $(window).bind('scroll', locateCatelogList);
+            });
+        </script>
+    </div>
+    
+                            
+
+                </div>
+
+
+
+
+            </div>
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+    
+        
+            <script>
+    window.onload = function() {
+        var gitalk = new Gitalk({
+            clientID: '8c8c4510f7772ba5faa4',
+            clientSecret: 'ac9076bf38b8c0145a974b50f3361d432c46deda',
+            repo: 'imyzt.github.io',
+            owner: 'imyzt',
+            admin: ['imyzt'],
+            id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+            distractionFreeMode: false // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    }
+</script>
+                
+
+                    
+                                
+</body>
+
+</html>

@@ -1,0 +1,419 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>
+    线程池 | 杨镇涛的一亩三分地
+</title>
+<link rel="shortcut icon" href="https://imyzt.top/favicon.ico?v=1725367388528">
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://imyzt.top/styles/main.css">
+<!-- js -->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://imyzt.top/media/js/jquery.sticky-sidebar.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ju8elxnz96");
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?86334929d26be993164458e308aa55ba";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+    <div class="nav">
+        <div class="logo">
+            <a href="https://imyzt.top">
+                <img class="avatar" src="https://imyzt.top/images/avatar.png?v=1725367388528" alt="">
+            </a>
+            <div class="site-title">
+                <h1>
+                    杨镇涛的一亩三分地
+                </h1>
+            </div>
+        </div>
+        <span class="menu-btn fa fa-align-justify"></span>
+        <div class="menu-container">
+            <ul>
+                
+                    
+                            <li>
+                                <a href="/" class="menu">
+                                    首页
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/archives" class="menu">
+                                    归档
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/tags" class="menu">
+                                    标签
+                                </a>
+                            </li>
+                            
+                                
+                    
+                            <li>
+                                <a href="/post/about" class="menu">
+                                    关于
+                                </a>
+                            </li>
+                            
+                                
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(".menu-btn").click(function() {
+            $(".menu-container").slideToggle();
+        });
+        $(window).resize(function() {
+
+            if (window.matchMedia('(min-width: 960px)').matches) {
+                $(".menu-container").css('display', 'block')
+            } else {
+                $(".menu-container").css('display', 'none')
+            }
+
+        });
+    });
+</script>
+
+            <div id="main-content" class="post-container main-container">
+                <div id="content" class="main-container-left">
+                    
+    <div class="i-card">
+        <b>标签：#
+        线程池</b>
+    </div>
+    
+        
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/ye-wu-luo-ji-bian-pai-cuo-wu-and-ttl-qian-kao-bei-dao-zhi-can-shu-diu-shi-wen-ti/">
+                        业务逻辑编排错误 &amp; TTL浅拷贝导致参数丢失问题
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2024-03-09</time>
+                    
+                        <a href="https://imyzt.top/tag/_KxCNznKV/" class="post-tag i-tag
+                            i-tag-other_3">
+            #ThreadLocal
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-success">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/KjxmDkyMU/" class="post-tag i-tag
+                            i-tag-other_4">
+            #问题解决
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            前言
+在DDD项目中，为了方便参数的传递，通常会使用ThreadLocal来保存一个对象来实现对参数的跨方法传递，避免通过形参的形式传递。在内部项目中，有一个项目使用的是 alibaba开源的 transmittable-thread-local来存储参数，新建了一个上下文对象（AbilityContext.java），使用HashMap来临时存储和获取参数。
+
+AbilityContext 示例
+public class AbilityContext {
+    private static final ThreadLocal&amp;lt;Map&amp;lt;String, Object&amp;gt;&amp;gt; CONTEXT = new TransmittableThreadLocal&amp;lt;&amp;gt;();
+
+    private AbilityContext() {
+    }
+
+    /**
+     * 初始化上下文
+     */
+    public static void initContext() {
+        Map&amp;lt;String, Object&amp;gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&amp;lt;&amp;gt;(8));
+        } else {
+            CONTEXT.get().clear();
+        }
+    }
+
+    /**
+     * 清除上下文
+     */
+    public static void clearContext() {
+        CONTEXT.remove();
+    }
+
+    public static Map&amp;lt;String, Object&amp;gt; getInnerMap() {
+        return CONTEXT.get();
+    }
+
+    /**
+     * 获取上下文内容
+     */
+    public static &amp;lt;T&amp;gt; T getValue(String key) {
+        Map&amp;lt;String, Object&amp;gt; con = CONTEXT.get();
+        if (con == null) {
+            return null;
+        }
+        return (T) con.get(key);
+    }
+
+    /**
+     * 设置上下文参数
+     */
+    public static void putValue(String key, Object value) {
+        Map&amp;lt;String, Object&amp;gt; con = CONTEXT.get();
+        if (con == null) {
+            CONTEXT.set(new HashMap&amp;lt;&amp;gt;(8));
+            con = CONTEXT.get();
+        }
+        con.put(key, value);
+    }
+}
+
+
+项目情况介绍
+通常来说，DDD项目的基本流程是由interface-&amp;gt;application，中间封装一层来集中处理上下文的初始化和清空动作，如下图：
+
+在正常情况下，上述流程可以正确的完成参数的写入和获取，但是，在项目运行过程中遇到了一个bug，正常写入参数后，偶现性（低频）获取值为NULL，导致程序出错，示例代码如下（隐去业务代码，重新写的伪代码）：
+
+其中demo()方法为当时复现的方法
+demo2()为伪代码，是业务代码中调用了另一个application，假设其逻辑和demo()方法一致的业务代码。
+
+@Slf4j
+public class AlibabaTtlWrongUsageExampleApplication {
+
+    public static void main(String[] args) {
+        demo(i);
+    }
+
+    private static void demo(int idx) {
+        // 初始化
+        AbilityContext.initContext();
+        // 赋业务值
+        AbilityContext.putValue(&amp;quot;main&amp;quot;, &amp;quot;mainValue&amp;quot;);
+
+        // 这里简化了代码，实际上经过了很多层业务代码调用后才出现了此方法
+        ThreadUtil.execute(() -&amp;gt; {
+            execute-&amp;gt;demo2();
+        });
+
+        // do something
+
+        // 主线程再次获取业务值(偶现为null)
+        String value = AbilityContext.getValue(&amp;quot;main&amp;quot;);
+        if (Objects.isNull(value)) {
+            log.warn(&amp;quot;lastGetNullValue, idx={}&amp;quot;, idx);
+        }
+    }
+}
+
+上述代码运行设置了一个key=main，值为mainValue。在下方AbilityContext.getValue(&amp;quot;main&amp;quot;)偶现获取==NULL。
+展开分析
+当时在分析的开始有推测是业务代码中参数被重新赋值为NULL，但通过对后续业务代码逐行查看，并没有找到重新赋值的逻辑。
+在深入业务代码分析的过程中，发现主流程中有一个异步方法调用（ThreadUtil.execute()），再次调用了另一个领域服务（这是不符合DDD规范的！），而领域服务的入口都会AbilityContext.initContext()的逻辑，通过这个线索 ，继续展开了深入分析。
+
+编码者的初衷可能是想到异步线程已经脱离了当前线程，再次调用 initContext()方法是初始化了一个新的对象上下文，但是由于项目使用的是 alibaba TTL，能够实现跨线程的传递，所以在子线程中依旧能拿到父线程的HashMap。并且TTL默认是使用的浅拷贝对象。由于initContext()中，调用了HashMap.clear()方法，相当于将父线程的HashMap给清空了！。
+通过比对父子线程的hashCode值确定为同一对象
+// 主线程获取hashCode
+final int hashCode = AbilityContext.getInnerMap().hashCode();
+ThreadUtil.execute(() -&amp;gt; {
+    // 子线程对比hashCode
+    log.info(&amp;quot;{}, ThreadUtil hashCode={}&amp;quot;, idx, AbilityContext.getInnerMap().hashCode() == hashCode);
+    // 子线程再次初始化(错误的根源)
+    AbilityContext.initContext();
+    // do something
+});
+14:42:28.198 [pool-1-thread-26] INFO top.imyzt.learning.caseanalysis.ttl.AlibabaTtlWrongUsageExampleApplication -- 25, ThreadUtil hashCode=true
+
+持续分析
+有了上述的线索，基本把问题原因找到了，但是为什么是偶现的呢？
+因为使用了异步线程，而线程的调度由操作系统的线程调度算法来决定，并不是一定保证顺序的，所以只要当操作系统优先调度异步线程，那么HashMap就被清空了，如果主线程优先往下走，那么就能够获取到完整的HashMap。
+后记
+至此，问题分析就告一段落了，整个过程中涉及到 TTL值的父子线程传递、对象浅拷贝、线程的调度，还涉及到了DDD的不规范逻辑编排，整个分析下来花费了一上午的时间，收获还是很大的。
+
+transmittable-thread-local
+TransmittableThreadLocal的传递只有浅拷贝吗？
+线程的优先级
+
+我将源代码上传了GitHub，如果你想在本地调试运行上述案例，可以下载到本地调试，有问题可以评论区沟通。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/ye-wu-luo-ji-bian-pai-cuo-wu-and-ttl-qian-kao-bei-dao-zhi-can-shu-diu-shi-wen-ti/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+            <article class="post i-card">
+                <h2 class="post-title">
+                    <a href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">
+                        ThreadPoolExecutor “非常用” 方法
+                    </a>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time">2023-11-29</time>
+                    
+                        <a href="https://imyzt.top/tag/CbzZOlvAr/" class="post-tag i-tag
+                            i-tag-info">
+            #RabbitMQ
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/sob7n9Mdo/" class="post-tag i-tag
+                            i-tag-success">
+            #线程池
+        </a>
+                        
+                        <a href="https://imyzt.top/tag/rsjM0rjtG/" class="post-tag i-tag
+                            i-tag-other_1">
+            #Java
+        </a>
+                        
+                </div>
+                <div class="post-article">
+                    
+                            <div class="post-content">
+                                
+                                        <div class="post-content-content">
+                                            平时在使用线程池时，更多关注到的是coreSize、maxSize、blockQueue、RejectedExecutionHandler这些参数，但在线程池监控领域，还需要关注到其他的一些方法。在此处做统一记录和备忘：
+public static void main(String[] args) {
+
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 5, 1, TimeUnit.MINUTES, new ArrayBlockingQueue&amp;lt;&amp;gt;(1024), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    // 启动所有核心线程(预热)
+    threadPoolExecutor.prestartAllCoreThreads();
+    // 启动一个核心线程
+    threadPoolExecutor.prestartCoreThread();
+
+    // 默认情况下构造器中的keepAliveTime指定的是非核心线程的空闲时间, 通过如下方法, 可以允许核心线程超时
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+
+    // ⭐️ 动态线程池必备方法
+    // 启动后, 设置核心线程数量
+    threadPoolExecutor.setCorePoolSize(3);
+    // 启动后, 设置最大线程数量
+    threadPoolExecutor.setMaximumPoolSize(10);
+    // 已执行完的任务总数
+    threadPoolExecutor.getTaskCount();
+    // 获取工作队列剩余数量
+    threadPoolExecutor.getQueue().remainingCapacity();
+    }
+
+
+后记
+通过上面的代码可知，在运行过程中我们也是可以操作coreSize和maxSize的。那么如何才能实现对Queue的大小进行控制呢？目前开源届常用的是采取RabbitMQ中的VariableLinkedBlockingQueue来实现。
+
+                                        </div>
+                                        
+                                            <a class="btn btn-text" href="https://imyzt.top/post/threadpoolexecutor-fei-chang-yong-fang-fa/">Read More ~</a>
+                            </div>
+                </div>
+            </article>
+            
+                <!-- 翻页 -->
+                
+                </div>
+                <!--  -->
+                <div class="main-container-middle"></div>
+                <!--  -->
+                <div id="sidebar" class="main-container-right">
+
+                    <!-- 个人信息 -->
+                    
+    <div class="id_card i-card">
+        <div class="id_card-avatar" style="background-image: url(https://imyzt.top/images/avatar.png?v=1725367388528)">
+        </div>
+        <h1 class="id_card-title">
+            杨镇涛的一亩三分地
+        </h1>
+        <h2 class="id_card-description">
+            分享我的技术和生活
+        </h2>
+        <!--  -->
+        <div class="id_card-sns">
+            <!-- github -->
+            
+                <a href="https://github.com/imyzt" target="_blank" rel="noopener noreferrer"><i
+                class="fa fa-github"></i></a>
+                
+                    <!-- twitter -->
+                    
+                            <!-- weibo -->
+                            
+                                    <!-- facebook -->
+                                    
+
+        </div>
+    </div>
+    
+
+                        <!-- 公告栏 -->
+                        
+    <div class="notice-card i-card ">
+        <div class="notice-title i-card-title">公告</div>
+        <div class="notice-content">
+            <a href="https://github.com/imyzt" color="red" target="_blank" >Follow me on GitHub</a>
+        </div>
+    </div>
+    
+
+                </div>
+            </div>
+
+
+
+            <div class="site-footer">
+  Powered by <a href="https://github.com/imyzt" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://imyzt.top/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+    <script>
+        $('#sidebar').stickySidebar({
+            topSpacing: 80,
+            // bottomSpacing: 60
+        });
+    </script>
+</body>
+
+</html>
