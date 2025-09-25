@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://imyzt.top</id>
+    <title>杨镇涛的一亩三分地</title>
+    <updated>2025-09-25T01:40:58.803Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://imyzt.top"/>
+    <link rel="self" href="https://imyzt.top/atom.xml"/>
+    <subtitle>分享我的技术和生活</subtitle>
+    <logo>https://imyzt.top/images/avatar.png</logo>
+    <icon>https://imyzt.top/favicon.ico</icon>
+    <rights>All rights reserved 2025, 杨镇涛的一亩三分地</rights>
+    <entry>
+        <title type="html"><![CDATA[MCP初体验，Trae接入MySQL MCP Server]]></title>
+        <id>https://imyzt.top/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/</id>
+        <link href="https://imyzt.top/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/">
+        </link>
+        <updated>2025-06-07T02:55:12.000Z</updated>
+        <content type="html"><![CDATA[<p>关于 <code>MCP</code> 是什么就不在此赘述，可以看这篇文章：<a href="https://docs.trae.com.cn/ide/model-context-protocol">模型上下文协议（MCP）<br>
+</a>，目前 <code>Trae</code> 已经支持 <code>MCP</code>，网上还没有什么教程，本文记录下自己安装的过程。</p>
+<h1 id="1-首先安装-trae-海外版">1. 首先安装 Trae 海外版</h1>
+<p><a href="https://www.trae.ai/">https://www.trae.ai/</a></p>
+<h1 id="2-在-chat-中通过-唤起-添加智能体">2. 在 <code>Chat</code> 中通过 <code>@</code> 唤起: <code>添加智能体</code></h1>
+<p>按照下面的步骤添加一个 <code>MCP Server</code>，此处以 <code>MySQL MCP Server</code> 为例。</p>
+<p><img src="https://imyzt.top/post-images/1749265319195.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1749265326233.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1749265331930.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1749265337881.png" alt="" loading="lazy"></p>
+<h1 id="3-根据-mysql-mcp-server-的-github-page-页面安装依赖">3. 根据 MySQL MCP Server 的 Github Page 页面安装依赖</h1>
+<p>安装完成后，点击上图预览，即可打开Github查看该MCP Server的安装教程。<br>
+<img src="https://imyzt.top/post-images/1749265511011.png" alt="" loading="lazy"></p>
+<p>官方使用 <code>pip install mysql-mcp-server</code> 进行安装，但我安装老是失败，通过搜索issue，发现也有类似的情况， <a href="https://github.com/designcomputer/mysql_mcp_server/issues/33">issue</a> 建议使用 <code>uv pip install mysql-mcp-server</code> 进行安装，我切换为 <code>uv</code> 之后就安装成功了。</p>
+<h1 id="4-配置-mcp-server">4. 配置 MCP Server</h1>
+<p><img src="https://imyzt.top/post-images/1749265854609.png" alt="" loading="lazy"><br>
+点击编辑按钮，因为我们使用的是 <code>uv</code> 安装的 <code>MySQL MCP Server</code>，所以需要将下面的JSON替换掉官方的默认JSON，然后替换自己的数据库信息。</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;MySQL Server&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [
+        &quot;--from&quot;,
+        &quot;mysql-mcp-server&quot;,
+        &quot;mysql_mcp_server&quot;
+      ],
+      &quot;env&quot;: {
+        &quot;MYSQL_DATABASE&quot;: &quot;dbname&quot;,
+        &quot;MYSQL_HOST&quot;: &quot;host&quot;,
+        &quot;MYSQL_PASSWORD&quot;: &quot;password&quot;,
+        &quot;MYSQL_PORT&quot;: &quot;3306&quot;,
+        &quot;MYSQL_USER&quot;: &quot;username&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h1 id="5-使用mcp">5. 使用MCP</h1>
+<p>配置上面的信息后，就可以在 Chat 中和 MCP 进行对话了，他会协助我们查询数据库。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1749266042790.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1749266277703.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在IDEA中管理和监听arthas应用]]></title>
+        <id>https://imyzt.top/post/zai-idea-zhong-guan-li-he-jian-ting-arthas-ying-yong/</id>
+        <link href="https://imyzt.top/post/zai-idea-zhong-guan-li-he-jian-ting-arthas-ying-yong/">
+        </link>
+        <updated>2024-10-13T09:53:32.000Z</updated>
+        <content type="html"><![CDATA[<p>近期和arthas-idea-plugin插件社区沟通，为插件贡献了部分功能，下文为全文转载：<br>
+原文链接：<a href="https://www.yuque.com/arthas-idea-plugin/help/oo75vhvqs6n9gof8?singleDoc#">《在IDEA中管理和监听arthas应用》</a></p>
+<p><code>arthas idea plugin</code> 插件方便了我们使用 <code>Arthas</code>，对于命令不熟悉同学也可以快速上手排查问题。但是当一个应用有多个实例时，为了监听某一个请求我们通常会打开多个浏览器窗口来启动监听，使用起来多少有点不方便。故扩展了在 <code>IDEA</code> 内部直接监听的功能。社区内相关 Issue：<a href="https://github.com/WangJi92/arthas-idea-plugin/issues/92">https://github.com/WangJi92/arthas-idea-plugin/issues/92</a></p>
+<p>如果团队的工作模式是进入宿主机手动启动<code>Arthas</code>命令来监听本机应用，那么该插件并不能帮助到这部分用户。插件适用的工作模式是使用<code>Tunnel-Server</code>和<code>arthas-spring-boot-starter</code>，将应用注册到<code>Tunnel-Server</code>且应用部署了多个实例，每次执行监听需要去多个机器监听的痛点场景。</p>
+<h2 id="插件特性">插件特性</h2>
+<ol>
+<li>基于 <code>arthas idea plugin</code>，不打断原插件的使用流程，润物细无声。</li>
+<li>在 <code>IDEA</code> 内直连 <code>Tunnel-Server</code>，无需打开浏览器，代码异常可快速定位行号。</li>
+<li>同时连接单应用多实例，无需拷贝命令后打开多个浏览器窗口监听。</li>
+</ol>
+<h2 id="配置插件">配置插件</h2>
+<h3 id="添加arthas-tunnel-server地址">添加Arthas Tunnel-Server地址</h3>
+<p>点击Add按钮，添加<code>Tunnel-Server</code>(插件不校验地址的正确性，请保证填写的地址准确无误）。</p>
+<blockquote>
+<ol>
+<li>Name：可根据自己的情况命名</li>
+<li>TunnelAddress：HTTP服务器地址，插件通过<code>Tunnel-Server</code>的Web端口获取信息，根据服务器部署填写HTTP/HTTPS协议</li>
+<li>WsAddress：Socket服务器地址，插件和<code>Tunnel-Server Web</code>端原理一致，伪装成<code>Socket</code>客户端获取信息和发送指令，根据服务器部署填写WS/WSS协议</li>
+</ol>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1728813373952.png" alt="" loading="lazy"></figure>
+<h3 id="从列表中删除tunnel-server">从列表中删除Tunnel-Server</h3>
+<blockquote>
+<p>选中待删除的行，点击删除即可</p>
+</blockquote>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1728813400527.png" alt="" loading="lazy"></figure>
+<h3 id="直接修改单元格配置">直接修改单元格配置</h3>
+<blockquote>
+<p>点击Apply或OK后生效</p>
+</blockquote>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.top/post-images/1728813427232.png" alt="" loading="lazy"></figure>
+<h3 id="命令窗口打开选择">命令窗口打开选择</h3>
+<blockquote>
+<p>可选择弹出命令发送窗口，如果不勾选则此功能不会启用。</p>
+</blockquote>
+<p><img src="https://imyzt.top/post-images/1728813447318.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1728813466340.gif" alt="" loading="lazy"></p>
+<h2 id="使用插件">使用插件</h2>
+<h3 id="1-选择待监听的应用执行监听">1. 选择待监听的应用，执行监听</h3>
+<blockquote>
+<ol>
+<li>选择 NameServer 用以切换环境（Tunnel-Server）</li>
+<li>选择 App 用以切换应用</li>
+<li>选择 Agent 用以切换实例（可选all agents来监听所有实例）<br>
+📢：当App/Agent未出现可选项时，请检查配置的TunnelAddress地址是否正确。</li>
+</ol>
+</blockquote>
+<figure data-type="image" tabindex="4"><img src="https://imyzt.top/post-images/1728813504156.gif" alt="" loading="lazy"></figure>
+<h3 id="工具栏介绍">工具栏介绍</h3>
+<h4 id="重启rerun">重启（Rerun）</h4>
+<blockquote>
+<p>类似于 watch、trace 等指令，一般通过 -n 指定了执行几次，如果执行完毕，可以通过此按钮重新开始一次监听。</p>
+</blockquote>
+<h4 id="调整命令modify">调整命令（Modify）</h4>
+<blockquote>
+<p>类似于 watch、trace 等指令，假如一开始 -x 的深度不够，需要调整时使用，或监听某些参数时，需要调整SpEL表达式时可以使用。<br>
+📢：如需要调整监听的方法或切换其它指令时，建议重新开始而非通过此按钮，操作会更顺畅。</p>
+</blockquote>
+<h4 id="停止stop">停止（Stop）</h4>
+<p>立即停止监听，类似于 Web UI 上面的 Ctrl+C。</p>
+<h4 id="清空输出面板clear-all">清空输出面板（Clear ALL）</h4>
+<blockquote>
+<p>清空输出面板，不会停止监听。</p>
+</blockquote>
+<h4 id="演示">演示</h4>
+<figure data-type="image" tabindex="5"><img src="https://imyzt.top/post-images/1728813572945.gif" alt="" loading="lazy"></figure>
+<h3 id="执行自定义指令">执行自定义指令</h3>
+<h4 id="执行过程中调整其他指令">执行过程中调整其他指令</h4>
+<blockquote>
+<p>插件保留了用户自定义输入的入口，可以用于拷贝 Get All Available Command处拷贝的指令。<br>
+通过键盘 ↑ ↓键，可以快速切换历史已执行的指令。<br>
+回车或点击按钮 Exec 可执行指令。<br>
+<img src="https://imyzt.top/post-images/1728813603660.gif" alt="" loading="lazy"></p>
+</blockquote>
+<h4 id="直接执行自定义指令">直接执行自定义指令</h4>
+<blockquote>
+<p>为方便直接拷贝指令发送至多个实例执行，在右键菜单注册了 OpenArthasTerminal 用于打开一个空白的对话窗口。</p>
+</blockquote>
+<p><img src="https://imyzt.top/post-images/1728813642897.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1728813647297.png" alt="" loading="lazy"></p>
+<h3 id="异常定位行号">异常定位行号</h3>
+<figure data-type="image" tabindex="6"><img src="https://imyzt.top/post-images/1728813654738.png" alt="" loading="lazy"></figure>
+<h2 id="部署tunnel-server">部署Tunnel-Server</h2>
+<p>在大部分单机的场景下，我们可能直接在机器上运行 java -jar arthas-boot.jar 来运行一个单机版的 Arthas 来监听应用，但在微服务架构下，一个服务可能部署了多个实例，分布在不同的机器上，再登录到机器上挨个运行单机版就较为不便了。<br>
+官方也考虑到了这种情况，所以也提供了对应的解决方案，那就是 Arthas Tunnel-Server，下文摘自官网：</p>
+<blockquote>
+<p>通过 Arthas Tunnel Server/Client 来远程管理/连接多个 Agent。<br>
+比如，在流式计算里，Java 进程可以是在不同的机器启动的，想要使用 Arthas 去诊断会比较麻烦，因为用户通常没有机器的权限，即使登陆机器也分不清是哪个 Java 进程。<br>
+在这种情况下，可以使用 Arthas Tunnel Server/Client。<br>
+参考:<br>
+● 1: Web Console<br>
+● 2: Arthas Spring Boot Starter</p>
+</blockquote>
+<h3 id="下载并部署-tunnel-server">下载并部署 Tunnel-Server</h3>
+<p>下载Tunnel-Server（https://github.com/alibaba/arthas/releases），因为Server本身也是一个 jar 包，所以可以直接通过命令启动。<br>
+具体细节见官方文档：<a href="https://arthas.aliyun.com/doc/tunnel.html#tunnel-server-%E7%9A%84%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2">arthas 官网</a></p>
+<pre><code class="language-shell">java -Darthas.enable-detail-pages=true -jar ~/.arthas/arthas-tunnel-server.jar
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://imyzt.top/post-images/1728813731283.png" alt="" loading="lazy"></figure>
+<p>默认情况下，Arthas Tunnel-Server 的 web 端口是8080，arthas agent连接的端口是7777。</p>
+<h3 id="启动应用并连接至tunnel-server">启动应用并连接至Tunnel-Server</h3>
+<p>通常情况下，我们是通过 <code> java -jar arthas-boot.jar</code> 启动一个 <code>Arthas</code> 应用来监听本机的 <code>Java</code> 应用。但如果我们是使用 <code>SpringBoot</code> 来构建应用，那么更推荐使用 <code>Arthas Spring Boot Starter</code>（只支持SpringBoot2.+） ，应用启动后，<code>Spring</code> 会启动 <code>Arthas</code>，并且 <code>Arrach</code> 自身的进程。</p>
+<h4 id="jar-jar-连接-tunnel-server">jar -jar 连接 tunnel-server</h4>
+<pre><code class="language-shell">java -jar arthas-boot.jar --tunnel-server 'ws://127.0.0.1:7777/ws'
+</code></pre>
+<h4 id="springboot-starter-连接-tunnel-server">SpringBoot Starter 连接 tunnel-server</h4>
+<ol>
+<li>创建一个SpringBoot的Demo应用。</li>
+<li>引入 Starter 的依赖（当前最新版本 4.0.0）。</li>
+</ol>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.taobao.arthas&lt;/groupId&gt;
+  &lt;artifactId&gt;arthas-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;4.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<ol start="3">
+<li>再在 application.properties 文件中指定几个参数。</li>
+</ol>
+<pre><code class="language-properties">arthas.http-port=0
+arthas.telnet-port=0
+arthas.app-name=${spring.application.name}-${spring.profiles.active}
+arthas.tunnel-server=ws://127.0.0.1:7777/ws
+</code></pre>
+<ol start="4">
+<li>启动应用，发现日志中有如下参数就说明配置完成。</li>
+</ol>
+<pre><code class="language-log">2024-09-21T23:11:48.536+08:00  INFO 90583 --- [arthas-terminal-demo] [           main] c.a.arthas.spring.ArthasConfiguration    : Arthas agent start success.
+</code></pre>
+<h3 id="tunnel-server的管理页面">Tunnel-Server的管理页面</h3>
+<p>完成上面的两个步骤之后，打开浏览器访问 http://localhost:8080/apps.html，就可以看到下面的内容了，最终实现在浏览器中监听应用。<br>
+<img src="https://imyzt.top/post-images/1728813863049.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1728813866629.png" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1728813870329.png" alt="" loading="lazy"></p>
+<h3 id="建议">建议</h3>
+<ol>
+<li>Tunnel-Server 具备较高权限，官方不建议部署到公网可访问的地址上。</li>
+<li>Tunnel-Server 为内部诊断工具，没有开发对应的权限控制能力，需注意风险。</li>
+</ol>
+<h2 id="工作原理">工作原理</h2>
+<p>插件主要通过Tunnel-Server Web UI所使用的接口，将其利用起来在IDEA中使用，仅使用其三个接口：</p>
+<ul>
+<li><code>/api/tunnelApps</code> 获取所有App</li>
+<li><code>/api/tunnelAgentInfo?app=</code> 获取App的所有Agent</li>
+<li><code>ws?method=connectArthas&amp;id=&amp;targetServer=</code> 通过WS连接tunnel-server实时通信</li>
+</ul>
+<p>整体的交互流程如下序列图：<br>
+<img src="https://imyzt.top/post-images/1728813920966.png" alt="" loading="lazy"></p>
+<p>其它<br>
+目前仅支持部分常用菜单，其它菜单在 IDEA 内呈现不够优雅或无法满足，故未做支持。<br>
+支持的菜单列表：</p>
+<ul>
+<li>watch</li>
+<li>trace</li>
+<li>stack</li>
+<li>sc</li>
+<li>sm</li>
+<li>getstatic</li>
+<li>jad</li>
+<li>thread</li>
+<li>monitor</li>
+<li>vmoption<br>
+对于不支持的菜单，其中部分也可以通过【执行自定义指令】自行拷贝执行，当然，后续也可以考虑补充部分菜单。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[False-Sharing]]></title>
+        <id>https://imyzt.top/post/false-sharing/</id>
+        <link href="https://imyzt.top/post/false-sharing/">
+        </link>
+        <updated>2024-08-21T14:41:24.000Z</updated>
+        <content type="html"><![CDATA[<p>在阅读VIVO的博客<a href="https://mp.weixin.qq.com/s/YKZ1n5O30nowOrfmjMcmOw">高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用</a>的时候，了解到 <code>Disruptor</code> 高性能的核心原因：</p>
+<ol>
+<li>空间预分配</li>
+<li>避免伪共享</li>
+<li>无锁</li>
+</ol>
+<p>其中 <strong>伪共享</strong> 的概念之前没有了解过，故特地了解学习了下，主要涉及到一些基础的概念：</p>
+<ol>
+<li>CPU的分级缓存机制</li>
+<li>volatile的内存可见性</li>
+<li>Java long类型/Long类型的字节大小</li>
+</ol>
+<p>众所周知，CPU在读取内存中的数据时，并不是读取的直接内存，而是从L1/L2/L3缓存中读取数据，而读取缓存也并非按<code>1字节</code>的读取，而是按照<code>缓存行</code>(通常64字节)一块一块的读取，以此来提高读取效率。</p>
+<p>周所也周知，现代计算机都是多核CPU在运行，线程都会被分配CPU来执行，所以线程内的变量数据是需要读取到CPU Cache中才能够对CPU可见的，为了解决内存在CPU1中修改后CPU2不可见（脏读）的问题，在Java中有设计变量修饰符<code>volatile</code>来修饰变量，以此来实现数据在多个CPU之间不会产生脏读问题，内存在任何一个CPU上发生修改后，在其他CPU上均不可用而丢弃重新从内存中获取。</p>
+<p>当然，也正是因为以上设计，带来了一些预期外的结果（不是问题或bug），如下代码所示：</p>
+<p>对于下面的代码：</p>
+<pre><code class="language-java">public class FalseSharing {
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer pointer1 = new Pointer();
+        long start = System.currentTimeMillis();
+        Thread t1 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer1.x++;
+            }
+        });
+        Thread t2 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer1.y++;
+            }
+        });
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println(&quot;pointer1=&quot; + (System.currentTimeMillis() - start));
+    }
+}
+
+class Pointer {
+    volatile long x;
+    volatile long y;
+}
+</code></pre>
+<p>上述代码在我的电脑上执行，<code>需要3.5秒+</code>，多次执行亦然如此，而我们只需稍作调整，改成如下代码，则只需要<code>0.5秒左右</code>即可执行完毕，这是为何？</p>
+<pre><code class="language-java">public class FalseSharing {
+
+    public static void main(String[] args) throws InterruptedException {
+        int num = 100000000;
+        Pointer2 pointer2 = new Pointer2();
+        long start2 = System.currentTimeMillis();
+        Thread t3 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer2.x++;
+            }
+        });
+        Thread t4 = new Thread(() -&gt; {
+            for(int i = 0; i &lt; num; i++){
+                pointer2.y++;
+            }
+        });
+        t3.start();
+        t4.start();
+        t3.join();
+        t4.join();
+        System.out.println(&quot;pointer2=&quot; + (System.currentTimeMillis() - start2));
+    }
+}
+
+class Pointer2 {
+    volatile long x;
+    // long p1, p2, p3, p4, p5, p6, p7;
+    Long z1, z2; long z3;
+    volatile long y;
+}
+</code></pre>
+<p>以上现象对应的机制，正是因为缓存行的设计。</p>
+<p>在上面的代码中，包含了线程t1/t2（t3和t4等同）两组线程，分别对x和y进行累加操作，看似是两个线程（CPU在分别对两块内存中的变量执行累加），但是因为CPU是以缓存行的方式读取内存，<code>Pointer1</code>中的x和y在内存中时相邻的两块内存，Java的基本数据类型<code>long类型，占用8字节</code>，所以x和y(加起来16字节)被放到同一个缓存行了，当CPU1对x做了修改后，CPU2读取到y时发现，对应<strong>缓存行已经失效</strong>了，所以不得不重新从内存中重新读取数据，从而导致了效率降低。</p>
+<p>而我们下面给出的代码，<code>Pointer2</code>的x和y变量间，被塞了两组变量：</p>
+<ol>
+<li>long p1, p2, p3, p4, p5, p6, p7; --long类型,占用8个字节, 8*7=56</li>
+<li>Long z1, z2; long z3; --包装Long类型,根据计算机不同有所不同,在我电脑上占用24字节, 24+24+8=56<br>
+两组变量任何一组都可以解决伪共享的问题，之所以塞两组变量，都是为了验证缓存行的存在和解决方案。</li>
+</ol>
+<p>方案一直接使用<code>7个基本数据类型</code>，占用了56个字节，加上x变量自身，刚好占用一个完整的缓存行64字节，y只能在另一个缓存行了。<br>
+方案二使用了<code>2组包装数据类型，1组基本数据类型</code>，加起来依旧占用的是56个字节，依旧能将一个缓存行占满，解决缓存行失效问题。</p>
+<p>通过对这块的学习，对基础知识又做了一个巩固，造火箭的知识又增加了。🤡</p>
+<p>博文参考：</p>
+<ol>
+<li>美团：<a href="https://tech.meituan.com/2016/11/18/disruptor.html">高性能队列——Disruptor</a></li>
+<li>VIVO：<a href="https://mp.weixin.qq.com/s/YKZ1n5O30nowOrfmjMcmOw">高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用</a></li>
+</ol>
+<p>实操代码：<a href="https://github.com/imyzt/learning-technology-code/blob/master/framework-in-java/disruptor-demo/src/main/java/top/imyzt/learning/disruptor/FalseSharing.java">FalseSharing</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Events使用和问题分析]]></title>
+        <id>https://imyzt.top/post/spring-events-shi-yong-xiang-jie/</id>
+        <link href="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
+        </link>
+        <updated>2024-08-04T08:16:39.000Z</updated>
+        <content type="html"><![CDATA[<p>此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式<code>@EventListener</code>的使用方法，以及不常用的<code>@TransactionalEventListener</code>的使用场景和注意事项。</p>
+<h1 id="常规情况">常规情况</h1>
+<p>在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用户发送一个注册成功的短信通知，核心流程是存储用户信息，次要流程是发送短信通知。<br>
+<img src="https://imyzt.top/post-images/1722759866465.png" alt="" loading="lazy"></p>
+<p>由于本文主要是用来介绍SpringEvent的使用，所以另外的方案就不做介绍了，接下来让我们来初始化一个项目来模拟这部分业务代码的实现：</p>
+<p>对于这样一个流程，我们常规的设计方案有以下几种：</p>
+<ol>
+<li>设计一个有界队列线程池，将发送短信流程提交给异步线程执行。</li>
+<li>使用SpringEvent，发布用户注册成功事件，由监听器执行（也可以选择执行线程）。</li>
+<li>使用MQ，由消费者负责执行。（最重，最稳妥的方案）</li>
+</ol>
+<h3 id="entity">Entity</h3>
+<pre><code class="language-java">public class User {
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
+    private String username;
+    private String address;
+}
+</code></pre>
+<h3 id="service">Service</h3>
+<pre><code class="language-java">public interface UserService extends IService&lt;User&gt; {
+    String addUser(String username, String address);
+}
+
+public class UserServiceImpl extends ServiceImpl&lt;UserMapper, User&gt; implements UserService {
+
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&quot;添加用户开始&quot;);
+        super.save(user);
+        log.info(&quot;添加用户成功, 发送事件开始&quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&quot;添加用户成功, 发送事件结束&quot;);
+        return user.getId();
+    }
+}
+</code></pre>
+<h3 id="listener">Listener</h3>
+<pre><code class="language-java">public class UserListener {
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 Normal, user={}&quot;, user.toString());
+    }
+}
+</code></pre>
+<h3 id="controller">Controller</h3>
+<pre><code class="language-java">@RequestMapping(&quot;user&quot;)
+public class UserController {
+    private final UserService userService;
+    @PostMapping(&quot;/add&quot;)
+    public String add(String username, String address) {
+        return userService.addUser(username, address);
+    }
+}
+</code></pre>
+<h3 id="db">DB</h3>
+<p>ORM框架我们使用Mybatis-Plus，数据库我们使用db2作为临时数据库，目前没有数据。<br>
+<img src="https://imyzt.top/post-images/1722760277166.png" alt="" loading="lazy"></p>
+<pre><code class="language-shell">2024-08-04 16:31:45.590  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+JDBC Connection [HikariProxyConnection@1603671607 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820014751548219393(String), yzt(String), shenzhen(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+2024-08-04 16:31:45.705  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:31:45.708  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820014751548219393, username=yzt, address=shenzhen)
+2024-08-04 16:31:45.709  INFO 55648 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e3d4aa9]
+</code></pre>
+<h3 id="再次查看数据">再次查看数据</h3>
+<p>select * from user;</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>USERNAME</th>
+<th>ADDRESS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1820014751548219393</td>
+<td>yzt</td>
+<td>shenzhen</td>
+</tr>
+</tbody>
+</table>
+<p>(1 row, 2 ms)</p>
+<h3 id="小结">小结</h3>
+<p>为了更好的呈现执行过程，上面的代码没有添加异步，通过上面的代码日志，可以看到整个过程大概如下图所示<br>
+<img src="https://imyzt.top/post-images/1722760898291.png" alt="" loading="lazy"></p>
+<p>一般我们的业务编码都是使用<code>@EventListener</code>来实现，在正常情况下不会有什么问题。但是在某些特殊场景下，可能会出现预期之外的结果。</p>
+<h1 id="场景2事务异常">场景2，事务异常</h1>
+<p>上面我们演示的更多是业务正常的情况，但通常情况下，添加用户不仅仅只有这么简单的业务，在存储之后，可能还有其他的业务，比如为邀请人结算奖励之类（举例），那么流程长了之后总会有异常的可能，比如我们用<code>address=shanghai</code>来模拟业务异常：</p>
+<pre><code class="language-java">public class UserServiceImpl extends ServiceImpl&lt;UserMapper, User&gt; implements UserService {
+    private final ApplicationContext applicationContext;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String addUser(String username, String address) {
+        User user = User.builder().username(username).address(address).build();
+        log.info(&quot;添加用户开始&quot;);
+        super.save(user);
+        log.info(&quot;添加用户成功, 发送事件开始&quot;);
+        applicationContext.publishEvent(new AddUserEvent(this, user));
+        log.info(&quot;添加用户成功, 发送事件结束&quot;);
+        
+        // 模拟异常场景
+        if (address.equals(&quot;shanghai&quot;)) {
+            throw new RuntimeException(&quot;rollback&quot;);
+        }
+        return user.getId();
+    }
+}
+</code></pre>
+<p>再次查看日志</p>
+<pre><code class="language-shell">2024-08-04 16:47:30.838  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+JDBC Connection [HikariProxyConnection@1080868530 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820018715891113985(String), yzt1(String), shanghai(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.839  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820018715891113985, username=yzt1, address=shanghai)
+2024-08-04 16:47:30.840  INFO 55648 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7900e41a]
+2024-08-04 16:47:30.842 ERROR 55648 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+</code></pre>
+<p>因为下游的异常，导致事务并没有成功提交，但是前面的事件监听器已经被执行了，此时数据库未正确写入用户，但是短信已经发送出去了，在业务上肯定是不可接受的。<br>
+<strong>当然也可以说</strong>，把注册用户成功事件放到代码的最后面，这当然也是一种方案，但始终无法做到最完美的<strong>一致性</strong>问题，因为用户最终事务提交还是有可能失败（超时、重复写入等）。<br>
+<strong>或者说</strong>，将注册成功事件放到事务注解的外部，在确保事务提交之后，再发送事件，就像之前将的Redis的分布式锁解锁一样 <a href="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/#3-%E4%BA%8B%E5%8A%A1%E6%9C%AA%E6%8F%90%E4%BA%A4%E9%94%81%E5%B0%B1%E9%87%8A%E6%94%BE%E4%BA%86">使用Redis实现分布式锁的坑#3-事务未提交锁就释放了</a>，这种方案固然可以，但体现到业务代码上，就需要再另一个被Spring代理了的bean上来操作，比较麻烦。</p>
+<p>其实Spring是为这种场景提供了解决方案的，那就是<code>@TransactionalEventListener</code>，通过注解的名称就可以看出来，他是为了解决事务问题来提供的注解，它的使用和<code>@EventListener</code>完全一致，只是多了一个参数<code>phase</code>，共有4个选择：</p>
+<ul>
+<li>TransactionPhase.AFTER_COMMIT，事务提交之后</li>
+<li>TransactionPhase.BEFORE_COMMIT，事务提交之前</li>
+<li>TransactionPhase.AFTER_COMPLETION，事务完成之后</li>
+<li>TransactionPhase.AFTER_ROLLBACK，事务回滚之后<br>
+通过名称可以很直观的看到他的作用，接下来我们添加5个事件监听器，分别来看看他们具体的执行时机：</li>
+</ul>
+<pre><code class="language-java">public class UserListener {
+
+    @EventListener(AddUserEvent.class)
+    public void addHandler(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 Normal, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void addHandlerAfterCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.BEFORE_COMMIT)
+    public void addHandlerBeforeCommit(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_COMPLETION)
+    public void addHandlerAfterCompletion(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user={}&quot;, user.toString());
+    }
+
+    @TransactionalEventListener(value = AddUserEvent.class, phase = TransactionPhase.AFTER_ROLLBACK)
+    public void addHandlerAfterRollback(AddUserEvent event) {
+        User user = event.getUser();
+        log.info(&quot;添加用户事务执行失败, AFTER_ROLLBACK, user={}&quot;, user.toString());
+    }
+}
+</code></pre>
+<h3 id="执行一次成功的写入看看日志">执行一次成功的写入，看看日志。</h3>
+<pre><code class="language-shell">2024-08-04 17:02:09.069  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+JDBC Connection [HikariProxyConnection@879009595 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820022399454720001(String), yzt1(String), shenzhen(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:02:09.070  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.071  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 BEFORE_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e9cf44b]
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMMIT, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+2024-08-04 17:02:09.072  INFO 56859 --- [nio-8080-exec-4] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820022399454720001, username=yzt1, address=shenzhen)
+</code></pre>
+<h3 id="再执行一次失败的写入看看日志">再执行一次失败的写入，看看日志：</h3>
+<pre><code class="language-shell">2024-08-04 17:09:30.720  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户开始
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+JDBC Connection [HikariProxyConnection@566058297 wrapping conn0: url=jdbc:h2:~/mydb user=ROOT] will be managed by Spring
+==&gt;  Preparing: INSERT INTO user ( id, username, address ) VALUES ( ?, ?, ? )
+==&gt; Parameters: 1820024251877470209(String), yzt1(String), shanghai(String)
+&lt;==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件开始
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 Normal, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.722  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.d.service.impl.UserServiceImpl   : 添加用户成功, 发送事件结束
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ef5b6da]
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 接收到添加用户事件, 发送短信完成 AFTER_COMPLETION, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.723  INFO 56859 --- [nio-8080-exec-7] t.i.l.s.demos.listener.UserListener      : 添加用户事务执行失败, AFTER_ROLLBACK, user=User(id=1820024251877470209, username=yzt1, address=shanghai)
+2024-08-04 17:09:30.725 ERROR 56859 --- [nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: rollback] with root cause
+
+java.lang.RuntimeException: rollback
+
+</code></pre>
+<h3 id="执行流程">执行流程</h3>
+<p>通过上面的日志可以看到整个执行过程如下图所示：<br>
+<img src="https://imyzt.top/post-images/1722762788539.png" alt="" loading="lazy"></p>
+<p>由此可知，有了<code>@TransactionalEventListener</code>，我们不用确定事务的提交时机以及是否成功，只需要编写对应的监听器处理器，并指定执行时事务的时机即可在正确的时间点被调用，这一切都是Spring的AOP在帮我们处理。</p>
+<p><code>TransactionalApplicationListenerMethodAdapter</code></p>
+<pre><code class="language-java">public void onApplicationEvent(ApplicationEvent event) {
+    if (TransactionSynchronizationManager.isSynchronizationActive() &amp;&amp;
+            TransactionSynchronizationManager.isActualTransactionActive()) {
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionalApplicationListenerSynchronization&lt;&gt;(event, this, this.callbacks));
+    }
+    else if (this.annotation.fallbackExecution()) {
+        if (this.annotation.phase() == TransactionPhase.AFTER_ROLLBACK &amp;&amp; logger.isWarnEnabled()) {
+            logger.warn(&quot;Processing &quot; + event + &quot; as a fallback execution on AFTER_ROLLBACK phase&quot;);
+        }
+        processEvent(event);
+    }
+    else {
+        // No transactional event execution at all
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;No transaction is active - skipping &quot; + event);
+        }
+    }
+}
+</code></pre>
+<p>如果有事务在进行中，就将其监听器处理器先放到<code>TransactionSynchronizationManager</code>注册一个同步队列，在事务执行到对应的阶段，再回调每个监听了对应阶段的事务处理器。</p>
+<p>在<code>AbstractPlatformTransactionManager#processCommit</code>中</p>
+<pre><code class="language-java">protected final void triggerBeforeCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCommit(status.isReadOnly());
+    }
+}
+protected final void triggerBeforeCompletion(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerBeforeCompletion();
+    }
+}
+private void triggerAfterCommit(DefaultTransactionStatus status) {
+    if (status.isNewSynchronization()) {
+        TransactionSynchronizationUtils.triggerAfterCommit();
+    }
+}
+</code></pre>
+<h1 id="小结-2">小结</h1>
+<p>通过本篇文章，我们大致了解了<code>@TransactionalEventListener</code>注解的使用场景和注意事项，也了解了其大概的实现原理，其实SpringEvent的相关源码看起来非常容易，只要稍微看过Spring相关源码，并且对SpringAOP相关逻辑了解的，就可以很容易的看懂，因为他的调用过程没那么多弯弯绕绕，只要看着<code>applicationContext.publishEvent</code>方法一直往下盯，很快就能够看完整个的执行过程。</p>
+<p>本篇博客对应的源码，希望能对你有所帮助：<a href="https://github.com/imyzt/learning-technology-code/tree/master/dive-in-springboot-projects/spring-boot-events">spring-boot-events</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch]]></title>
+        <id>https://imyzt.top/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/</id>
+        <link href="https://imyzt.top/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/">
+        </link>
+        <updated>2024-07-27T10:48:23.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>事情的起因还要从 <code>Transaction rolled back because it has been marked as rollback-only] with root cause</code> 说起，公司的一个业务，Kafka Consumer消费了来自上游的消息处理并写入数据，整个逻辑很复杂，由最外层的方法注解 <code>@Transactional(rollbackFor = Exception.class)</code> 来保证整个过程数据的一致性，但其中有一个业务不需要事务保证，所以<strong>前人</strong>写了一个 <code>try catch</code> 来防止子业务流异常阻断全局事务的提交。简化后大概类似于这样：</p>
+<pre><code class="language-java">@Service
+public class ServiceA {
+
+    @Resource
+    private ServiceB serviceB;
+    @Resource
+    private CompanyService companyService;
+
+    /**
+     * 模拟消费外部的消息, 调用者A
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void test(String username) {
+        // 1. 首先保存自己的数据, 模拟业务操作
+        Company company = new Company();
+        company.setName(&quot;家里蹲&quot;);
+        company.setAddress(&quot;localhost&quot;);
+        companyService.save(company);
+
+        // 2. 然后调用Spring的代理方法B
+        serviceB.doBusiness(username);
+    }
+}
+
+@Service
+public class ServiceB {
+
+    @Resource
+    private UserService userService;
+
+    @Transactional(rollbackFor = Exception.class)
+    public void doBusiness(String username) {
+        // 3. 这里还有一系列事务操作, 但和这次问题无关, 就不放这里干扰了
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setAddress(&quot;shenzhen&quot;);
+            // 4. 罪魁祸首的代码, 此处前人为了不干扰主逻辑, catch了异常
+            // 为了达到&quot;以为的&quot;异常不干扰外部事务
+            userService.saveBatch(Collections.singletonList(user));
+        } catch (DuplicateKeyException e) {
+            // 5. 此处有日志 log.error(&quot;xxx业务异常&quot;, e)
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>上面的代码看起来平平无奇，按照“常规”理解，<strong>代码块4</strong>位置的流程异常，不会干扰<strong>代码块1、3</strong>处的事务提交，达到编写者的目的。</p>
+<p>但如果是这么简单，我也不会有这次问题的排查过程，也不会有这篇笔记了...</p>
+<h1 id="现象">现象</h1>
+<p>我们从日志监控注意到，<strong>代码块5</strong>有频繁的异常，并且<strong>代码块1、3</strong>的数据最终并未写入成功，通过MySQL追踪事务发现，1、3处的语句执行后，均被<code>rollback</code>了。<br>
+这就引出了前言中的问题分析来了，在没有确认问题出现在<strong>代码块4</strong>时，还在找哪些地方有异常可能造成回滚，但通过跟踪程序日志发现，1、3处被回滚的数据，基本都发生在代码块5的日志打印出来之后，并且程序中也发现了下面的异常：</p>
+<pre><code class="language-java">
+org.springframework.transaction.UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only
+.......
+</code></pre>
+<p><strong>Transaction rolled back because it has been marked as rollback-only</strong>，说明事务被标记为只能回滚，并且根据行号（上述堆栈未标注业务行号）推断出，是发生代码块2处，调用<code>doBusiness</code>方法发生了回滚。</p>
+<h1 id="分析">分析</h1>
+<p>我们都知道，Spring本身没有事务，只有数据库有事务，Spring提供<code>@Transactional</code>以及事务传播机制，只是利用数据库给我们提供的 <code>begin/commit/rollback</code> 来结合 Spring AOP 实现的<strong>统一事务管理</strong>，通过 <code>PlatformTransactionManager</code> 工具类来实现对事务的管理。（这方面网上优秀的博客太多了，就不细讲了，相信每一个Spring Boy都熟知）</p>
+<p>那么，结合对Spring事务管理器和AOP的理解，我们画一张图来理解上面这个“嵌套事务”的过程。<br>
+<img src="https://imyzt.top/post-images/1722091980572.png" alt="" loading="lazy"></p>
+<p>结合流程图来分析，按“常理”理解的话，<code>catch</code> 了 <code>userService.saveBatch</code>，内部的异常就不会造成外面的回滚，因为异常“被”吞了。</p>
+<p><strong>但实则不然</strong>，Spring事务管理器采用的是 <strong>标记位Savepoint</strong> 方法，只要被事务管理器感知到了异常出现，就会将当前线程的事务标记成为<code>rollbackOnly</code>状态，后面的事务再想提交就不行了。这也就导致了<code>ServiceB.doBusiness</code>方法在“想要”提交事务时，发现了事务已经被标记了，就抛出了<code>UnexpectedRollbackException</code>异常，该异常进一步的造成了<code>ServiceA.test</code>方法的代理类检测到了异常，<code>ServiceA.test</code>的代理类也开始处理回滚，进一步造成了整个 <code>Kafka Consumer</code>的事务造成了回滚。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1722092797622.png" alt="" loading="lazy"></figure>
+<h1 id="源码">源码</h1>
+<p>通过搜索“Transaction rolled back because it has been marked as rollback-only”异常，可以很快定位到异常流程在源码中的位置，<code>org.springframework.transaction.support.AbstractPlatformTransactionManager#processRollback</code><br>
+而通过跟踪该方法的调用方，可以很快定位到<code>org.springframework.transaction.support.AbstractPlatformTransactionManager#commit</code>方法，该方法正印证我们上方的 <code>ServiceB.doBusiness</code>想要 <code>commit</code>的时候，<code>defStatus.isGlobalRollbackOnly()</code>检测到当前事务已经被标记了<code>rollbackOnly</code>(<code>org.springframework.transaction.support.ResourceHolderSupport#rollbackOnly</code>)</p>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1722094564627.png" alt="" loading="lazy"></figure>
+<h1 id="解决">解决</h1>
+<p>其实该问题在分析之初，大家并没有定位到是因为<code>userService.saveBatch()</code>上面有Mybatis-Plus加的<code>@Transactional</code>注解干扰到 <code>catch</code> 异常这么顺利，而是都在怀疑：为什么我catch了，还把我上层的事务给回滚了！后面虽然怀疑到<code>userService.saveBatch()</code>的事务注解了，又觉得 <code>try</code> 里面的事务，不会影响到外层（没有想到标记位rollbackOnly这里），后面又想到是不是可以在<code>ServiceB.doBusiness()</code>上调整事务传播机制为<code>Propagation.REQUIRES_NEW</code>，但其实都是徒劳，因为始终都已经被Mybatis-Plus的<code>@Transactional</code>标记为<code>rollbackOnly</code>了。</p>
+<p>解决方案：</p>
+<ol>
+<li>调用无事务注解的<code>save()</code>方法</li>
+<li>改用<code>Db.saveBatch</code>方法</li>
+<li>改用异步线程（切换了事务管理器）处理 try 中的流程</li>
+</ol>
+<h1 id="后记">后记</h1>
+<p>下面这篇文章，在我们排查问题的过程中，给了很大的帮助，帮我们确定了问题的方向：<br>
+<a href="https://blog.csdn.net/github_38592071/article/details/131950392">告警：MyBatis-Plus中慎用@Transactional注解，坑的差点被开了...</a></p>
+<p>关于是否可以取消<code>saveBatch</code>方法上事务注解的讨论，可以看Mybatis-Plus官方的issue区：<br>
+（3.5.7之后，取消了IService，都使用Mapper方法，彻底解决.......）</p>
+<ol>
+<li><a href="https://github.com/baomidou/mybatis-plus/issues/6333">建议取消数据层的saveBatch等方法的@Transactional注解，交由业务层自行管理 #6333</a></li>
+<li><a href="https://github.com/baomidou/mybatis-plus/issues/5108">saveBatch下的事务问题</a></li>
+</ol>
+<p>我新建了一个工程，用来复现该问题：<br>
+<a href="https://github.com/imyzt/learning-technology-code/tree/master/error-case-analysis/adoptopenjdk-poi-crash-demo">复现定位Spring多层嵌套事务问题</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[MySQL GROUP BY 隐式排序]]></title>
+        <id>https://imyzt.top/post/mysql-group-by-yin-shi-pai-xu/</id>
+        <link href="https://imyzt.top/post/mysql-group-by-yin-shi-pai-xu/">
+        </link>
+        <updated>2024-07-17T15:33:42.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>在MySQL的老版本（MySQL5.7及以前）中， <code>GROUP BY xxx</code> 等同于 <code>GROUP BY xxx ORDER BY xxx</code>，在 <code>GROUP BY</code> 的同时，会自带排序的效果。包括也可以手动排序 <code>GROUP BY xxx DESC</code>，等同于 <code>GROUP BY xxx ORDER BY xxx DESC</code>。</p>
+<p>MySQL8.0 版本删除了隐式排序，包括显示排序也报错。在升级到MySQL8.0之后，由于缺少了隐式排序，可能会造成查询结果返回的顺序不稳定，造成结果不满足预期。</p>
+<h1 id="问题现象">问题现象</h1>
+<ol>
+<li>aliyun PolarDB MySQL 版 8.0.1.1.40版本，在DMS查询时，<strong>返回的顺序稳定</strong>。</li>
+<li>在程序JDBC查询时（连接的集群地址），返回的结果多次查询顺序不一致。</li>
+</ol>
+<p>由于我们使用的是PolarDB 8.0+，首先开始怀疑是不是aliyun做了什么操作，查到他们的更新日志：https://help.aliyun.com/zh/polardb/polardb-for-mysql/polardb-for-mysql-8-0-1，发现他们在8.0版本中，将隐式排序的功能又加了回来，那么更进一步证明问题出现在数据库层面了。</p>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1721315576799.png" alt="" loading="lazy"></figure>
+<p>有了上面的分析和更新日志，我们又进行了接下来的几次测试，进一步缩小问题范围，定位问题的根本原因。</p>
+<ol>
+<li>通过MySQL命令行，连接到集群地址，返回的结果多次查询顺序不一致。</li>
+<li>通过MySQL命令行，连接到主节点地址，<strong>返回的顺序稳定</strong>。</li>
+<li>通过MySQL命令行，连接到只读从节点地址，返回的结果多次查询顺序不一致。</li>
+</ol>
+<p>通过咨询aliyun工程师，了解到DMS默认是直连主库的，结合上述三个执行结果来看，似乎问题出现在了从库，当请求从从库执行来看，顺序总是不一致。</p>
+<p>有了上述的结论，通过进一步咨询aliyun的工程师，最终定位到问题是因为其中有台从库开启了并行查询，导致了返回顺序会存在多次查询不一致的问题。</p>
+<p><img src="https://imyzt.top/post-images/1721489241076.jpeg" alt="" loading="lazy"><br>
+<img src="https://imyzt.top/post-images/1721489235249.jpeg" alt="" loading="lazy"></p>
+<h1 id="总结">总结</h1>
+<p>虽然最终定位到了原因是并行查询导致的问题，但是我还是认为，既然aliyun的版本公告中已经说明了加回了 <code>GROUP BY</code> 隐式排序功能，那么不管是并行查询还是什么原因，就算是在 MySQL Server层进行汇总排序，也需要保证最终结果和预期一致，否则会造成使用方的预期不满足。<br>
+其次，对于隐式排序肯定不能进行依赖，还是回归到程序上，不论什么情况肯定不能依赖于约定俗成的一些功能，应该强依赖自己写下的指令，比如手动指定 <code>ORDER BY</code>  比事后去分析还是好很多。但整个过程还是学习到不少东西，还是有一定收获的。</p>
+<h1 id="扩展">扩展</h1>
+<h2 id="旧版本为什么会有排序">旧版本为什么会有排序？</h2>
+<p>因为要对数据进行分组的话，本身也会对分组前的数据进行排序，降低数据复杂度，所以原始数据本身就已经有序了。<br>
+其次，如果是 <code>GROUP BY</code> 的一个索引字段，那么索引字段本身是 B+ Trree，本身也是有序的，且平时 <code>GROUP BY</code>的字段大概率是有索引的（否则效率太低了），所以绝大部分情况下，旧版本的 <code>GROUP BY</code> 就为我们保留了排序。</p>
+<h2 id="为什么要删除隐式排序">为什么要删除隐式排序？</h2>
+<p>会造成预期外的结果，比如没有明确指定</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程]]></title>
+        <id>https://imyzt.top/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/</id>
+        <link href="https://imyzt.top/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">
+        </link>
+        <updated>2024-06-30T09:00:27.000Z</updated>
+        <content type="html"><![CDATA[<p>官方文档： <a href="https://docs.spring.io/spring-data/neo4j/docs/current-SNAPSHOT/reference/html/">Spring Data Neo4j</a></p>
+<p>基于官方文档，基本就能完成基本的接入，Neo4j的版本很乱，如果使用SpringBoot2.+的话，一定要注意Neo4j Server的版本与Driver的匹配关系，否则很容易踩坑。 由于我不是生产使用，直接用官方最新反倒是没遇到此类问题，但网上对于这个问题遇到的很多。</p>
+<h1 id="简单接入">简单接入</h1>
+<p>写了几个单测，看了下流程，得益于SpringBoot-Data的封装，和操作MongoDB、MySQL等关系型数据库基本无异，使用过程很丝滑。</p>
+<pre><code class="language-java">@Test
+    public void readAll() {
+        List&lt;Person&gt; personList = personRepository.findAll();
+        Assert.isTrue(!personList.isEmpty(), &quot;isEmpty&quot;);
+    }
+
+    @Test
+    public void delById() {
+        personRepository.findById(71L).ifPresent(person -&gt; {
+            System.out.println(&quot;before delete: &quot; + person.getName());
+        });
+        personRepository.deleteById(71L);
+        Person person = personRepository.findById(71L).orElse(null);
+        System.out.println(&quot;after delete: &quot; + person);
+    }
+
+    @Test
+    public void save() {
+        Person person = new Person();
+        person.setName(&quot;人参果树&quot;);
+        personRepository.save(person);
+    }
+</code></pre>
+<ol>
+<li>findAll<br>
+<img src="https://imyzt.top/post-images/1719738560721.png" alt="" loading="lazy"></li>
+<li>delById<br>
+删除前：<br>
+<img src="https://imyzt.top/post-images/1719738566977.png" alt="" loading="lazy"><br>
+删除后：<br>
+<img src="https://imyzt.top/post-images/1719738573248.png" alt="" loading="lazy"></li>
+<li>saveOne<br>
+<img src="https://imyzt.top/post-images/1719738577960.png" alt="" loading="lazy"></li>
+</ol>
+<h1 id="关系的创建">关系的创建</h1>
+<p>对于节点的基本查询，由于其结构类似于结构性，和结构性数据库查询无异，但是对于N4o4j特殊的关系结构，就有一些不一样了。</p>
+<pre><code class="language-java">
+@Repository
+public interface PersonRepository extends Neo4jRepository&lt;Person, Long&gt; {
+
+    Person findByName(String name);
+
+    /**
+     * 创建人物关系
+     * @param from 源
+     * @param relation 关系
+     * @param to 目标
+     */
+    @Query(&quot;match (n:person {name: $from}),(m:person {name: $to}) &quot; +
+            &quot;create (n)-[:西游人物关系{relation:$relation}]-&gt;(m)&quot;)
+    void createRelation(String from, String relation, String to);
+}
+
+
+@SpringBootTest
+public class PersonRelationShipRepositoryTest {
+    @Resource
+    private PersonRepository personRepository;
+    @Test
+    public void addRelation() {
+        Person personYangjian = personRepository.findByName(&quot;杨戬&quot;);
+        Person person2 = new Person();
+        person2.setName(&quot;玉鼎真人&quot;);
+        PersonRelationShip relationShip = new PersonRelationShip();
+        relationShip.setChild(person2);
+        relationShip.setRelation(&quot;师傅&quot;);
+        personYangjian.getPersonRelationShips().add(relationShip);
+        personRepository.save(personYangjian);
+    }
+    @Test
+    public void addRelation2() {
+        personRepository.createRelation(&quot;玉皇大帝&quot;, &quot;妻子&quot;, &quot;王母娘娘&quot;);
+    }
+}
+</code></pre>
+<p>创建关系第一种方式<br>
+<img src="https://imyzt.top/post-images/1719748762850.png" alt="" loading="lazy"><br>
+创建关系第二种方式<br>
+<img src="https://imyzt.top/post-images/1719748767396.png" alt="" loading="lazy"></p>
+<h1 id="坑">坑</h1>
+<h2 id="坑1">坑1</h2>
+<p>spring-boot-data 3.+的很多注解都改变了，例如：</p>
+<ol>
+<li>在老版本中标注节点使用的是<code>@NodeEntity</code>，新版本被替换为<code>@Node(labels = &quot;person&quot;)</code></li>
+<li>在老版本中，关系的表述是在关系对象中通过<code>@RelationshipEntity</code>、<code>@StartNode</code>、<code>@EndNode</code>来描述，在新版这些都没有了。取而代之的是在源对象中补充属性<code>@Relationship(type = &quot;师傅&quot;, direction = Relationship.Direction.OUTGOING)</code>来描述关系。<br>
+老关系：</li>
+</ol>
+<pre><code class="language-java">@Data
+@RelationshipEntity(type = &quot;xxx&quot;)
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @StartNode
+    private Person parent;
+    @TargetNode
+    private Person child;
+}
+</code></pre>
+<p>新关系：</p>
+<pre><code class="language-java">@Node(labels = &quot;person&quot;)
+@Data
+public class Person {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Property
+    private String name;
+    @Relationship(type = &quot;师傅&quot;, direction = Relationship.Direction.OUTGOING)
+    private List&lt;PersonRelationShip&gt; personRelationShips;
+}
+@Data
+@RelationshipProperties
+public class PersonRelationShip {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @TargetNode
+    private Person child;
+    @Property
+    private String relation;
+}
+</code></pre>
+<h2 id="坑2">坑2</h2>
+<p>spring-boot-data 3.+的<code>@Query</code>中想要获取参数，需要使用 <code>$fieldName</code>，而不是 <code>{0}</code> 的方式，如果自己写的时候一定要注意。比如：</p>
+<pre><code class="language-java">/**
+    * 创建人物关系
+    * @param from 源
+    * @param relation 关系
+    * @param to 目标
+    */
+@Query(&quot;match (n:person {name: $from}),(m:person {name: $to}) &quot; +
+        &quot;create (n)-[:西游人物关系{relation:$relation}]-&gt;(m)&quot;)
+void createRelation(String from, String relation, String to);
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用Cloudflare加速Github Pages]]></title>
+        <id>https://imyzt.top/post/shi-yong-cloudflare-jia-su-github-pages/</id>
+        <link href="https://imyzt.top/post/shi-yong-cloudflare-jia-su-github-pages/">
+        </link>
+        <updated>2024-06-28T12:50:23.000Z</updated>
+        <content type="html"><![CDATA[<p>之前就有了解过Cloudflare，但是一直没有去实践，最近了解到它提供了免费的CDN可以加速，所以想找个教程按流程试一下，一个是确实Github Pages访问太慢了（虽说Cloudflare在国内也没有节点...但聊胜于无），另一个主要是也可以学习拓展下知识。其实使用起来整个过程还是挺简单的，基本无脑操作。</p>
+<ol>
+<li>注册Cloudflare的账号，填写你的域名，交给它托管（打开官网，点击就送）</li>
+<li>拷贝Cloudflare提供的DNS解析，替换你的域名服务商提供的解析（我使用的aliyun，在域名-管理-DNS解析）处可替换</li>
+<li>等待几分钟，即可失效。</li>
+</ol>
+<p>上面的步骤更像是把大象放进冰箱的步骤，过于简单，主要是网络上针对此流程提供的优秀博客数不胜数，没必要再产生一篇重复的内容，并且文章也主要是用于记录自己接入的过程和遇到的坑。</p>
+<p>我看的博客是： <a href="https://www.jun997.xyz/2022/05/18/62ef741104da.html">使用cdn加速Github Pages的访问速度</a></p>
+<p>跟着这个博客基本就可以把域名完成托管，整个过程主要是遇到一个坑，在配置完成之后，发现本来通过aliyun解析的网站还能打开，托管之后反倒是打不开了，Chrome提示“重定向的次数过多”，这一步主要是因为解析配置的问题，可以登陆Cloudflare，然后再SSL/TLS菜单里调整下面的配置即可：<br>
+原本选中的是“灵活的”，调整为“严谨”即可。<br>
+<img src="https://imyzt.top/post-images/1719579571878.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Neo4j常用函数]]></title>
+        <id>https://imyzt.top/post/neo4j-chang-yong-han-shu/</id>
+        <link href="https://imyzt.top/post/neo4j-chang-yong-han-shu/">
+        </link>
+        <updated>2024-06-26T15:05:34.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="字符串函数">字符串函数</h1>
+<pre><code class="language-cql">match (n:Lianhuachi) where n.name = '去种田的向凹凸' return n.name,substring(n.name, 0,3)
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1719414420545.png" alt="" loading="lazy"></figure>
+<h1 id="aggregation聚合函数">AGGREGATION聚合函数</h1>
+<p>和普通SQL一致的含义</p>
+<pre><code class="language-cql">match (n:Lianhuachi) return count(n),max(n.age),min(n.age),avg(n.age),sum(n.age)
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imyzt.top/post-images/1719414601279.png" alt="" loading="lazy"></figure>
+<h1 id="关系函数">关系函数</h1>
+<pre><code class="language-cql">match (x)-[n:`莲花池人物关系`]-&gt;(y) return id(n),n
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imyzt.top/post-images/1719414748513.png" alt="" loading="lazy"></figure>
+<h1 id="备份">备份</h1>
+<p>Neo4j 官方文档： <a href="https://neo4j.com/docs/operations-manual/current/backup-restore/modes/">Backup modes</a></p>
+<pre><code class="language-cql">➜  bin ./neo4j-admin database dump neo4j --to-path=/tmp
+2024-06-26 15:24:15.414+0000 INFO  [o.n.c.d.DumpCommand] Starting dump of database 'neo4j'
+Done: 37 files, 2.993MiB processed.
+2024-06-26 15:24:19.338+0000 INFO  [o.n.c.d.DumpCommand] Dump completed successfully
+
+
+➜  bin ll /tmp/ |grep &quot;neo4j.dump&quot;
+-rw-r--r--  1 imyzt   wheel   305K Jun 26 23:24 neo4j.dump
+
+</code></pre>
+<h1 id="恢复">恢复</h1>
+<p>Neo4j 官方文档： <a href="https://neo4j.com/docs/operations-manual/current/backup-restore/restore-dump/">Restore a database dump</a></p>
+<pre><code>➜  bin ./neo4j-admin database load --from-path=/tmp/ neo4j --overwrite-destination=true
+Done: 37 files, 2.993MiB processed.
+</code></pre>
+<p>可以看到，数据恢复了过来。<br>
+<img src="https://imyzt.top/post-images/1719735796053.png" alt="neo4j_restore" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Neo常用命令 二]]></title>
+        <id>https://imyzt.top/post/neo-chang-yong-ming-ling-er/</id>
+        <link href="https://imyzt.top/post/neo-chang-yong-ming-ling-er/">
+        </link>
+        <updated>2024-06-26T13:57:44.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="unique约束">UNIQUE约束</h1>
+<p>避免重复时使用（姓名、身份证不能重复）</p>
+<h2 id="旧版本">旧版本</h2>
+<pre><code class="language-cql">create constraint on (n:Lianhuachi) assert n.name is unique
+</code></pre>
+<h2 id="新版本">新版本</h2>
+<p>如果再执行上面的语法时报错，说明你使用的是新版本的Neo4j，变更了命令语法。</p>
+<pre><code class="language-cql">create constraint uniq_name for (n:Lianhuachi) require n.name is unique
+</code></pre>
+<p>在加了唯一索引后，可以看到，在添加重复数据时会报错：<br>
+<img src="https://imyzt.top/post-images/1719409875933.png" alt="" loading="lazy"></p>
+<h2 id="删除唯一约束">删除唯一约束</h2>
+<pre><code class="language-cql">drop constraint uniq_name 
+</code></pre>
+<p>可以看到，在删除之后再进行添加，是可以添加进去的。</p>
+<pre><code class="language-cql">create (n:Lianhuachi {name: &quot;我是野农&quot;, &quot;field&quot;: &quot;test&quot;}) return n
+match (n:Lianhuachi {name: &quot;我是野农&quot;&quot;}) return n
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imyzt.top/post-images/1719410056076.png" alt="" loading="lazy"></figure>
+<h1 id="distinct去重">distinct去重</h1>
+<p>和SQL一致，对内容进行去重</p>
+<pre><code class="language-cql">match (n:Lianhuachi) return distinct(n.name)
+</code></pre>
+]]></content>
+    </entry>
+</feed>
