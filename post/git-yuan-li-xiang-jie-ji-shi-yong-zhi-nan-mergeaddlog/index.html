@@ -47,17 +47,17 @@
 
 
 <meta name="description" content="merge git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。 从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。 ![git merge 示意图](htt&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Git 原理详解及实用指南 - merge，add，log","url":"https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/","description":"merge git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。 从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。 ![git merge 示意图](htt\u0026hellip;","image":"/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif","datePublished":"2020-02-18T10:04:17+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/","name":"Git 原理详解及实用指南 - merge，add，log","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Git 原理详解及实用指南 - merge，add，log","url":"https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/","description":"merge git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。 从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。 ![git merge 示意图](htt\u0026hellip;","image":"/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif","datePublished":"2020-02-18T10:04:17+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/","name":"Git 原理详解及实用指南 - merge，add，log","position":2}]}</script>
 <meta property="og:title" content="Git 原理详解及实用指南 - merge，add，log">
 <meta property="og:description" content="merge git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。 从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。 ![git merge 示意图](htt&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+<meta property="og:url" content="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
+<meta name="twitter:url" content="https://imyzt.top/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">
 <meta name="twitter:title" content="Git 原理详解及实用指南 - merge，add，log">
 <meta name="twitter:description" content="merge git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。 从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有commit 一并合并到 当前commit，并自动生成一个新的commit。 ![git merge 示意图](htt&amp;hellip;">
 <meta name="twitter:image" content="/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif">
@@ -71,11 +71,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

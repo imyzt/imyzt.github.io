@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。 核心概念 NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"RocketMQ消息生产基本流程","url":"https://imyzt.github.io/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/","description":"RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。 核心概念 NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部\u0026hellip;","datePublished":"2023-11-12T16:19:24+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/","name":"RocketMQ消息生产基本流程","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"RocketMQ消息生产基本流程","url":"https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/","description":"RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。 核心概念 NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部\u0026hellip;","datePublished":"2023-11-12T16:19:24+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/","name":"RocketMQ消息生产基本流程","position":2}]}</script>
 <meta property="og:title" content="RocketMQ消息生产基本流程">
 <meta property="og:description" content="RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。 核心概念 NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
+<meta property="og:url" content="https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
+<meta name="twitter:url" content="https://imyzt.top/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">
 <meta name="twitter:title" content="RocketMQ消息生产基本流程">
 <meta name="twitter:description" content="RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一条消息的基本流程。 核心概念 NameServer：注册中心，用于保存Topic的路由信息、管理Broker的存活状态；NameServer一般是多节点部&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

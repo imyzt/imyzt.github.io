@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的. @Autowired 先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解, 它可以用在变量, 构造器和setter方法上. 它是根据 类型 进行装配bean的, 提供一个 `&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"@Autowired, @Inject, @Resource 三个注解的作用和区别","url":"https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/","description":"前言 先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的. @Autowired 先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解, 它可以用在变量, 构造器和setter方法上. 它是根据 类型 进行装配bean的, 提供一个 `\u0026hellip;","datePublished":"2019-05-25T15:34:17+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/","name":"@Autowired, @Inject, @Resource 三个注解的作用和区别","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"@Autowired, @Inject, @Resource 三个注解的作用和区别","url":"https://imyzt.top/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/","description":"前言 先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的. @Autowired 先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解, 它可以用在变量, 构造器和setter方法上. 它是根据 类型 进行装配bean的, 提供一个 `\u0026hellip;","datePublished":"2019-05-25T15:34:17+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/","name":"@Autowired, @Inject, @Resource 三个注解的作用和区别","position":2}]}</script>
 <meta property="og:title" content="@Autowired, @Inject, @Resource 三个注解的作用和区别">
 <meta property="og:description" content="前言 先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的. @Autowired 先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解, 它可以用在变量, 构造器和setter方法上. 它是根据 类型 进行装配bean的, 提供一个 `&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
+<meta property="og:url" content="https://imyzt.top/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
+<meta name="twitter:url" content="https://imyzt.top/post/autowired-inject-resource-san-ge-zhu-jie-de-zuo-yong-he-qu-bie/">
 <meta name="twitter:title" content="@Autowired, @Inject, @Resource 三个注解的作用和区别">
 <meta name="twitter:description" content="前言 先说明一下, 这三个注解都可以用在注入对象时使用. 他们两个是javax包下自带的, 一个是由spring提供给我们的. @Autowired 先说Autowired, 因为他是我们大多数人经常使用到的, 它是由spring为我们提供的依赖注入的注解, 它可以用在变量, 构造器和setter方法上. 它是根据 类型 进行装配bean的, 提供一个 `&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

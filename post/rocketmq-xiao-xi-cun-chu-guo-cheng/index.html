@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。 前言 首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中： abort：该文件在Bro&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"RocketMQ消息存储过程","url":"https://imyzt.github.io/post/rocketmq-xiao-xi-cun-chu-guo-cheng/","description":"讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。 前言 首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中： abort：该文件在Bro\u0026hellip;","datePublished":"2023-11-15T22:21:17+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/rocketmq-xiao-xi-cun-chu-guo-cheng/","name":"RocketMQ消息存储过程","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"RocketMQ消息存储过程","url":"https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/","description":"讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。 前言 首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中： abort：该文件在Bro\u0026hellip;","datePublished":"2023-11-15T22:21:17+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/","name":"RocketMQ消息存储过程","position":2}]}</script>
 <meta property="og:title" content="RocketMQ消息存储过程">
 <meta property="og:description" content="讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。 前言 首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中： abort：该文件在Bro&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
+<meta property="og:url" content="https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
+<meta name="twitter:url" content="https://imyzt.top/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">
 <meta name="twitter:title" content="RocketMQ消息存储过程">
 <meta name="twitter:description" content="讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。 前言 首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中： abort：该文件在Bro&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

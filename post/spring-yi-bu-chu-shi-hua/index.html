@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="在Spring6.2版本后，支持了异步初始化。 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。 在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。 模拟初始化Bean耗时 ABean @S...">
-<link rel="canonical" href="https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring 异步初始化","url":"https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/","description":"在Spring6.2版本后，支持了异步初始化。 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。 在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。 模拟初始化Bean耗时 ABean @S...","datePublished":"2024-05-22T21:39:45+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/","name":"Spring 异步初始化","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring 异步初始化","url":"https://imyzt.top/post/spring-yi-bu-chu-shi-hua/","description":"在Spring6.2版本后，支持了异步初始化。 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。 在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。 模拟初始化Bean耗时 ABean @S...","datePublished":"2024-05-22T21:39:45+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/spring-yi-bu-chu-shi-hua/","name":"Spring 异步初始化","position":2}]}</script>
 <meta property="og:title" content="Spring 异步初始化">
 <meta property="og:description" content="在Spring6.2版本后，支持了异步初始化。 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。 在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。 模拟初始化Bean耗时 ABean @S...">
-<meta property="og:url" content="https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/">
+<meta property="og:url" content="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/spring-yi-bu-chu-shi-hua/">
+<meta name="twitter:url" content="https://imyzt.top/post/spring-yi-bu-chu-shi-hua/">
 <meta name="twitter:title" content="Spring 异步初始化">
 <meta name="twitter:description" content="在Spring6.2版本后，支持了异步初始化。 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。 在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Bean通过异步将其并行初始化，节省部分启动时间。本文作为学习Why哥文章之后的简单使用记录。 模拟初始化Bean耗时 ABean @S...">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

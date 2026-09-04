@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。 package top.imyzt.learning.algorithm.timer; import lombok.Getter; import lombok.Setter; import lombok.SneakyThrows...">
-<link rel="canonical" href="https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java 实现简单单机时间轮方案","url":"https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/","description":"时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。 package top.imyzt.learning.algorithm.timer; import lombok.Getter; import lombok.Setter; import lombok.SneakyThrows...","datePublished":"2023-11-13T22:20:41+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/","name":"Java 实现简单单机时间轮方案","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java 实现简单单机时间轮方案","url":"https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/","description":"时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。 package top.imyzt.learning.algorithm.timer; import lombok.Getter; import lombok.Setter; import lombok.SneakyThrows...","datePublished":"2023-11-13T22:20:41+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/","name":"Java 实现简单单机时间轮方案","position":2}]}</script>
 <meta property="og:title" content="Java 实现简单单机时间轮方案">
 <meta property="og:description" content="时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。 package top.imyzt.learning.algorithm.timer; import lombok.Getter; import lombok.Setter; import lombok.SneakyThrows...">
-<meta property="og:url" content="https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+<meta property="og:url" content="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
+<meta name="twitter:url" content="https://imyzt.top/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">
 <meta name="twitter:title" content="Java 实现简单单机时间轮方案">
 <meta name="twitter:description" content="时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。 package top.imyzt.learning.algorithm.timer; import lombok.Getter; import lombok.Setter; import lombok.SneakyThrows...">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

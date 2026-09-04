@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 今天在掘金看到了一篇关于SQL优化的文章([原文在此][1])，了解到了Explain工具。本文则是对Explain工具的学习和总结。 SQL语句性能分析工具Explain Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。 执行以下语句： EXPLAIN...">
-<link rel="canonical" href="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL SQL语句执行效率分析","url":"https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/","description":"前言 今天在掘金看到了一篇关于SQL优化的文章([原文在此][1])，了解到了Explain工具。本文则是对Explain工具的学习和总结。 SQL语句性能分析工具Explain Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。 执行以下语句： EXPLAIN...","datePublished":"2018-10-29T14:35:58+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/","name":"MySQL SQL语句执行效率分析","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL SQL语句执行效率分析","url":"https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/","description":"前言 今天在掘金看到了一篇关于SQL优化的文章([原文在此][1])，了解到了Explain工具。本文则是对Explain工具的学习和总结。 SQL语句性能分析工具Explain Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。 执行以下语句： EXPLAIN...","datePublished":"2018-10-29T14:35:58+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/","name":"MySQL SQL语句执行效率分析","position":2}]}</script>
 <meta property="og:title" content="MySQL SQL语句执行效率分析">
 <meta property="og:description" content="前言 今天在掘金看到了一篇关于SQL优化的文章([原文在此][1])，了解到了Explain工具。本文则是对Explain工具的学习和总结。 SQL语句性能分析工具Explain Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。 执行以下语句： EXPLAIN...">
-<meta property="og:url" content="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
+<meta property="og:url" content="https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
+<meta name="twitter:url" content="https://imyzt.top/post/mysql-sql-yu-ju-zhi-xing-xiao-lu-fen-xi/">
 <meta name="twitter:title" content="MySQL SQL语句执行效率分析">
 <meta name="twitter:description" content="前言 今天在掘金看到了一篇关于SQL优化的文章([原文在此][1])，了解到了Explain工具。本文则是对Explain工具的学习和总结。 SQL语句性能分析工具Explain Explain的作用是生成一个QEP（查询执行计划），可以帮助我们在不真正执行SQL的情况下，就能看到SQL怎样执行。 执行以下语句： EXPLAIN...">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

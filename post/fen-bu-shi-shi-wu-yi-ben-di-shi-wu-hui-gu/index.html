@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="什么是分布式事务 要了解分布式事务，首先需要了解什么是本地事务。 本地事务 本地事务，是指传统的单机数据库事务，必须满足ACID原则。 原子性（atomicity） 整个事务中所有操作，要么一块完成，要么都不完成。 对于事务发生错误，所有操作必须完成回滚。 一致性（consistency） 事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的**完整&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"分布式事务(一) 本地事务回顾","url":"https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/","description":"什么是分布式事务 要了解分布式事务，首先需要了解什么是本地事务。 本地事务 本地事务，是指传统的单机数据库事务，必须满足ACID原则。 原子性（atomicity） 整个事务中所有操作，要么一块完成，要么都不完成。 对于事务发生错误，所有操作必须完成回滚。 一致性（consistency） 事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的**完整\u0026hellip;","datePublished":"2020-08-30T10:11:14+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/","name":"分布式事务(一) 本地事务回顾","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"分布式事务(一) 本地事务回顾","url":"https://imyzt.top/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/","description":"什么是分布式事务 要了解分布式事务，首先需要了解什么是本地事务。 本地事务 本地事务，是指传统的单机数据库事务，必须满足ACID原则。 原子性（atomicity） 整个事务中所有操作，要么一块完成，要么都不完成。 对于事务发生错误，所有操作必须完成回滚。 一致性（consistency） 事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的**完整\u0026hellip;","datePublished":"2020-08-30T10:11:14+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/","name":"分布式事务(一) 本地事务回顾","position":2}]}</script>
 <meta property="og:title" content="分布式事务(一) 本地事务回顾">
 <meta property="og:description" content="什么是分布式事务 要了解分布式事务，首先需要了解什么是本地事务。 本地事务 本地事务，是指传统的单机数据库事务，必须满足ACID原则。 原子性（atomicity） 整个事务中所有操作，要么一块完成，要么都不完成。 对于事务发生错误，所有操作必须完成回滚。 一致性（consistency） 事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的**完整&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
+<meta property="og:url" content="https://imyzt.top/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
+<meta name="twitter:url" content="https://imyzt.top/post/fen-bu-shi-shi-wu-yi-ben-di-shi-wu-hui-gu/">
 <meta name="twitter:title" content="分布式事务(一) 本地事务回顾">
 <meta name="twitter:description" content="什么是分布式事务 要了解分布式事务，首先需要了解什么是本地事务。 本地事务 本地事务，是指传统的单机数据库事务，必须满足ACID原则。 原子性（atomicity） 整个事务中所有操作，要么一块完成，要么都不完成。 对于事务发生错误，所有操作必须完成回滚。 一致性（consistency） 事务的执行必须保证系统的一致性，事务在开始之前和结束之后，数据库的**完整&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

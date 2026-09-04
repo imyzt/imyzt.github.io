@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。 nginx配置 在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 `sites&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"前后端分离使用NGINX做服务转发","url":"https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/","description":"前言 前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。 nginx配置 在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 `sites\u0026hellip;","datePublished":"2019-02-23T16:37:25+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/","name":"前后端分离使用NGINX做服务转发","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"前后端分离使用NGINX做服务转发","url":"https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/","description":"前言 前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。 nginx配置 在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 `sites\u0026hellip;","datePublished":"2019-02-23T16:37:25+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/","name":"前后端分离使用NGINX做服务转发","position":2}]}</script>
 <meta property="og:title" content="前后端分离使用NGINX做服务转发">
 <meta property="og:description" content="前言 前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。 nginx配置 在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 `sites&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+<meta property="og:url" content="https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
+<meta name="twitter:url" content="https://imyzt.top/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/">
 <meta name="twitter:title" content="前后端分离使用NGINX做服务转发">
 <meta name="twitter:description" content="前言 前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负载均衡。 nginx配置 在nginx.conf中配置了 include /etc/nginx/sites-enabled 所以在 `sites&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

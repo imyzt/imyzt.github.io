@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="什么是window functions window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。 通过使用window functions可以同时携带原有结果并且具有聚合后的结果。 目前，MySQL8.0已经支持开窗函数了。喜大普奔 [MySQL8.0 - Window Functions](https://dev.mysql.com/doc&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/mysql-80-window-functionsyi/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL 8.0 window functions（一）","url":"https://imyzt.github.io/post/mysql-80-window-functionsyi/","description":"什么是window functions window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。 通过使用window functions可以同时携带原有结果并且具有聚合后的结果。 目前，MySQL8.0已经支持开窗函数了。喜大普奔 [MySQL8.0 - Window Functions](https://dev.mysql.com/doc\u0026hellip;","datePublished":"2020-11-29T16:53:55+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/mysql-80-window-functionsyi/","name":"MySQL 8.0 window functions（一）","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/mysql-80-window-functionsyi/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL 8.0 window functions（一）","url":"https://imyzt.top/post/mysql-80-window-functionsyi/","description":"什么是window functions window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。 通过使用window functions可以同时携带原有结果并且具有聚合后的结果。 目前，MySQL8.0已经支持开窗函数了。喜大普奔 [MySQL8.0 - Window Functions](https://dev.mysql.com/doc\u0026hellip;","datePublished":"2020-11-29T16:53:55+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/mysql-80-window-functionsyi/","name":"MySQL 8.0 window functions（一）","position":2}]}</script>
 <meta property="og:title" content="MySQL 8.0 window functions（一）">
 <meta property="og:description" content="什么是window functions window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。 通过使用window functions可以同时携带原有结果并且具有聚合后的结果。 目前，MySQL8.0已经支持开窗函数了。喜大普奔 [MySQL8.0 - Window Functions](https://dev.mysql.com/doc&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/mysql-80-window-functionsyi/">
+<meta property="og:url" content="https://imyzt.top/post/mysql-80-window-functionsyi/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/mysql-80-window-functionsyi/">
+<meta name="twitter:url" content="https://imyzt.top/post/mysql-80-window-functionsyi/">
 <meta name="twitter:title" content="MySQL 8.0 window functions（一）">
 <meta name="twitter:description" content="什么是window functions window functions（开窗函数），主要是用来解决聚合函数执行后丢失原有结果的问题。 通过使用window functions可以同时携带原有结果并且具有聚合后的结果。 目前，MySQL8.0已经支持开窗函数了。喜大普奔 [MySQL8.0 - Window Functions](https://dev.mysql.com/doc&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

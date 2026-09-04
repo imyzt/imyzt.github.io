@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java Throwable异常堆栈收集的性能问题","url":"https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","description":"在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 \u0026hellip;","datePublished":"2021-01-02T14:25:53+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","name":"Java Throwable异常堆栈收集的性能问题","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java Throwable异常堆栈收集的性能问题","url":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","description":"在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 \u0026hellip;","datePublished":"2021-01-02T14:25:53+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","name":"Java Throwable异常堆栈收集的性能问题","position":2}]}</script>
 <meta property="og:title" content="Java Throwable异常堆栈收集的性能问题">
 <meta property="og:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+<meta property="og:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+<meta name="twitter:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
 <meta name="twitter:title" content="Java Throwable异常堆栈收集的性能问题">
 <meta name="twitter:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

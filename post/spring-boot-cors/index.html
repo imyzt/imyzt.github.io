@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="问题的起因 今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。 网上说的重写 addCorsMapping等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题. spring提供的跨域, 只是在响应是Controller时生效, 而统一异常拦截器`ControllerAd&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/spring-boot-cors/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring Boot Cors","url":"https://imyzt.github.io/post/spring-boot-cors/","description":"问题的起因 今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。 网上说的重写 addCorsMapping等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题. spring提供的跨域, 只是在响应是Controller时生效, 而统一异常拦截器`ControllerAd\u0026hellip;","datePublished":"2019-04-16T20:07:41+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/spring-boot-cors/","name":"Spring Boot Cors","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/spring-boot-cors/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring Boot Cors","url":"https://imyzt.top/post/spring-boot-cors/","description":"问题的起因 今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。 网上说的重写 addCorsMapping等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题. spring提供的跨域, 只是在响应是Controller时生效, 而统一异常拦截器`ControllerAd\u0026hellip;","datePublished":"2019-04-16T20:07:41+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/spring-boot-cors/","name":"Spring Boot Cors","position":2}]}</script>
 <meta property="og:title" content="Spring Boot Cors">
 <meta property="og:description" content="问题的起因 今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。 网上说的重写 addCorsMapping等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题. spring提供的跨域, 只是在响应是Controller时生效, 而统一异常拦截器`ControllerAd&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/spring-boot-cors/">
+<meta property="og:url" content="https://imyzt.top/post/spring-boot-cors/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/spring-boot-cors/">
+<meta name="twitter:url" content="https://imyzt.top/post/spring-boot-cors/">
 <meta name="twitter:title" content="Spring Boot Cors">
 <meta name="twitter:description" content="问题的起因 今天公司的一个小项目需要跑到Android上面，本身是通过token鉴权的，所以移植比较简单。但是在处理 跨域 问题的时候着实给踩了个大坑。 网上说的重写 addCorsMapping等方法在一般处理上没有大问题. 但是在统一异常拦截器上面有很大的问题. spring提供的跨域, 只是在响应是Controller时生效, 而统一异常拦截器`ControllerAd&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

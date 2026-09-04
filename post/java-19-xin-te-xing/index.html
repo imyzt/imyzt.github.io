@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="Java 19 最核心的特性就是虚拟线程（Virtual Threads） 简介 该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改J&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/java-19-xin-te-xing/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java 19 新特性","url":"https://imyzt.github.io/post/java-19-xin-te-xing/","description":"Java 19 最核心的特性就是虚拟线程（Virtual Threads） 简介 该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改J\u0026hellip;","datePublished":"2023-12-18T21:46:24+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/java-19-xin-te-xing/","name":"Java 19 新特性","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/java-19-xin-te-xing/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java 19 新特性","url":"https://imyzt.top/post/java-19-xin-te-xing/","description":"Java 19 最核心的特性就是虚拟线程（Virtual Threads） 简介 该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改J\u0026hellip;","datePublished":"2023-12-18T21:46:24+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java-19-xin-te-xing/","name":"Java 19 新特性","position":2}]}</script>
 <meta property="og:title" content="Java 19 新特性">
 <meta property="og:description" content="Java 19 最核心的特性就是虚拟线程（Virtual Threads） 简介 该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改J&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/java-19-xin-te-xing/">
+<meta property="og:url" content="https://imyzt.top/post/java-19-xin-te-xing/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/java-19-xin-te-xing/">
+<meta name="twitter:url" content="https://imyzt.top/post/java-19-xin-te-xing/">
 <meta name="twitter:title" content="Java 19 新特性">
 <meta name="twitter:description" content="Java 19 最核心的特性就是虚拟线程（Virtual Threads） 简介 该特性在Java19中是预览特性，虚拟线程是用户态下的线程，和go语言中的goroutines，Erlang中的processes类似，虚拟线程并非比线程快，而是提高了应用的吞吐量，相比于传统的线程是由操作系统调度来看，虚拟线程是我们自己程序调度的线程。虚拟线程的出现并没有修改J&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

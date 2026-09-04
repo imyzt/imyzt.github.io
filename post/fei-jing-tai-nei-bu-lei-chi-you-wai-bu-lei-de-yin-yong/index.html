@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。 我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。 静态内部类持有外部类的引用 我们写一个非静态内部类对象示例： &amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"非静态内部类持有外部类的引用","url":"https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/","description":"在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。 我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。 静态内部类持有外部类的引用 我们写一个非静态内部类对象示例： \u0026hellip;","datePublished":"2024-05-13T21:16:11+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/","name":"非静态内部类持有外部类的引用","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"非静态内部类持有外部类的引用","url":"https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/","description":"在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。 我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。 静态内部类持有外部类的引用 我们写一个非静态内部类对象示例： \u0026hellip;","datePublished":"2024-05-13T21:16:11+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/","name":"非静态内部类持有外部类的引用","position":2}]}</script>
 <meta property="og:title" content="非静态内部类持有外部类的引用">
 <meta property="og:description" content="在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。 我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。 静态内部类持有外部类的引用 我们写一个非静态内部类对象示例： &amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
+<meta property="og:url" content="https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
+<meta name="twitter:url" content="https://imyzt.top/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">
 <meta name="twitter:title" content="非静态内部类持有外部类的引用">
 <meta name="twitter:description" content="在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。 我们在使用非静态内部类的时候，并不是说我们不手动编码引用外部类对象属性就不存在引用关系，实际上这层关系是通过隐式引用来实现的。 静态内部类持有外部类的引用 我们写一个非静态内部类对象示例： &amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

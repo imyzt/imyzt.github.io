@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。 一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。 另一种则是水平扩展，是将任务分配到多台计算机上。 我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表","url":"https://imyzt.github.io/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/","description":"前言 随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。 一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。 另一种则是水平扩展，是将任务分配到多台计算机上。 我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus\u0026hellip;","datePublished":"2019-08-21T20:27:18+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/","name":"使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表","url":"https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/","description":"前言 随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。 一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。 另一种则是水平扩展，是将任务分配到多台计算机上。 我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus\u0026hellip;","datePublished":"2019-08-21T20:27:18+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/","name":"使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表","position":2}]}</script>
 <meta property="og:title" content="使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表">
 <meta property="og:description" content="前言 随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。 一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。 另一种则是水平扩展，是将任务分配到多台计算机上。 我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
+<meta property="og:url" content="https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
+<meta name="twitter:url" content="https://imyzt.top/post/shi-yong-mybatis-plus-dong-tai-biao-ming-sql-jie-xi-qi-shi-xian-mysql-fen-biao/">
 <meta name="twitter:title" content="使用Mybatis-Plus 动态表名 SQL 解析器实现MySQL分表">
 <meta name="twitter:description" content="前言 随着业务发展，数据库单表量将会持续增长，当增长到一定大小，是需要对应的处理以解决数据查询越来越慢的问题的。 一般的扩展方案分为两种，一种是垂直扩展，即增大单机的配置。 另一种则是水平扩展，是将任务分配到多台计算机上。 我们的应用系统使用的是SpringBoot+Mybatis-Plus的搭配，由于分表业务比较简单，就没有使用插件，而是使用Mybatis-Plus&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

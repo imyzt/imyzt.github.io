@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="起因 公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。 思路 1.在公司代码库建立一个新的代码库 2. 修改本地代码库的git remote地址 3. 提交代码到新的gitlab代码库 操作 因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了gi&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"记录从Github迁移到Gitlab(非最优解)","url":"https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/","description":"起因 公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。 思路 1.在公司代码库建立一个新的代码库 2. 修改本地代码库的git remote地址 3. 提交代码到新的gitlab代码库 操作 因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了gi\u0026hellip;","datePublished":"2018-11-29T18:27:48+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/","name":"记录从Github迁移到Gitlab(非最优解)","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"记录从Github迁移到Gitlab(非最优解)","url":"https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/","description":"起因 公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。 思路 1.在公司代码库建立一个新的代码库 2. 修改本地代码库的git remote地址 3. 提交代码到新的gitlab代码库 操作 因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了gi\u0026hellip;","datePublished":"2018-11-29T18:27:48+08:00","dateModified":"2026-09-04T20:43:07+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/","name":"记录从Github迁移到Gitlab(非最优解)","position":2}]}</script>
 <meta property="og:title" content="记录从Github迁移到Gitlab(非最优解)">
 <meta property="og:description" content="起因 公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。 思路 1.在公司代码库建立一个新的代码库 2. 修改本地代码库的git remote地址 3. 提交代码到新的gitlab代码库 操作 因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了gi&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
+<meta property="og:url" content="https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
+<meta name="twitter:url" content="https://imyzt.top/post/ji-lu-cong-github-qian-yi-dao-gitlabfei-zui-you-jie/">
 <meta name="twitter:title" content="记录从Github迁移到Gitlab(非最优解)">
 <meta name="twitter:description" content="起因 公司搭建了自己的代码仓库，使用的gitlab，需要将github上面的代码迁移至本地gitlab仓库。 思路 1.在公司代码库建立一个新的代码库 2. 修改本地代码库的git remote地址 3. 提交代码到新的gitlab代码库 操作 因为公司使用git提交流程,需要先设置公司主仓库为上游，然后fetch，merge完成提交。所以还修改了gi&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

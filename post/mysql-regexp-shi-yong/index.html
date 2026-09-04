@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。 在此之前，首先建立对应的数据表，ddl与dml如下： create table if not exists test_db.products ( id int auto_increment p...">
-<link rel="canonical" href="https://imyzt.github.io/post/mysql-regexp-shi-yong/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL REGEXP 使用","url":"https://imyzt.github.io/post/mysql-regexp-shi-yong/","description":"前言 MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。 在此之前，首先建立对应的数据表，ddl与dml如下： create table if not exists test_db.products ( id int auto_increment p...","datePublished":"2020-03-15T17:28:38+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/mysql-regexp-shi-yong/","name":"MySQL REGEXP 使用","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/mysql-regexp-shi-yong/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL REGEXP 使用","url":"https://imyzt.top/post/mysql-regexp-shi-yong/","description":"前言 MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。 在此之前，首先建立对应的数据表，ddl与dml如下： create table if not exists test_db.products ( id int auto_increment p...","datePublished":"2020-03-15T17:28:38+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/mysql-regexp-shi-yong/","name":"MySQL REGEXP 使用","position":2}]}</script>
 <meta property="og:title" content="MySQL REGEXP 使用">
 <meta property="og:description" content="前言 MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。 在此之前，首先建立对应的数据表，ddl与dml如下： create table if not exists test_db.products ( id int auto_increment p...">
-<meta property="og:url" content="https://imyzt.github.io/post/mysql-regexp-shi-yong/">
+<meta property="og:url" content="https://imyzt.top/post/mysql-regexp-shi-yong/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/mysql-regexp-shi-yong/">
+<meta name="twitter:url" content="https://imyzt.top/post/mysql-regexp-shi-yong/">
 <meta name="twitter:title" content="MySQL REGEXP 使用">
 <meta name="twitter:description" content="前言 MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。 在此之前，首先建立对应的数据表，ddl与dml如下： create table if not exists test_db.products ( id int auto_increment p...">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

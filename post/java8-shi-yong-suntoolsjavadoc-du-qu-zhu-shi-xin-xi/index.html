@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="前言 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于： 远程接口 调用位置 作用 xxx/zzz top.imyzt.xxx#methodName 用作xxx 方案 因为项目过多，且依赖的外部服务接口众多，不想一个个去整理，故想直接读取所有的Feign接口，直接扫描出方法注释，将上述表格完成。 &amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java8 使用sun.tools.javadoc 读取注释信息","url":"https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/","description":"前言 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于： 远程接口 调用位置 作用 xxx/zzz top.imyzt.xxx#methodName 用作xxx 方案 因为项目过多，且依赖的外部服务接口众多，不想一个个去整理，故想直接读取所有的Feign接口，直接扫描出方法注释，将上述表格完成。 \u0026hellip;","datePublished":"2024-04-10T23:27:35+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/","name":"Java8 使用sun.tools.javadoc 读取注释信息","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java8 使用sun.tools.javadoc 读取注释信息","url":"https://imyzt.top/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/","description":"前言 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于： 远程接口 调用位置 作用 xxx/zzz top.imyzt.xxx#methodName 用作xxx 方案 因为项目过多，且依赖的外部服务接口众多，不想一个个去整理，故想直接读取所有的Feign接口，直接扫描出方法注释，将上述表格完成。 \u0026hellip;","datePublished":"2024-04-10T23:27:35+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/","name":"Java8 使用sun.tools.javadoc 读取注释信息","position":2}]}</script>
 <meta property="og:title" content="Java8 使用sun.tools.javadoc 读取注释信息">
 <meta property="og:description" content="前言 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于： 远程接口 调用位置 作用 xxx/zzz top.imyzt.xxx#methodName 用作xxx 方案 因为项目过多，且依赖的外部服务接口众多，不想一个个去整理，故想直接读取所有的Feign接口，直接扫描出方法注释，将上述表格完成。 &amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
+<meta property="og:url" content="https://imyzt.top/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
+<meta name="twitter:url" content="https://imyzt.top/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">
 <meta name="twitter:title" content="Java8 使用sun.tools.javadoc 读取注释信息">
 <meta name="twitter:description" content="前言 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于： 远程接口 调用位置 作用 xxx/zzz top.imyzt.xxx#methodName 用作xxx 方案 因为项目过多，且依赖的外部服务接口众多，不想一个个去整理，故想直接读取所有的Feign接口，直接扫描出方法注释，将上述表格完成。 &amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

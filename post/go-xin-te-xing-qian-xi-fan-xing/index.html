@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。 T1 | T2 |&amp;hellip;： 代表或，类型列表之一。 Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数). Golang的泛型： 1.18才有 只能用在方&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/go-xin-te-xing-qian-xi-fan-xing/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"go 新特性浅析（泛型）","url":"https://imyzt.github.io/post/go-xin-te-xing-qian-xi-fan-xing/","description":"Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。 T1 | T2 |\u0026hellip;： 代表或，类型列表之一。 Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数). Golang的泛型： 1.18才有 只能用在方\u0026hellip;","datePublished":"2022-04-12T22:39:39+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/go-xin-te-xing-qian-xi-fan-xing/","name":"go 新特性浅析（泛型）","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"go 新特性浅析（泛型）","url":"https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/","description":"Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。 T1 | T2 |\u0026hellip;： 代表或，类型列表之一。 Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数). Golang的泛型： 1.18才有 只能用在方\u0026hellip;","datePublished":"2022-04-12T22:39:39+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/","name":"go 新特性浅析（泛型）","position":2}]}</script>
 <meta property="og:title" content="go 新特性浅析（泛型）">
 <meta property="og:description" content="Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。 T1 | T2 |&amp;hellip;： 代表或，类型列表之一。 Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数). Golang的泛型： 1.18才有 只能用在方&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/go-xin-te-xing-qian-xi-fan-xing/">
+<meta property="og:url" content="https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/go-xin-te-xing-qian-xi-fan-xing/">
+<meta name="twitter:url" content="https://imyzt.top/post/go-xin-te-xing-qian-xi-fan-xing/">
 <meta name="twitter:title" content="go 新特性浅析（泛型）">
 <meta name="twitter:description" content="Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。 T1 | T2 |&amp;hellip;： 代表或，类型列表之一。 Go的泛型有别于其它语言的方案，在Go语言中泛型叫做Type Parameter(类型参数). Golang的泛型： 1.18才有 只能用在方&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

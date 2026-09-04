@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。 实现分布式锁的方案有很多，既可以直接使用MySQL作为分布式锁（例如xxl-job），也可以利用ZooKeeper、Redis等。 在基于Spring Cloud的业务系统中，一般都会引入Redis作为分布式缓存中间件，因此更多的人会选择使用Redis来实现分&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"使用Redis实现分布式锁的坑","url":"https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/","description":"分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。 实现分布式锁的方案有很多，既可以直接使用MySQL作为分布式锁（例如xxl-job），也可以利用ZooKeeper、Redis等。 在基于Spring Cloud的业务系统中，一般都会引入Redis作为分布式缓存中间件，因此更多的人会选择使用Redis来实现分\u0026hellip;","datePublished":"2024-03-04T21:39:52+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/","name":"使用Redis实现分布式锁的坑","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"使用Redis实现分布式锁的坑","url":"https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/","description":"分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。 实现分布式锁的方案有很多，既可以直接使用MySQL作为分布式锁（例如xxl-job），也可以利用ZooKeeper、Redis等。 在基于Spring Cloud的业务系统中，一般都会引入Redis作为分布式缓存中间件，因此更多的人会选择使用Redis来实现分\u0026hellip;","datePublished":"2024-03-04T21:39:52+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/","name":"使用Redis实现分布式锁的坑","position":2}]}</script>
 <meta property="og:title" content="使用Redis实现分布式锁的坑">
 <meta property="og:description" content="分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。 实现分布式锁的方案有很多，既可以直接使用MySQL作为分布式锁（例如xxl-job），也可以利用ZooKeeper、Redis等。 在基于Spring Cloud的业务系统中，一般都会引入Redis作为分布式缓存中间件，因此更多的人会选择使用Redis来实现分&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
+<meta property="og:url" content="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
+<meta name="twitter:url" content="https://imyzt.top/post/shi-yong-redis-shi-xian-fen-bu-shi-suo-de-keng/">
 <meta name="twitter:title" content="使用Redis实现分布式锁的坑">
 <meta name="twitter:description" content="分布式锁的关键在于对单一资源的竞争。获得资源的实例将继续执行，其余实例要么退出（互斥锁），要么等待（阻塞锁）。 实现分布式锁的方案有很多，既可以直接使用MySQL作为分布式锁（例如xxl-job），也可以利用ZooKeeper、Redis等。 在基于Spring Cloud的业务系统中，一般都会引入Redis作为分布式缓存中间件，因此更多的人会选择使用Redis来实现分&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

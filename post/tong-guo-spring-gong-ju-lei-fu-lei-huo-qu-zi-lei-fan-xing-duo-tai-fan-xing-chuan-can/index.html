@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。 ResolvableType[] generics = ResolvableType.forClass(this.getClass())....">
-<link rel="canonical" href="https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"通过Spring工具类，父类获取子类泛型（多态泛型传参）","url":"https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/","description":"在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。 ResolvableType[] generics = ResolvableType.forClass(this.getClass())....","datePublished":"2023-09-22T17:12:12+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/","name":"通过Spring工具类，父类获取子类泛型（多态泛型传参）","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"通过Spring工具类，父类获取子类泛型（多态泛型传参）","url":"https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/","description":"在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。 ResolvableType[] generics = ResolvableType.forClass(this.getClass())....","datePublished":"2023-09-22T17:12:12+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/","name":"通过Spring工具类，父类获取子类泛型（多态泛型传参）","position":2}]}</script>
 <meta property="og:title" content="通过Spring工具类，父类获取子类泛型（多态泛型传参）">
 <meta property="og:description" content="在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。 ResolvableType[] generics = ResolvableType.forClass(this.getClass())....">
-<meta property="og:url" content="https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+<meta property="og:url" content="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
+<meta name="twitter:url" content="https://imyzt.top/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">
 <meta name="twitter:title" content="通过Spring工具类，父类获取子类泛型（多态泛型传参）">
 <meta name="twitter:description" content="在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。 ResolvableType[] generics = ResolvableType.forClass(this.getClass())....">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

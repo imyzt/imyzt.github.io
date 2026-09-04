@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Arthas在项目开发中的应用 - 线上故障定位","url":"https://imyzt.github.io/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/","description":"介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行\u0026hellip;","datePublished":"2021-07-10T16:09:12+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/","name":"Arthas在项目开发中的应用 - 线上故障定位","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Arthas在项目开发中的应用 - 线上故障定位","url":"https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/","description":"介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行\u0026hellip;","datePublished":"2021-07-10T16:09:12+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/","name":"Arthas在项目开发中的应用 - 线上故障定位","position":2}]}</script>
 <meta property="og:title" content="Arthas在项目开发中的应用 - 线上故障定位">
 <meta property="og:description" content="介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
+<meta property="og:url" content="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
+<meta name="twitter:url" content="https://imyzt.top/post/arthas-zai-xiang-mu-kai-fa-zhong-de-ying-yong-xian-shang-gu-zhang-ding-wei/">
 <meta name="twitter:title" content="Arthas在项目开发中的应用 - 线上故障定位">
 <meta name="twitter:description" content="介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

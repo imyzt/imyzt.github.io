@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。 但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。 因此，就有了这个工具类。使&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/beancopier-de-gong-ju-lei/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"BeanCopier的工具类","url":"https://imyzt.github.io/post/beancopier-de-gong-ju-lei/","description":"平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。 但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。 因此，就有了这个工具类。使\u0026hellip;","datePublished":"2020-04-15T22:01:29+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/beancopier-de-gong-ju-lei/","name":"BeanCopier的工具类","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/beancopier-de-gong-ju-lei/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"BeanCopier的工具类","url":"https://imyzt.top/post/beancopier-de-gong-ju-lei/","description":"平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。 但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。 因此，就有了这个工具类。使\u0026hellip;","datePublished":"2020-04-15T22:01:29+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/beancopier-de-gong-ju-lei/","name":"BeanCopier的工具类","position":2}]}</script>
 <meta property="og:title" content="BeanCopier的工具类">
 <meta property="og:description" content="平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。 但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。 因此，就有了这个工具类。使&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/beancopier-de-gong-ju-lei/">
+<meta property="og:url" content="https://imyzt.top/post/beancopier-de-gong-ju-lei/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/beancopier-de-gong-ju-lei/">
+<meta name="twitter:url" content="https://imyzt.top/post/beancopier-de-gong-ju-lei/">
 <meta name="twitter:title" content="BeanCopier的工具类">
 <meta name="twitter:description" content="平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。 但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。只是因为每次使用都得BeanCopier.create，创建一个BeanCopier对象，麻烦，代码还不好看。 因此，就有了这个工具类。使&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

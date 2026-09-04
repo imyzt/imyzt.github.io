@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容 我开始想到的是使用 group by 分组, 然后 order by 时间字段. 但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL 分组查询最新数据","url":"https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/","description":"最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容 我开始想到的是使用 group by 分组, 然后 order by 时间字段. 但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到\u0026hellip;","datePublished":"2019-07-23T21:29:02+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/","name":"MySQL 分组查询最新数据","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MySQL 分组查询最新数据","url":"https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/","description":"最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容 我开始想到的是使用 group by 分组, 然后 order by 时间字段. 但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到\u0026hellip;","datePublished":"2019-07-23T21:29:02+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/","name":"MySQL 分组查询最新数据","position":2}]}</script>
 <meta property="og:title" content="MySQL 分组查询最新数据">
 <meta property="og:description" content="最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容 我开始想到的是使用 group by 分组, 然后 order by 时间字段. 但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
+<meta property="og:url" content="https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
+<meta name="twitter:url" content="https://imyzt.top/post/mysql-fen-zu-cha-xun-zui-xin-shu-ju/">
 <meta name="twitter:title" content="MySQL 分组查询最新数据">
 <meta name="twitter:description" content="最近接到一个开发任务,有一个用户操作日志表, 里面包含用户id, 用户最近访问内容和时间. 需要查询到用户列表中每一个用户最近操作的内容 我开始想到的是使用 group by 分组, 然后 order by 时间字段. 但是由于MySQL的执行顺序是先执行 group 后执行 order, 经过group之后的内容已经丢失了时间, 所以无法使用该方法实现. 然后在网上找到&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

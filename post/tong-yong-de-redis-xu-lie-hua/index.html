@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="在使用springboot-data-redis的时候, 需要自定义序列化和反序列化. 由于经常使用, 所以写在这里留作备用. 序列化方法是从[CSDN博客][1]上面找到的. 都是一些很简单的东西, 所以在这里就只做了代码记录, 没有太多文字性的东西. 引入依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/gr...">
-<link rel="canonical" href="https://imyzt.github.io/post/tong-yong-de-redis-xu-lie-hua/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"通用的redis序列化","url":"https://imyzt.github.io/post/tong-yong-de-redis-xu-lie-hua/","description":"在使用springboot-data-redis的时候, 需要自定义序列化和反序列化. 由于经常使用, 所以写在这里留作备用. 序列化方法是从[CSDN博客][1]上面找到的. 都是一些很简单的东西, 所以在这里就只做了代码记录, 没有太多文字性的东西. 引入依赖 \u0026lt;dependency\u0026gt; \u0026lt;groupId\u0026gt;org.springframework.boot\u0026lt;/gr...","datePublished":"2019-04-16T16:24:08+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/tong-yong-de-redis-xu-lie-hua/","name":"通用的redis序列化","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"通用的redis序列化","url":"https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/","description":"在使用springboot-data-redis的时候, 需要自定义序列化和反序列化. 由于经常使用, 所以写在这里留作备用. 序列化方法是从[CSDN博客][1]上面找到的. 都是一些很简单的东西, 所以在这里就只做了代码记录, 没有太多文字性的东西. 引入依赖 \u0026lt;dependency\u0026gt; \u0026lt;groupId\u0026gt;org.springframework.boot\u0026lt;/gr...","datePublished":"2019-04-16T16:24:08+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/","name":"通用的redis序列化","position":2}]}</script>
 <meta property="og:title" content="通用的redis序列化">
 <meta property="og:description" content="在使用springboot-data-redis的时候, 需要自定义序列化和反序列化. 由于经常使用, 所以写在这里留作备用. 序列化方法是从[CSDN博客][1]上面找到的. 都是一些很简单的东西, 所以在这里就只做了代码记录, 没有太多文字性的东西. 引入依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/gr...">
-<meta property="og:url" content="https://imyzt.github.io/post/tong-yong-de-redis-xu-lie-hua/">
+<meta property="og:url" content="https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/tong-yong-de-redis-xu-lie-hua/">
+<meta name="twitter:url" content="https://imyzt.top/post/tong-yong-de-redis-xu-lie-hua/">
 <meta name="twitter:title" content="通用的redis序列化">
 <meta name="twitter:description" content="在使用springboot-data-redis的时候, 需要自定义序列化和反序列化. 由于经常使用, 所以写在这里留作备用. 序列化方法是从[CSDN博客][1]上面找到的. 都是一些很简单的东西, 所以在这里就只做了代码记录, 没有太多文字性的东西. 引入依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/gr...">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       

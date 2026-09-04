@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://imyzt.github.io/sitemap.xml
+Sitemap: https://imyzt.top/sitemap.xml

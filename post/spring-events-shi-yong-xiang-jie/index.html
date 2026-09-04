@@ -45,17 +45,17 @@
 
 
 <meta name="description" content="此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。 常规情况 在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用&amp;hellip;">
-<link rel="canonical" href="https://imyzt.github.io/post/spring-events-shi-yong-xiang-jie/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring Events使用和问题分析","url":"https://imyzt.github.io/post/spring-events-shi-yong-xiang-jie/","description":"此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。 常规情况 在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用\u0026hellip;","datePublished":"2024-08-04T16:16:39+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/spring-events-shi-yong-xiang-jie/","name":"Spring Events使用和问题分析","position":2}]}</script>
+<link rel="canonical" href="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring Events使用和问题分析","url":"https://imyzt.top/post/spring-events-shi-yong-xiang-jie/","description":"此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。 常规情况 在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用\u0026hellip;","datePublished":"2024-08-04T16:16:39+08:00","dateModified":"2026-09-04T20:43:05+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/spring-events-shi-yong-xiang-jie/","name":"Spring Events使用和问题分析","position":2}]}</script>
 <meta property="og:title" content="Spring Events使用和问题分析">
 <meta property="og:description" content="此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。 常规情况 在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用&amp;hellip;">
-<meta property="og:url" content="https://imyzt.github.io/post/spring-events-shi-yong-xiang-jie/">
+<meta property="og:url" content="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Gridea Pro">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.github.io/post/spring-events-shi-yong-xiang-jie/">
+<meta name="twitter:url" content="https://imyzt.top/post/spring-events-shi-yong-xiang-jie/">
 <meta name="twitter:title" content="Spring Events使用和问题分析">
 <meta name="twitter:description" content="此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。 常规情况 在我们常规的业务开发中，有很多场景都会使用到观察者模式来解耦合，将非核心流程剥离到主流程之外，提高代码的可读性，举例：用户注册流程，当用户注册完成之后，需要给用&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
@@ -69,11 +69,11 @@
       
       <div class="top-bar__left">
         
-        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
           <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
         </a>
         
-        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+        <a href="https://imyzt.top" class="site-name-link">Gridea Pro</a>
       </div>
 
       
