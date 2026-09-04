@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="/styles/main.min.css">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+
+
+<style>:root { --heatmap-color: #39d353; }</style>
+
+
+
+<style>
+  .theme-toggle-sun  { display: flex; }
+  .theme-toggle-moon { display: none; }
+  :root.theme-light .theme-toggle-sun  { display: none; }
+  :root.theme-light .theme-toggle-moon { display: flex; }
+</style>
+
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('flavor-theme');
+      var theme = saved || 'dark';
+      if (theme === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    } catch (e) { }
+  })();
+</script>
+  <meta name="generator" content="Gridea Pro 1.2.2">
+  <title>Gridea Pro</title>
+  
+<meta name="description" content="Welcome to Gridea Pro">
+<link rel="canonical" href="https://imyzt.github.io/page/14/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gridea Pro","url":"https://imyzt.github.io","description":"Welcome to Gridea Pro","potentialAction":{"@type":"SearchAction","query-input":"required name=search_term_string","target":"https://imyzt.github.io/search?q={search_term_string}"}}</script>
+<meta property="og:title" content="Gridea Pro">
+<meta property="og:description" content="Welcome to Gridea Pro">
+<meta property="og:url" content="https://imyzt.github.io/page/14/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gridea Pro">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://imyzt.github.io/page/14/">
+<meta name="twitter:title" content="Gridea Pro">
+<meta name="twitter:description" content="Welcome to Gridea Pro">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+<body class="flavor-theme">
+
+  <header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <div class="top-bar">
+
+      
+      <div class="top-bar__left">
+        
+        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+          <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
+        </a>
+        
+        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+      </div>
+
+      
+      <nav class="top-bar__nav" id="sectionBar">
+        
+        
+        <a class="nav-item" href="/">首页</a>
+        
+        <a class="nav-item" href="/post">博客</a>
+        
+        <a class="nav-item" href="/memos">闪念</a>
+        
+        <a class="nav-item" href="/archives">归档</a>
+        
+        <a class="nav-item" href="/tags">标签</a>
+        
+        <a class="nav-item" href="/links">友链</a>
+        
+        <a class="nav-item" href="/post/about">关于</a>
+        
+        
+      </nav>
+
+      
+      <div class="top-bar__right">
+        <button class="btn-icon btn-search search-btn" id="btnSearch" type="button" aria-label="搜索">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-sun" id="themeToggleSun" type="button"
+          aria-label="切换到浅色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1Z"></path>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"></path>
+            <path d="M13 20C13 19.4477 12.5523 19 12 19C11.4477 19 11 19.4477 11 20V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V20Z"></path>
+            <path d="M4.22282 4.22289C4.61335 3.83236 5.24651 3.83236 5.63704 4.22289L7.04704 5.63289C7.43756 6.02341 7.43756 6.65658 7.04704 7.0471C6.65651 7.43762 6.02335 7.43762 5.63283 7.0471L4.22282 5.6371C3.8323 5.24658 3.8323 4.61341 4.22282 4.22289Z"></path>
+            <path d="M18.367 16.9529C17.9765 16.5623 17.3433 16.5623 16.9528 16.9529C16.5623 17.3434 16.5623 17.9766 16.9528 18.3671L18.3628 19.7771C18.7533 20.1676 19.3865 20.1676 19.777 19.7771C20.1675 19.3866 20.1675 18.7534 19.777 18.3629L18.367 16.9529Z"></path>
+            <path d="M1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12Z"></path>
+            <path d="M20 11C19.4477 11 19 11.4477 19 12C19 12.5523 19.4477 13 20 13H22C22.5523 13 23 12.5523 23 12C23 11.4477 22.5523 11 22 11H20Z"></path>
+            <path d="M7.04704 16.9529C7.43756 17.3434 7.43756 17.9766 7.04704 18.3671L5.63704 19.7771C5.24651 20.1676 4.61335 20.1676 4.22282 19.7771C3.8323 19.3866 3.8323 18.7534 4.22283 18.3629L5.63283 16.9529C6.02335 16.5623 6.65651 16.5623 7.04704 16.9529Z"></path>
+            <path d="M19.777 5.6371C20.1675 5.24657 20.1675 4.61341 19.777 4.22289C19.3865 3.83236 18.7533 3.83236 18.3628 4.22289L16.9528 5.63289C16.5623 6.02341 16.5623 6.65658 16.9528 7.0471C17.3433 7.43762 17.9765 7.43762 18.367 7.0471L19.777 5.6371Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-moon" id="themeToggleMoon" type="button"
+          aria-label="切换到深色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 11.5955 21.7564 11.2309 21.3827 11.0761C21.009 10.9213 20.5789 11.0069 20.2929 11.2929C19.287 12.2988 17.9226 12.864 16.5 12.864C15.0774 12.864 13.713 12.2988 12.7071 11.2929C11.7012 10.287 11.136 8.92261 11.136 7.5C11.136 6.07739 11.7012 4.71304 12.7071 3.70711C12.9931 3.42111 13.0787 2.99099 12.9239 2.61732C12.7691 2.24364 12.4045 2 12 2ZM7.55544 5.34824C8.27036 4.87055 9.05353 4.51389 9.87357 4.28778C9.39271 5.27979 9.13604 6.37666 9.13604 7.5C9.13604 9.45304 9.91189 11.3261 11.2929 12.7071C12.6739 14.0881 14.547 14.864 16.5 14.864C17.6233 14.864 18.7202 14.6073 19.7122 14.1264C19.4861 14.9465 19.1295 15.7296 18.6518 16.4446C17.7727 17.7602 16.5233 18.7855 15.0615 19.391C13.5997 19.9965 11.9911 20.155 10.4393 19.8463C8.88743 19.5376 7.46197 18.7757 6.34315 17.6569C5.21447 16.538 4.4624 15.1126 4.15372 13.5607C3.84504 12.0089 4.00347 10.4003 4.60897 8.93853C5.21447 7.47672 6.23985 6.22729 7.55544 5.34824Z"></path>
+            <path d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon btn-nav-toggle mobile-only" id="btnNavToggle" type="button" aria-label="切换导航">
+          <div class="hamburger" id="hamburger">
+            <span class="hamburger__line hamburger__line--top"></span>
+            <span class="hamburger__line hamburger__line--bottom"></span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+
+<div class="header-spacer"></div>
+
+<script>
+(function(){
+  var btn = document.getElementById('btnNavToggle');
+  var nav = document.getElementById('sectionBar');
+  var hamburger = document.getElementById('hamburger');
+  if (btn && nav) {
+    btn.addEventListener('click', function(){
+      nav.classList.toggle('top-bar__nav--open');
+      if (hamburger) hamburger.classList.toggle('is-active');
+    });
+    nav.querySelectorAll('.nav-item').forEach(function(item){
+      item.addEventListener('click', function(){
+        nav.classList.remove('top-bar__nav--open');
+        if (hamburger) hamburger.classList.remove('is-active');
+      });
+    });
+  }
+
+  var root = document.documentElement;
+  var applyTheme = function(theme, persist){
+    if (theme === 'light') {
+      root.classList.add('theme-light');
+    } else {
+      root.classList.remove('theme-light');
+    }
+    if (persist) {
+      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+    }
+  };
+  document.querySelectorAll('.theme-toggle').forEach(function(el){
+    el.addEventListener('click', function(){
+      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+    });
+  });
+})();
+</script>
+
+  <main class="site-main" role="main">
+    
+
+
+
+
+<div class="container">
+  
+  
+  <section class="section-popular">
+    <div class="section-header">
+      <h2 class="section-title">热门文章</h2>
+      <a href="/post" class="section-more meta-text">查看全部 &rarr;</a>
+    </div>
+    <div class="compact-grid">
+      
+       <article class="post-card post-card--compact">
+  <a href="/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">java获取服务器内存数据</h3>
+      <div class="post-card__meta meta-text">2019-03-05</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/python-da-kai-wen-jian/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">python打开文件</h3>
+      <div class="post-card__meta meta-text">2019-03-02</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">JAVA53个关键字(包含2个保留字)</h3>
+      <div class="post-card__meta meta-text">2019-03-02</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/qian-shi-yi-qie-de-gen-yuan/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">钱是一切的根源</h3>
+      <div class="post-card__meta meta-text">2019-03-02</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/docker-zhi-ding-rong-qi-ip/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">docker 指定容器IP</h3>
+      <div class="post-card__meta meta-text">2019-02-28</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/wu-sheng-de-zhong-guo/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">无声的中国</h3>
+      <div class="post-card__meta meta-text">2019-02-26</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/yuan-zhu-jie/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">元注解</h3>
+      <div class="post-card__meta meta-text">2019-02-26</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">前后端分离使用NGINX做服务转发</h3>
+      <div class="post-card__meta meta-text">2019-02-23</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/efk-ri-zhi-xi-tong-da-jian/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">EFK日志系统搭建</h3>
+      <div class="post-card__meta meta-text">2019-02-23</div>
+    </div>
+    
+  </a>
+</article>
+  
+       <article class="post-card post-card--compact">
+  <a href="/post/pu-tong-rong-qi-bian-pai/" class="post-card__inner">
+    <div class="post-card__body">
+      <h3 class="post-card__title clamp-2">普通容器编排</h3>
+      <div class="post-card__meta meta-text">2019-02-23</div>
+    </div>
+    
+  </a>
+</article>
+   </div>
+  </section>
+  
+
+  <div class="content-grid">
+    <div class="main-content">
+      
+      
+      <section class="section-latest">
+        <div class="section-header">
+          <h2 class="section-title">最新文章</h2>
+        </div>
+        <div class="post-list">
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">java获取服务器内存数据</h3>
+    </a>
+    <a href="/post/java-huo-qu-fu-wu-qi-nei-cun-shu-ju/" class="post-card__excerpt clamp-2">
+      导包
+&amp;lt;dependency&amp;gt;
+	&amp;lt;groupId&amp;gt;org.fusesource&amp;lt;/groupId&amp;gt;
+	&amp;lt;artifactId&amp;gt;sigar&amp;lt;/artifactId&amp;gt;
+	&amp;lt...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-03-05
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/python-da-kai-wen-jian/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">python打开文件</h3>
+    </a>
+    <a href="/post/python-da-kai-wen-jian/" class="post-card__excerpt clamp-2">
+      mode
+说明
+注意
+
+
+
+
+&amp;lsquo;r&amp;rsquo;
+只读
+文件必须存在
+
+
+&amp;lsquo;w&amp;rsquo;
+只写
+文件不存在则创建, 存在则清空内容
+
+
+&amp;lsquo;a&amp;rsquo;
+追加
+文件不存在则创建
+
+
+&amp;lsqu...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-03-02
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">JAVA53个关键字(包含2个保留字)</h3>
+    </a>
+    <a href="/post/java53-ge-guan-jian-zi-bao-han-2-ge-bao-liu-zi/" class="post-card__excerpt clamp-2">
+      访问控制符
+
+
+
+
+public
+protected
+缺省
+private
+
+
+
+
+同类可见
+√
+√
+√
+√
+
+
+同包子类可见
+√
+√
+√
+×
+
+
+同包非子类可见
+√
+√
+√
+×
+
+
+不同包子类可见
+√
+√
+×
+×
+
+
+不同包非子类可...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-03-02
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/qian-shi-yi-qie-de-gen-yuan/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">钱是一切的根源</h3>
+    </a>
+    <a href="/post/qian-shi-yi-qie-de-gen-yuan/" class="post-card__excerpt clamp-2">
+      钱是一切的根源
+马克思在《资本论》里说：
+如果有20%的利润，资本就会蠢蠢欲动；
+如果有50%的利润，资本就敢于冒险；
+如果有100%的利润，资本就可以冒着绞首的危险；
+如果有300%的利润，资本就敢于践踏人间一切的法律。
+这段话也可...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-03-02
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/docker-zhi-ding-rong-qi-ip/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">docker 指定容器IP</h3>
+    </a>
+    <a href="/post/docker-zhi-ding-rong-qi-ip/" class="post-card__excerpt clamp-2">
+      docker的网络模式
+docker 总共有四种网络模式, 分别是
+
+host 模式
+bridge 模式
+none 模式
+container 模式
+
+关于docker的网络模式, 在这篇文章中有非常详尽的说明, 就不赘述了. 理解Do...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-28
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/wu-sheng-de-zhong-guo/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">无声的中国</h3>
+    </a>
+    <a href="/post/wu-sheng-de-zhong-guo/" class="post-card__excerpt clamp-2">
+      中国人的性情是总喜欢调和折中的，譬如你说，这屋子太暗，须在这里开一个窗，大家一定不允许的。但如果你主张拆掉屋顶他们就来调和，愿意开窗了。
+——鲁迅 《无声的中国》
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-26
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/yuan-zhu-jie/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">元注解</h3>
+    </a>
+    <a href="/post/yuan-zhu-jie/" class="post-card__excerpt clamp-2">
+      什么是元注解
+在java.lang.annotation包下, 提供了四个用来注解注解的元注解, 用于在自定义注解时使用.
+
+@Documented &amp;ndash; 注解是否包含在javaDoc中
+@Retention &amp;ndash;...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-26
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">前后端分离使用NGINX做服务转发</h3>
+    </a>
+    <a href="/post/qian-hou-duan-fen-chi-shi-yong-nginx-zuo-fu-wu-zhuan-fa/" class="post-card__excerpt clamp-2">
+      前言
+前后端分离作为现在的大趋势，公司也开始了整合评估现有项目，打算对现有项目做前后端分离配置， 现阶段主要打算使用 NGINX 做前端静态的HTTP请求服务器，还包括对 WebSocket 内容的转发，当然还包括最主要的后台服务的负...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-23
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/efk-ri-zhi-xi-tong-da-jian/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">EFK日志系统搭建</h3>
+    </a>
+    <a href="/post/efk-ri-zhi-xi-tong-da-jian/" class="post-card__excerpt clamp-2">
+      什么是EFK
+这里引用一下 ELK 架构之 Elasticsearch 和 Kibana 安装配置 一文对ELK的介绍，详细内容在文中都有介绍，我主要将其从实体机安装转向在Docker-compose服务编排，EFK与ELK大同小异....
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-23
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+          <article class="post-card post-card--list">
+  <div class="post-card__body">
+    <a href="/post/pu-tong-rong-qi-bian-pai/" class="post-card__title-link">
+      <h3 class="post-card__title clamp-3">普通容器编排</h3>
+    </a>
+    <a href="/post/pu-tong-rong-qi-bian-pai/" class="post-card__excerpt clamp-2">
+      介绍
+容器主要包括了三个数据库MongoDB，MySQL，Redis，一个消息中间件RabbitMQ。security程序依赖三个数据库，security-rabbit依赖RabbitMQ，最后forward-nginx依赖于secu...
+    </a>
+    <div class="post-card__meta meta-text">
+      2019-02-23
+      
+    </div>
+  </div>
+  
+</article>
+
+          
+        </div>
+      </section>
+      
+
+      
+      
+      <div class="view-more">
+        <a href="/post/page/2/" class="btn btn--secondary">查看更多文章 &rarr;</a>
+      </div>
+      
+    </div>
+
+    
+    
+    <aside class="sidebar">
+      <div class="sidebar__section sidebar__about">
+        
+        <img class="sidebar__avatar" src="/images/avatar.png" alt="Gridea Pro" />
+        
+        <h3 class="sidebar__title">Gridea Pro</h3>
+        
+        <p class="sidebar__desc">Welcome to Gridea Pro</p>
+        
+        
+      </div>
+
+      
+      <div class="sidebar__section">
+        <h4 class="sidebar__section-title meta-text">标签</h4>
+        <div class="sidebar__tags">
+          
+          <a href="/tag/gridea/" class="tag-pill">Gridea</a>
+          
+          <a href="/tag/mcp/" class="tag-pill">MCP</a>
+          
+          <a href="/tag/neo4j/" class="tag-pill">Neo4j</a>
+          
+          <a href="/tag/redis/" class="tag-pill">Redis</a>
+          
+          <a href="/tag/fen-bu-shi-suo/" class="tag-pill">分布式锁</a>
+          
+          <a href="/tag/timeingwheel/" class="tag-pill">TimeingWheel</a>
+          
+          <a href="/tag/fastjson/" class="tag-pill">FastJSON</a>
+          
+          <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/" class="tag-pill">Git 原理详解及实用指南</a>
+          
+          <a href="/tag/postgres/" class="tag-pill">Postgres</a>
+          
+          <a href="/tag/java/" class="tag-pill">Java</a>
+          
+          <a href="/tag/wen-ti-jie-jue/" class="tag-pill">问题解决</a>
+          
+          <a href="/tag/shu-ju-ku/" class="tag-pill">数据库</a>
+          
+          <a href="/tag/rabbitmq/" class="tag-pill">RabbitMQ</a>
+          
+          <a href="/tag/java-developer/" class="tag-pill">Java developer</a>
+          
+          <a href="/tag/disruptor/" class="tag-pill">Disruptor</a>
+          
+          <a href="/tag/sheng-huo-ji-lu/" class="tag-pill">生活记录</a>
+          
+          <a href="/tag/xian-cheng-chi/" class="tag-pill">线程池</a>
+          
+          <a href="/tag/idea/" class="tag-pill">IDEA</a>
+          
+          <a href="/tag/she-ji-fang-an/" class="tag-pill">设计方案</a>
+          
+          <a href="/tag/go/" class="tag-pill">Go</a>
+          
+          <a href="/tag/flink/" class="tag-pill">Flink</a>
+          
+          <a href="/tag/starrocks/" class="tag-pill">StarRocks</a>
+          
+          <a href="/tag/ai/" class="tag-pill">AI</a>
+          
+          <a href="/tag/mysql/" class="tag-pill">MySQL</a>
+          
+          <a href="/tag/java_new_future/" class="tag-pill">Java_New_Future</a>
+          
+          <a href="/tag/threadlocal/" class="tag-pill">ThreadLocal</a>
+          
+          <a href="/tag/snowflake/" class="tag-pill">Snowflake</a>
+          
+          <a href="/tag/rocketmq/" class="tag-pill">RocketMQ</a>
+          
+        </div>
+      </div>
+      
+    </aside>
+    
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+
+    
+    
+    <nav class="footer-nav" aria-label="页脚导航">
+      
+      <a class="footer-nav__link" href="/">首页</a>
+      
+      <a class="footer-nav__link" href="/post">博客</a>
+      
+      <a class="footer-nav__link" href="/memos">闪念</a>
+      
+      <a class="footer-nav__link" href="/archives">归档</a>
+      
+      <a class="footer-nav__link" href="/tags">标签</a>
+      
+      <a class="footer-nav__link" href="/links">友链</a>
+      
+      <a class="footer-nav__link" href="/post/about">关于</a>
+      
+    </nav>
+    
+
+    
+    <div class="footer-social">
+      
+      
+      
+      <a class="footer-social__link" href="/feed.xml" aria-label="RSS">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.18 15.64a2.18 2.18 0 110 4.36 2.18 2.18 0 010-4.36zM4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44zm0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z"/>
+        </svg>
+      </a>
+    </div>
+
+    
+    <div class="footer-copyright">
+      <p>&copy; 2026 Gridea Pro. All rights reserved.</p>
+    </div>
+
+    
+    
+    <div class="footer-custom">
+      Powered by Gridea Pro
+    </div>
+    
+
+    
+    <div class="footer-powered">
+      <span>Powered by <a href="https://gridea.pro" target="_blank" rel="noopener noreferrer">Gridea Pro</a></span>
+    </div>
+
+  </div>
+</footer>
+
+  
+  <div class="search-overlay" id="searchOverlay" style="display:none;">
+  <div class="search-modal">
+    <div class="search-header">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索文章..." autocomplete="off" />
+      <span class="search-kbd">&#8984;K</span>
+      <button class="search-close" id="searchClose" type="button" aria-label="关闭搜索">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="/scripts/search.js"></script>
+  
+
+  
+
+  
+
+  
+
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="/styles/main.min.css">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+
+
+<style>:root { --heatmap-color: #39d353; }</style>
+
+
+
+<style>
+  .theme-toggle-sun  { display: flex; }
+  .theme-toggle-moon { display: none; }
+  :root.theme-light .theme-toggle-sun  { display: none; }
+  :root.theme-light .theme-toggle-moon { display: flex; }
+</style>
+
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('flavor-theme');
+      var theme = saved || 'dark';
+      if (theme === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    } catch (e) { }
+  })();
+</script>
+  <meta name="generator" content="Gridea Pro 1.2.2">
+  <title>Spring容器的的refresh() | Gridea Pro</title>
+  
+<meta property="og:title" content="Spring容器的的refresh()" />
+<meta property="og:type" content="article" />
+
+
+<meta name="description" content="Spring容器的的refresh()【创建刷新】 refresh()源码 public void refresh() throws BeansException, IllegalStateException { synchronized (this.startupShutdownMonitor) { StartupStep contextRefresh ...">
+<link rel="canonical" href="https://imyzt.github.io/post/spring-rong-qi-de-de-refresh/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring容器的的refresh()","url":"https://imyzt.github.io/post/spring-rong-qi-de-de-refresh/","description":"Spring容器的的refresh()【创建刷新】 refresh()源码 public void refresh() throws BeansException, IllegalStateException { synchronized (this.startupShutdownMonitor) { StartupStep contextRefresh ...","datePublished":"2021-04-10T16:11:13+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"Gridea Pro"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Gridea Pro"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.github.io","name":"Gridea Pro","position":1},{"@type":"ListItem","item":"https://imyzt.github.io/post/spring-rong-qi-de-de-refresh/","name":"Spring容器的的refresh()","position":2}]}</script>
+<meta property="og:title" content="Spring容器的的refresh()">
+<meta property="og:description" content="Spring容器的的refresh()【创建刷新】 refresh()源码 public void refresh() throws BeansException, IllegalStateException { synchronized (this.startupShutdownMonitor) { StartupStep contextRefresh ...">
+<meta property="og:url" content="https://imyzt.github.io/post/spring-rong-qi-de-de-refresh/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Gridea Pro">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://imyzt.github.io/post/spring-rong-qi-de-de-refresh/">
+<meta name="twitter:title" content="Spring容器的的refresh()">
+<meta name="twitter:description" content="Spring容器的的refresh()【创建刷新】 refresh()源码 public void refresh() throws BeansException, IllegalStateException { synchronized (this.startupShutdownMonitor) { StartupStep contextRefresh ...">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+<body class="flavor-theme">
+
+  <header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <div class="top-bar">
+
+      
+      <div class="top-bar__left">
+        
+        <a href="https://imyzt.github.io" class="site-avatar-link" aria-label="返回首页">
+          <img class="site-avatar" src="/images/avatar.png" alt="Gridea Pro" />
+        </a>
+        
+        <a href="https://imyzt.github.io" class="site-name-link">Gridea Pro</a>
+      </div>
+
+      
+      <nav class="top-bar__nav" id="sectionBar">
+        
+        
+        <a class="nav-item" href="/">首页</a>
+        
+        <a class="nav-item" href="/post">博客</a>
+        
+        <a class="nav-item" href="/memos">闪念</a>
+        
+        <a class="nav-item" href="/archives">归档</a>
+        
+        <a class="nav-item" href="/tags">标签</a>
+        
+        <a class="nav-item" href="/links">友链</a>
+        
+        <a class="nav-item" href="/post/about">关于</a>
+        
+        
+      </nav>
+
+      
+      <div class="top-bar__right">
+        <button class="btn-icon btn-search search-btn" id="btnSearch" type="button" aria-label="搜索">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-sun" id="themeToggleSun" type="button"
+          aria-label="切换到浅色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1Z"></path>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"></path>
+            <path d="M13 20C13 19.4477 12.5523 19 12 19C11.4477 19 11 19.4477 11 20V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V20Z"></path>
+            <path d="M4.22282 4.22289C4.61335 3.83236 5.24651 3.83236 5.63704 4.22289L7.04704 5.63289C7.43756 6.02341 7.43756 6.65658 7.04704 7.0471C6.65651 7.43762 6.02335 7.43762 5.63283 7.0471L4.22282 5.6371C3.8323 5.24658 3.8323 4.61341 4.22282 4.22289Z"></path>
+            <path d="M18.367 16.9529C17.9765 16.5623 17.3433 16.5623 16.9528 16.9529C16.5623 17.3434 16.5623 17.9766 16.9528 18.3671L18.3628 19.7771C18.7533 20.1676 19.3865 20.1676 19.777 19.7771C20.1675 19.3866 20.1675 18.7534 19.777 18.3629L18.367 16.9529Z"></path>
+            <path d="M1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12Z"></path>
+            <path d="M20 11C19.4477 11 19 11.4477 19 12C19 12.5523 19.4477 13 20 13H22C22.5523 13 23 12.5523 23 12C23 11.4477 22.5523 11 22 11H20Z"></path>
+            <path d="M7.04704 16.9529C7.43756 17.3434 7.43756 17.9766 7.04704 18.3671L5.63704 19.7771C5.24651 20.1676 4.61335 20.1676 4.22282 19.7771C3.8323 19.3866 3.8323 18.7534 4.22283 18.3629L5.63283 16.9529C6.02335 16.5623 6.65651 16.5623 7.04704 16.9529Z"></path>
+            <path d="M19.777 5.6371C20.1675 5.24657 20.1675 4.61341 19.777 4.22289C19.3865 3.83236 18.7533 3.83236 18.3628 4.22289L16.9528 5.63289C16.5623 6.02341 16.5623 6.65658 16.9528 7.0471C17.3433 7.43762 17.9765 7.43762 18.367 7.0471L19.777 5.6371Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-moon" id="themeToggleMoon" type="button"
+          aria-label="切换到深色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 11.5955 21.7564 11.2309 21.3827 11.0761C21.009 10.9213 20.5789 11.0069 20.2929 11.2929C19.287 12.2988 17.9226 12.864 16.5 12.864C15.0774 12.864 13.713 12.2988 12.7071 11.2929C11.7012 10.287 11.136 8.92261 11.136 7.5C11.136 6.07739 11.7012 4.71304 12.7071 3.70711C12.9931 3.42111 13.0787 2.99099 12.9239 2.61732C12.7691 2.24364 12.4045 2 12 2ZM7.55544 5.34824C8.27036 4.87055 9.05353 4.51389 9.87357 4.28778C9.39271 5.27979 9.13604 6.37666 9.13604 7.5C9.13604 9.45304 9.91189 11.3261 11.2929 12.7071C12.6739 14.0881 14.547 14.864 16.5 14.864C17.6233 14.864 18.7202 14.6073 19.7122 14.1264C19.4861 14.9465 19.1295 15.7296 18.6518 16.4446C17.7727 17.7602 16.5233 18.7855 15.0615 19.391C13.5997 19.9965 11.9911 20.155 10.4393 19.8463C8.88743 19.5376 7.46197 18.7757 6.34315 17.6569C5.21447 16.538 4.4624 15.1126 4.15372 13.5607C3.84504 12.0089 4.00347 10.4003 4.60897 8.93853C5.21447 7.47672 6.23985 6.22729 7.55544 5.34824Z"></path>
+            <path d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon btn-nav-toggle mobile-only" id="btnNavToggle" type="button" aria-label="切换导航">
+          <div class="hamburger" id="hamburger">
+            <span class="hamburger__line hamburger__line--top"></span>
+            <span class="hamburger__line hamburger__line--bottom"></span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+
+<div class="header-spacer"></div>
+
+<script>
+(function(){
+  var btn = document.getElementById('btnNavToggle');
+  var nav = document.getElementById('sectionBar');
+  var hamburger = document.getElementById('hamburger');
+  if (btn && nav) {
+    btn.addEventListener('click', function(){
+      nav.classList.toggle('top-bar__nav--open');
+      if (hamburger) hamburger.classList.toggle('is-active');
+    });
+    nav.querySelectorAll('.nav-item').forEach(function(item){
+      item.addEventListener('click', function(){
+        nav.classList.remove('top-bar__nav--open');
+        if (hamburger) hamburger.classList.remove('is-active');
+      });
+    });
+  }
+
+  var root = document.documentElement;
+  var applyTheme = function(theme, persist){
+    if (theme === 'light') {
+      root.classList.add('theme-light');
+    } else {
+      root.classList.remove('theme-light');
+    }
+    if (persist) {
+      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+    }
+  };
+  document.querySelectorAll('.theme-toggle').forEach(function(el){
+    el.addEventListener('click', function(){
+      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+    });
+  });
+})();
+</script>
+
+  <main class="site-main" role="main">
+    
+<article class="article-container">
+  <header class="article-header">
+    <h1 class="article-title">Spring容器的的refresh()</h1>
+    <div class="article-meta">
+      
+      <span class="article-meta__item">2021-04-10</span>
+      
+      <span class="article-meta__sep">·</span>
+      <span class="article-meta__item">19 分钟阅读</span>
+      
+    </div>
+    
+  </header>
+
+  
+
+  <div class="article-content">
+    <p>Spring容器的的refresh()【创建刷新】</p>
+<h1 id="refresh">refresh()源码</h1>
+<pre><code>public void refresh() throws BeansException, IllegalStateException {
+    synchronized (this.startupShutdownMonitor) {
+        StartupStep contextRefresh = this.applicationStartup.start(&quot;spring.context.refresh&quot;);
+
+        // 刷新前的预处理
+        prepareRefresh();
+
+        // 获取BeanFactory
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // BeanFactory的预处理工作，对BeanFactory进行一些赋值设置
+        prepareBeanFactory(beanFactory);
+
+        try {
+            // BeanFactory准备工作完成后进行的后置处理工作
+            postProcessBeanFactory(beanFactory);
+            
+            StartupStep beanPostProcess = this.applicationStartup.start(&quot;spring.context.beans.post-process&quot;);
+            // 注册BeanFactory的后置处理器，执行BeanFactoryPostProcessor方法
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // 注册Bean的后置处理器，用于拦截Bean的整个创建过程
+            registerBeanPostProcessors(beanFactory);
+            beanPostProcess.end();
+
+            // 初始化MessageSource组件（做国际化功能，消息绑定，消息解析）
+            initMessageSource();
+
+            // 初始化事件派发器
+            initApplicationEventMulticaster();
+
+            // 留给子容器（子类）重写，在刷新上下文时自定义逻辑
+            onRefresh();
+
+            // 将项目中所有的ApplicationListener注册到容器中
+            registerListeners();
+
+            // 初始化所有剩下的单实例bean
+            finishBeanFactoryInitialization(beanFactory);
+
+            // 完成BeanFactory的初始化创建工作，IOC容器就创建完成
+            finishRefresh();
+    }
+}
+</code></pre>
+<h1 id="beanfactory">BeanFactory的创建及预准备工作</h1>
+<h2 id="1-preparerefresh-">1. prepareRefresh(); 刷新前的预处理</h2>
+<ol>
+<li>initPropertySources(); 初始化一些属性设置（空），子类可实现后自定义个性化的属性设置方法</li>
+<li>getEnvironment().validateRequiredProperties(); 校验属性的合法等</li>
+<li>this.earlyApplicationEvents = new LinkedHashSet&lt;&gt;(); 保存容器中的一些早期的事件</li>
+</ol>
+<h2 id="2-obtainfreshbeanfactory-beanfactory">2. obtainFreshBeanFactory(); 获取BeanFactory</h2>
+<ol>
+<li>refreshBeanFactory(); 刷新【创建】BeanFactory对象
+<ol>
+<li>创建一个bean工厂</li>
+</ol>
+</li>
+</ol>
+<pre><code>    public GenericApplicationContext() {
+        this.beanFactory = new DefaultListableBeanFactory();
+    }
+</code></pre>
+<pre><code>2. 设置id
+</code></pre>
+<ol start="2">
+<li>getBeanFactory(); 返回刚才GenericApplicationContext创建的BeanFactory对象</li>
+<li>将创建的BeanFactory【DefaultListableBeanFactory】返回</li>
+</ol>
+<h2 id="3-preparebeanfactorybeanfactory-beanfactorybeanfactory">3. prepareBeanFactory(beanFactory); BeanFactory的预处理工作，对BeanFactory进行一些赋值设置</h2>
+<ol>
+<li>设置BeanFactory的类加载器、支持表达式解析器&hellip;</li>
+<li>添加部分BeanPostProcessor【ApplicationContextAwareProcessor】</li>
+<li>设置忽略的自动装配的接口EnvironmentAware、EmbeddedValueResolverAware、ResourceLoaderAware、、ApplicationEventPublisherAware、MessageSourceAware、ApplicationContextAware、ApplicationStartupAware</li>
+<li>注册可以解析的自动装配，使我们能够在任何组件中自动注入(@Autowired)。BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext</li>
+<li>添加部分BeanPostProcessor【ApplicationListenerDetector】</li>
+<li>添加编译时的AspectJ</li>
+<li>给BeanFactory注册一些能用的组件
+<ol>
+<li>environment ConfigurableEnvironment</li>
+<li>systemProperties Map&lt;String, Object&gt;</li>
+<li>systemEnvironment Map&lt;String, Object&gt;</li>
+<li>applicationStartup ApplicationStartup</li>
+</ol>
+</li>
+</ol>
+<h2 id="4-postprocessbeanfactorybeanfactory-beanfactory">4. postProcessBeanFactory(beanFactory); BeanFactory准备工作完成后进行的后置处理工作</h2>
+<ol>
+<li>子类可以重写此方法在BeanFactory创建并预准备完成以后做进一步的设置。</li>
+</ol>
+<h1 id="beanfactory-1">BeanFactory后面的流程</h1>
+<h2 id="5-invokebeanfactorypostprocessorsbeanfactory-beanfactorybeanfactorypostprocessor">5. invokeBeanFactoryPostProcessors(beanFactory); 注册BeanFactory的后置处理器，执行BeanFactoryPostProcessor方法</h2>
+<p>源代码位于：PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors()</p>
+<p>BeanFactoryPostProcessor:</p>
+<ol>
+<li>BeanFactory的后置处理器</li>
+<li>在BeanFactory标准初始化之后执行</li>
+<li>拥有两个接口
+<ol>
+<li>BeanFactoryPostProcessor</li>
+<li>BeanDefinitionRegistryPostProcessor</li>
+</ol>
+</li>
+</ol>
+<h3 id="beanfactorypostprocessor">执行BeanFactoryPostProcessor方法</h3>
+<p>子接口[BeanDefinitionRegistryPostProcessor]具有最高优先级，其次再执行BeanFactoryPostProcessor的方法</p>
+<h4 id="beandefinitionregistrypostprocessor">先执行BeanDefinitionRegistryPostProcessor的方法</h4>
+<ol>
+<li>获取所有的BeanDefinitionRegistryPostProcessor</li>
+<li>先执行实现了PriorityOrdered优先级接口的BeanDefinitionRegistryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanDefinitionRegistry(registry);</li>
+</ol>
+</li>
+<li>再执行实现了Ordered顺序接口的BeanDefinitionRegistryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanDefinitionRegistry(registry);</li>
+</ol>
+</li>
+<li>最后执行没有实现任何优先级或顺序接口的BeanDefinitionRegistryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanDefinitionRegistry(registry);</li>
+</ol>
+</li>
+</ol>
+<h4 id="beanfactorypostprocessor-1">再执行BeanFactoryPostProcessor的方法</h4>
+<ol>
+<li>获取所有的BeanFactoryPostProcessor</li>
+<li>先执行实现了PriorityOrdered优先级接口的BeanFactoryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanFactory(beanFactory);</li>
+</ol>
+</li>
+<li>再执行实现了Ordered顺序接口的BeanFactoryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanFactory(beanFactory);</li>
+</ol>
+</li>
+<li>最后执行没有实现任何优先级或顺序接口的BeanFactoryPostProcessor
+<ol>
+<li>postProcessor.postProcessBeanFactory(beanFactory);</li>
+</ol>
+</li>
+</ol>
+<h2 id="6-registerbeanpostprocessorsbeanfactory-beanbean">6. registerBeanPostProcessors(beanFactory); 注册Bean的后置处理器，用于拦截Bean的整个创建过程</h2>
+<p>源代码位于：PostProcessorRegistrationDelegate#registerBeanPostProcessors()</p>
+<p>不同接口类型的BeanPostProcessor，在Bean创建前后的执行时机是不一样的</p>
+<ol>
+<li>BeanPostProcessor</li>
+<li>DestructionAwareBeanPostProcessor</li>
+<li>InstantiationAwareBeanPostProcessor</li>
+<li>SmartInstantiationAwareBeanPostProcessor</li>
+<li>MergedBeanDefinitionPostProcessor【internalPostProcessors】</li>
+</ol>
+<p>执行过程</p>
+<ol>
+<li>获取所有的BeanPostProcessor；后置处理器都默认可以通过PriorityOrdered、Ordered接口来实现优先级排序</li>
+<li>先注册PriorityOrdered优先级排序接口的BeanPostProcessor<br />
+把每一个BeanPostProcessor都添加到BeanFactory中</li>
+</ol>
+<pre><code>private static void registerBeanPostProcessors(
+        ConfigurableListableBeanFactory beanFactory, List&lt;BeanPostProcessor&gt; postProcessors) {
+
+    if (beanFactory instanceof AbstractBeanFactory) {
+        // Bulk addition is more efficient against our CopyOnWriteArrayList there
+        ((AbstractBeanFactory) beanFactory).addBeanPostProcessors(postProcessors);
+    }
+    else {
+        for (BeanPostProcessor postProcessor : postProcessors) {
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
+    }
+}
+</code></pre>
+<ol start="3">
+<li>再注册Ordered接口的</li>
+<li>再注册没有实现任何优先级接口的</li>
+<li>最后注册MergedBeanDefinitionPostProcessor【internalPostProcessors】</li>
+<li>最终注册一个ApplicationListenerDetector；再Bean创建完后检查是否是ApplicationListener，如果是则将其注册到上下文中<br />
+applicationContext.addApplicationListener((ApplicationListener<?>) bean);</li>
+</ol>
+<h2 id="7-initmessagesourcemessagesource">7. initMessageSource();初始化MessageSource组件（做国际化功能，消息绑定，消息解析）</h2>
+<p>MessageSource按照区域，取出国际化配置文件中的某个key的值</p>
+<ol>
+<li>getBeanFactory();获取BeanFactory</li>
+<li>判断容器中是否有id=messageSource的组件，类型=MessageSource
+<ol>
+<li>如果有，赋值给变量messageSource</li>
+<li>如果没有，自己创建一个DelegatingMessageSource</li>
+</ol>
+</li>
+<li>把创建好的MessageSource注册到容器中，后续可依赖注入<br />
+<code>beanFactory.registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.messageSource);</code></li>
+</ol>
+<h2 id="8-initapplicationeventmulticaster">8. initApplicationEventMulticaster();初始化事件派发器</h2>
+<ol>
+<li>获取BeanFactory</li>
+<li>从BeanFactory中获取ApplicationEventMulticaster的ApplicationEventMulticaster</li>
+<li>将创建的ApplicationEventMulticaster添加到BeanFactory中，后续可依赖注入</li>
+</ol>
+<h2 id="9-onrefresh-">9. onRefresh(); 留给子容器（子类）</h2>
+<ol>
+<li>子类重写这个方法，在容器刷新的时候可以自定义逻辑；</li>
+</ol>
+<h2 id="10-registerlistenersapplicationlistener">10. registerListeners();将项目中所有的ApplicationListener注册到容器中</h2>
+<ol>
+<li>从applicationListeners属性中拿到之前步骤中所有的ApplicationListener，注册到事件派发器中</li>
+<li>从容器中拿到所有的ApplicationListener，注册到事件派发器中<br />
+<code>getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);</code></li>
+<li>派发（调用）之前步骤产生的事件<br />
+<code>getApplicationEventMulticaster().multicastEvent(earlyEvent);</code></li>
+</ol>
+<h2 id="11-finishbeanfactoryinitializationbeanfactory-bean">11. finishBeanFactoryInitialization(beanFactory); 初始化所有剩下的单实例bean</h2>
+<h3 id="111-beanfactorypreinstantiatesingletons---bean">11.1 beanFactory.preInstantiateSingletons(); - 初始化剩下的单实例bean</h3>
+<h4 id="1111-bean">11.1.1 获取容器中的所有bean，依次进行初始化和创建对象</h4>
+<pre><code>List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);
+// Trigger initialization of all non-lazy singleton beans...
+for (String beanName : beanNames) {
+</code></pre>
+<h4 id="1112-beanrootbeandefinition">11.1.2 获取bean的定义信息RootBeanDefinition</h4>
+<p><code>RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);</code></p>
+<h4 id="1113-bean">11.1.3 Bean不是抽象的，是单实例的，不是懒加载的</h4>
+<p><code>!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()</code></p>
+<h5 id="11131-factorybeanfactorybeanbean">11.1.3.1 判断是否是FactoryBean，是否是实现FactoryBean接口的bean</h5>
+<ol>
+<li>如果是，则利用FactoryBean接口的<code>FactoryBean#getObject</code>获取对象</li>
+<li>如果不是，利用<code>getBean(beanName)</code>创建对象<br />
+0. getBean(beanName) -&gt; 与ApplicationContext#getBean一致
+<ol>
+<li>doGetBean(name, null, null, false);</li>
+<li>先获取缓存中保存的单实例bean，如果能获取到，说明之前被创建过。（所有创建过的单实例Bean都会被缓存起来）</li>
+<li>getSingleton(beanName, true);<br />
+<code>private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap&lt;&gt;(256);</code></li>
+<li>缓存中获取不到，开始创建对象流程</li>
+<li>标记当前bean已被创建 <code>markBeanAsCreated(beanName);</code></li>
+<li>获取Bean的定义信息<br />
+<code>RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);</code></li>
+<li>【<strong>获取当前Bean依赖的其他bean，如果有按照getBean()把依赖的Bean先创建出来</strong>】</li>
+</ol>
+<pre><code>String[] dependsOn = mbd.getDependsOn();
+    if (dependsOn != null) {
+        for (String dep : dependsOn) {
+            ...
+            registerDependentBean(dep, beanName);
+            getBean(dep);
+            ...
+        }
+    }
+</code></pre>
+<ol start="8">
+<li>启动单实例Bean的创建流程 <code>mbd.isSingleton()</code>
+<ol>
+<li>getSingleton(String beanName, ObjectFactory<?> singletonFactory)</li>
+<li>createBean(beanName, mbd, args);</li>
+<li>resolveBeforeInstantiation(beanName, mbdToUse); 让BeanPostProcessor先提前拦截返回Bean代理对象<br />
+【<code>InstantiationAwareBeanPostProcessor</code>】: 提前执行<br />
+先触发：Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);<br />
+如果有返回值，再触发：processor.postProcessAfterInitialization(result, beanName);</li>
+<li>Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+<ol>
+<li>【创建Bean实例】：createBeanInstance(beanName, mbd, args);<br />
+利用工厂方法或者对象的构造器创建出Bean实例</li>
+<li>applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);<br />
+调用【MergedBeanDefinitionPostProcessor】的<code>processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);</code></li>
+<li>【bean属性赋值】populateBean(beanName, mbd, instanceWrapper);<br />
+赋值之前：
+<ol>
+<li>拿到InstantiationAwareBeanPostProcessor后置处理器<br />
+执行<code>postProcessAfterInstantiation</code>方法</li>
+<li>拿到InstantiationAwareBeanPostProcessor后置处理器<br />
+执行<code>postProcessPropertyValues</code>方法<br />
+===赋值之前===</li>
+<li>应用bean属性的值，利用setter为属性赋值<br />
+<code>applyPropertyValues(beanName, mbd, bw, pvs);</code></li>
+</ol>
+</li>
+<li>【Bean初始化】initializeBean(beanName, exposedObject, mbd);
+<ol>
+<li>【执行Aware接口方法】invokeAwareMethods(beanName, wrappedBean, mbd);执行XXX_Aware接口为Aware属性赋值<br />
+<code>BeanNameAware/BeanClassLoaderAware/BeanFactoryAware</code></li>
+<li>【执行后置处理器初始化之前】applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);<br />
+<code>processor.postProcessBeforeInitialization(result, beanName);</code></li>
+<li>【执行初始化方法】invokeInitMethods(beanName, wrappedBean, mbd);
+<ol>
+<li>是否是InitializingBean接口的实现，执行接口规定的初始化方法</li>
+<li>是否有自定义初始化方法 <code>String initMethodName = mbd.getInitMethodName();</code></li>
+</ol>
+</li>
+<li>【执行后置处理器初始化之后的方法】applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);<br />
+<code>processor.postProcessAfterInitialization(result, beanName); </code><br />
+5. 【注册bean的销毁方法】registerDisposableBeanIfNecessary(beanName, bean, mbd); 实现<code>DisposableBean</code>接口</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>将创建的bean添加到缓存<code>DefaultSingletonBeanRegistry#addSingleton</code>中</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h1 id="12-finishrefreshbeanfactoryioc">12. finishRefresh();完成BeanFactory的初始化创建工作，IOC容器就创建完成</h1>
+<ol>
+<li>
+<p>clearResourceCaches(); 清除上下文级别的资源缓存</p>
+</li>
+<li>
+<p>initLifecycleProcessor();初始化和生命周期有关的后置处理器：LifecycleProcessor</p>
+<ol>
+<li>默认从容器中找是否存在名为lifecycleProcessor的组件[LifecycleProcessor]，如果没有就创建<code>new DefaultLifecycleProcessor();</code>，然后加入到容器中</li>
+<li>自定义实现LifecycleProcessor接口，可以接收到两个回调
+<ol>
+<li>void onRefresh(); - 上下文刷新的通知</li>
+<li>void onClose(); - 上下文关闭的通知</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>getLifecycleProcessor().onRefresh(); 拿到刚才获取的生命周期处理器，回调<code>onRefresh()</code>事件</p>
+</li>
+<li>
+<p>publishEvent(new ContextRefreshedEvent(this)); - 发布容器刷新完成事件</p>
+</li>
+</ol>
+<h1 id="heading">总结</h1>
+<ol>
+<li>在Spring启动时，先会保存所有注册进来的Bean定义信息
+<ol>
+<li>xml注册</li>
+<li>@Bean、@Component&hellip;</li>
+</ol>
+</li>
+<li>Spring会在适当的时候创建对应的Bean
+<ol>
+<li>用到这个bean的时候，利用getBean创建</li>
+<li>启动时统一创建剩下的所有Bean，<code>finishBeanFactoryInitialization(beanFactory)</code></li>
+</ol>
+</li>
+<li>后置处理器 BeanPostProcessor
+<ol>
+<li>每一个Bean创建完成后，都会使用各种后置处理器增强Bean的功能
+<ol>
+<li>AutowiredAnnotationBeanPostProcessor: 处理自动注入</li>
+<li>AsyncAnnotationBeanPostProcessor: 处理异步</li>
+<li>AnnotationAwareAspectJAutoProxyCreator: 处理AOP</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>事件驱动模型
+<ol>
+<li>ApplicationListener：事件监听</li>
+<li>AnnotationAwareAspectJAutoProxyCreator：事件派发器</li>
+</ol>
+</li>
+</ol>
+
+  </div>
+
+  
+  <nav class="post-nav">
+    
+    <a href="/post/golang-zhi-xing-shell-bing-shi-shi-da-yin-shell-ri-zhi/" class="post-nav-card post-nav-card--prev">
+      
+      <div class="post-nav-card__body">
+        <span class="post-nav-card__label meta-text">上一篇</span>
+        <span class="post-nav-card__title">Golang执行shell并实时打印shell日志</span>
+      </div>
+      <span class="post-nav-card__arrow">&larr;</span>
+    </a>
+    
+    
+    <a href="/post/gin-can-shu-yan-zheng/" class="post-nav-card post-nav-card--next">
+      <div class="post-nav-card__body">
+        <span class="post-nav-card__label meta-text">下一篇</span>
+        <span class="post-nav-card__title">Gin 参数验证</span>
+      </div>
+      
+      <span class="post-nav-card__arrow">&rarr;</span>
+    </a>
+    
+  </nav>
+
+  
+  
+
+
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+
+    
+    
+    <nav class="footer-nav" aria-label="页脚导航">
+      
+      <a class="footer-nav__link" href="/">首页</a>
+      
+      <a class="footer-nav__link" href="/post">博客</a>
+      
+      <a class="footer-nav__link" href="/memos">闪念</a>
+      
+      <a class="footer-nav__link" href="/archives">归档</a>
+      
+      <a class="footer-nav__link" href="/tags">标签</a>
+      
+      <a class="footer-nav__link" href="/links">友链</a>
+      
+      <a class="footer-nav__link" href="/post/about">关于</a>
+      
+    </nav>
+    
+
+    
+    <div class="footer-social">
+      
+      
+      
+      <a class="footer-social__link" href="/feed.xml" aria-label="RSS">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.18 15.64a2.18 2.18 0 110 4.36 2.18 2.18 0 010-4.36zM4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44zm0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z"/>
+        </svg>
+      </a>
+    </div>
+
+    
+    <div class="footer-copyright">
+      <p>&copy; 2026 Gridea Pro. All rights reserved.</p>
+    </div>
+
+    
+    
+    <div class="footer-custom">
+      Powered by Gridea Pro
+    </div>
+    
+
+    
+    <div class="footer-powered">
+      <span>Powered by <a href="https://gridea.pro" target="_blank" rel="noopener noreferrer">Gridea Pro</a></span>
+    </div>
+
+  </div>
+</footer>
+
+  
+  <div class="search-overlay" id="searchOverlay" style="display:none;">
+  <div class="search-modal">
+    <div class="search-header">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索文章..." autocomplete="off" />
+      <span class="search-kbd">&#8984;K</span>
+      <button class="search-close" id="searchClose" type="button" aria-label="关闭搜索">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="/scripts/search.js"></script>
+  
+
+  
+
+  
+
+  
+
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+</html>
