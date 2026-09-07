@@ -38,26 +38,26 @@
   })();
 </script>
   <meta name="generator" content="Gridea Pro 1.2.2">
-  <title>Java Throwable异常堆栈收集的性能问题 | imyzt&#39;s blog</title>
+  <title>朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录 | imyzt&#39;s blog</title>
   
-<meta property="og:title" content="Java Throwable异常堆栈收集的性能问题" />
+<meta property="og:title" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录" />
 <meta property="og:type" content="article" />
 
 
-<meta name="description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<link rel="canonical" href="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java Throwable异常堆栈收集的性能问题","url":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","description":"在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 \u0026hellip;","datePublished":"2021-01-02T14:25:53+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"imyzt's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"imyzt's blog"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"imyzt's blog","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","name":"Java Throwable异常堆栈收集的性能问题","position":2}]}</script>
-<meta property="og:title" content="Java Throwable异常堆栈收集的性能问题">
-<meta property="og:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<meta property="og:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+<meta name="description" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录 简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。 下文表名、字段名均为示意代称，不对应线上真实命名。 问题现象 早期的朋友圈可见范围和互动数据，主要通过两张明细表保存： `t_visible_snapshot&amp;hellip;">
+<link rel="canonical" href="https://imyzt.top/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录","url":"https://imyzt.top/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/","description":"朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录 简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。 下文表名、字段名均为示意代称，不对应线上真实命名。 问题现象 早期的朋友圈可见范围和互动数据，主要通过两张明细表保存： `t_visible_snapshot\u0026hellip;","datePublished":"2026-04-21T20:56:40+08:00","dateModified":"2026-09-06T21:36:00+08:00","author":{"@type":"Person","name":"imyzt's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"imyzt's blog"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"imyzt's blog","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/","name":"朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录","position":2}]}</script>
+<meta property="og:title" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录">
+<meta property="og:description" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录 简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。 下文表名、字段名均为示意代称，不对应线上真实命名。 问题现象 早期的朋友圈可见范围和互动数据，主要通过两张明细表保存： `t_visible_snapshot&amp;hellip;">
+<meta property="og:url" content="https://imyzt.top/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="imyzt's blog">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
-<meta name="twitter:title" content="Java Throwable异常堆栈收集的性能问题">
-<meta name="twitter:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
+<meta name="twitter:url" content="https://imyzt.top/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/">
+<meta name="twitter:title" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录">
+<meta name="twitter:description" content="朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录 简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。 下文表名、字段名均为示意代称，不对应线上真实命名。 问题现象 早期的朋友圈可见范围和互动数据，主要通过两张明细表保存： `t_visible_snapshot&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
 <body class="flavor-theme">
@@ -183,13 +183,13 @@
     
 <article class="article-container">
   <header class="article-header">
-    <h1 class="article-title">Java Throwable异常堆栈收集的性能问题</h1>
+    <h1 class="article-title">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</h1>
     <div class="article-meta">
       
-      <span class="article-meta__item">2021-01-02</span>
+      <span class="article-meta__item">2026-04-21</span>
       
       <span class="article-meta__sep">·</span>
-      <span class="article-meta__item">4 分钟阅读</span>
+      <span class="article-meta__item">2 分钟阅读</span>
       
     </div>
     
@@ -198,136 +198,151 @@
   
 
   <div class="article-content">
-    <p>在项目中，大家通常都喜欢使用 <code>throw new BusinessException()</code> 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，<code>@RestControllerAdvice</code> 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。</p>
-<p>但是使用此方式是具有一定的性能损耗的，因为在基类Throwable 的fillInStackTrace()方法会不断收集各层的调用链路，而SpringMVC又是在外层的Tomcat到DispatcherServlet到应用自定义的各种intercepter层层调用，调用堆栈通常较长。所以多多少少具有一定的性能消耗，下面进行了一个基本测试。</p>
-<p>第一个for循环是为了给JVM预热。<br />
-第二个模拟普通的异常。<br />
-第三个模拟重写了fillInStackTrace()方法的异常。</p>
-<pre><code>/**
- * @author imyzt
- * @date 2021/01/02
- * @description 异常收集测试
- */
-public class TestMain {
-
-
-    public static void main(String[] args) {
-
-
-        int idx = 1000022;
-
-
-        long t1Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            Test test = new Test(&quot;aa&quot; + i);
-        }
-        long t1end = System.currentTimeMillis();
-        System.out.println(t1end - t1Start);
-
-
-
-
-        long t2Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            try {
-                throw new ThrowableTest(&quot;aa&quot; + i);
-            } catch (ThrowableTest throwableTest) {
-            }
-        }
-        long t2end = System.currentTimeMillis();
-        System.out.println(t2end - t2Start);
-
-
-
-
-
-
-        long t3Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            try {
-                throw new ThrowableTest2(&quot;aa&quot; + i);
-            } catch (ThrowableTest2 throwableTest) {
-
-
-            }
-        }
-        long t3end = System.currentTimeMillis();
-        System.out.println(t3end - t3Start);
-    }
-
-
-
-
-    public static class Test {
-
-
-        private String name;
-
-
-        public Test(String name) {
-            this.name = name;
-        }
-    }
-
-
-    public static class ThrowableTest extends RuntimeException {
-
-
-        private String msg;
-
-
-        public ThrowableTest(String msg) {
-            super(msg);
-            this.msg = msg;
-        }
-    }
-
-
-    public static class ThrowableTest2 extends RuntimeException {
-
-
-        private String msg;
-
-
-        public ThrowableTest2(String msg) {
-            super(msg);
-            this.msg = msg;
-        }
-
-
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
-    }
-}
+    <h1 id="-600g--3g">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</h1>
+<p>简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。</p>
+<p>下文表名、字段名均为示意代称，不对应线上真实命名。</p>
+<h2 id="heading">问题现象</h2>
+<p>早期的朋友圈可见范围和互动数据，主要通过两张明细表保存：</p>
+<ul>
+<li><code>t_visible_snapshot_v1</code>（发布前可见明细）</li>
+<li><code>t_visible_snapshot_v2</code>（发布后可见明细）</li>
+</ul>
+<p>随着朋友圈数量和客户数量增长，旧模型逐渐暴露出几个问题：</p>
+<ul>
+<li>客户关系逐行存储，数据量持续膨胀。</li>
+<li>发布前 / 发布后两套明细存在大量重复。</li>
+<li>索引维护、WAL、vacuum 和备份成本不断增加。</li>
+<li>读写链路长期维护 old/new 两套模型，查询和排障复杂。</li>
+</ul>
+<p>问题的本质不是 SQL 不够快，而是用明细行表达集合的成本太高。</p>
+<h2 id="heading-1">新模型设计</h2>
+<h3 id="1-">1. 可见关系改为位图</h3>
+<p>新模型使用 <code>t_visible_bitmap</code> 保存可见关系，核心字段可理解为：</p>
+<ul>
+<li><code>bitmap_before</code>：创建时可见客户集合</li>
+<li><code>bitmap_pending</code>：发布后仍未触达的客户集合</li>
+</ul>
+<p>触达客户集合通过差集计算：</p>
+<pre><code class="language-text">touched = bitmap_before - bitmap_pending
 </code></pre>
-<p>耗时对比：</p>
-<p>88<br />
-1631<br />
-74</p>
-<p>通过结果可以看出，即使在非Web环境下都有如此巨大的性能差距，web环境下冗长的调用链路差距只会更大，大家可使用web环境下进行测试。</p>
-<p>但是不是说有性能损耗就不用， 也需要结合业务进行权衡，比如可以将类似于参数错误等无需通过调用堆栈判断的、但是出现频率有很高的的异常进行重写基类的<code>fillInStackTrace()</code>方法，使其不收集堆栈，但是此举会使出现异常后无法排查，所以只能使用在无需通过堆栈判断问题的场景下用于提升性能。</p>
+<p>这样无需在“发布后明细表”中重复保存完整客户明细。</p>
+<h3 id="2-">2. 点赞、评论改为事件表</h3>
+<p>点赞和评论统一写入 <code>t_interact_event</code>，独立保存朋友圈、客户、互动类型和互动时间。</p>
+<p>新旧模型对比如下：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>旧模型</th>
+<th>新模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可见关系</td>
+<td>客户明细逐行存储</td>
+<td>位图集合</td>
+</tr>
+<tr>
+<td>未触达关系</td>
+<td>独立明细记录</td>
+<td>差集位图</td>
+</tr>
+<tr>
+<td>点赞/评论</td>
+<td>附着在明细记录上</td>
+<td>独立事件表</td>
+</tr>
+<tr>
+<td>写入链路</td>
+<td>old/new 双写</td>
+<td>只写新模型</td>
+</tr>
+<tr>
+<td>查询链路</td>
+<td>两套明细表</td>
+<td><code>bitmap + event</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-2">改造过程</h2>
+<p>本次按“先切读、再切写、后清理”的顺序推进：</p>
+<ol>
+<li>将页面、接口、报表查询切换到位图和事件模型。</li>
+<li>停止旧表双写，分别写入位图快照、差集位图和互动事件。</li>
+<li>分批把历史明细转换为位图和事件，按批次记录进度并校验结果。</li>
+<li>确认代码、配置、数据库对象和运行日志不再依赖旧表后，删除旧表索引及表本体。</li>
+</ol>
+<h2 id="heading-3">结果验证</h2>
+<h3 id="heading-4">存储空间</h3>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th align="right">改造前</th>
+<th align="right">改造后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>朋友圈旧明细模型</td>
+<td align="right">约 600G</td>
+<td align="right">-</td>
+</tr>
+<tr>
+<td>可见位图表</td>
+<td align="right">-</td>
+<td align="right">约 2.6G</td>
+</tr>
+<tr>
+<td>互动事件表</td>
+<td align="right">-</td>
+<td align="right">约 32MB</td>
+</tr>
+<tr>
+<td>新模型合计</td>
+<td align="right">-</td>
+<td align="right">约 3G</td>
+</tr>
+</tbody>
+</table>
+<p>业务主承载空间由约 <code>600G</code> 收口到约 <code>3G</code>，减少约 <code>597G</code>。旧索引清理阶段先释放约 <code>300G</code>，旧表清理后完成剩余空间回收。</p>
+<h3 id="heading-5">业务一致性</h3>
+<p>抽样验证了以下结果：</p>
+<ul>
+<li>创建时可见客户集合一致。</li>
+<li>发布后未触达客户集合一致。</li>
+<li>已触达、未触达统计口径一致。</li>
+<li>点赞、评论数量和互动时间保持可查询。</li>
+</ul>
+<p>因此，这次改造不是简单删除历史数据，而是用新的数据模型无损替代旧模型。</p>
+<h2 id="heading-6">总结</h2>
+<p>朋友圈这次优化的关键，不是清理了多少行数据，而是改变了数据表达方式：</p>
+<pre><code class="language-text">明细行集合 -&gt; 位图集合
+重复明细   -&gt; 差集计算
+互动附着   -&gt; 独立事件
+</code></pre>
+<p>当大表已经进入数百 GB 规模时，继续加索引、调 SQL 往往只能缓解局部问题。让存储结构与业务语义匹配，才是实现 <code>600G -&gt; 3G</code> 收口的核心。</p>
 
   </div>
 
   
   <nav class="post-nav">
     
-    <a href="/post/shou-xie-yi-ge-springboot-conditionon/" class="post-nav-card post-nav-card--prev">
+    <a href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/" class="post-nav-card post-nav-card--prev">
       
       <div class="post-nav-card__body">
         <span class="post-nav-card__label meta-text">上一篇</span>
-        <span class="post-nav-card__title">手写一个SpringBoot ConditionOn*</span>
+        <span class="post-nav-card__title">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</span>
       </div>
       <span class="post-nav-card__arrow">&larr;</span>
     </a>
     
     
-    <a href="/post/mysql-80-gong-yong-biao-biao-da-shi-cte/" class="post-nav-card post-nav-card--next">
+    <a href="/post/pg-starrocks-shu-ju-tong-bu-wen-ti-zhi-li-ji-lu/" class="post-nav-card post-nav-card--next">
       <div class="post-nav-card__body">
         <span class="post-nav-card__label meta-text">下一篇</span>
-        <span class="post-nav-card__title">MySQL 8.0 公用表表达式（CTE）</span>
+        <span class="post-nav-card__title">PG → StarRocks 数据同步问题治理记录</span>
       </div>
       
       <span class="post-nav-card__arrow">&rarr;</span>

@@ -38,26 +38,26 @@
   })();
 </script>
   <meta name="generator" content="Gridea Pro 1.2.2">
-  <title>Java Throwable异常堆栈收集的性能问题 | imyzt&#39;s blog</title>
+  <title>RocketMQ 订阅不一致：一次消费者组设计问题排查记录 | imyzt&#39;s blog</title>
   
-<meta property="og:title" content="Java Throwable异常堆栈收集的性能问题" />
+<meta property="og:title" content="RocketMQ 订阅不一致：一次消费者组设计问题排查记录" />
 <meta property="og:type" content="article" />
 
 
-<meta name="description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<link rel="canonical" href="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java Throwable异常堆栈收集的性能问题","url":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","description":"在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 \u0026hellip;","datePublished":"2021-01-02T14:25:53+08:00","dateModified":"2026-09-04T20:43:06+08:00","author":{"@type":"Person","name":"imyzt's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"imyzt's blog"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"imyzt's blog","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/","name":"Java Throwable异常堆栈收集的性能问题","position":2}]}</script>
-<meta property="og:title" content="Java Throwable异常堆栈收集的性能问题">
-<meta property="og:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
-<meta property="og:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
+<meta name="description" content="RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer 简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。 问题现象 同一个应用里有多个监听器，分别消费不同 Topic，却复用了服务级 Consumer Group：">
+<link rel="canonical" href="https://imyzt.top/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"RocketMQ 订阅不一致：一次消费者组设计问题排查记录","url":"https://imyzt.top/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/","description":"RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer 简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。 问题现象 同一个应用里有多个监听器，分别消费不同 Topic，却复用了服务级 Consumer Group：","datePublished":"2026-06-10T21:24:46+08:00","dateModified":"2026-09-06T21:36:00+08:00","author":{"@type":"Person","name":"imyzt's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"imyzt's blog"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"imyzt's blog","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/","name":"RocketMQ 订阅不一致：一次消费者组设计问题排查记录","position":2}]}</script>
+<meta property="og:title" content="RocketMQ 订阅不一致：一次消费者组设计问题排查记录">
+<meta property="og:description" content="RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer 简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。 问题现象 同一个应用里有多个监听器，分别消费不同 Topic，却复用了服务级 Consumer Group：">
+<meta property="og:url" content="https://imyzt.top/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="imyzt's blog">
 <meta property="og:image" content="/images/avatar.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://imyzt.top/post/java-throwable-yi-chang-dui-zhan-shou-ji-de-xing-neng-wen-ti/">
-<meta name="twitter:title" content="Java Throwable异常堆栈收集的性能问题">
-<meta name="twitter:description" content="在项目中，大家通常都喜欢使用 throw new BusinessException() 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，@RestControllerAdvice 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。 &amp;hellip;">
+<meta name="twitter:url" content="https://imyzt.top/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/">
+<meta name="twitter:title" content="RocketMQ 订阅不一致：一次消费者组设计问题排查记录">
+<meta name="twitter:description" content="RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer 简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。 问题现象 同一个应用里有多个监听器，分别消费不同 Topic，却复用了服务级 Consumer Group：">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
 <body class="flavor-theme">
@@ -183,10 +183,10 @@
     
 <article class="article-container">
   <header class="article-header">
-    <h1 class="article-title">Java Throwable异常堆栈收集的性能问题</h1>
+    <h1 class="article-title">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</h1>
     <div class="article-meta">
       
-      <span class="article-meta__item">2021-01-02</span>
+      <span class="article-meta__item">2026-06-10</span>
       
       <span class="article-meta__sep">·</span>
       <span class="article-meta__item">4 分钟阅读</span>
@@ -198,136 +198,93 @@
   
 
   <div class="article-content">
-    <p>在项目中，大家通常都喜欢使用 <code>throw new BusinessException()</code> 来阻断错误的参数或者业务逻辑异常等已知异常，反馈给用户。比如用户未绑定手机号、用户的参数异常等情况。在大部分情况下，使用异常终止流程都不是很好的方式，但是奈何在SpringBoot 环境下，<code>@RestControllerAdvice</code> 实在是香，不需要定义很多返回状态码。所以被大多数人使用在项目中。</p>
-<p>但是使用此方式是具有一定的性能损耗的，因为在基类Throwable 的fillInStackTrace()方法会不断收集各层的调用链路，而SpringMVC又是在外层的Tomcat到DispatcherServlet到应用自定义的各种intercepter层层调用，调用堆栈通常较长。所以多多少少具有一定的性能消耗，下面进行了一个基本测试。</p>
-<p>第一个for循环是为了给JVM预热。<br />
-第二个模拟普通的异常。<br />
-第三个模拟重写了fillInStackTrace()方法的异常。</p>
-<pre><code>/**
- * @author imyzt
- * @date 2021/01/02
- * @description 异常收集测试
- */
-public class TestMain {
+    <h1 id="rocketmq--consumer">RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer</h1>
+<p>简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。</p>
+<h2 id="heading">问题现象</h2>
+<p>同一个应用里有多个监听器，分别消费不同 Topic，却复用了服务级 Consumer Group：</p>
+<pre><code class="language-java">@RocketMQMessageListener(
+        topic = &quot;topic_a&quot;,
+        consumerGroup = &quot;consumer_group_service&quot;
+)
+class TopicAListener {}
 
-
-    public static void main(String[] args) {
-
-
-        int idx = 1000022;
-
-
-        long t1Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            Test test = new Test(&quot;aa&quot; + i);
-        }
-        long t1end = System.currentTimeMillis();
-        System.out.println(t1end - t1Start);
-
-
-
-
-        long t2Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            try {
-                throw new ThrowableTest(&quot;aa&quot; + i);
-            } catch (ThrowableTest throwableTest) {
-            }
-        }
-        long t2end = System.currentTimeMillis();
-        System.out.println(t2end - t2Start);
-
-
-
-
-
-
-        long t3Start = System.currentTimeMillis();
-        for (int i = 0; i &lt; idx; i++) {
-            try {
-                throw new ThrowableTest2(&quot;aa&quot; + i);
-            } catch (ThrowableTest2 throwableTest) {
-
-
-            }
-        }
-        long t3end = System.currentTimeMillis();
-        System.out.println(t3end - t3Start);
-    }
-
-
-
-
-    public static class Test {
-
-
-        private String name;
-
-
-        public Test(String name) {
-            this.name = name;
-        }
-    }
-
-
-    public static class ThrowableTest extends RuntimeException {
-
-
-        private String msg;
-
-
-        public ThrowableTest(String msg) {
-            super(msg);
-            this.msg = msg;
-        }
-    }
-
-
-    public static class ThrowableTest2 extends RuntimeException {
-
-
-        private String msg;
-
-
-        public ThrowableTest2(String msg) {
-            super(msg);
-            this.msg = msg;
-        }
-
-
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
-    }
-}
+@RocketMQMessageListener(
+        topic = &quot;topic_b&quot;,
+        consumerGroup = &quot;consumer_group_service&quot;
+)
+class TopicBListener {}
 </code></pre>
-<p>耗时对比：</p>
-<p>88<br />
-1631<br />
-74</p>
-<p>通过结果可以看出，即使在非Web环境下都有如此巨大的性能差距，web环境下冗长的调用链路差距只会更大，大家可使用web环境下进行测试。</p>
-<p>但是不是说有性能损耗就不用， 也需要结合业务进行权衡，比如可以将类似于参数错误等无需通过调用堆栈判断的、但是出现频率有很高的的异常进行重写基类的<code>fillInStackTrace()</code>方法，使其不收集堆栈，但是此举会使出现异常后无法排查，所以只能使用在无需通过堆栈判断问题的场景下用于提升性能。</p>
+<p>单实例、低流量时不一定马上暴露。扩容或滚动发布后，RocketMQ 可能提示订阅关系不一致，表现为消费者反复注册、部分 Topic 消费异常或消费状态不稳定。</p>
+<h2 id="heading-1">最容易忽略的实现差异</h2>
+<p>Java Client 的常见写法是：手动创建一个 <code>DefaultMQPushConsumer</code>，然后在同一个 Consumer 上调用多次 <code>subscribe</code>。因此，一个进程里通常只有一个 Consumer 实例，对外上报的是一份完整订阅关系：</p>
+<pre><code class="language-java">DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(&quot;consumer_group_service&quot;);
+consumer.subscribe(&quot;topic_a&quot;, &quot;*&quot;);
+consumer.subscribe(&quot;topic_b&quot;, &quot;*&quot;);
+consumer.start();
+</code></pre>
+<p>但 <code>@RocketMQMessageListener</code> 不是“给一个 Consumer 增加一个订阅”。Spring RocketMQ Starter 会扫描每个注解，为每个监听器创建独立的监听容器，并由容器创建对应的 RocketMQ Consumer。也就是说：</p>
+<pre><code class="language-text">2 个 @RocketMQMessageListener
+        ↓
+2 个监听容器
+        ↓
+2 个 Consumer 实例
+</code></pre>
+<p>如果这两个注解的 <code>consumerGroup</code> 相同，那么同一个应用进程内已经存在两个使用同组名称、却上报不同 Topic 的 Consumer。多实例部署后，这种差异会被放大，最终触发订阅不一致。</p>
+<h2 id="heading-2">根因分析</h2>
+<p>Consumer Group 代表一组稳定的消费语义，不是简单的服务名称。同一组消费者需要保持一致的 Topic、Tag 或订阅表达式、消费模式和业务语义。</p>
+<p>原有设计把“同一个服务”误当成了“同一个消费者组”，同时忽略了注解模式下“一注解一容器一 Consumer”的生命周期模型。因此，问题本质是消费者组边界设计错误，而不是 RocketMQ 集群本身故障。</p>
+<h2 id="heading-3">修复方案</h2>
+<p>将消费者组从“一个服务一个组”调整为“一个服务 + 一个 Topic 一个组”：</p>
+<pre><code class="language-java">@RocketMQMessageListener(
+        topic = &quot;topic_a&quot;,
+        consumerGroup = &quot;consumer_group_service_topic_a&quot;
+)
+class TopicAListener {}
+
+@RocketMQMessageListener(
+        topic = &quot;topic_b&quot;,
+        consumerGroup = &quot;consumer_group_service_topic_b&quot;
+)
+class TopicBListener {}
+</code></pre>
+<p>统一命名格式：</p>
+<pre><code class="language-text">consumer_group_{service}_{topic}
+</code></pre>
+<p>本次先处理导出类、分配类、活动订单类、批量任务类等监听器，随后将同样规则推广到其他 Topic。消费者组常量集中管理，避免 Listener 中出现散落且容易重复的字符串。</p>
+<h2 id="heading-4">发布与验证</h2>
+<p>改造按以下顺序执行：</p>
+<ol>
+<li>扫描所有 <code>@RocketMQMessageListener</code>，按注解统计 Consumer Group、Topic、Tag 和消费模式，检查同组是否存在多份订阅。</li>
+<li>为每个 Topic 配置独立消费者组，确认同一组的所有实例订阅参数完全一致。</li>
+<li>滚动发布，观察监听容器启动、消费者注册、消息堆积和消费速率。</li>
+<li>在 RocketMQ 控制台核对每个组对应的 Topic、Tag 和实例列表。</li>
+<li>对新组的消费起点、历史消息处理和重复消费风险，按实际 RocketMQ 配置与业务用例验证。</li>
+</ol>
+<p>验证重点不是“服务是否启动”，而是“每个注解创建的 Consumer 是否只承担清晰、稳定的一种消费语义”。</p>
+<h2 id="heading-5">总结</h2>
+<p>这次问题可以归纳为：</p>
+<pre><code class="language-text">Java Client：一个 Consumer，多次 subscribe
+注解监听器：一个注解，一个容器，一个 Consumer
+</code></pre>
+<p>因此，在 Spring 注解模式下，不同 Topic 默认拆分消费者组；即使 Topic 相同，Tag、消费模式或业务语义不一致时，也应重新评估是否需要拆组。Consumer Group 的命名应围绕“实际 Consumer 的订阅边界”设计，而不是简单复用服务名称。</p>
 
   </div>
 
   
   <nav class="post-nav">
     
-    <a href="/post/shou-xie-yi-ge-springboot-conditionon/" class="post-nav-card post-nav-card--prev">
-      
+    <div class="post-nav-card post-nav-card--empty">
       <div class="post-nav-card__body">
         <span class="post-nav-card__label meta-text">上一篇</span>
-        <span class="post-nav-card__title">手写一个SpringBoot ConditionOn*</span>
+        <span class="post-nav-card__empty-text">没有上一篇了~</span>
       </div>
-      <span class="post-nav-card__arrow">&larr;</span>
-    </a>
+    </div>
     
     
-    <a href="/post/mysql-80-gong-yong-biao-biao-da-shi-cte/" class="post-nav-card post-nav-card--next">
+    <a href="/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/" class="post-nav-card post-nav-card--next">
       <div class="post-nav-card__body">
         <span class="post-nav-card__label meta-text">下一篇</span>
-        <span class="post-nav-card__title">MySQL 8.0 公用表表达式（CTE）</span>
+        <span class="post-nav-card__title">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</span>
       </div>
       
       <span class="post-nav-card__arrow">&rarr;</span>
