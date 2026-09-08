@@ -4,39 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.min.css">
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-
-
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
-
-<style>:root { --heatmap-color: #39d353; }</style>
-
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
 
 
 <style>
-  .theme-toggle-sun  { display: flex; }
-  .theme-toggle-moon { display: none; }
-  :root.theme-light .theme-toggle-sun  { display: none; }
-  :root.theme-light .theme-toggle-moon { display: flex; }
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 </style>
 
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
 
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('flavor-theme');
-      var theme = saved || 'dark';
-      if (theme === 'light') {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
         document.documentElement.classList.add('theme-light');
       }
-    } catch (e) { }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
   })();
 </script>
+
   <meta name="generator" content="Gridea Pro 1.2.2">
   <title>imyzt&#39;s blog</title>
   
@@ -55,7 +71,7 @@
 <meta name="twitter:description" content="Welcome to Imyzt's Blog">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
-<body class="flavor-theme">
+<body class="shred-theme shred-motion page-home">
 
   <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -157,18 +173,15 @@
 
   var root = document.documentElement;
   var applyTheme = function(theme, persist){
-    if (theme === 'light') {
-      root.classList.add('theme-light');
-    } else {
-      root.classList.remove('theme-light');
-    }
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
     if (persist) {
-      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
     }
   };
   document.querySelectorAll('.theme-toggle').forEach(function(el){
     el.addEventListener('click', function(){
-      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
     });
   });
 })();
@@ -177,367 +190,309 @@
   <main class="site-main" role="main">
     
 
-
-
-
-<div class="container">
+<div class="blog-home">
   
-  
-  <section class="section-popular">
-    <div class="section-header">
-      <h2 class="section-title">热门文章</h2>
-      <a href="/post" class="section-more meta-text">查看全部 &rarr;</a>
-    </div>
-    <div class="compact-grid">
+  <section class="blog-feed" aria-label="最新文章">
+    
+    
+    
+    <article class="feed-lead" data-shred-item style="--i: 0">
+      <div class="feed-lead__meta meta-text">
+        <time datetime="2026-06-10T21:24:46+08:00">2026-06-10</time>
+        
+      </div>
+      <a class="feed-lead__link" href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/">
+        <h2 class="feed-lead__title">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</h2>
+      </a>
+      <p class="feed-lead__excerpt">RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer
+简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Consumer 多次订阅”。
+问题现象
+同一个应用里有多个监听器，分别消费不同 T...</p>
+      <a class="feed-lead__more" href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/">继续阅读</a>
       
-       <article class="post-card post-card--compact">
-  <a href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</h3>
-      <div class="post-card__meta meta-text">2026-06-10</div>
-    </div>
+    </article>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</h3>
-      <div class="post-card__meta meta-text">2026-04-21</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/pg-starrocks-shu-ju-tong-bu-wen-ti-zhi-li-ji-lu/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">PG → StarRocks 数据同步问题治理记录</h3>
-      <div class="post-card__meta meta-text">2026-01-21</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">MCP初体验，Trae接入MySQL MCP Server</h3>
-      <div class="post-card__meta meta-text">2025-06-07</div>
-    </div>
     
-  </a>
-</article>
-  
-       
-       
-       
-       
-       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <div class="feed-list">
+      <div class="feed-list__head">
+        <h2 class="feed-list__label">近期</h2>
+        <a class="feed-list__all meta-text" href="/post/">全部文章</a>
+      </div>
+
+      
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 1">
+        <time class="feed-row__date meta-text" datetime="2026-04-21T20:56:40+08:00">2026-04-21</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</a>
+          <p class="feed-row__excerpt">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录
+简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的...</p>
+          
         </div>
-  </section>
-  
-
-  <div class="content-grid">
-    <div class="main-content">
+      </article>
       
       
-      <section class="section-latest">
-        <div class="section-header">
-          <h2 class="section-title">最新文章</h2>
-        </div>
-        <div class="post-list">
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</h3>
-    </a>
-    <a href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/" class="post-card__excerpt clamp-2">
-      RocketMQ 订阅不一致：别把注解监听器当成一个 Consumer
-简单记录一次 RocketMQ 订阅关系治理。真正的坑不在 Topic 数量，而在于误把 Spring 注解监听器理解成了 Java Client 的“一个 Co...
-    </a>
-    <div class="post-card__meta meta-text">
-      2026-06-10
       
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录</h3>
-    </a>
-    <a href="/post/peng-you-quan-cun-chu-cong-600g-shou-kou-dao-3gwei-tu-yu-shi-jian-mo-xing-gai-zao-ji-lu/" class="post-card__excerpt clamp-2">
-      朋友圈存储从 600G 收口到 3G：位图与事件模型改造记录
-简单记录一次朋友圈存储治理：将原本约 600G 的明细模型切换为约 3G 的位图/事件模型，在保持业务结果一致的前提下，完成旧表停写、历史迁移和旧表清理。
-下文表名、字段名...
-    </a>
-    <div class="post-card__meta meta-text">
-      2026-04-21
-      
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/pg-starrocks-shu-ju-tong-bu-wen-ti-zhi-li-ji-lu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">PG → StarRocks 数据同步问题治理记录</h3>
-    </a>
-    <a href="/post/pg-starrocks-shu-ju-tong-bu-wen-ti-zhi-li-ji-lu/" class="post-card__excerpt clamp-2">
-      简单记录近期治理 PG 同步到 StarRocks 过程中遇到的各类数据问题及解决方案。
+      <article class="feed-row" data-shred-item style="--i: 2">
+        <time class="feed-row__date meta-text" datetime="2026-01-21T21:39:53+08:00">2026-01-21</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/pg-starrocks-shu-ju-tong-bu-wen-ti-zhi-li-ji-lu/">PG → StarRocks 数据同步问题治理记录</a>
+          <p class="feed-row__excerpt">简单记录近期治理 PG 同步到 StarRocks 过程中遇到的各类数据问题及解决方案。
 
 问题一：时间戳转换异常导致同步中断
 问题现象
 
-Flink Job 从 RUNNING 变为 RESTARTING
-PG 的 WAL 日志持续...
-    </a>
-    <div class="post-card__meta meta-text">
-      2026-01-21
-      
-    </div>
-  </div>
-  
-</article>
-
+Flink Job 从 RUNNI...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MCP初体验，Trae接入MySQL MCP Server</h3>
-    </a>
-    <a href="/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/" class="post-card__excerpt clamp-2">
-      关于 MCP 是什么就不在此赘述，可以看这篇文章：模型上下文协议（MCP）
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/flink/">Flink</a>
+            
+            
+            
+            <a href="/tag/postgres/">Postgres</a>
+            
+            
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 3">
+        <time class="feed-row__date meta-text" datetime="2025-06-07T10:55:12+08:00">2025-06-07</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mcp-chu-ti-yan-trae-jie-ru-mysql-mcp-server/">MCP初体验，Trae接入MySQL MCP Server</a>
+          <p class="feed-row__excerpt">关于 MCP 是什么就不在此赘述，可以看这篇文章：模型上下文协议（MCP）
 ，目前 Trae 已经支持 MCP，网上还没有什么教程，本文记录下自己安装的过程。
-1. 首先安装 Trae 海外版
-https://www.trae.ai/...
-    </a>
-    <div class="post-card__meta meta-text">
-      2025-06-07
-      
-    </div>
-  </div>
-  
-</article>
-
+1. 首先安装...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/zai-idea-zhong-guan-li-he-jian-ting-arthas-ying-yong/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">在IDEA中管理和监听arthas应用</h3>
-    </a>
-    <a href="/post/zai-idea-zhong-guan-li-he-jian-ting-arthas-ying-yong/" class="post-card__excerpt clamp-2">
-      近期和arthas-idea-plugin插件社区沟通，为插件贡献了部分功能，下文为全文转载：
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/ai/">AI</a>
+            
+            
+            
+            <a href="/tag/mysql/">MySQL</a>
+            
+            
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 4">
+        <time class="feed-row__date meta-text" datetime="2024-10-13T17:53:32+08:00">2024-10-13</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/zai-idea-zhong-guan-li-he-jian-ting-arthas-ying-yong/">在IDEA中管理和监听arthas应用</a>
+          <p class="feed-row__excerpt">近期和arthas-idea-plugin插件社区沟通，为插件贡献了部分功能，下文为全文转载：
 原文链接：《在IDEA中管理和监听arthas应用》
-arthas idea plugin 插件方便了我们使用 Arthas，对于命令不熟...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-10-13
-      
-    </div>
-  </div>
-  
-</article>
-
+arthas idea ...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/false-sharing/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">False-Sharing</h3>
-    </a>
-    <a href="/post/false-sharing/" class="post-card__excerpt clamp-2">
-      在阅读VIVO的博客高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用的时候，了解到 Disruptor 高性能的核心原因：
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 5">
+        <time class="feed-row__date meta-text" datetime="2024-08-21T22:41:24+08:00">2024-08-21</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/false-sharing/">False-Sharing</a>
+          <p class="feed-row__excerpt">在阅读VIVO的博客高性能无锁队列 Disruptor 核心原理分析及其在i主题业务中的应用的时候，了解到 Disruptor 高性能的核心原因：
 
 空间预分配
 避免伪共享
-无锁
-
-其中 伪共享 的概念之前没有了解过，故特地了解学习了...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-08-21
-      
-    </div>
-  </div>
-  
-</article>
-
+...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/spring-events-shi-yong-xiang-jie/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Spring Events使用和问题分析</h3>
-    </a>
-    <a href="/post/spring-events-shi-yong-xiang-jie/" class="post-card__excerpt clamp-2">
-      此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEventListener的使用场景和注意事项。
-常规情况
-在我们常...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-08-04
-      
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch</h3>
-    </a>
-    <a href="/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/" class="post-card__excerpt clamp-2">
-      前言
-事情的起因还要从 Transaction rolled back because it has been marked as rollback-only] with root cause 说起，公司的一个业务，Kafka Con...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-07-27
-      
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mysql-group-by-yin-shi-pai-xu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MySQL GROUP BY 隐式排序</h3>
-    </a>
-    <a href="/post/mysql-group-by-yin-shi-pai-xu/" class="post-card__excerpt clamp-2">
-      前言
-在MySQL的老版本（MySQL5.7及以前）中， GROUP BY xxx 等同于 GROUP BY xxx ORDER BY xxx，在 GROUP BY 的同时，会自带排序的效果。包括也可以手动排序 GROUP BY xx...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-07-17
-      
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程</h3>
-    </a>
-    <a href="/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/" class="post-card__excerpt clamp-2">
-      官方文档： Spring Data Neo4j
-基于官方文档，基本就能完成基本的接入，Neo4j的版本很乱，如果使用SpringBoot2.+的话，一定要注意Neo4j Server的版本与Driver的匹配关系，否则很容易踩坑。 由...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-30
-      
-    </div>
-  </div>
-  
-</article>
-
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/java/">Java</a>
+            
+            
+            
+            <a href="/tag/disruptor/">Disruptor</a>
+            
+            
+          </div>
           
         </div>
-      </section>
-      
-
+      </article>
       
       
-      <div class="view-more">
-        <a href="/post/page/2/" class="btn btn--secondary">查看更多文章 &rarr;</a>
-      </div>
+      
+      <article class="feed-row" data-shred-item style="--i: 6">
+        <time class="feed-row__date meta-text" datetime="2024-08-04T16:16:39+08:00">2024-08-04</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/spring-events-shi-yong-xiang-jie/">Spring Events使用和问题分析</a>
+          <p class="feed-row__excerpt">此篇文章主要用于讲解使用Spring进行编码时，核心与非核心代码解耦合常用的观察者模式@EventListener的使用方法，以及不常用的@TransactionalEven...</p>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 7">
+        <time class="feed-row__date meta-text" datetime="2024-07-27T18:48:23+08:00">2024-07-27</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/dang-spring-duo-ceng-qian-tao-shi-wu-yu-dao-mybatis-plus-de-savebatch/">当Spring多层嵌套事务遇到Mybatis-Plus的saveBatch</a>
+          <p class="feed-row__excerpt">前言
+事情的起因还要从 Transaction rolled back because it has been marked as rollback-only] with r...</p>
+          
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/wen-ti-jie-jue/">问题解决</a>
+            
+            
+            
+            <a href="/tag/shu-ju-ku/">数据库</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 8">
+        <time class="feed-row__date meta-text" datetime="2024-07-17T23:33:42+08:00">2024-07-17</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mysql-group-by-yin-shi-pai-xu/">MySQL GROUP BY 隐式排序</a>
+          <p class="feed-row__excerpt">前言
+在MySQL的老版本（MySQL5.7及以前）中， GROUP BY xxx 等同于 GROUP BY xxx ORDER BY xxx，在 GROUP BY 的同时，...</p>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 9">
+        <time class="feed-row__date meta-text" datetime="2024-06-30T17:00:27+08:00">2024-06-30</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/springboot-33-neo4j-51-java17-jie-ru-jiao-cheng/">SpringBoot 3.3 + Neo4j 5.1 + Java17 接入教程</a>
+          <p class="feed-row__excerpt">官方文档： Spring Data Neo4j
+基于官方文档，基本就能完成基本的接入，Neo4j的版本很乱，如果使用SpringBoot2.+的话，一定要注意Neo4j Se...</p>
+          
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/neo4j/">Neo4j</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
       
     </div>
 
     
+    <div class="feed-pager">
+      <a class="blog-link" href="/post/page/2/">更早的文章 →</a>
+    </div>
     
-    <aside class="sidebar">
-      <div class="sidebar__section sidebar__about">
-        
-        <img class="sidebar__avatar" src="/images/avatar.png" alt="imyzt&#39;s blog" />
-        
-        <h3 class="sidebar__title">imyzt&#39;s blog</h3>
-        
-        <p class="sidebar__desc">Welcome to Imyzt&#39;s Blog</p>
-        
-        
-      </div>
+  </section>
+  
 
+  
+  <aside class="blog-topics" aria-label="标签">
+    <h2 class="blog-topics__label">标签</h2>
+    <div class="blog-topics__list">
       
-      <div class="sidebar__section">
-        <h4 class="sidebar__section-title meta-text">标签</h4>
-        <div class="sidebar__tags">
-          
-          <a href="/tag/gridea/" class="tag-pill">Gridea</a>
-          
-          <a href="/tag/threadlocal/" class="tag-pill">ThreadLocal</a>
-          
-          <a href="/tag/redis/" class="tag-pill">Redis</a>
-          
-          <a href="/tag/fen-bu-shi-suo/" class="tag-pill">分布式锁</a>
-          
-          <a href="/tag/flink/" class="tag-pill">Flink</a>
-          
-          <a href="/tag/disruptor/" class="tag-pill">Disruptor</a>
-          
-          <a href="/tag/neo4j/" class="tag-pill">Neo4j</a>
-          
-          <a href="/tag/xian-cheng-chi/" class="tag-pill">线程池</a>
-          
-          <a href="/tag/timeingwheel/" class="tag-pill">TimeingWheel</a>
-          
-          <a href="/tag/idea/" class="tag-pill">IDEA</a>
-          
-          <a href="/tag/starrocks/" class="tag-pill">StarRocks</a>
-          
-          <a href="/tag/java/" class="tag-pill">Java</a>
-          
-          <a href="/tag/wen-ti-jie-jue/" class="tag-pill">问题解决</a>
-          
-          <a href="/tag/java-developer/" class="tag-pill">Java developer</a>
-          
-          <a href="/tag/rocketmq/" class="tag-pill">RocketMQ</a>
-          
-          <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/" class="tag-pill">Git 原理详解及实用指南</a>
-          
-          <a href="/tag/mysql/" class="tag-pill">MySQL</a>
-          
-          <a href="/tag/shu-ju-ku/" class="tag-pill">数据库</a>
-          
-          <a href="/tag/rabbitmq/" class="tag-pill">RabbitMQ</a>
-          
-          <a href="/tag/she-ji-fang-an/" class="tag-pill">设计方案</a>
-          
-          <a href="/tag/snowflake/" class="tag-pill">Snowflake</a>
-          
-          <a href="/tag/fastjson/" class="tag-pill">FastJSON</a>
-          
-          <a href="/tag/go/" class="tag-pill">Go</a>
-          
-          <a href="/tag/postgres/" class="tag-pill">Postgres</a>
-          
-          <a href="/tag/ai/" class="tag-pill">AI</a>
-          
-          <a href="/tag/mcp/" class="tag-pill">MCP</a>
-          
-          <a href="/tag/java_new_future/" class="tag-pill">Java_New_Future</a>
-          
-          <a href="/tag/sheng-huo-ji-lu/" class="tag-pill">生活记录</a>
-          
-        </div>
-      </div>
+      <a href="/tag/gridea/">Gridea</a>
       
-    </aside>
-    
-  </div>
+      <a href="/tag/wen-ti-jie-jue/">问题解决</a>
+      
+      <a href="/tag/java_new_future/">Java_New_Future</a>
+      
+      <a href="/tag/xian-cheng-chi/">线程池</a>
+      
+      <a href="/tag/fastjson/">FastJSON</a>
+      
+      <a href="/tag/timeingwheel/">TimeingWheel</a>
+      
+      <a href="/tag/she-ji-fang-an/">设计方案</a>
+      
+      <a href="/tag/snowflake/">Snowflake</a>
+      
+      <a href="/tag/rocketmq/">RocketMQ</a>
+      
+      <a href="/tag/go/">Go</a>
+      
+      <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+      
+      <a href="/tag/flink/">Flink</a>
+      
+      <a href="/tag/mysql/">MySQL</a>
+      
+      <a href="/tag/disruptor/">Disruptor</a>
+      
+      <a href="/tag/neo4j/">Neo4j</a>
+      
+      <a href="/tag/fen-bu-shi-suo/">分布式锁</a>
+      
+      <a href="/tag/rabbitmq/">RabbitMQ</a>
+      
+      <a href="/tag/idea/">IDEA</a>
+      
+      <a href="/tag/java-developer/">Java developer</a>
+      
+      <a href="/tag/postgres/">Postgres</a>
+      
+      <a href="/tag/starrocks/">StarRocks</a>
+      
+      <a href="/tag/ai/">AI</a>
+      
+      <a href="/tag/mcp/">MCP</a>
+      
+      <a href="/tag/shu-ju-ku/">数据库</a>
+      
+      <a href="/tag/sheng-huo-ji-lu/">生活记录</a>
+      
+      <a href="/tag/threadlocal/">ThreadLocal</a>
+      
+      <a href="/tag/redis/">Redis</a>
+      
+      <a href="/tag/java/">Java</a>
+      
+    </div>
+  </aside>
+  
 </div>
+
 
   </main>
 
@@ -631,12 +586,13 @@ arthas idea plugin 插件方便了我们使用 Arthas，对于命令不熟...
 <script src="/scripts/search.js"></script>
   
 
+  <script src="/scripts/shred.js" defer></script>
   
 
   
 
   
 
-<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>

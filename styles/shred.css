@@ -1,0 +1,359 @@
+/* author: imyzt — shred-theme
+ * 博客本位设计。从 justin3go 借鉴的是：排版层次、留白、克制动效、纸质感细节；
+ * 不做作品集分区 / 项目卡 / motto / 章节轨。
+ */
+
+:root {
+  /* 书本纸色：偏暖、不刺眼，避免纯白 */
+  --color-bg: #e9e2d4;
+  --color-bg-soft: #e0d7c6;
+  --color-surface: #f2ebe0;
+  --color-border: #d2c7b2;
+  --color-border-hover: #b9ab92;
+  --color-text-primary: #2a261f;
+  --color-text-secondary: #5e574c;
+  --color-text-muted: #8a8172;
+  --color-text-body: #3a342c;
+  --color-accent: #0f6e56;
+  --color-accent-hover: #0a5744;
+  --color-badge-gold: #0f6e56;
+
+  --font-body: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  --font-heading: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-size-base: 17px;
+  --line-height-base: 1.7;
+
+  --shell: 680px;
+  --max-width: 680px;
+  --content-width: 680px;
+  --shred-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root.theme-dark {
+  --color-bg: #141311;
+  --color-bg-soft: #1c1a17;
+  --color-surface: #1a1815;
+  --color-border: #322e28;
+  --color-border-hover: #4a4338;
+  --color-text-primary: #f2ebe0;
+  --color-text-secondary: #b5aea0;
+  --color-text-muted: #7d776c;
+  --color-text-body: #ddd4c6;
+  --color-accent: #5dba9a;
+  --color-accent-hover: #7ecfb0;
+}
+
+body.shred-theme {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.shred-theme .paper-grain { display: none; }
+
+/* Header */
+body.shred-theme .site-header {
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  border-bottom: 1px solid var(--color-border);
+}
+
+body.shred-theme .site-name-link {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+body.shred-theme .nav-item {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+}
+
+body.shred-theme .nav-item:hover { color: var(--color-accent); }
+
+/* Home shell */
+.blog-home {
+  width: min(100% - 40px, var(--shell));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+/* Lead post */
+.feed-lead {
+  position: relative;
+  margin-bottom: 40px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.feed-lead__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.feed-lead__link { text-decoration: none; color: inherit; }
+
+.feed-lead__title {
+  margin: 0 0 14px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.feed-lead__link:hover .feed-lead__title { color: var(--color-accent); }
+
+.feed-lead__excerpt {
+  margin: 0 0 16px;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+}
+
+.feed-lead__more {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+.feed-lead__more:hover {
+  border-bottom-color: var(--color-accent);
+}
+
+.feed-lead__cover {
+  display: block;
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.feed-lead__cover img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  transition: transform 0.4s var(--shred-ease);
+}
+
+.feed-lead:hover .feed-lead__cover img {
+  transform: scale(1.02);
+}
+
+/* Feed list */
+.feed-list__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.feed-list__label {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.feed-list__all {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.feed-list__all:hover { color: var(--color-accent); }
+
+.feed-row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (max-width: 560px) {
+  .feed-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+.feed-row__date {
+  padding-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.feed-row__title {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-heading);
+  font-size: 1.08rem;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  letter-spacing: -0.015em;
+}
+
+.feed-row__title:hover { color: var(--color-accent); }
+
+.feed-row__excerpt {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.feed-row__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.feed-row__tags a {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.feed-row__tags a:hover { color: var(--color-accent); }
+
+.feed-pager {
+  margin-top: 28px;
+}
+
+.blog-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.blog-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.blog-empty {
+  color: var(--color-text-muted);
+}
+
+/* Topics */
+.blog-topics {
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
+}
+
+.blog-topics__label {
+  margin: 0 0 14px;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+}
+
+.blog-topics__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.blog-topics__list a {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.blog-topics__list a:hover {
+  color: var(--color-accent);
+  border-bottom-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+/* Motion: soft fade only
+ * 注意：.shred-motion 在 body 上，不能写成 body .shred-motion 后代选择器，
+ * 否则永远匹配不到，列表会卡在 opacity:0。
+ */
+body.shred-motion [data-shred-item] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--shred-ease), transform 0.5s var(--shred-ease);
+  transition-delay: calc(var(--i, 0) * 40ms);
+}
+
+body.shred-motion [data-shred-item].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.shred-motion [data-shred-item] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Inner pages */
+body.shred-theme .container {
+  width: min(100% - 40px, var(--shell));
+}
+
+body.shred-theme .page-title,
+body.shred-theme .article-title {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+body.shred-theme .post-card {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding: 20px 0;
+}
+
+body.shred-theme .post-card__title {
+  font-family: var(--font-heading);
+}
+
+body.shred-theme .post-card__title-link:hover .post-card__title {
+  color: var(--color-accent);
+}
+
+body.shred-theme .tag-pill {
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  padding: 0;
+}
+
+body.shred-theme .site-footer {
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+body.shred-theme .btn--secondary {
+  border-radius: 2px;
+  border-color: var(--color-border);
+}
+
+body.shred-theme .article-content a {
+  color: var(--color-accent);
+}

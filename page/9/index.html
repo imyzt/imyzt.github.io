@@ -4,39 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.min.css">
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-
-
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
-
-<style>:root { --heatmap-color: #39d353; }</style>
-
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
 
 
 <style>
-  .theme-toggle-sun  { display: flex; }
-  .theme-toggle-moon { display: none; }
-  :root.theme-light .theme-toggle-sun  { display: none; }
-  :root.theme-light .theme-toggle-moon { display: flex; }
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 </style>
 
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
 
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('flavor-theme');
-      var theme = saved || 'dark';
-      if (theme === 'light') {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
         document.documentElement.classList.add('theme-light');
       }
-    } catch (e) { }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
   })();
 </script>
+
   <meta name="generator" content="Gridea Pro 1.2.2">
   <title>imyzt&#39;s blog</title>
   
@@ -55,7 +71,7 @@
 <meta name="twitter:description" content="Welcome to Imyzt's Blog">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
-<body class="flavor-theme">
+<body class="shred-theme shred-motion page-home">
 
   <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -157,18 +173,15 @@
 
   var root = document.documentElement;
   var applyTheme = function(theme, persist){
-    if (theme === 'light') {
-      root.classList.add('theme-light');
-    } else {
-      root.classList.remove('theme-light');
-    }
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
     if (persist) {
-      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
     }
   };
   document.querySelectorAll('.theme-toggle').forEach(function(el){
     el.addEventListener('click', function(){
-      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
     });
   });
 })();
@@ -177,258 +190,174 @@
   <main class="site-main" role="main">
     
 
-
-
-
-<div class="container">
+<div class="blog-home">
   
-  
-  <section class="section-popular">
-    <div class="section-header">
-      <h2 class="section-title">热门文章</h2>
-      <a href="/post" class="section-more meta-text">查看全部 &rarr;</a>
-    </div>
-    <div class="compact-grid">
-      
-       <article class="post-card post-card--compact">
-  <a href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">FastJSON继承类反序列化参数</h3>
-      <div class="post-card__meta meta-text">2020-05-05</div>
-    </div>
+  <section class="blog-feed" aria-label="最新文章">
     
-    <img class="post-card__thumb-square" src="/post-images/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu.png" alt="FastJSON继承类反序列化参数" loading="lazy" />
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/yapi-upload-cha-jian-shi-yong/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">yapi upload插件使用</h3>
-      <div class="post-card__meta meta-text">2020-04-30</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/beancopier-de-gong-ju-lei/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">BeanCopier的工具类</h3>
-      <div class="post-card__meta meta-text">2020-04-15</div>
-    </div>
-    
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/mybatis-yu-fa-jiu-cuo/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Mybatis 语法纠错</h3>
-      <div class="post-card__meta meta-text">2020-04-15</div>
-    </div>
-    
-  </a>
-</article>
-  
-       
-       
-       
-       
-       
-        </div>
-  </section>
-  
-
-  <div class="content-grid">
-    <div class="main-content">
-      
-      
-      <section class="section-latest">
-        <div class="section-header">
-          <h2 class="section-title">最新文章</h2>
-        </div>
-        <div class="post-list">
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">FastJSON继承类反序列化参数</h3>
-    </a>
-    <a href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" class="post-card__excerpt clamp-2">
-      场景及问题
+    <article class="feed-lead" data-shred-item style="--i: 0">
+      <div class="feed-lead__meta meta-text">
+        <time datetime="2020-05-05T13:45:01+08:00">2020-05-05</time>
+        
+      </div>
+      <a class="feed-lead__link" href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/">
+        <h2 class="feed-lead__title">FastJSON继承类反序列化参数</h2>
+      </a>
+      <p class="feed-lead__excerpt">场景及问题
 做工具封装时，通常会定义一个顶级父类data struct，子类继承之后补充自己独有的属性。该模式在常规使用情况下都是可用的，但是在涉及到序列化后反序列化对象时，就不是那么管用了。
-我们假设有两个对象，class Base...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-05-05
+我们假设有两个对象，class BaseClass 和 class ChildClass
+import lombok.D...</p>
+      <a class="feed-lead__more" href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/">继续阅读</a>
       
-    </div>
-  </div>
-  
-  <a href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" class="post-card__thumb-link">
-    <img class="post-card__thumb" src="/post-images/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu.png" alt="FastJSON继承类反序列化参数" loading="lazy" />
-  </a>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/yapi-upload-cha-jian-shi-yong/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">yapi upload插件使用</h3>
-    </a>
-    <a href="/post/yapi-upload-cha-jian-shi-yong/" class="post-card__excerpt clamp-2">
-      yapi api
-https://hellosean1025.github.io/yapi/openapi.html
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-04-30
+      <a class="feed-lead__cover" href="/post/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu/" tabindex="-1" aria-hidden="true">
+        <img src="/post-images/fastjson-ji-cheng-lei-fan-xu-lie-hua-can-shu.png" alt="" loading="lazy" />
+      </a>
       
-    </div>
-  </div>
-  
-</article>
+    </article>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/beancopier-de-gong-ju-lei/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">BeanCopier的工具类</h3>
-    </a>
-    <a href="/post/beancopier-de-gong-ju-lei/" class="post-card__excerpt clamp-2">
-      平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。
-但是大家都知道cglib的 BeanCopier 通过字节码技术，在大多数没有Converter的情况下，拷贝效率更高。...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-04-15
+    <div class="feed-list">
+      <div class="feed-list__head">
+        <h2 class="feed-list__label">近期</h2>
+        <a class="feed-list__all meta-text" href="/post/">全部文章</a>
+      </div>
+
       
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mybatis-yu-fa-jiu-cuo/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Mybatis 语法纠错</h3>
-    </a>
-    <a href="/post/mybatis-yu-fa-jiu-cuo/" class="post-card__excerpt clamp-2">
-      mybatis 在type表达式中，如果是内部类，不能通过 Class.InnerClass 指定，需要通过 Class$InnerClass 指定，不然会报ClassNotFound。
-错误堆栈
-Caused by: java.la...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-04-15
       
-    </div>
-  </div>
-  
-</article>
-
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 1">
+        <time class="feed-row__date meta-text" datetime="2020-04-30T16:29:25+08:00">2020-04-30</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/yapi-upload-cha-jian-shi-yong/">yapi upload插件使用</a>
+          <p class="feed-row__excerpt">yapi api
+https://hellosean1025.github.io/yapi/openapi.html</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mysql-zhi-shi-dian/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MySQL知识点</h3>
-    </a>
-    <a href="/post/mysql-zhi-shi-dian/" class="post-card__excerpt clamp-2">
-      知识点
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 2">
+        <time class="feed-row__date meta-text" datetime="2020-04-15T22:01:29+08:00">2020-04-15</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/beancopier-de-gong-ju-lei/">BeanCopier的工具类</a>
+          <p class="feed-row__excerpt">平时对象参数拷贝时，顺手使用的都是Spring 提供的 BeanUtils。究其原因，更多都是因为它方便，好使。
+但是大家都知道cglib的 BeanCopier 通过字节码...</p>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 3">
+        <time class="feed-row__date meta-text" datetime="2020-04-15T20:47:44+08:00">2020-04-15</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mybatis-yu-fa-jiu-cuo/">Mybatis 语法纠错</a>
+          <p class="feed-row__excerpt">mybatis 在type表达式中，如果是内部类，不能通过 Class.InnerClass 指定，需要通过 Class$InnerClass 指定，不然会报ClassNot...</p>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 4">
+        <time class="feed-row__date meta-text" datetime="2020-03-16T22:38:27+08:00">2020-03-16</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mysql-zhi-shi-dian/">MySQL知识点</a>
+          <p class="feed-row__excerpt">知识点
 
 innodb不支持全文检索
 between包含左右边界
-3.UPDATE IGNORE 用于在更新多行时，某一行报错不影响其他行
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-03-16
-      
-    </div>
-  </div>
-  
-</article>
-
+3.UPDATE IGNORE 用于在更新多行时，某一行报错不影响其他行</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mysql-regexp-shi-yong/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MySQL REGEXP 使用</h3>
-    </a>
-    <a href="/post/mysql-regexp-shi-yong/" class="post-card__excerpt clamp-2">
-      前言
-MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录一下。
-在此之前，首先建立对应的数据表，ddl与dml如下：...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-03-15
+        </div>
+      </article>
       
-    </div>
-  </div>
-  
-</article>
-
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 5">
+        <time class="feed-row__date meta-text" datetime="2020-03-15T17:28:38+08:00">2020-03-15</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mysql-regexp-shi-yong/">MySQL REGEXP 使用</a>
+          <p class="feed-row__excerpt">前言
+MySQL的regexp与LIKE语句非常类似，大部分功能都可以相互替补。之前一直没有使用过，最近在阅读《MySQL必知必会》第九章时，看到了这个内容，在此做下笔记记录...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Git 原理详解及实用指南 - merge，add，log</h3>
-    </a>
-    <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/" class="post-card__excerpt clamp-2">
-      merge
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 6">
+        <time class="feed-row__date meta-text" datetime="2020-02-18T10:04:17+08:00">2020-02-18</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/">Git 原理详解及实用指南 - merge，add，log</a>
+          <p class="feed-row__excerpt">merge
 
 git merge就是合并，指定一个 commit 或者 branch，将其合并到当前 branch 或 commit 来。
-从 目标commit 和 当前commit 的分叉点起，将 目标commit 上的 所有com...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-02-18
-      
-    </div>
-  </div>
-  
-  <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog/" class="post-card__thumb-link">
-    <img class="post-card__thumb" src="/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-mergeaddlog.gif" alt="Git 原理详解及实用指南 - merge，add，log" loading="lazy" />
-  </a>
-  
-</article>
-
+从 目标commit 和 当前co...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Git 原理详解及实用指南 - HEAD，branch，push</h3>
-    </a>
-    <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/" class="post-card__excerpt clamp-2">
-      HEAD
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 7">
+        <time class="feed-row__date meta-text" datetime="2020-02-17T08:25:11+08:00">2020-02-17</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/">Git 原理详解及实用指南 - HEAD，branch，push</a>
+          <p class="feed-row__excerpt">HEAD
 
 HEAD永远指向当前commit，每个仓库只有一个HEAD，每次提交之后都会向前移动到最新的commit。
 远程分支HEAD永远指向默认分支（master）。
-HEAD是Git中独特的引用，它是唯一的。
-
-Branch
-
-...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-02-17
-      
-    </div>
-  </div>
-  
-  <a href="/post/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch/" class="post-card__thumb-link">
-    <img class="post-card__thumb" src="/post-images/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan-headbranch.png" alt="Git 原理详解及实用指南 - HEAD，branch，push" loading="lazy" />
-  </a>
-  
-</article>
-
+H...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/java-kai-fa-gong-ju-tui-jian/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Java开发工具推荐</h3>
-    </a>
-    <a href="/post/java-kai-fa-gong-ju-tui-jian/" class="post-card__excerpt clamp-2">
-      工具包
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 8">
+        <time class="feed-row__date meta-text" datetime="2020-01-20T17:42:36+08:00">2020-01-20</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/java-kai-fa-gong-ju-tui-jian/">Java开发工具推荐</a>
+          <p class="feed-row__excerpt">工具包
 
 Google Guava
 HuTool
@@ -437,134 +366,109 @@ Apache Commons(这玩意估计没人不知道了。)
 工具类
 AntPathMatcher
 作用：URL路径匹配
-？匹配一个字符
-*匹配0个或多个字符
-**匹配0个或多个目录
-S...
-    </a>
-    <div class="post-card__meta meta-text">
-      2020-01-20
-      
-    </div>
-  </div>
-  
-</article>
-
+？匹...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mybatis-xml-test-yu-fa-bug/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Mybatis XML test语法bug</h3>
-    </a>
-    <a href="/post/mybatis-xml-test-yu-fa-bug/" class="post-card__excerpt clamp-2">
-      事出有因
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/java-developer/">Java developer</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 9">
+        <time class="feed-row__date meta-text" datetime="2019-12-11T11:27:52+08:00">2019-12-11</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mybatis-xml-test-yu-fa-bug/">Mybatis XML test语法bug</a>
+          <p class="feed-row__excerpt">事出有因
 今天遇到一个mybatis语法的bug，在此记录一下。
-业务是前台有一个跟进状态的筛选按钮，与前台约定的参数是Integer类型的0-4, 标志不同的状态，根据不同的参数做不同的过滤。mybatis的语法如下。
-&amp;lt;if...
-    </a>
-    <div class="post-card__meta meta-text">
-      2019-12-11
+业务是前台有一个跟进状态的筛选按钮，与前台约定的参数是Integer类型的0-4, 标志不同的状态，根据不同...</p>
+          
+        </div>
+      </article>
+      
       
     </div>
-  </div>
+
+    
+    <div class="feed-pager">
+      <a class="blog-link" href="/post/page/2/">更早的文章 →</a>
+    </div>
+    
+  </section>
   
-</article>
 
-          
-        </div>
-      </section>
+  
+  <aside class="blog-topics" aria-label="标签">
+    <h2 class="blog-topics__label">标签</h2>
+    <div class="blog-topics__list">
       
-
+      <a href="/tag/gridea/">Gridea</a>
       
+      <a href="/tag/wen-ti-jie-jue/">问题解决</a>
       
-      <div class="view-more">
-        <a href="/post/page/2/" class="btn btn--secondary">查看更多文章 &rarr;</a>
-      </div>
+      <a href="/tag/java_new_future/">Java_New_Future</a>
+      
+      <a href="/tag/xian-cheng-chi/">线程池</a>
+      
+      <a href="/tag/fastjson/">FastJSON</a>
+      
+      <a href="/tag/timeingwheel/">TimeingWheel</a>
+      
+      <a href="/tag/she-ji-fang-an/">设计方案</a>
+      
+      <a href="/tag/snowflake/">Snowflake</a>
+      
+      <a href="/tag/rocketmq/">RocketMQ</a>
+      
+      <a href="/tag/go/">Go</a>
+      
+      <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+      
+      <a href="/tag/flink/">Flink</a>
+      
+      <a href="/tag/mysql/">MySQL</a>
+      
+      <a href="/tag/disruptor/">Disruptor</a>
+      
+      <a href="/tag/neo4j/">Neo4j</a>
+      
+      <a href="/tag/fen-bu-shi-suo/">分布式锁</a>
+      
+      <a href="/tag/rabbitmq/">RabbitMQ</a>
+      
+      <a href="/tag/idea/">IDEA</a>
+      
+      <a href="/tag/java-developer/">Java developer</a>
+      
+      <a href="/tag/postgres/">Postgres</a>
+      
+      <a href="/tag/starrocks/">StarRocks</a>
+      
+      <a href="/tag/ai/">AI</a>
+      
+      <a href="/tag/mcp/">MCP</a>
+      
+      <a href="/tag/shu-ju-ku/">数据库</a>
+      
+      <a href="/tag/sheng-huo-ji-lu/">生活记录</a>
+      
+      <a href="/tag/threadlocal/">ThreadLocal</a>
+      
+      <a href="/tag/redis/">Redis</a>
+      
+      <a href="/tag/java/">Java</a>
       
     </div>
-
-    
-    
-    <aside class="sidebar">
-      <div class="sidebar__section sidebar__about">
-        
-        <img class="sidebar__avatar" src="/images/avatar.png" alt="imyzt&#39;s blog" />
-        
-        <h3 class="sidebar__title">imyzt&#39;s blog</h3>
-        
-        <p class="sidebar__desc">Welcome to Imyzt&#39;s Blog</p>
-        
-        
-      </div>
-
-      
-      <div class="sidebar__section">
-        <h4 class="sidebar__section-title meta-text">标签</h4>
-        <div class="sidebar__tags">
-          
-          <a href="/tag/gridea/" class="tag-pill">Gridea</a>
-          
-          <a href="/tag/threadlocal/" class="tag-pill">ThreadLocal</a>
-          
-          <a href="/tag/redis/" class="tag-pill">Redis</a>
-          
-          <a href="/tag/fen-bu-shi-suo/" class="tag-pill">分布式锁</a>
-          
-          <a href="/tag/flink/" class="tag-pill">Flink</a>
-          
-          <a href="/tag/disruptor/" class="tag-pill">Disruptor</a>
-          
-          <a href="/tag/neo4j/" class="tag-pill">Neo4j</a>
-          
-          <a href="/tag/xian-cheng-chi/" class="tag-pill">线程池</a>
-          
-          <a href="/tag/timeingwheel/" class="tag-pill">TimeingWheel</a>
-          
-          <a href="/tag/idea/" class="tag-pill">IDEA</a>
-          
-          <a href="/tag/starrocks/" class="tag-pill">StarRocks</a>
-          
-          <a href="/tag/java/" class="tag-pill">Java</a>
-          
-          <a href="/tag/wen-ti-jie-jue/" class="tag-pill">问题解决</a>
-          
-          <a href="/tag/java-developer/" class="tag-pill">Java developer</a>
-          
-          <a href="/tag/rocketmq/" class="tag-pill">RocketMQ</a>
-          
-          <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/" class="tag-pill">Git 原理详解及实用指南</a>
-          
-          <a href="/tag/mysql/" class="tag-pill">MySQL</a>
-          
-          <a href="/tag/shu-ju-ku/" class="tag-pill">数据库</a>
-          
-          <a href="/tag/rabbitmq/" class="tag-pill">RabbitMQ</a>
-          
-          <a href="/tag/she-ji-fang-an/" class="tag-pill">设计方案</a>
-          
-          <a href="/tag/snowflake/" class="tag-pill">Snowflake</a>
-          
-          <a href="/tag/fastjson/" class="tag-pill">FastJSON</a>
-          
-          <a href="/tag/go/" class="tag-pill">Go</a>
-          
-          <a href="/tag/postgres/" class="tag-pill">Postgres</a>
-          
-          <a href="/tag/ai/" class="tag-pill">AI</a>
-          
-          <a href="/tag/mcp/" class="tag-pill">MCP</a>
-          
-          <a href="/tag/java_new_future/" class="tag-pill">Java_New_Future</a>
-          
-          <a href="/tag/sheng-huo-ji-lu/" class="tag-pill">生活记录</a>
-          
-        </div>
-      </div>
-      
-    </aside>
-    
-  </div>
+  </aside>
+  
 </div>
+
 
   </main>
 
@@ -658,12 +562,13 @@ S...
 <script src="/scripts/search.js"></script>
   
 
+  <script src="/scripts/shred.js" defer></script>
   
 
   
 
   
 
-<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>

@@ -4,39 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.min.css">
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-
-
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
-
-<style>:root { --heatmap-color: #39d353; }</style>
-
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
 
 
 <style>
-  .theme-toggle-sun  { display: flex; }
-  .theme-toggle-moon { display: none; }
-  :root.theme-light .theme-toggle-sun  { display: none; }
-  :root.theme-light .theme-toggle-moon { display: flex; }
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 </style>
 
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
 
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('flavor-theme');
-      var theme = saved || 'dark';
-      if (theme === 'light') {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
         document.documentElement.classList.add('theme-light');
       }
-    } catch (e) { }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
   })();
 </script>
+
   <meta name="generator" content="Gridea Pro 1.2.2">
   <title>imyzt&#39;s blog</title>
   
@@ -55,7 +71,7 @@
 <meta name="twitter:description" content="Welcome to Imyzt's Blog">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
-<body class="flavor-theme">
+<body class="shred-theme shred-motion page-home">
 
   <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -157,18 +173,15 @@
 
   var root = document.documentElement;
   var applyTheme = function(theme, persist){
-    if (theme === 'light') {
-      root.classList.add('theme-light');
-    } else {
-      root.classList.remove('theme-light');
-    }
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
     if (persist) {
-      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
     }
   };
   document.querySelectorAll('.theme-toggle').forEach(function(el){
     el.addEventListener('click', function(){
-      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
     });
   });
 })();
@@ -177,85 +190,21 @@
   <main class="site-main" role="main">
     
 
-
-
-
-<div class="container">
+<div class="blog-home">
   
-  
-  <section class="section-popular">
-    <div class="section-header">
-      <h2 class="section-title">热门文章</h2>
-      <a href="/post" class="section-more meta-text">查看全部 &rarr;</a>
-    </div>
-    <div class="compact-grid">
-      
-       <article class="post-card post-card--compact">
-  <a href="/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Spring中使用到的设计模式</h3>
-      <div class="post-card__meta meta-text">2023-11-21</div>
-    </div>
+  <section class="blog-feed" aria-label="最新文章">
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/rocketmq-xiao-xi-cun-chu-guo-cheng/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">RocketMQ消息存储过程</h3>
-      <div class="post-card__meta meta-text">2023-11-15</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Java 实现简单单机时间轮方案</h3>
-      <div class="post-card__meta meta-text">2023-11-13</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">RocketMQ消息生产基本流程</h3>
-      <div class="post-card__meta meta-text">2023-11-12</div>
-    </div>
-    
-  </a>
-</article>
-  
-       
-       
-       
-       
-       
-        </div>
-  </section>
-  
-
-  <div class="content-grid">
-    <div class="main-content">
-      
-      
-      <section class="section-latest">
-        <div class="section-header">
-          <h2 class="section-title">最新文章</h2>
-        </div>
-        <div class="post-list">
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Spring中使用到的设计模式</h3>
-    </a>
-    <a href="/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/" class="post-card__excerpt clamp-2">
-      设计模式的基本原则：
+    <article class="feed-lead" data-shred-item style="--i: 0">
+      <div class="feed-lead__meta meta-text">
+        <time datetime="2023-11-21T22:11:49+08:00">2023-11-21</time>
+        
+      </div>
+      <a class="feed-lead__link" href="/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">
+        <h2 class="feed-lead__title">Spring中使用到的设计模式</h2>
+      </a>
+      <p class="feed-lead__excerpt">设计模式的基本原则：
 
 开闭原则
 单一职责原则
@@ -267,288 +216,286 @@ Spring中用到的模式：
 HandlerAdapter，适配器模式
 BeanFactory，简单工厂模式
 FactoryBean，工厂方法模式
-Cont...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-11-21
+Controller的单例模式，也可以是原型模式
+Service@Transaction...</p>
+      <a class="feed-lead__more" href="/post/spring-zhong-shi-yong-dao-de-she-ji-mo-shi/">继续阅读</a>
       
-    </div>
-  </div>
-  
-</article>
+    </article>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/rocketmq-xiao-xi-cun-chu-guo-cheng/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">RocketMQ消息存储过程</h3>
-    </a>
-    <a href="/post/rocketmq-xiao-xi-cun-chu-guo-cheng/" class="post-card__excerpt clamp-2">
-      讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。
+    <div class="feed-list">
+      <div class="feed-list__head">
+        <h2 class="feed-list__label">近期</h2>
+        <a class="feed-list__all meta-text" href="/post/">全部文章</a>
+      </div>
+
+      
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 1">
+        <time class="feed-row__date meta-text" datetime="2023-11-15T22:21:17+08:00">2023-11-15</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/rocketmq-xiao-xi-cun-chu-guo-cheng/">RocketMQ消息存储过程</a>
+          <p class="feed-row__excerpt">讲完了消息的生产过程，接下来记录一下消息发送到Broker后如何存储和分发。
 
 前言
-首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本地文件系统中，默认在当前用户主目录下的store目录中：
-
-...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-11-15
-      
-    </div>
-  </div>
-  
-</article>
-
+首先看下RocketMQ Broker的消息存储目录结构，RocketMQ的消息存储在本...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Java 实现简单单机时间轮方案</h3>
-    </a>
-    <a href="/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/" class="post-card__excerpt clamp-2">
-      时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。
-package top.imyzt.learning.algorithm.time...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-11-13
-      
-    </div>
-  </div>
-  
-</article>
-
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/rocketmq/">RocketMQ</a>
+            
+            
+          </div>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">RocketMQ消息生产基本流程</h3>
-    </a>
-    <a href="/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/" class="post-card__excerpt clamp-2">
-      RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型调研时的第一选择，本文主要以图解形式讲明白RocketMQ一...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-11-12
+        </div>
+      </article>
       
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">FastJSON 序列化反序列化驼峰和下划线互转</h3>
-    </a>
-    <a href="/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/" class="post-card__excerpt clamp-2">
-      在部分场景下，只需要简单将外部对象转换为标准JavaBean，而对接的外部是下划线命名时，如果需要一个个写JSONField必然是比较麻烦的，可以通过FastJSON提供的序列化/反序列化配置类来快速实现。
-JSON是下划线，Bean...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-10-31
       
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">通过Spring工具类，父类获取子类泛型（多态泛型传参）</h3>
-    </a>
-    <a href="/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/" class="post-card__excerpt clamp-2">
-      在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings，可以通过如下工具类在Abstract类上面获取到子类泛型。...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-09-22
       
-    </div>
-  </div>
-  
-</article>
-
+      <article class="feed-row" data-shred-item style="--i: 2">
+        <time class="feed-row__date meta-text" datetime="2023-11-13T22:20:41+08:00">2023-11-13</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/java-shi-xian-jian-dan-dan-ji-shi-jian-lun-fang-an/">Java 实现简单单机时间轮方案</a>
+          <p class="feed-row__excerpt">时间轮的使用场景自不必多说，最近研究RocketMQ 5.0时，想简单写一个活跃下思路，遂写了下面的方案（没有参照任何代码，没有优化），主要做下记录。
+package top...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mysql-zi-fu-ji-bu-tong-zhuan-huan-zi-fu-ji-he-pai-xu-gui-ze/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MySQL字符集不同转换字符集和排序规则</h3>
-    </a>
-    <a href="/post/mysql-zi-fu-ji-bu-tong-zhuan-huan-zi-fu-ji-he-pai-xu-gui-ze/" class="post-card__excerpt clamp-2">
-      -- 转换编码不一致的情况
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/rocketmq/">RocketMQ</a>
+            
+            
+            
+            <a href="/tag/timeingwheel/">TimeingWheel</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 3">
+        <time class="feed-row__date meta-text" datetime="2023-11-12T16:19:24+08:00">2023-11-12</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/rocketmq-xiao-xi-sheng-chan-ji-ben-liu-cheng/">RocketMQ消息生产基本流程</a>
+          <p class="feed-row__excerpt">RocketMQ 相较于 RabbitMQ、Kafka 能够集成两者的不少优点（原生的延迟消息、支持事务消息、能够支撑较大流量），加之Java技术架构，所以已作为目前队列选型...</p>
+          
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/rocketmq/">RocketMQ</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 4">
+        <time class="feed-row__date meta-text" datetime="2023-10-31T23:08:10+08:00">2023-10-31</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/fastjson-xu-lie-hua-fan-xu-lie-hua-tuo-feng-he-xia-hua-xian-hu-zhuan/">FastJSON 序列化反序列化驼峰和下划线互转</a>
+          <p class="feed-row__excerpt">在部分场景下，只需要简单将外部对象转换为标准JavaBean，而对接的外部是下划线命名时，如果需要一个个写JSONField必然是比较麻烦的，可以通过FastJSON提供的序...</p>
+          
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/fastjson/">FastJSON</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 5">
+        <time class="feed-row__date meta-text" datetime="2023-09-22T17:12:12+08:00">2023-09-22</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/tong-guo-spring-gong-ju-lei-fu-lei-huo-qu-zi-lei-fan-xing-duo-tai-fan-xing-chuan-can/">通过Spring工具类，父类获取子类泛型（多态泛型传参）</a>
+          <p class="feed-row__excerpt">在平时需要写抽象策略处理器时，希望传给处理器执行器的对象是泛型，避免每个子类都写强制类型转换的代码，通常需要获取子类的泛型，然后才能够避免写@SuppressWarnings...</p>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 6">
+        <time class="feed-row__date meta-text" datetime="2023-09-04T12:16:06+08:00">2023-09-04</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mysql-zi-fu-ji-bu-tong-zhuan-huan-zi-fu-ji-he-pai-xu-gui-ze/">MySQL字符集不同转换字符集和排序规则</a>
+          <p class="feed-row__excerpt">-- 转换编码不一致的情况
 cast(ldr.id as char character set utf8)
-CONVERT(CAST(bpr.id AS char) USING utf8)
---转换排序规则也不一致的情况
-conver...
-    </a>
-    <div class="post-card__meta meta-text">
-      2023-09-04
-      
-    </div>
-  </div>
-  
-</article>
-
+CONVERT(CAST(bpr.id AS char) USIN...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/go-xin-te-xing-qian-xi-fan-xing/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">go 新特性浅析（泛型）</h3>
-    </a>
-    <a href="/post/go-xin-te-xing-qian-xi-fan-xing/" class="post-card__excerpt clamp-2">
-      Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/mysql/">MySQL</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 7">
+        <time class="feed-row__date meta-text" datetime="2022-04-12T22:39:39+08:00">2022-04-12</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/go-xin-te-xing-qian-xi-fan-xing/">go 新特性浅析（泛型）</a>
+          <p class="feed-row__excerpt">Golang在1.18时才支持了泛型，为此新增了两个操作符，|和~。
 ~ T： 表示底层类型是T，比如 ~string表示所有基于string创建的自定义类型。
-T1 | T2 |&amp;hellip;： 代表或，类型列表之一。
-Go的泛型...
-    </a>
-    <div class="post-card__meta meta-text">
-      2022-04-12
-      
-    </div>
-  </div>
-  
-</article>
-
+T1 | T...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/lao-ban-ben-ikbc-c87-winoptionzai-mac-wu-fa-shi-yong-wen-ti-jie-jue-fang-an/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">老版本ikbc c87 win(option)在Mac无法使用问题解决方案</h3>
-    </a>
-    <a href="/post/lao-ban-ben-ikbc-c87-winoptionzai-mac-wu-fa-shi-yong-wen-ti-jie-jue-fang-an/" class="post-card__excerpt clamp-2">
-      解决方案
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/go/">Go</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 8">
+        <time class="feed-row__date meta-text" datetime="2022-02-28T09:08:48+08:00">2022-02-28</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/lao-ban-ben-ikbc-c87-winoptionzai-mac-wu-fa-shi-yong-wen-ti-jie-jue-fang-an/">老版本ikbc c87 win(option)在Mac无法使用问题解决方案</a>
+          <p class="feed-row__excerpt">解决方案
 按住Fn+Del恢复出厂设置，option生效。IDEA跳单词问题解决！
 后记
 配置option与command键盘互换。
-系统偏好设置-键盘-修饰键-配置command与option互换（注意「选择键盘」为USB键盘）。
-    </a>
-    <div class="post-card__meta meta-text">
-      2022-02-28
-      
-    </div>
-  </div>
-  
-</article>
-
+系统偏好设置-键盘-修饰键-配置comm...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/mysql-explain-xiang-jie/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">MySQL Explain 详解</h3>
-    </a>
-    <a href="/post/mysql-explain-xiang-jie/" class="post-card__excerpt clamp-2">
-      详细讲解每一列的作用，当做字典查看。
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 9">
+        <time class="feed-row__date meta-text" datetime="2022-02-27T15:50:25+08:00">2022-02-27</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/mysql-explain-xiang-jie/">MySQL Explain 详解</a>
+          <p class="feed-row__excerpt">详细讲解每一列的作用，当做字典查看。
 前置知识
 半连接
 子查询物化
 索引合并
 table
-无论查询语句中包含多少张表，最终都会转换为对单表的访问，所以EXPLAIN语句输出的每条记录都对应着对单表的访问方法，也即table列代表着表名...
-    </a>
-    <div class="post-card__meta meta-text">
-      2022-02-27
+无论查询语句中包含多少张表，最终都会转换为对单表的访问，所以EXPLAIN语句输出的...</p>
+          
+        </div>
+      </article>
+      
       
     </div>
-  </div>
+
+    
+    <div class="feed-pager">
+      <a class="blog-link" href="/post/page/2/">更早的文章 →</a>
+    </div>
+    
+  </section>
   
-</article>
 
-          
-        </div>
-      </section>
+  
+  <aside class="blog-topics" aria-label="标签">
+    <h2 class="blog-topics__label">标签</h2>
+    <div class="blog-topics__list">
       
-
+      <a href="/tag/gridea/">Gridea</a>
       
+      <a href="/tag/wen-ti-jie-jue/">问题解决</a>
       
-      <div class="view-more">
-        <a href="/post/page/2/" class="btn btn--secondary">查看更多文章 &rarr;</a>
-      </div>
+      <a href="/tag/java_new_future/">Java_New_Future</a>
+      
+      <a href="/tag/xian-cheng-chi/">线程池</a>
+      
+      <a href="/tag/fastjson/">FastJSON</a>
+      
+      <a href="/tag/timeingwheel/">TimeingWheel</a>
+      
+      <a href="/tag/she-ji-fang-an/">设计方案</a>
+      
+      <a href="/tag/snowflake/">Snowflake</a>
+      
+      <a href="/tag/rocketmq/">RocketMQ</a>
+      
+      <a href="/tag/go/">Go</a>
+      
+      <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+      
+      <a href="/tag/flink/">Flink</a>
+      
+      <a href="/tag/mysql/">MySQL</a>
+      
+      <a href="/tag/disruptor/">Disruptor</a>
+      
+      <a href="/tag/neo4j/">Neo4j</a>
+      
+      <a href="/tag/fen-bu-shi-suo/">分布式锁</a>
+      
+      <a href="/tag/rabbitmq/">RabbitMQ</a>
+      
+      <a href="/tag/idea/">IDEA</a>
+      
+      <a href="/tag/java-developer/">Java developer</a>
+      
+      <a href="/tag/postgres/">Postgres</a>
+      
+      <a href="/tag/starrocks/">StarRocks</a>
+      
+      <a href="/tag/ai/">AI</a>
+      
+      <a href="/tag/mcp/">MCP</a>
+      
+      <a href="/tag/shu-ju-ku/">数据库</a>
+      
+      <a href="/tag/sheng-huo-ji-lu/">生活记录</a>
+      
+      <a href="/tag/threadlocal/">ThreadLocal</a>
+      
+      <a href="/tag/redis/">Redis</a>
+      
+      <a href="/tag/java/">Java</a>
       
     </div>
-
-    
-    
-    <aside class="sidebar">
-      <div class="sidebar__section sidebar__about">
-        
-        <img class="sidebar__avatar" src="/images/avatar.png" alt="imyzt&#39;s blog" />
-        
-        <h3 class="sidebar__title">imyzt&#39;s blog</h3>
-        
-        <p class="sidebar__desc">Welcome to Imyzt&#39;s Blog</p>
-        
-        
-      </div>
-
-      
-      <div class="sidebar__section">
-        <h4 class="sidebar__section-title meta-text">标签</h4>
-        <div class="sidebar__tags">
-          
-          <a href="/tag/gridea/" class="tag-pill">Gridea</a>
-          
-          <a href="/tag/threadlocal/" class="tag-pill">ThreadLocal</a>
-          
-          <a href="/tag/redis/" class="tag-pill">Redis</a>
-          
-          <a href="/tag/fen-bu-shi-suo/" class="tag-pill">分布式锁</a>
-          
-          <a href="/tag/flink/" class="tag-pill">Flink</a>
-          
-          <a href="/tag/disruptor/" class="tag-pill">Disruptor</a>
-          
-          <a href="/tag/neo4j/" class="tag-pill">Neo4j</a>
-          
-          <a href="/tag/xian-cheng-chi/" class="tag-pill">线程池</a>
-          
-          <a href="/tag/timeingwheel/" class="tag-pill">TimeingWheel</a>
-          
-          <a href="/tag/idea/" class="tag-pill">IDEA</a>
-          
-          <a href="/tag/starrocks/" class="tag-pill">StarRocks</a>
-          
-          <a href="/tag/java/" class="tag-pill">Java</a>
-          
-          <a href="/tag/wen-ti-jie-jue/" class="tag-pill">问题解决</a>
-          
-          <a href="/tag/java-developer/" class="tag-pill">Java developer</a>
-          
-          <a href="/tag/rocketmq/" class="tag-pill">RocketMQ</a>
-          
-          <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/" class="tag-pill">Git 原理详解及实用指南</a>
-          
-          <a href="/tag/mysql/" class="tag-pill">MySQL</a>
-          
-          <a href="/tag/shu-ju-ku/" class="tag-pill">数据库</a>
-          
-          <a href="/tag/rabbitmq/" class="tag-pill">RabbitMQ</a>
-          
-          <a href="/tag/she-ji-fang-an/" class="tag-pill">设计方案</a>
-          
-          <a href="/tag/snowflake/" class="tag-pill">Snowflake</a>
-          
-          <a href="/tag/fastjson/" class="tag-pill">FastJSON</a>
-          
-          <a href="/tag/go/" class="tag-pill">Go</a>
-          
-          <a href="/tag/postgres/" class="tag-pill">Postgres</a>
-          
-          <a href="/tag/ai/" class="tag-pill">AI</a>
-          
-          <a href="/tag/mcp/" class="tag-pill">MCP</a>
-          
-          <a href="/tag/java_new_future/" class="tag-pill">Java_New_Future</a>
-          
-          <a href="/tag/sheng-huo-ji-lu/" class="tag-pill">生活记录</a>
-          
-        </div>
-      </div>
-      
-    </aside>
-    
-  </div>
+  </aside>
+  
 </div>
+
 
   </main>
 
@@ -642,12 +589,13 @@ table
 <script src="/scripts/search.js"></script>
   
 
+  <script src="/scripts/shred.js" defer></script>
   
 
   
 
   
 
-<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>

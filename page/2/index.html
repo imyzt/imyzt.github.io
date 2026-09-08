@@ -4,39 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.min.css">
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-
-
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
-
-<style>:root { --heatmap-color: #39d353; }</style>
-
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
 
 
 <style>
-  .theme-toggle-sun  { display: flex; }
-  .theme-toggle-moon { display: none; }
-  :root.theme-light .theme-toggle-sun  { display: none; }
-  :root.theme-light .theme-toggle-moon { display: flex; }
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 </style>
 
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
 
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('flavor-theme');
-      var theme = saved || 'dark';
-      if (theme === 'light') {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
         document.documentElement.classList.add('theme-light');
       }
-    } catch (e) { }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
   })();
 </script>
+
   <meta name="generator" content="Gridea Pro 1.2.2">
   <title>imyzt&#39;s blog</title>
   
@@ -55,7 +71,7 @@
 <meta name="twitter:description" content="Welcome to Imyzt's Blog">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
-<body class="flavor-theme">
+<body class="shred-theme shred-motion page-home">
 
   <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -157,18 +173,15 @@
 
   var root = document.documentElement;
   var applyTheme = function(theme, persist){
-    if (theme === 'light') {
-      root.classList.add('theme-light');
-    } else {
-      root.classList.remove('theme-light');
-    }
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
     if (persist) {
-      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
     }
   };
   document.querySelectorAll('.theme-toggle').forEach(function(el){
     el.addEventListener('click', function(){
-      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
     });
   });
 })();
@@ -177,261 +190,205 @@
   <main class="site-main" role="main">
     
 
-
-
-
-<div class="container">
+<div class="blog-home">
   
-  
-  <section class="section-popular">
-    <div class="section-header">
-      <h2 class="section-title">热门文章</h2>
-      <a href="/post" class="section-more meta-text">查看全部 &rarr;</a>
-    </div>
-    <div class="compact-grid">
+  <section class="blog-feed" aria-label="最新文章">
+    
+    
+    
+    <article class="feed-lead" data-shred-item style="--i: 0">
+      <div class="feed-lead__meta meta-text">
+        <time datetime="2024-06-28T20:50:23+08:00">2024-06-28</time>
+        
+      </div>
+      <a class="feed-lead__link" href="/post/shi-yong-cloudflare-jia-su-github-pages/">
+        <h2 class="feed-lead__title">使用Cloudflare加速Github Pages</h2>
+      </a>
+      <p class="feed-lead__excerpt">之前就有了解过Cloudflare，但是一直没有去实践，最近了解到它提供了免费的CDN可以加速，所以想找个教程按流程试一下，一个是确实Github Pages访问太慢了（虽说Cloudflare在国内也没有节点&amp;hellip;但聊胜于无），另一个主要是也可以学习拓展下知识。其实使用起来整个过程还是挺简单的，基本无...</p>
+      <a class="feed-lead__more" href="/post/shi-yong-cloudflare-jia-su-github-pages/">继续阅读</a>
       
-       <article class="post-card post-card--compact">
-  <a href="/post/shi-yong-cloudflare-jia-su-github-pages/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">使用Cloudflare加速Github Pages</h3>
-      <div class="post-card__meta meta-text">2024-06-28</div>
-    </div>
+    </article>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/neo4j-chang-yong-han-shu/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Neo4j常用函数</h3>
-      <div class="post-card__meta meta-text">2024-06-26</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/neo-chang-yong-ming-ling-er/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Neo常用命令 二</h3>
-      <div class="post-card__meta meta-text">2024-06-26</div>
-    </div>
     
-  </a>
-</article>
-  
-       <article class="post-card post-card--compact">
-  <a href="/post/spring-ai/" class="post-card__inner">
-    <div class="post-card__body">
-      <h3 class="post-card__title clamp-2">Spring AI</h3>
-      <div class="post-card__meta meta-text">2024-06-19</div>
-    </div>
     
-  </a>
-</article>
-  
-       
-       
-       
-       
-       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <div class="feed-list">
+      <div class="feed-list__head">
+        <h2 class="feed-list__label">近期</h2>
+        <a class="feed-list__all meta-text" href="/post/">全部文章</a>
+      </div>
+
+      
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 1">
+        <time class="feed-row__date meta-text" datetime="2024-06-26T23:05:34+08:00">2024-06-26</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/neo4j-chang-yong-han-shu/">Neo4j常用函数</a>
+          <p class="feed-row__excerpt">字符串函数
+match (n:Lianhuachi) where n.name = &#39;去种田的向凹凸&#39; return n.name,substring(n.name, 0,3...</p>
+          
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/neo4j/">Neo4j</a>
+            
+            
+          </div>
+          
         </div>
-  </section>
-  
-
-  <div class="content-grid">
-    <div class="main-content">
+      </article>
       
       
-      <section class="section-latest">
-        <div class="section-header">
-          <h2 class="section-title">最新文章</h2>
-        </div>
-        <div class="post-list">
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/shi-yong-cloudflare-jia-su-github-pages/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">使用Cloudflare加速Github Pages</h3>
-    </a>
-    <a href="/post/shi-yong-cloudflare-jia-su-github-pages/" class="post-card__excerpt clamp-2">
-      之前就有了解过Cloudflare，但是一直没有去实践，最近了解到它提供了免费的CDN可以加速，所以想找个教程按流程试一下，一个是确实Github Pages访问太慢了（虽说Cloudflare在国内也没有节点&amp;hellip;但聊胜于...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-28
       
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/neo4j-chang-yong-han-shu/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Neo4j常用函数</h3>
-    </a>
-    <a href="/post/neo4j-chang-yong-han-shu/" class="post-card__excerpt clamp-2">
-      字符串函数
-match (n:Lianhuachi) where n.name = &#39;去种田的向凹凸&#39; return n.name,substring(n.name, 0,3)
-
-
-AGGREGATION聚合函数
-和普通SQL一致的含...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-26
-      
-    </div>
-  </div>
-  
-</article>
-
-          
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/neo-chang-yong-ming-ling-er/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Neo常用命令 二</h3>
-    </a>
-    <a href="/post/neo-chang-yong-ming-ling-er/" class="post-card__excerpt clamp-2">
-      UNIQUE约束
+      <article class="feed-row" data-shred-item style="--i: 2">
+        <time class="feed-row__date meta-text" datetime="2024-06-26T21:57:44+08:00">2024-06-26</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/neo-chang-yong-ming-ling-er/">Neo常用命令 二</a>
+          <p class="feed-row__excerpt">UNIQUE约束
 避免重复时使用（姓名、身份证不能重复）
 旧版本
-create constraint on (n:Lianhuachi) assert n.name is unique
-
-新版本
-如果再执行上面的语法时报错，说明你使用...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-26
-      
-    </div>
-  </div>
-  
-</article>
-
+create constraint on (n:Lianhuachi) assert n.name is u...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/spring-ai/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Spring AI</h3>
-    </a>
-    <a href="/post/spring-ai/" class="post-card__excerpt clamp-2">
-      前言
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/neo4j/">Neo4j</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 3">
+        <time class="feed-row__date meta-text" datetime="2024-06-19T23:17:18+08:00">2024-06-19</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/spring-ai/">Spring AI</a>
+          <p class="feed-row__excerpt">前言
 当一开始听说Spring-AI项目时是很懵的，什么？Spring开始训练模型了？不应该啊，Java还能卷模型赛道了吗？&amp;hellip;
-打开官网了解了下，才知道原来是缝合怪：
-
-Spring AI is an applicati...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-19
-      
-    </div>
-  </div>
-  
-</article>
-
+打开官网了解了下，才知道原来是缝...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/java-new-future-cds/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Java New Future CDS</h3>
-    </a>
-    <a href="/post/java-new-future-cds/" class="post-card__excerpt clamp-2">
-      什么是CDS？CDS即 Class-Data Sharing，类数据共享功能，该功能可以减少Java应用程序的启动时间和内存占用。
-类数据共享功能有助于减少多个Java虚拟机之间的启动时间和内存占用，从JDK12开始，默认的CDS归档...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-06-01
+        </div>
+      </article>
       
-    </div>
-  </div>
-  
-</article>
-
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 4">
+        <time class="feed-row__date meta-text" datetime="2024-06-01T23:06:04+08:00">2024-06-01</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/java-new-future-cds/">Java New Future CDS</a>
+          <p class="feed-row__excerpt">什么是CDS？CDS即 Class-Data Sharing，类数据共享功能，该功能可以减少Java应用程序的启动时间和内存占用。
+类数据共享功能有助于减少多个Java虚拟机...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/spring-yi-bu-chu-shi-hua/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Spring 异步初始化</h3>
-    </a>
-    <a href="/post/spring-yi-bu-chu-shi-hua/" class="post-card__excerpt clamp-2">
-      在Spring6.2版本后，支持了异步初始化。
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/java/">Java</a>
+            
+            
+            
+            <a href="/tag/java_new_future/">Java_New_Future</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 5">
+        <time class="feed-row__date meta-text" datetime="2024-05-22T21:39:45+08:00">2024-05-22</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/spring-yi-bu-chu-shi-hua/">Spring 异步初始化</a>
+          <p class="feed-row__excerpt">在Spring6.2版本后，支持了异步初始化。
 什么是异步初始化？见名知意，就是将Spring项目的初始化过程中的Bean通过异步加载的方式提高启动速度。
-在业务系统中通常启动不会特别耗时，但也可以将系统启动过程中需要耗时初始化的Be...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-05-22
-      
-    </div>
-  </div>
-  
-</article>
-
+在业务系统中通常启...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">非静态内部类持有外部类的引用</h3>
-    </a>
-    <a href="/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/" class="post-card__excerpt clamp-2">
-      在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄漏的隐患。
-我们在使用非静态内部类的时候，并不是说我们不手动...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-05-13
+        </div>
+      </article>
       
-    </div>
-  </div>
-  
-</article>
-
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 6">
+        <time class="feed-row__date meta-text" datetime="2024-05-13T21:16:11+08:00">2024-05-13</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/fei-jing-tai-nei-bu-lei-chi-you-wai-bu-lei-de-yin-yong/">非静态内部类持有外部类的引用</a>
+          <p class="feed-row__excerpt">在分析内存泄漏领域的问题时，时常会提到的就是非静态内部类持有外部类的引用导致的内存泄漏，因为内部类持有了外部类的引用，导致垃圾回收器无法回收外部类对象，久而久之就会存在内存泄...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/neo4j-chang-yong-ming-ling/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Neo4j 常用命令 一</h3>
-    </a>
-    <a href="/post/neo4j-chang-yong-ming-ling/" class="post-card__excerpt clamp-2">
-      WHERE
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 7">
+        <time class="feed-row__date meta-text" datetime="2024-05-08T23:08:23+08:00">2024-05-08</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/neo4j-chang-yong-ming-ling/">Neo4j 常用命令 一</a>
+          <p class="feed-row__excerpt">WHERE
 可以类似于SQL的写法来实现，首先通过match将节点查询出来(n,m)，然后通过WHERE将数据
-match (n:Lianhuachi),(m:Lianhuachi) where n.name = &#39;去种田的向凹凸&#39; ...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-05-08
-      
-    </div>
-  </div>
-  
-</article>
-
+match (n:Lianhuachi),(m:Lianhua...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">使用Neo4j建立莲花池人物关系图（核心人物，简版）</h3>
-    </a>
-    <a href="/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/" class="post-card__excerpt clamp-2">
-      最近关注了沅陵的莲花池，整个村子都是钓鱼佬，人均up主，基本都是沾亲带故的，错综复杂，恰逢正在学习Neo4j，可以借此机会将人物关系通过图谱的方式呈现出来。
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/neo4j/">Neo4j</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 8">
+        <time class="feed-row__date meta-text" datetime="2024-04-22T22:17:43+08:00">2024-04-22</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/shi-yong-neo4j-jian-li-lian-hua-chi-ren-wu-guan-xi-tu-he-xin-ren-wu-jian-ban/">使用Neo4j建立莲花池人物关系图（核心人物，简版）</a>
+          <p class="feed-row__excerpt">最近关注了沅陵的莲花池，整个村子都是钓鱼佬，人均up主，基本都是沾亲带故的，错综复杂，恰逢正在学习Neo4j，可以借此机会将人物关系通过图谱的方式呈现出来。
 人物标签创建
-首先将人物关系建立出来，利用create来创建效率实在太低了 ...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-04-22
-      
-    </div>
-  </div>
-  
-</article>
-
+首...</p>
           
-          <article class="post-card post-card--list">
-  <div class="post-card__body">
-    <a href="/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/" class="post-card__title-link">
-      <h3 class="post-card__title clamp-3">Java8 使用sun.tools.javadoc 读取注释信息</h3>
-    </a>
-    <a href="/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/" class="post-card__excerpt clamp-2">
-      前言
+          <div class="feed-row__tags">
+            
+            
+            <a href="/tag/neo4j/">Neo4j</a>
+            
+            
+          </div>
+          
+        </div>
+      </article>
+      
+      
+      
+      <article class="feed-row" data-shred-item style="--i: 9">
+        <time class="feed-row__date meta-text" datetime="2024-04-10T23:27:35+08:00">2024-04-10</time>
+        <div class="feed-row__body">
+          <a class="feed-row__title" href="/post/java8-shi-yong-suntoolsjavadoc-du-qu-zhu-shi-xin-xi/">Java8 使用sun.tools.javadoc 读取注释信息</a>
+          <p class="feed-row__excerpt">前言
 项目需要整理所有依赖的外部Feign调用，整理成一份文档，类似于：
 
 
@@ -444,117 +401,88 @@ match (n:Lianhuachi),(m:Lianhuachi) where n.name = &#39;去种田的向凹凸&#3
 
 
 xxx/zzz
-top.imyzt.xxx#methodName
-用作xxx
-
-
-
-方案
-因为项目过多，且依赖的外部服务...
-    </a>
-    <div class="post-card__meta meta-text">
-      2024-04-10
+top.imyzt.xxx#methodNa...</p>
+          
+        </div>
+      </article>
+      
       
     </div>
-  </div>
+
+    
+    <div class="feed-pager">
+      <a class="blog-link" href="/post/page/2/">更早的文章 →</a>
+    </div>
+    
+  </section>
   
-</article>
 
-          
-        </div>
-      </section>
+  
+  <aside class="blog-topics" aria-label="标签">
+    <h2 class="blog-topics__label">标签</h2>
+    <div class="blog-topics__list">
       
-
+      <a href="/tag/gridea/">Gridea</a>
       
+      <a href="/tag/wen-ti-jie-jue/">问题解决</a>
       
-      <div class="view-more">
-        <a href="/post/page/2/" class="btn btn--secondary">查看更多文章 &rarr;</a>
-      </div>
+      <a href="/tag/java_new_future/">Java_New_Future</a>
+      
+      <a href="/tag/xian-cheng-chi/">线程池</a>
+      
+      <a href="/tag/fastjson/">FastJSON</a>
+      
+      <a href="/tag/timeingwheel/">TimeingWheel</a>
+      
+      <a href="/tag/she-ji-fang-an/">设计方案</a>
+      
+      <a href="/tag/snowflake/">Snowflake</a>
+      
+      <a href="/tag/rocketmq/">RocketMQ</a>
+      
+      <a href="/tag/go/">Go</a>
+      
+      <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/">Git 原理详解及实用指南</a>
+      
+      <a href="/tag/flink/">Flink</a>
+      
+      <a href="/tag/mysql/">MySQL</a>
+      
+      <a href="/tag/disruptor/">Disruptor</a>
+      
+      <a href="/tag/neo4j/">Neo4j</a>
+      
+      <a href="/tag/fen-bu-shi-suo/">分布式锁</a>
+      
+      <a href="/tag/rabbitmq/">RabbitMQ</a>
+      
+      <a href="/tag/idea/">IDEA</a>
+      
+      <a href="/tag/java-developer/">Java developer</a>
+      
+      <a href="/tag/postgres/">Postgres</a>
+      
+      <a href="/tag/starrocks/">StarRocks</a>
+      
+      <a href="/tag/ai/">AI</a>
+      
+      <a href="/tag/mcp/">MCP</a>
+      
+      <a href="/tag/shu-ju-ku/">数据库</a>
+      
+      <a href="/tag/sheng-huo-ji-lu/">生活记录</a>
+      
+      <a href="/tag/threadlocal/">ThreadLocal</a>
+      
+      <a href="/tag/redis/">Redis</a>
+      
+      <a href="/tag/java/">Java</a>
       
     </div>
-
-    
-    
-    <aside class="sidebar">
-      <div class="sidebar__section sidebar__about">
-        
-        <img class="sidebar__avatar" src="/images/avatar.png" alt="imyzt&#39;s blog" />
-        
-        <h3 class="sidebar__title">imyzt&#39;s blog</h3>
-        
-        <p class="sidebar__desc">Welcome to Imyzt&#39;s Blog</p>
-        
-        
-      </div>
-
-      
-      <div class="sidebar__section">
-        <h4 class="sidebar__section-title meta-text">标签</h4>
-        <div class="sidebar__tags">
-          
-          <a href="/tag/gridea/" class="tag-pill">Gridea</a>
-          
-          <a href="/tag/threadlocal/" class="tag-pill">ThreadLocal</a>
-          
-          <a href="/tag/redis/" class="tag-pill">Redis</a>
-          
-          <a href="/tag/fen-bu-shi-suo/" class="tag-pill">分布式锁</a>
-          
-          <a href="/tag/flink/" class="tag-pill">Flink</a>
-          
-          <a href="/tag/disruptor/" class="tag-pill">Disruptor</a>
-          
-          <a href="/tag/neo4j/" class="tag-pill">Neo4j</a>
-          
-          <a href="/tag/xian-cheng-chi/" class="tag-pill">线程池</a>
-          
-          <a href="/tag/timeingwheel/" class="tag-pill">TimeingWheel</a>
-          
-          <a href="/tag/idea/" class="tag-pill">IDEA</a>
-          
-          <a href="/tag/starrocks/" class="tag-pill">StarRocks</a>
-          
-          <a href="/tag/java/" class="tag-pill">Java</a>
-          
-          <a href="/tag/wen-ti-jie-jue/" class="tag-pill">问题解决</a>
-          
-          <a href="/tag/java-developer/" class="tag-pill">Java developer</a>
-          
-          <a href="/tag/rocketmq/" class="tag-pill">RocketMQ</a>
-          
-          <a href="/tag/git-yuan-li-xiang-jie-ji-shi-yong-zhi-nan/" class="tag-pill">Git 原理详解及实用指南</a>
-          
-          <a href="/tag/mysql/" class="tag-pill">MySQL</a>
-          
-          <a href="/tag/shu-ju-ku/" class="tag-pill">数据库</a>
-          
-          <a href="/tag/rabbitmq/" class="tag-pill">RabbitMQ</a>
-          
-          <a href="/tag/she-ji-fang-an/" class="tag-pill">设计方案</a>
-          
-          <a href="/tag/snowflake/" class="tag-pill">Snowflake</a>
-          
-          <a href="/tag/fastjson/" class="tag-pill">FastJSON</a>
-          
-          <a href="/tag/go/" class="tag-pill">Go</a>
-          
-          <a href="/tag/postgres/" class="tag-pill">Postgres</a>
-          
-          <a href="/tag/ai/" class="tag-pill">AI</a>
-          
-          <a href="/tag/mcp/" class="tag-pill">MCP</a>
-          
-          <a href="/tag/java_new_future/" class="tag-pill">Java_New_Future</a>
-          
-          <a href="/tag/sheng-huo-ji-lu/" class="tag-pill">生活记录</a>
-          
-        </div>
-      </div>
-      
-    </aside>
-    
-  </div>
+  </aside>
+  
 </div>
+
 
   </main>
 
@@ -648,12 +576,13 @@ top.imyzt.xxx#methodName
 <script src="/scripts/search.js"></script>
   
 
+  <script src="/scripts/shred.js" defer></script>
   
 
   
 
   
 
-<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>

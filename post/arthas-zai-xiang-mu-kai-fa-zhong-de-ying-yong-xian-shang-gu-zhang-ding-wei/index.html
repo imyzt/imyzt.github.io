@@ -4,39 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.min.css">
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-
-
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
-
-<style>:root { --heatmap-color: #39d353; }</style>
-
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
 
 
 <style>
-  .theme-toggle-sun  { display: flex; }
-  .theme-toggle-moon { display: none; }
-  :root.theme-light .theme-toggle-sun  { display: none; }
-  :root.theme-light .theme-toggle-moon { display: flex; }
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 </style>
 
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
 
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('flavor-theme');
-      var theme = saved || 'dark';
-      if (theme === 'light') {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
         document.documentElement.classList.add('theme-light');
       }
-    } catch (e) { }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
   })();
 </script>
+
   <meta name="generator" content="Gridea Pro 1.2.2">
   <title>Arthas在项目开发中的应用 - 线上故障定位 | imyzt&#39;s blog</title>
   
@@ -60,7 +76,7 @@
 <meta name="twitter:description" content="介绍 Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。在线排查问题，无需重启；动态跟踪Java代码；实时监控JVM状态。 Arthas 支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行&amp;hellip;">
 <meta name="twitter:image" content="/images/avatar.png">
 </head>
-<body class="flavor-theme">
+<body class="shred-theme shred-motion">
 
   <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -162,18 +178,15 @@
 
   var root = document.documentElement;
   var applyTheme = function(theme, persist){
-    if (theme === 'light') {
-      root.classList.add('theme-light');
-    } else {
-      root.classList.remove('theme-light');
-    }
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
     if (persist) {
-      try { localStorage.setItem('flavor-theme', theme); } catch (e) {}
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
     }
   };
   document.querySelectorAll('.theme-toggle').forEach(function(el){
     el.addEventListener('click', function(){
-      applyTheme(root.classList.contains('theme-light') ? 'dark' : 'light', true);
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
     });
   });
 })();
@@ -618,12 +631,13 @@ arthas.telnet-port=-1
 <script src="/scripts/search.js"></script>
   
 
+  <script src="/scripts/shred.js" defer></script>
   
 
   
 
   
 
-<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: flavor-theme v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>

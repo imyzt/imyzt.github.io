@@ -1,5 +1,5 @@
 /* ============================================================================
-   FLAVOR THEME — Dark Editorial Blog CSS
+   SHRED THEME (forked base; visual layer in shred.css) — Dark Editorial Blog CSS
    A cinematic dark blog theme inspired by Dan Koe's "future/proof" Substack.
    Designed for Gridea Pro.
    ============================================================================ */
@@ -11,8 +11,8 @@
 
 :root {
   /* ── Colors ── */
-  --color-bg: #000000;
-  --color-surface: #111111;
+  --color-bg: #16130f;
+  --color-surface: #1e1a15;
   --color-border: #222222;
   --color-border-light: #1a1a1a;
   --color-border-hover: #444444;
@@ -20,8 +20,8 @@
   --color-text-secondary: #999999;
   --color-text-muted: #666666;
   --color-text-body: #e0e0e0;
-  --color-accent: #54675e;
-  --color-accent-hover: #FFFF00;
+  --color-accent: #E8B86D;
+  --color-accent-hover: #E8B86D;
   --color-badge-gold: #e8c547;
 
   /* ── Typography (Apple-style system font stack) ── */
