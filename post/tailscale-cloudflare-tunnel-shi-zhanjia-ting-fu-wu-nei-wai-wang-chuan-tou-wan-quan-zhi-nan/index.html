@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+
+<style>
+  :root {
+    --heatmap-color: #0f6e56;
+    --color-accent: #0f6e56; --color-accent-hover: #0f6e56;
+  }
+</style>
+
+
+<style>
+  /* 防止动效选择器错误导致内容不可见（shred-motion 在 body 上） */
+  body.shred-motion [data-shred-item].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+</style>
+
+<style>
+  .theme-toggle-sun  { display: none; }
+  .theme-toggle-moon { display: flex; }
+  :root.theme-dark .theme-toggle-sun  { display: flex; }
+  :root.theme-dark .theme-toggle-moon { display: none; }
+</style>
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('shred-theme');
+      var theme = saved || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.add('theme-light');
+      }
+    } catch (e) {
+      document.documentElement.classList.add('theme-light');
+    }
+  })();
+</script>
+
+  <meta name="generator" content="Gridea Pro 1.2.2">
+  <title>Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南 | imyzt&#39;s blog</title>
+  
+<meta property="og:title" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南" />
+<meta property="og:type" content="article" />
+
+
+<meta name="description" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南 一台闲置旧 Mac + Tailscale + Cloudflare Tunnel，把家里的影音服务同时暴露给外网和局域网，兼顾便利性和安全性。本文记录从零搭建的完整过程，包含踩坑与优化。 文中的 IP、主机名、域名、路径均为示意代称，请按自己的环境替换。 背景 家里有一台闲置&amp;hellip;">
+<link rel="canonical" href="https://imyzt.top/post/tailscale-cloudflare-tunnel-shi-zhanjia-ting-fu-wu-nei-wai-wang-chuan-tou-wan-quan-zhi-nan/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南","url":"https://imyzt.top/post/tailscale-cloudflare-tunnel-shi-zhanjia-ting-fu-wu-nei-wai-wang-chuan-tou-wan-quan-zhi-nan/","description":"Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南 一台闲置旧 Mac + Tailscale + Cloudflare Tunnel，把家里的影音服务同时暴露给外网和局域网，兼顾便利性和安全性。本文记录从零搭建的完整过程，包含踩坑与优化。 文中的 IP、主机名、域名、路径均为示意代称，请按自己的环境替换。 背景 家里有一台闲置\u0026hellip;","datePublished":"2026-08-28T21:10:30+08:00","dateModified":"2026-09-24T10:37:26+08:00","author":{"@type":"Person","name":"imyzt's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"imyzt's blog"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://imyzt.top","name":"imyzt's blog","position":1},{"@type":"ListItem","item":"https://imyzt.top/post/tailscale-cloudflare-tunnel-shi-zhanjia-ting-fu-wu-nei-wai-wang-chuan-tou-wan-quan-zhi-nan/","name":"Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南","position":2}]}</script>
+<meta property="og:title" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南">
+<meta property="og:description" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南 一台闲置旧 Mac + Tailscale + Cloudflare Tunnel，把家里的影音服务同时暴露给外网和局域网，兼顾便利性和安全性。本文记录从零搭建的完整过程，包含踩坑与优化。 文中的 IP、主机名、域名、路径均为示意代称，请按自己的环境替换。 背景 家里有一台闲置&amp;hellip;">
+<meta property="og:url" content="https://imyzt.top/post/tailscale-cloudflare-tunnel-shi-zhanjia-ting-fu-wu-nei-wai-wang-chuan-tou-wan-quan-zhi-nan/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="imyzt's blog">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://imyzt.top/post/tailscale-cloudflare-tunnel-shi-zhanjia-ting-fu-wu-nei-wai-wang-chuan-tou-wan-quan-zhi-nan/">
+<meta name="twitter:title" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南">
+<meta name="twitter:description" content="Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南 一台闲置旧 Mac + Tailscale + Cloudflare Tunnel，把家里的影音服务同时暴露给外网和局域网，兼顾便利性和安全性。本文记录从零搭建的完整过程，包含踩坑与优化。 文中的 IP、主机名、域名、路径均为示意代称，请按自己的环境替换。 背景 家里有一台闲置&amp;hellip;">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+<body class="shred-theme shred-motion">
+
+  <header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <div class="top-bar">
+
+      
+      <div class="top-bar__left">
+        
+        <a href="https://imyzt.top" class="site-avatar-link" aria-label="返回首页">
+          <img class="site-avatar" src="/images/avatar.png" alt="imyzt&#39;s blog" />
+        </a>
+        
+        <a href="https://imyzt.top" class="site-name-link">imyzt&#39;s blog</a>
+      </div>
+
+      
+      <nav class="top-bar__nav" id="sectionBar">
+        
+        
+        <a class="nav-item" href="/">首页</a>
+        
+        <a class="nav-item" href="/post">博客</a>
+        
+        <a class="nav-item" href="/memos">闪念</a>
+        
+        <a class="nav-item" href="/archives">归档</a>
+        
+        <a class="nav-item" href="/tags">标签</a>
+        
+        <a class="nav-item" href="/links">友链</a>
+        
+        <a class="nav-item" href="/post/about">关于</a>
+        
+        
+      </nav>
+
+      
+      <div class="top-bar__right">
+        <button class="btn-icon btn-search search-btn" id="btnSearch" type="button" aria-label="搜索">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-sun" id="themeToggleSun" type="button"
+          aria-label="切换到浅色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1Z"></path>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"></path>
+            <path d="M13 20C13 19.4477 12.5523 19 12 19C11.4477 19 11 19.4477 11 20V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V20Z"></path>
+            <path d="M4.22282 4.22289C4.61335 3.83236 5.24651 3.83236 5.63704 4.22289L7.04704 5.63289C7.43756 6.02341 7.43756 6.65658 7.04704 7.0471C6.65651 7.43762 6.02335 7.43762 5.63283 7.0471L4.22282 5.6371C3.8323 5.24658 3.8323 4.61341 4.22282 4.22289Z"></path>
+            <path d="M18.367 16.9529C17.9765 16.5623 17.3433 16.5623 16.9528 16.9529C16.5623 17.3434 16.5623 17.9766 16.9528 18.3671L18.3628 19.7771C18.7533 20.1676 19.3865 20.1676 19.777 19.7771C20.1675 19.3866 20.1675 18.7534 19.777 18.3629L18.367 16.9529Z"></path>
+            <path d="M1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12Z"></path>
+            <path d="M20 11C19.4477 11 19 11.4477 19 12C19 12.5523 19.4477 13 20 13H22C22.5523 13 23 12.5523 23 12C23 11.4477 22.5523 11 22 11H20Z"></path>
+            <path d="M7.04704 16.9529C7.43756 17.3434 7.43756 17.9766 7.04704 18.3671L5.63704 19.7771C5.24651 20.1676 4.61335 20.1676 4.22282 19.7771C3.8323 19.3866 3.8323 18.7534 4.22283 18.3629L5.63283 16.9529C6.02335 16.5623 6.65651 16.5623 7.04704 16.9529Z"></path>
+            <path d="M19.777 5.6371C20.1675 5.24657 20.1675 4.61341 19.777 4.22289C19.3865 3.83236 18.7533 3.83236 18.3628 4.22289L16.9528 5.63289C16.5623 6.02341 16.5623 6.65658 16.9528 7.0471C17.3433 7.43762 17.9765 7.43762 18.367 7.0471L19.777 5.6371Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon theme-toggle theme-toggle-moon" id="themeToggleMoon" type="button"
+          aria-label="切换到深色模式">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 11.5955 21.7564 11.2309 21.3827 11.0761C21.009 10.9213 20.5789 11.0069 20.2929 11.2929C19.287 12.2988 17.9226 12.864 16.5 12.864C15.0774 12.864 13.713 12.2988 12.7071 11.2929C11.7012 10.287 11.136 8.92261 11.136 7.5C11.136 6.07739 11.7012 4.71304 12.7071 3.70711C12.9931 3.42111 13.0787 2.99099 12.9239 2.61732C12.7691 2.24364 12.4045 2 12 2ZM7.55544 5.34824C8.27036 4.87055 9.05353 4.51389 9.87357 4.28778C9.39271 5.27979 9.13604 6.37666 9.13604 7.5C9.13604 9.45304 9.91189 11.3261 11.2929 12.7071C12.6739 14.0881 14.547 14.864 16.5 14.864C17.6233 14.864 18.7202 14.6073 19.7122 14.1264C19.4861 14.9465 19.1295 15.7296 18.6518 16.4446C17.7727 17.7602 16.5233 18.7855 15.0615 19.391C13.5997 19.9965 11.9911 20.155 10.4393 19.8463C8.88743 19.5376 7.46197 18.7757 6.34315 17.6569C5.21447 16.538 4.4624 15.1126 4.15372 13.5607C3.84504 12.0089 4.00347 10.4003 4.60897 8.93853C5.21447 7.47672 6.23985 6.22729 7.55544 5.34824Z"></path>
+            <path d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z"></path>
+          </svg>
+        </button>
+        <button class="btn-icon btn-nav-toggle mobile-only" id="btnNavToggle" type="button" aria-label="切换导航">
+          <div class="hamburger" id="hamburger">
+            <span class="hamburger__line hamburger__line--top"></span>
+            <span class="hamburger__line hamburger__line--bottom"></span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+
+<div class="header-spacer"></div>
+
+<script>
+(function(){
+  var btn = document.getElementById('btnNavToggle');
+  var nav = document.getElementById('sectionBar');
+  var hamburger = document.getElementById('hamburger');
+  if (btn && nav) {
+    btn.addEventListener('click', function(){
+      nav.classList.toggle('top-bar__nav--open');
+      if (hamburger) hamburger.classList.toggle('is-active');
+    });
+    nav.querySelectorAll('.nav-item').forEach(function(item){
+      item.addEventListener('click', function(){
+        nav.classList.remove('top-bar__nav--open');
+        if (hamburger) hamburger.classList.remove('is-active');
+      });
+    });
+  }
+
+  var root = document.documentElement;
+  var applyTheme = function(theme, persist){
+    root.classList.toggle('theme-dark', theme === 'dark');
+    root.classList.toggle('theme-light', theme !== 'dark');
+    if (persist) {
+      try { localStorage.setItem('shred-theme', theme); } catch (e) {}
+    }
+  };
+  document.querySelectorAll('.theme-toggle').forEach(function(el){
+    el.addEventListener('click', function(){
+      applyTheme(root.classList.contains('theme-dark') ? 'light' : 'dark', true);
+    });
+  });
+})();
+</script>
+
+  <main class="site-main" role="main">
+    
+<article class="article-container">
+  <header class="article-header">
+    <h1 class="article-title">Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南</h1>
+    <div class="article-meta">
+      
+      <span class="article-meta__item">2026-08-28</span>
+      
+      <span class="article-meta__sep">·</span>
+      <span class="article-meta__item">12 分钟阅读</span>
+      
+    </div>
+    
+  </header>
+
+  
+
+  <div class="article-content">
+    <h1 id="tailscale--cloudflare-tunnel-">Tailscale + Cloudflare Tunnel 实战：家庭服务内外网穿透完全指南</h1>
+<blockquote>
+<p>一台闲置旧 Mac + Tailscale + Cloudflare Tunnel，把家里的影音服务同时暴露给外网和局域网，兼顾便利性和安全性。本文记录从零搭建的完整过程，包含踩坑与优化。</p>
+<p>文中的 IP、主机名、域名、路径均为示意代称，请按自己的环境替换。</p>
+</blockquote>
+<h2 id="heading">背景</h2>
+<p>家里有一台闲置的 MacBook Pro，外挂一块移动硬盘，存放着几百 G 的影视资源。想把它利用起来当家庭影音服务器（Jellyfin），但有几个需求：</p>
+<ul>
+<li><strong>内网</strong>：局域网内任何设备直接访问，无需额外配置</li>
+<li><strong>外网</strong>：人在外面时，手机/笔记本也能通过加密隧道访问</li>
+<li><strong>安全</strong>：服务不直接暴露公网 IP，靠自建隧道保护</li>
+</ul>
+<p>最终方案长这样：</p>
+<pre><code>外网设备 ──Tailscale（VPN，自动直连/中继）──→ 旧Mac（Jellyfin :8096）
+局域网设备 ──192.168.x.x:8096────────────────→ 旧Mac（Jellyfin :8096）
+</code></pre>
+<p>核心思路：<strong>访问入口只有 Tailscale 和局域网，公网入口不开</strong>。</p>
+<h2 id="tailscale">一、Tailscale：零配置打通内外网</h2>
+<p>Tailscale 底层是 WireGuard，但相比手动配置 WireGuard，它解决了两个痛点：</p>
+<ol>
+<li><strong>自动 NAT 穿透（打洞）</strong>：两端都能拿到公网 IP 的端口映射，直接 P2P 连，不经过服务器</li>
+<li><strong>DERP 中继兜底</strong>：打洞失败时，自动选择一个就近的中继节点转发，保证永远能连上</li>
+</ol>
+<h3 id="11-">1.1 安装与登录</h3>
+<p>macOS 直接装官方 App，CLI 会随 App 一并提供：</p>
+<pre><code class="language-bash">brew install --cask tailscale
+# 或到 https://tailscale.com/download 下载 pkg
+</code></pre>
+<p>装完启动 App，点菜单栏图标登录（可用 Google/微软/GitHub 账号，会得到一个白名单的 private tailnet）：</p>
+<pre><code class="language-bash">tailscale status
+# 输出类似：
+# 100.x.x.10   home-mac      you@  macos
+# 100.x.x.20   phone-android you@  android
+</code></pre>
+<p>登录后被分配一个 <code>100.x.x.x</code> 的私有地址（<code>fd7a:115c:a1e0::/16</code> 也是保留给它的 IPv6 网段）。MagicDNS 域名自动生效，<code>home-mac.tailnet-xxxx.ts.net</code> 就能解析到这台机器。</p>
+<h3 id="12-">1.2 验证连接质量</h3>
+<pre><code class="language-bash"># 看与某台设备的实际链路
+tailscale ping phone-android
+# pong from phone-android via &lt;peer-public-ip&gt;:&lt;port&gt; in 41ms  ← 直连打洞成功
+# pong from phone-android via DERP(hkg) in 288ms               ← 走香港中继兜底
+
+# 查看 NAT 类型，判断打洞难易
+tailscale netcheck
+# * UDP: true
+# * IPv4: yes, &lt;your-public-ip&gt;:&lt;port&gt;
+# * IPv6: no, but OS has support
+# * MappingVariesByDestIP: false        ← 端无关映射，打洞友好
+# * PortMapping: UPnP, NAT-PMP, PCP     ← 路由器支持自动端口映射
+</code></pre>
+<p><code>MappingVariesByDestIP: false</code> 表示 NAT 是端无关映射（Endpoint-Independent Mapping），这类 NAT 打洞成功率非常高。这也是我后面实际用时，手机切 5G 也能直连的根本原因。</p>
+<h3 id="13-">1.3 网络切换自动选路</h3>
+<p>Tailscale 客户端是<strong>事件驱动</strong>的：切换 Wi-Fi/蜂窝时自动重新做 netcheck 并重选路径，无需任何手动操作。</p>
+<ul>
+<li>手机连家庭 Wi-Fi（同网段）→ 直接走内网 IP 直连，延迟 &lt;5ms</li>
+<li>手机切 5G → 先尝试 UDP 打洞，成功就直连；失败自动退到邻近 DERP 中继</li>
+</ul>
+<p>注意：<strong>不是“切 5G 就一定走中继”</strong>。5G 运营商多为对称 NAT/CGNAT，打洞常常失败，这时候才会走中继，这与家庭宽带（通常支持 UPnP）差别很大。</p>
+<h2 id="cloudflare-tunnel-web-">二、Cloudflare Tunnel：免费反向代理（用于 Web 类服务）</h2>
+<p>如果是 Jellyfin 这类需要长连接的影音服务，Tailscale 的 P2P 直连体验最好。但如果你想给博客、运维后台这些 <strong>HTTP 服务</strong>一个标准域名入口，Cloudflare Tunnel 是更好选择——免费、WebSocket 支持、自带 TLS 结束。</p>
+<blockquote>
+<p>说明：我把 Jellyfin 放在 Tailscale 后面（影音流量走内网直连更高效），而博客/工具站这类用 Cloudflare Tunnel 暴露。两者互补，不冲突。</p>
+</blockquote>
+<h3 id="21--cloudflared">2.1 安装 cloudflared</h3>
+<pre><code class="language-bash"># macOS
+brew install cloudflared
+</code></pre>
+<h3 id="22--tunnel">2.2 登录并创建 Tunnel</h3>
+<pre><code class="language-bash"># 一次登录，拉取证书（token）
+cloudflared tunnel login
+
+# 创建一条隧道（命名随意）
+cloudflared tunnel create my-tunnel
+
+# 配置文件 default.yml 里声明 ingress 规则：
+# tunnel: my-tunnel
+# credentials-file: /Users/&lt;you&gt;/.cloudflared/&lt;uuid&gt;.json
+# ingress:
+#   - hostname: blog.example.com
+#     service: http://localhost:8081
+#   - hostname: tools.example.com
+#     service: http://localhost:8888
+#   - service: http_status:404   # 兜底
+
+# 启动（可配合 launchd 做开机自启）
+cloudflared tunnel run my-tunnel
+</code></pre>
+<h3 id="23--dns">2.3 配置 DNS</h3>
+<p>在 Cloudflare 控制台给域名加一条 CNAME：</p>
+<pre><code>blog.example.com  CNAME  &lt;tunnel-id&gt;.cfargotunnel.com  Proxy: ON
+</code></pre>
+<p>至此外网访问 <code>https://blog.example.com</code> 就直通家里的服务了。</p>
+<h3 id="24-origin-rule--sni-">2.4 踩坑：Origin Rule / SNI 问题</h3>
+<p>如果 tunnel 的 service 指向的是<strong>别的机器的域名</strong>（比如想让 <code>media.example.com</code> 反代到 Tailscale 节点的 <code>xxx.ts.net</code>），会遇到 <code>HTTP 525 SSL握手失败</code>：</p>
+<pre><code>SSL received a record that exceeded the maximum permissible length
+</code></pre>
+<p>原因：Cloudflare 到上游握手时带的 SNI/Host 与上游证书域名不匹配。标准解法是在 Cloudflare 控制台建一条 <strong>Origin Rule</strong>，把 Host Header 改写成 <code>xxx.ts.net</code>：</p>
+<pre><code>Rule:
+  Hostname: media.example.com
+  Action: Override host header -&gt; xxx.ts.net
+</code></pre>
+<blockquote>
+<p>实测教训：这个规则走 Cloudflare Rulesets API 创建需要相应权限，我当时的 API Token 只能读写 DNS，<code>403</code> 创建失败，最后是手动在面板加的。<strong>Token 权限比你想的更值得提前规划。</strong></p>
+</blockquote>
+<h2 id="-jellyfin--tailscale">三、实战：把 Jellyfin 同时暴露给局域网和 Tailscale</h2>
+<h3 id="31-docker-">3.1 Docker 部署</h3>
+<p>用 Docker Compose（万恶的 macOS 裸装服务在当前这个时代已经过时了，一切容器化）：</p>
+<pre><code class="language-yaml">services:
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=501
+      - PGID=20
+      - TZ=Asia/Shanghai
+      # 填你的 Tailscale 地址，示意：
+      - JELLYFIN_PublishedServerUrl=http://100.x.x.10:8096
+    ports:
+      - &quot;8096:8096&quot;                        # 3.3 里会改成更严谨的绑定方式
+    volumes:
+      - ${HOME}/jellyfin/config:/config
+      - ${HOME}/jellyfin/cache:/cache
+      - /Volumes/ExternalDisk/media:/movies
+</code></pre>
+<h3 id="32--tailscale-ip-">3.2 第一次踩坑：只绑定 Tailscale IP 的连锁反应</h3>
+<p>最开始按“只允许 Tailscale 访问”的严要求，我把它绑到了 Tailscale IP 上：</p>
+<pre><code class="language-yaml">ports:
+  - &quot;100.x.x.10:8096:8096&quot;
+</code></pre>
+<p>验证确实在 Docker 里可以绑定 Tailscale IP 且只有 VPN 能访问。但代价是：</p>
+<ol>
+<li><strong>本机</strong> <code>localhost:8096</code> 连不上</li>
+<li><strong>局域网</strong>其它设备 <code>192.168.x.x:8096</code> 连不上</li>
+<li>我写的<strong>自动扫描脚本</strong>用的是 <code>127.0.0.1</code>，全部失效</li>
+</ol>
+<p>这对“家庭影音”场景太死板了。后来放开成 <code>8096:8096</code>（等价 0.0.0.0）：</p>
+<ul>
+<li>本机 <code>localhost</code> ✅</li>
+<li>局域网 <code>192.168.x.x:8096</code> ✅</li>
+<li>Tailscale <code>100.x.x.10:8096</code> ✅</li>
+</ul>
+<p><strong>安全性如何保住？</strong> 家庭宽带在 NAT 后面本来就没公网 IP 直达，且不开路由器端口转发，公网访问 Jellyfin 根本不可能打进来。真正要防的是“局域网内未经授权的设备”，这层用 Jellyfin 自己的登录密码来处理。</p>
+<blockquote>
+<p>结论：<strong>Tailscale IP 专属绑定适合“只允许 VPN”的敏感服务；家庭影音这类，绑 0.0.0.0 + NAT 天然隔离 + 服务自身认证</strong>是更平衡的方案。别教条。</p>
+</blockquote>
+<h3 id="33-exfat-">3.3 第二个踩坑：exFAT 移动硬盘导致自动扫描失效</h3>
+<p>我用 launchd 每 60 秒检查一次媒体库目录的 mtime，变了就触发 Jellyfin 的 <code>/Library/Refresh</code>：</p>
+<pre><code class="language-bash">MTIME=$(stat -f %m &quot;/Volumes/ExternalDisk/media&quot;)
+if [ &quot;$MTIME&quot; != &quot;$PREV&quot; ]; then
+  curl -X POST http://127.0.0.1:8096/Library/Refresh ...
+fi
+</code></pre>
+<p>测试一切正常，但<strong>实际用的时候完全不触发</strong>。排查过程：</p>
+<pre><code>发现新电影已拷入 /Volumes/ExternalDisk/media/&lt;Some Movie&gt;(2025)/
+顶层目录 mtime 却还停在一周前的旧值
+</code></pre>
+<p>原因：移动硬盘是 <strong>exFAT</strong> 且经 macOS 新 <strong>fskit</strong> 框架挂载（<code>mount</code> 输出可见 <code>exfat, local, noatime, fskit</code>）。实测这个组合有一个怪癖——<strong>往顶层目录新建子目录时，父目录的 mtime 不更新</strong>。我最初基于“顶层 mtime”的判断从此发散，彻底失明。</p>
+<p>修复：放弃判断目录 mtime，改成递归找“比某个标记文件新的文件”：</p>
+<pre><code class="language-bash"># 标记文件
+MARKER=&quot;$HOME/.local/var/jellyfin/.scan_marker&quot;
+
+# 找任意一个比标记新的普通文件（排除 ._ AppleDouble 垃圾）
+NEW=$(find &quot;$MEDIA_DIR&quot; -type f ! -name &quot;.*&quot; -newer &quot;$MARKER&quot; -print -quit 2&gt;/dev/null)
+[ -z &quot;$NEW&quot; ] &amp;&amp; exit 0
+
+# 触发一次全库扫描
+curl -X POST http://127.0.0.1:8096/Library/Refresh \
+  -H &quot;Authorization: MediaBrowser Token=$TOKEN&quot;
+# 扫完再更新标记
+touch &quot;$MARKER&quot;
+</code></pre>
+<p><code>find -newer</code> 直接比较<strong>文件本身的 mtime</strong>，绕开了 exFAT 父目录 mtime 的所有坑，且 <code>-print -quit</code> 找到第一个就停，开销极小。拷贝大文件中途也会触发一次，无妨，下一轮还能再发现。</p>
+<h3 id="34-">3.4 第三个坑：删除媒体库后的虚影（孤儿条目）</h3>
+<p>用 API 删掉某个媒体库（<code>DELETE /Library/VirtualFolders?name=xxx</code>）之后，条目<strong>并不会被立即清理</strong>——数据库里会残留一堆挂在幽灵文件夹下的孤儿记录。它们在界面里仍然可见。这时候需要：</p>
+<ol>
+<li>查询所有 <code>Path</code> 里含目标路径的条目并逐个 <code>DELETE /Items/{id}</code>；</li>
+<li>删除父文件夹时子条目会级联消失；</li>
+<li>最后残留的“库根节点”即使 API 报 <code>500</code> 删不掉，<strong>重启容器</strong>后 Jellyfin 启动自检会把它清掉。</li>
+</ol>
+<pre><code class="language-bash"># 找出所有残留（把 target-lib 换成你的库路径片段）
+curl &quot;.../Items?Recursive=true&amp;Limit=2000&amp;Fields=Path&quot; -H auth | jq -r '
+  .Items[] | select(.Path | contains(&quot;target-lib&quot;)) | .Id' &gt; /tmp/ghost.txt
+
+# 逐个删除
+while read id; do
+  curl -X DELETE &quot;.../Items/$id&quot; -H auth
+done &lt; /tmp/ghost.txt
+</code></pre>
+<h2 id="heading-1">四、最终访问矩阵</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>地址</th>
+<th>走什么路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本机</td>
+<td><code>http://localhost:8096</code></td>
+<td>直连</td>
+</tr>
+<tr>
+<td>局域网</td>
+<td><code>http://192.168.x.x:8096</code></td>
+<td>内网直连</td>
+</tr>
+<tr>
+<td>外网（手机）</td>
+<td><code>http://100.x.x.10:8096</code></td>
+<td>Tailscale P2P 或 DERP 中继</td>
+</tr>
+<tr>
+<td>公网 Web</td>
+<td><code>https://blog.example.com</code></td>
+<td>Cloudflare Tunnel</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-2">五、打洞成功率的优化建议</h2>
+<p>如果 <code>tailscale ping</code> 频繁走 DERP 中继（延迟 200ms+），按优先级尝试：</p>
+<ol>
+<li><strong>两端都开 IPv6</strong>：国内移动联通电信的 4G/5G 均有原生 IPv6，家庭宽带开 IPv6 后，两端直接 IPv6 直连，<strong>完全不需要打洞</strong>。netcheck 从 <code>IPv6:no</code> 变 <code>IPv6:yes</code> 就是成功信号</li>
+<li><strong>避免双 NAT</strong>：光猫桥接、路由器拨号，或至少让光猫开 UPnP，避免两层 NAT 削弱打洞能力</li>
+<li><strong>路由器开 Full Cone NAT</strong>（多数国产品牌支持）：全锥形是最友好的 NAT 类型</li>
+<li>打洞注定失败的场景（对称 NAT 对对称 NAT），不如自建近点 <strong>DERP/Peer Relay</strong> 兜底，缩短中继延迟</li>
+</ol>
+<h2 id="heading-3">六、总结</h2>
+<ul>
+<li><strong>Tailscale 负责“内”</strong>：家庭内网设备、移动设备的加密访问，P2P 直连体验好</li>
+<li><strong>Cloudflare Tunnel 负责“外”</strong>：给 HTTP 类服务一个标准域名 + HTTPS 入口</li>
+<li>两者互补，家庭影音类长连接服务放 Tailscale 后面最舒服</li>
+<li>三个花费最多时间的坑：<strong>Tailscale IP 绑定过死的教训、exFAT+fskit 的 mtime 陷阱、删除媒体库后的孤儿条目</strong>——都已经排过雷</li>
+</ul>
+<p>最后提醒一句：<strong>一切容器化、所有数据挂载宿主机</strong>，别把状态留在容器里。重来一次的成本越低，折腾起来越安心。</p>
+<hr />
+<p><em>本文基于真实排障过程整理，环境：macOS + OrbStack(Docker) + linuxserver/jellyfin + Tailscale + cloudflared。文中地址均为示意。</em></p>
+
+  </div>
+
+  
+  <nav class="post-nav">
+    
+    <a href="/post/kev-chu-ti-yanjue-ce-mo-xing-he-liao-tian-da-mo-xingjiang-kevfang-zai-dockerzhong/" class="post-nav-card post-nav-card--prev">
+      
+      <div class="post-nav-card__body">
+        <span class="post-nav-card__label meta-text">上一篇</span>
+        <span class="post-nav-card__title">kev 初体验：决策模型和聊天大模型，将kev放在docker中</span>
+      </div>
+      <span class="post-nav-card__arrow">&larr;</span>
+    </a>
+    
+    
+    <a href="/post/rocketmq-ding-yue-bu-yi-zhiyi-ci-xiao-fei-zhe-zu-she-ji-wen-ti-pai-cha-ji-lu/" class="post-nav-card post-nav-card--next">
+      <div class="post-nav-card__body">
+        <span class="post-nav-card__label meta-text">下一篇</span>
+        <span class="post-nav-card__title">RocketMQ 订阅不一致：一次消费者组设计问题排查记录</span>
+      </div>
+      
+      <span class="post-nav-card__arrow">&rarr;</span>
+    </a>
+    
+  </nav>
+
+  
+  
+
+
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+
+    
+    
+    <nav class="footer-nav" aria-label="页脚导航">
+      
+      <a class="footer-nav__link" href="/">首页</a>
+      
+      <a class="footer-nav__link" href="/post">博客</a>
+      
+      <a class="footer-nav__link" href="/memos">闪念</a>
+      
+      <a class="footer-nav__link" href="/archives">归档</a>
+      
+      <a class="footer-nav__link" href="/tags">标签</a>
+      
+      <a class="footer-nav__link" href="/links">友链</a>
+      
+      <a class="footer-nav__link" href="/post/about">关于</a>
+      
+    </nav>
+    
+
+    
+    <div class="footer-social">
+      
+      <a class="footer-social__link" href="github.com/imyzt" target="_blank" rel="noopener noreferrer"
+        aria-label="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+        </svg>
+      </a>
+      
+      
+      
+      <a class="footer-social__link" href="/feed.xml" aria-label="RSS">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.18 15.64a2.18 2.18 0 110 4.36 2.18 2.18 0 010-4.36zM4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44zm0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z"/>
+        </svg>
+      </a>
+    </div>
+
+    
+    <div class="footer-copyright">
+      <p>&copy; 2026 imyzt&#39;s blog. All rights reserved.</p>
+    </div>
+
+    
+    
+    <div class="footer-custom">
+      Powered by Gridea Pro
+    </div>
+    
+
+    
+    <div class="footer-powered">
+      <span>Powered by <a href="https://gridea.pro" target="_blank" rel="noopener noreferrer">Gridea Pro</a></span>
+    </div>
+
+  </div>
+</footer>
+
+  
+  <div class="search-overlay" id="searchOverlay" style="display:none;">
+  <div class="search-modal">
+    <div class="search-header">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索文章..." autocomplete="off" />
+      <span class="search-kbd">&#8984;K</span>
+      <button class="search-close" id="searchClose" type="button" aria-label="关闭搜索">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="/scripts/search.js"></script>
+  
+
+  <script src="/scripts/shred.js" defer></script>
+  
+
+  
+
+  
+
+<script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: shred-theme · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+</html>
